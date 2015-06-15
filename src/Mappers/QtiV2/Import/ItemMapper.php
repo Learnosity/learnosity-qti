@@ -45,31 +45,26 @@ class ItemMapper
             throw new MappingException('No supported interactions could be found', MappingException::CRITICAL);
         }
         foreach ($interactionComponents as $component) {
+            try {
+                /* @var $component Interaction */
+                $questionReference = QtiV2Util::getQuestionReference();
 
-            if ($component instanceof Interaction) {
-                try {
-                    if ($component instanceof Interaction) {
-                        /* @var $component Interaction */
-                        $questionReference = QtiV2Util::getQuestionReference();
+                // Process <responseDeclaration>
+                // TODO: According to QTI, an item should have the corresponding responseDeclaration, thus shall throw error
+                // TODO: if it doesn't or perhaps simply ignore?
+                /** @var ResponseDeclaration $responseDeclaration */
+                $responseDeclaration = $assessmentItem->getComponentByIdentifier($component->getResponseIdentifier());
+                $questions[$questionReference] = $this->buildLearnosityQuestion($questionReference, $component, $responseDeclaration, $responseProcessingTemplate);
 
-                        // Process <responseDeclaration>
-                        // TODO: According to QTI, an item should have the corresponding responseDeclaration, thus shall throw error
-                        // TODO: if it doesn't or perhaps simply ignore?
-                        /** @var ResponseDeclaration $responseDeclaration */
-                        $responseDeclaration = $assessmentItem->getComponentByIdentifier($component->getResponseIdentifier());
-                        $questions[$questionReference] = $this->buildLearnosityQuestion($questionReference, $component, $responseDeclaration, $responseProcessingTemplate);
-
-                        // Store 'span' for later replacement with preg replace
-                        $questionSpan = new span();
-                        $questionSpan->setClass('learnosity-response question-' . $questionReference);
-                        $interactionXml = QtiComponentUtil::marshall($component);
-                        $questionsSpan[$questionReference] = $interactionXml;
-                    }
-                } catch (MappingException $e) {
-                    $this->exceptions[] = $e;
-                    if ($e->getType() === MappingException::CRITICAL) {
-                        throw $e;
-                    }
+                // Store 'span' for later replacement with preg replace
+                $questionSpan = new span();
+                $questionSpan->setClass('learnosity-response question-' . $questionReference);
+                $interactionXml = QtiComponentUtil::marshall($component);
+                $questionsSpan[$questionReference] = $interactionXml;
+            } catch (MappingException $e) {
+                $this->exceptions[] = $e;
+                if ($e->getType() === MappingException::CRITICAL) {
+                    throw $e;
                 }
             }
         }
