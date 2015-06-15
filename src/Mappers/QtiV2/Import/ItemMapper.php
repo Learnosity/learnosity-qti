@@ -9,7 +9,10 @@ use Learnosity\Mappers\QtiV2\Import\Interactions\AbstractInteraction;
 use Learnosity\Mappers\QtiV2\Import\Utils\QtiComponentUtil;
 use Learnosity\Mappers\QtiV2\Import\Utils\QtiV2Util;
 use qtism\data\AssessmentItem;
+use qtism\data\content\BlockCollection;
 use qtism\data\content\interactions\Interaction;
+use qtism\data\content\ItemBody;
+use qtism\data\content\RubricBlock;
 use qtism\data\content\xhtml\text\Span;
 use qtism\data\processing\ResponseProcessing;
 use qtism\data\state\ResponseDeclaration;
@@ -18,6 +21,8 @@ use qtism\data\storage\xml\XmlDocument;
 class ItemMapper
 {
     private $exceptions = [];
+    private $supportedInteractions = ['inlineChoiceInteraction', 'choiceInteraction',
+        'extendedTextInteraction', 'textEntryInteraction'];
 
     public function parse($xmlString)
     {
@@ -33,9 +38,14 @@ class ItemMapper
         $questions = [];
         $questionsSpan = [];
         $itemBody = $assessmentItem->getItemBody();
-        // TODO: throw exception does not support <rubricBlock>
+        $itemBody = $this->filterItemBody($itemBody);
 
-        foreach ($itemBody->getIterator() as $component) {
+        $interactionComponents = $itemBody->getComponentsByClassName($this->supportedInteractions, true);
+        if (!$interactionComponents || count($interactionComponents) === 0) {
+            throw new MappingException('No supported interactions could be found', MappingException::CRITICAL);
+        }
+        foreach ($interactionComponents as $component) {
+
             if ($component instanceof Interaction) {
                 try {
                     if ($component instanceof Interaction) {
@@ -65,7 +75,7 @@ class ItemMapper
         }
 
         // Build item's HTML content
-        $content = QtiComponentUtil::marshall($itemBody);
+        $content = QtiComponentUtil::marshallCollection($itemBody->getComponents());
         foreach ($questionsSpan as $questionReference => $interactionXml) {
             $questionSpan = '<span class="learnosity-response question-' . $questionReference . '"></span>';
             $content = str_replace($interactionXml, $questionSpan, $content);
@@ -125,6 +135,25 @@ class ItemMapper
         $questionType = $parser->getQuestionType();
 
         return new Question($questionType->get_type(), $questionReference, $questionType);
+    }
+
+    /**
+     * Filter all components with non-supported classes
+     * @param $itemBody
+     * @return array
+     */
+    private function filterItemBody($itemBody)
+    {
+        $newCollection = new BlockCollection();
+        $itemBodyNew = new ItemBody();
+
+        foreach ($itemBody->getContent() as $key => $component) {
+            if (!($component instanceof RubricBlock)) {
+                $newCollection->attach($component);
+            }
+        }
+        $itemBodyNew->setContent($newCollection);
+        return $itemBodyNew;
     }
 
 }

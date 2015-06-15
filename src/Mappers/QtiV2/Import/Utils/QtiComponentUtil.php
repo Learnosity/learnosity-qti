@@ -4,6 +4,7 @@ namespace Learnosity\Mappers\QtiV2\Import\Utils;
 
 use qtism\data\QtiComponent;
 use qtism\data\QtiComponentCollection;
+use qtism\data\state\ValueCollection;
 use qtism\data\storage\xml\marshalling\MarshallerFactory;
 
 class QtiComponentUtil

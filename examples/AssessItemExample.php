@@ -7,8 +7,8 @@ if (!isset($sampleFileFolder)) {
 }
 
 if (!isset($binaryPath)) {
-    $binaryPath = 'php ../build/learnosity-qti.phar';
-    //$binaryPath = '/usr/local/bin/php ' . dirname(__FILE__) . '/../console.php';
+    //$binaryPath = 'php ../build/learnosity-qti.phar';
+    $binaryPath = '/usr/local/bin/php ' . dirname(__FILE__) . '/../console.php';
 }
 
 if (isset($_REQUEST['qti'])) {
@@ -164,6 +164,7 @@ if (isset($_REQUEST['qti'])) {
             $('#submit').click(function () {
                 var requestXML = $('#qti-xml').val();
                 $('#errorMsg').html('');
+                $('#render-wrapper').html('');
                 $.ajax({
                     type: "POST",
                     url: '',
@@ -196,6 +197,7 @@ if (isset($_REQUEST['qti'])) {
                     url: '',
                     data: 'filePath=' + requestFileName,
                     success: function (data) {
+                        console.log(data);
                         $('#qti-xml').html(data);
                     }
                 });
