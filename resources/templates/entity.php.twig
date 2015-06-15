@@ -1,0 +1,47 @@
+{% autoescape false %}
+<?php
+
+namespace Learnosity\Entities\QuestionTypes;
+
+use Learnosity\Entities\{{ baseClass }};
+
+/**
+* This class is auto-generated based on Schemas API and you should not modify its content
+* Metadata: {{ schemasVersion|json_encode() }}
+*/
+class {{ className }} extends {{ baseClass }} {
+    {% for fieldName, field in fields %}
+    protected ${{ fieldName }};
+    {% endfor %}
+
+    public function __construct(
+        {% for fieldName in requiredFields|keys %}
+            {% if loop.last %}${{ fieldName }}{% else %}${{ fieldName }},{% endif %}
+        {% endfor %})
+    {
+        {% for fieldName, field in requiredFields %}
+        $this->{{ fieldName }} = ${{ fieldName }};
+        {% endfor %}
+    }
+
+    {% for fieldName, field in fields %}
+    /**
+    * Get {% if field.name %}{{ field.name }}{% else %}{{ fieldName }}{% endif %} \
+    * {% if field.description %}{{ field.description|wordwrap(120, "\n\t") }}{% endif %} \
+    * @return {% if field.type %}{{ field.type }} {% endif %}${{ fieldName }}  \
+    */
+    public function get_{{ fieldName }}() {
+        return $this->{{ fieldName }};
+    }
+
+    /**
+    * Set {% if field.name %}{{ field.name }}{% else %}{{ fieldName }}{% endif %} \
+    * {% if field.description %}{{ field.description|wordwrap(120, "\n\t")  }}{% endif %} \
+    * @param {% if field.type %}{{ field.type }} {% endif %}${{ fieldName }} \
+    */
+    public function set_{{ fieldName }} ({% if field.fieldType %}{{ field.fieldType }} {% endif %}${{ fieldName }}) {
+        $this->{{ fieldName }} = ${{ fieldName}};
+    }
+    {% endfor %}
+}
+{% endautoescape %}

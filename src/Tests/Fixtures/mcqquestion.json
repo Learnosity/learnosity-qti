@@ -1,0 +1,39 @@
+{
+    "type": "mcq",
+    "widget_type": "response",
+    "reference": "465713555",
+    "data": {
+        "type": "mcq",
+        "options": [
+            {
+                "value": "0",
+                "label": "boxes"
+            },
+            {
+                "value": "1",
+                "label": "stuff"
+            },
+            {
+                "value": "2",
+                "label": "toys"
+            }
+        ],
+        "validation": {
+            "scoring_type": "exactMatch",
+            "valid_response": {
+                "score": 1,
+                "value": [
+                    "2"
+                ]
+            }
+        },
+        "stimulus": "<p>Chuck is writing a letter. He is telling about his birthday. Read these sentences from his letter. &#8232;&#8232;<br /><br />We ate cake and ice cream. I opened a lot of boxes. We played with my <span style=\"text-decoration:underline\">things</span>. &#8232;&#8232;<br /><br />Chuck wants to replace the underlined word to make his meaning clearer. Which word would make his word choice <span style=\"font-weight:bold\">better</span>?</p>",
+        "metadata": {
+            "distractor_rationale_response_level": [
+                "\n          ",
+                "\n          ",
+                "\n          "
+            ]
+        }
+    }
+}
