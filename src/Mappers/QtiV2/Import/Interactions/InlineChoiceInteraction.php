@@ -13,7 +13,6 @@ use qtism\data\content\interactions\InlineChoice;
 
 class InlineChoiceInteraction extends AbstractInteraction
 {
-
     public function getQuestionType()
     {
         /* @var \qtism\data\content\interactions\InlineChoiceInteraction $interaction */

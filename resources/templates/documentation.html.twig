@@ -1,0 +1,37 @@
+{% import _self as self %}
+{% extends 'basedocumentation.html.twig' %}
+
+{% block content %}
+    {% for interactionName, interaction in interactions %}
+        {{ _self.generateTables(interactionName, interaction) }}
+    {% endfor %}
+{% endblock content %}
+
+
+{% macro generateTables(name, documentation) %}
+    <h1>{{ name }}</h1>
+    <p>Attributes: </p>
+    <ul>
+        {% for attributeName, attribute in attribute(documentation, '@attributes') %}
+            <li>{{ attributeName }} - support: {{ attribute.supportStatus }} {{ attribute.description }}</li>
+        {% endfor %}
+    </ul>
+    <table>
+        <tr>
+            <th>Elements</th>
+            <th>Support</th>
+            <th>Notes</th>
+        </tr>
+        {% for elementName, element in documentation %}
+            {% if element.type == 'row' %}
+                <tr>
+                    <td>{{ elementName }}</td>
+                    <td>{{ element.supportStatus }}</td>
+                    <td>{{ element.supportStatus }}</td>
+                </tr>
+            {% elseif documentation is not null %}
+                {{ _self.generateTables(elementName, element) }}
+            {% endif %}
+        {% endfor %}
+    </table>
+{% endmacro %}

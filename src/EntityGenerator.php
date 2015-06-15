@@ -4,7 +4,6 @@ namespace Learnosity;
 
 use Learnosity\Services\SchemasService;
 use Learnosity\Utils\FileSystemUtil;
-use Symfony\Component\Finder\SplFileInfo;
 use Twig_Extensions_Extension_Text;
 
 class EntityGenerator

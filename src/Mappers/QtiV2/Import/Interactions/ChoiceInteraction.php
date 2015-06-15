@@ -6,6 +6,8 @@ use Learnosity\Entities\QuestionTypes\mcq;
 use Learnosity\Entities\QuestionTypes\mcq_validation;
 use Learnosity\Entities\QuestionTypes\mcq_validation_valid_response;
 use Learnosity\Exceptions\MappingException;
+use Learnosity\Mappers\QtiV2\Import\Documentation\QtiDoc;
+use Learnosity\Mappers\QtiV2\Import\Documentation\SupportStatus;
 use Learnosity\Mappers\QtiV2\Import\ResponseProcessingTemplate;
 use Learnosity\Mappers\QtiV2\Import\Utils\QtiComponentUtil;
 use qtism\data\content\interactions\SimpleChoice;
@@ -15,6 +17,42 @@ use qtism\data\content\interactions\ChoiceInteraction as QtiChoiceInteraction;
 class ChoiceInteraction extends AbstractInteraction
 {
     private $choicesMapping;
+
+    public static function getDocumentation()
+    {
+        $documentation = [
+            '@notes' => "
+                The element 'choiceInteraction' maps to our 'mcq' question.
+            ",
+            '@attributes' => [
+                'xmlbase' => QtiDoc::row(SupportStatus::NO),
+                'id' => QtiDoc::row(SupportStatus::NO),
+                'class' => QtiDoc::row(SupportStatus::NO),
+                'xmllang' => QtiDoc::row(SupportStatus::NO),
+                'label' => QtiDoc::row(SupportStatus::NO),
+                'responseIdentifier' => QtiDoc::row(SupportStatus::NO),
+                'shuffle' => QtiDoc::row(SupportStatus::NO),
+                'maxChoices' => QtiDoc::row(SupportStatus::NO),
+                'minChoices' => QtiDoc::row(SupportStatus::NO),
+                'orientation' => QtiDoc::row(SupportStatus::NO)
+            ],
+            'prompt' => QtiDoc::row(SupportStatus::YES),
+            'simpleChoice' => [
+                '@attributes' => [
+                    'id' => QtiDoc::row(SupportStatus::NO),
+                    'class' => QtiDoc::undefined(),
+                    'xmllang' => QtiDoc::undefined(),
+                    'label' => QtiDoc::undefined(),
+                    'identifier' => QtiDoc::undefined(),
+                    'fixed' => QtiDoc::undefined(),
+                    'templateIdentifier' => QtiDoc::undefined(),
+                    'showHide' => QtiDoc::undefined(),
+                ]
+            ]
+        ];
+        $documentation['simpleChoice'] = array_merge($documentation['simpleChoice'], QtiDoc::defaultFlowStaticRow());
+        return $documentation;
+    }
 
     public function getQuestionType()
     {
