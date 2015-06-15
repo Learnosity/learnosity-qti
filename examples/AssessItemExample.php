@@ -61,7 +61,7 @@ if (isset($_REQUEST['qti'])) {
         'showCorrectAnswers' => true
     ];
 
-    echo json_encode(['layout' => $item['content'], 'activity' => $activity]);
+    echo json_encode(['layout' => $item['content'], 'activity' => $activity, 'item' => $item, 'questions' => $questions]);
 } elseif (isset($_REQUEST['filePath'])) {
     echo file_get_contents($_REQUEST['filePath']);
 } else {
@@ -153,6 +153,20 @@ if (isset($_REQUEST['qti'])) {
                 <pre><code id="outputJson" class="html"></code></pre>
             </div>
         </div>
+
+        <div class="row output-json-row">
+            <div class="col-md-12">
+                <p><span class="label label-default">Item Json Data</span></p>
+                <pre><code id="itemOutputJson" class="html"></code></pre>
+            </div>
+        </div>
+
+        <div class="row output-json-row">
+            <div class="col-md-12">
+                <p><span class="label label-default">Questions Json Data</span></p>
+                <pre><code id="questionsOutputJson" class="html"></code></pre>
+            </div>
+        </div>
     </div>
 
     <script src="//questions.learnosity.com/?latest"></script>
@@ -174,7 +188,9 @@ if (isset($_REQUEST['qti'])) {
                             var result = JSON.parse(data);
                             $('#render-wrapper').html(result.layout);
                             questionsApp = LearnosityApp.init(result.activity);
-                            $('#outputJson').text(JSON.stringify(result, null, 4));
+                            $('#outputJson').text(JSON.stringify(result.activity, null, 4));
+                            $('#itemOutputJson').text(JSON.stringify(result.item, null, 4));
+                            $('#questionsOutputJson').text(JSON.stringify(result.questions, null, 4));
                             console.log(result);
                             hljs.initHighlightingOnLoad();
                         } catch (err) {
