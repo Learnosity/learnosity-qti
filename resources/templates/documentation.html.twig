@@ -27,9 +27,18 @@
 {% block content %}
     <div style="width: 800px; margin: 40px auto">
         <h1>QTI - Learnosity Documentation</h1>
+        <hr/>
+        <h3>Importing Data</h3>
+        <p>TODO: Frank to fill in on how we parse manifest file and decide to parse item and questions) <br/>
+            TODO: Need to talk about how assessmentItem map to our item, interaction to question and test to activity</p>
+        <p>Documentation is in progress.</p>
+        <hr/>
+        <h3>Mapping Interactions</h3>
+        <p>QTI interaction is mapped to one of our question types: </p>
+        <h4>TODO: General handling of `responseProcessing`</h4>
         {% for interactionName, interaction in interactions %}
-            <h3>{{ interactionName }}</h3>
-            {{ _self.generateTables(interactionName, interaction) }}
+            <h4>{{ interactionName }}</h4>
+            {{ _self.generateTables(interactionName, interaction.interactionMapping) }}
             <hr/>
         {% endfor %}
     </div>

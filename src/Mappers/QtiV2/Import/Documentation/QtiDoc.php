@@ -24,6 +24,19 @@ class QtiDoc
         return QtiDoc::row(SupportStatus::PARTIAL, $description);
     }
 
+    public static function defaultCommonInteractionAttributeRow()
+    {
+        return [
+            'xmlbase' => QtiDoc::none(),
+            'id'                 => QtiDoc::none(),
+            'class'              => QtiDoc::none(),
+            'xmllang'            => QtiDoc::none(),
+            'label'              => QtiDoc::none(),
+            'responseIdentifier' => QtiDoc::none('At the moment we are not mapping this to anything. However eventually,
+                                            we want to use this to map to our question `reference`.')
+        ];
+    }
+
     public static function defaultFlowStaticRow()
     {
         return [

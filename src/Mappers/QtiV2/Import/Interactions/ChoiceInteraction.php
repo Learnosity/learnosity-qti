@@ -30,10 +30,10 @@ class ChoiceInteraction extends AbstractInteraction
         $mcq->set_shuffle_options($interaction->mustShuffle());
 
         // Support for @orientation ('vertical' or 'horizontal')
-
         $uiStyle = new mcq_ui_style();
         if ($interaction->getOrientation() === Orientation::HORIZONTAL) {
-            $uiStyle->set_type('columns');
+            $uiStyle->set_type('horizontal');
+            $uiStyle->set_columns(count($options));
             $mcq->set_ui_style($uiStyle);
         }
 

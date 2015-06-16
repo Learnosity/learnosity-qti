@@ -9,11 +9,11 @@ class ChoiceInteractionTest extends \PHPUnit_Framework_TestCase
 {
     public function testSimpleCase()
     {
-        $xml = FileSystemUtil::readFile(FileSystemUtil::getRootPath() . '/src/Tests/Fixtures/textentryinteraction.xml');
+        $xml = FileSystemUtil::readFile(FileSystemUtil::getRootPath() . '/src/Tests/Fixtures/choices.xml');
         $mapper = new ItemMapper();
         list($item, $questions) = $mapper->parse($xml->getContents());
 
         $this->assertInstanceOf('Learnosity\Entities\Item', $item);
-        $this->assertInstanceOf('Learnosity\Entities\Question', $questions[0]);
+        $this->assertInstanceOf('Learnosity\Entities\Question', array_values($questions)[0]);
     }
 } 
