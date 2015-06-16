@@ -41,15 +41,40 @@ class EntityGenerator
         return file_put_contents($target, $content);
     }
 
+    // This would add `fieldType` and `conditional`
+    // to attribute for rendering purposes
+    private function updateAttribute($attribute, $fieldType)
+    {
+        if (isset($attribute['type']) && $attribute['type'] === 'array') {
+            $attribute['fieldType'] = 'array';
+        }
+        if (isset($attribute['attributes'])) {
+            $attribute['fieldType'] = $fieldType;
+        }
+        // Chappo says this just an object, no array - might change later :/
+        if (isset($attribute['conditional_attributes'])) {
+            $key = $attribute['conditional_attributes']['attribute_key'];
+            foreach ($attribute['conditional_attributes']['conditions'] as $condition) {
+                $conditionValue = $condition['value'];
+                foreach ($condition['attributes'] as $k => $v) {
+                    // Add the attribute only if required, otherwise use the existing/original
+                    //TODO: Need also to mark this attribute with conditional, etc, etc for documentation and validation
+                    //TODO: Also whether its always conditional or not always conditional
+                    if (!isset($attribute['attributes'][$k])) {
+                        $attribute['attributes'][$k] = $v;
+                    }
+                }
+            }
+        }
+        return $attribute;
+    }
+
     private function generateAttributeClasses($questionId, array &$attributes)
     {
         foreach ($attributes as $key => $attribute) {
-            if (isset($attribute['type']) && $attribute['type'] === 'array') {
-                $attributes[$key]['fieldType'] = 'array';
-            }
-            if (isset($attribute['attributes'])) {
-                $attributes[$key]['fieldType'] = $questionId . '_' . $key;
+            $attributes[$key] = $this->updateAttribute($attribute, $questionId . '_' . $key);
 
+            if (isset($attribute['attributes'])) {
                 $attributeId = $questionId . '_' . $key;
                 $path = $this->outputDir . DIRECTORY_SEPARATOR . $attributeId . '.php';
                 $this->generateAttributeClasses($attributeId, $attribute['attributes']);
@@ -74,13 +99,10 @@ class EntityGenerator
         $schemas = array_merge($this->schemasService->getResponsesSchemas(), $this->schemasService->getFeaturesSchemas());
         foreach ($schemas as $questionId => $schema) {
             $attributes = $schema['attributes'];
-            $this->generateAttributeClasses($questionId, $attributes);
-
             foreach ($attributes as $key => $attribute) {
-                if (isset($attribute['attributes'])) {
-                    $attributes[$key]['fieldType'] = $questionId . '_' . $key;
-                }
+                $attributes[$key] = $this->updateAttribute($attribute, $questionId . '_' . $key);
             }
+            $this->generateAttributeClasses($questionId, $attributes);
             $classes[$questionId] = [
                 'className' => $questionId,
                 'requiredFields' => array_filter($attributes, function ($attribute) {

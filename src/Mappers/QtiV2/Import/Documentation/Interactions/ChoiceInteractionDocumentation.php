@@ -6,8 +6,8 @@ use Learnosity\Mappers\QtiV2\Import\Documentation\QtiDoc;
 
 class ChoiceInteractionDocumentation
 {
-    // TODO: Write more extensive validation on its response processing process
 
+    // TODO: Write more extensive validation on its response processing process
     public static function getDocumentation()
     {
         $documentation = [
@@ -26,10 +26,10 @@ class ChoiceInteractionDocumentation
                 'responseIdentifier' => QtiDoc::none('At the moment we are not mapping this to anything. However eventually,
                                             we want to use this to map to our question `reference`.'),
                 'shuffle'            => QtiDoc::support('Learnosity does not support partial shuffle,
-                                            thus ignoring simpleChoice @fixed attribute'),
+                                            thus ignoring simpleChoice @fixed attribute.'),
                 'maxChoices'         => QtiDoc::partial('Learnosity does not support specifying the count of choices. If this value
-                                            is more than one, then mcq `multiple_responses` is set to true'),
-                'minChoices'         => QtiDoc::none('By default this would be one'),
+                                            is more than one, then mcq `multiple_responses` is set to true.'),
+                'minChoices'         => QtiDoc::none('By default this would be one.'),
                 'orientation'        => QtiDoc::none()
             ],
             'prompt' => QtiDoc::support('We map this to our question `stimulus`.'),
@@ -47,6 +47,14 @@ class ChoiceInteractionDocumentation
             ]
         ];
         $documentation['simpleChoice'] = array_merge($documentation['simpleChoice'], QtiDoc::defaultFlowStaticRow());
+        return $documentation;
+    }
+
+    public static function getResponseProcessingDocumentation()
+    {
+        $documentation = [
+
+        ];
         return $documentation;
     }
 } 
