@@ -16,7 +16,7 @@ use qtism\data\content\RubricBlock;
 use qtism\data\content\xhtml\text\Span;
 use qtism\data\processing\ResponseProcessing;
 use qtism\data\state\ResponseDeclaration;
-use qtism\data\storage\xml\XmlDocument;
+use qtism\data\storage\xml\XmlCompactDocument;
 
 class ItemMapper
 {
@@ -26,7 +26,7 @@ class ItemMapper
 
     public function parse($xmlString)
     {
-        $document = new XmlDocument();
+        $document = new XmlCompactDocument();
         // TODO: Create ResourceReplacer class here to replace images or take it outside this class!
         $document->loadFromString($xmlString);
 
@@ -119,7 +119,6 @@ class ItemMapper
         }
         return ResponseProcessingTemplate::matchCorrect();
     }
-
 
     private function buildLearnosityQuestion($questionReference, Interaction $component, ResponseDeclaration $responseDeclaration = null, ResponseProcessingTemplate $responseProcessingTemplate = null)
     {

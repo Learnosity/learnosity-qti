@@ -12,13 +12,12 @@
 	<itemBody>
 		<p>Identify the missing word in this famous quote from Shakespeare's Richard III.</p>
 		<blockquote>
-			<p>Now is the winter of our discontent<br/> Made glorious summer by this sun of
-				<inlineChoiceInteraction responseIdentifier="RESPONSE" shuffle="false">
+			<p>Now is the winter of our discontent<br/> Made glorious summer by this sun of <inlineChoiceInteraction responseIdentifier="RESPONSE" shuffle="false">
 					<inlineChoice identifier="G">Gloucester</inlineChoice>
 					<inlineChoice identifier="L">Lancaster</inlineChoice>
 					<inlineChoice identifier="Y">York</inlineChoice>
 				</inlineChoiceInteraction>;<br/> And all the clouds that lour'd upon our house<br/>
-				In the deep bosom of the ocean buried.</p>
+                In the deep bosom of the ocean buried.</p>
 		</blockquote>
 	</itemBody>
 	<responseProcessing

@@ -6,5 +6,6 @@ class SupportStatus
 {
     const YES = 'YES';
     const NO = 'NO';
-    const TODO = 'TODO';
-} 
+    const PARTIAL = 'PARTIAL';
+    const UNKNOWN = '??';
+}

@@ -6,8 +6,6 @@ use Learnosity\Entities\QuestionTypes\mcq;
 use Learnosity\Entities\QuestionTypes\mcq_validation;
 use Learnosity\Entities\QuestionTypes\mcq_validation_valid_response;
 use Learnosity\Exceptions\MappingException;
-use Learnosity\Mappers\QtiV2\Import\Documentation\QtiDoc;
-use Learnosity\Mappers\QtiV2\Import\Documentation\SupportStatus;
 use Learnosity\Mappers\QtiV2\Import\ResponseProcessingTemplate;
 use Learnosity\Mappers\QtiV2\Import\Utils\QtiComponentUtil;
 use qtism\data\content\interactions\SimpleChoice;
@@ -18,42 +16,6 @@ class ChoiceInteraction extends AbstractInteraction
 {
     private $choicesMapping;
 
-    public static function getDocumentation()
-    {
-        $documentation = [
-            '@notes' => "
-                The element 'choiceInteraction' maps to our 'mcq' question.
-            ",
-            '@attributes' => [
-                'xmlbase' => QtiDoc::row(SupportStatus::NO),
-                'id' => QtiDoc::row(SupportStatus::NO),
-                'class' => QtiDoc::row(SupportStatus::NO),
-                'xmllang' => QtiDoc::row(SupportStatus::NO),
-                'label' => QtiDoc::row(SupportStatus::NO),
-                'responseIdentifier' => QtiDoc::row(SupportStatus::NO),
-                'shuffle' => QtiDoc::row(SupportStatus::NO),
-                'maxChoices' => QtiDoc::row(SupportStatus::NO),
-                'minChoices' => QtiDoc::row(SupportStatus::NO),
-                'orientation' => QtiDoc::row(SupportStatus::NO)
-            ],
-            'prompt' => QtiDoc::row(SupportStatus::YES),
-            'simpleChoice' => [
-                '@attributes' => [
-                    'id' => QtiDoc::row(SupportStatus::NO),
-                    'class' => QtiDoc::undefined(),
-                    'xmllang' => QtiDoc::undefined(),
-                    'label' => QtiDoc::undefined(),
-                    'identifier' => QtiDoc::undefined(),
-                    'fixed' => QtiDoc::undefined(),
-                    'templateIdentifier' => QtiDoc::undefined(),
-                    'showHide' => QtiDoc::undefined(),
-                ]
-            ]
-        ];
-        $documentation['simpleChoice'] = array_merge($documentation['simpleChoice'], QtiDoc::defaultFlowStaticRow());
-        return $documentation;
-    }
-
     public function getQuestionType()
     {
         /* @var QtiChoiceInteraction $interaction */
@@ -61,10 +23,12 @@ class ChoiceInteraction extends AbstractInteraction
 
         $options = $this->buildOptions($interaction->getSimpleChoices());
         $mcq = new mcq('mcq', $options);
+
+        // Support for @shuffle
         $mcq->set_shuffle_options($interaction->mustShuffle());
 
+        // Support mapping for <prompt>
         if (!empty($interaction->getPrompt())) {
-            // TODO: Shall put warning on ignored maxChoice, minChoice, class, xmllang, showHide, fixed, templateIdentifier etc
             $promptContent = $interaction->getPrompt()->getContent();
             $mcq->set_stimulus(QtiComponentUtil::marshallCollection($promptContent));
         }
@@ -95,9 +59,8 @@ class ChoiceInteraction extends AbstractInteraction
                 'label' => QtiComponentUtil::marshallCollection($choice->getContent()),
                 'value' => (string)$key
             ];
-            // TODO: Put warning because we ignore <printedVariable>, <feedbackBlock>,
-            // TODO: <feedbackInline>, <templateInline>, <tempplateBlock>
-            // TODO: Also <include>
+            // TODO: Filter $choice->getContent() because we ignore <printedVariable>, <feedbackBlock>,
+            // TODO: <feedbackInline>, <templateInline>, <templateBlock>, and <include>
         }
         return $options;
     }

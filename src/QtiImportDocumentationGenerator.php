@@ -28,8 +28,7 @@ class QtiImportDocumentationGenerator
 
         $interactionDocumentation = [];
         foreach ($supportedQtiClassName as $className) {
-            $mapperClass = 'Learnosity\Mappers\QtiV2\Import\Interactions\\' . ucfirst($className);
-            /** @var AbstractInteraction $mapperClass */
+            $mapperClass = 'Learnosity\Mappers\QtiV2\Import\Documentation\Interactions\\' . ucfirst($className) . 'Documentation';
             $interactionDocumentation[ucfirst($className)] = $mapperClass::getDocumentation();
 
         }

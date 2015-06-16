@@ -20,10 +20,6 @@ abstract class AbstractInteraction
         $this->responseProcessingTemplate = $responseProcessingTemplate;
     }
 
-    public static function getDocumentation() {
-        return null;
-    }
-
     // TODO: Need to verify for <math> tags to see whether we need to enable 'is_math'
     abstract public function getQuestionType();
 

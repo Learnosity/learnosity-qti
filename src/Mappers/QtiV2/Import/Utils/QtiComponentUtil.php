@@ -25,6 +25,8 @@ class QtiComponentUtil
         $element = $marshaller->marshall($component);
 
         $dom = new \DOMDocument('1.0', 'UTF-8');
+        $dom->preserveWhiteSpace = false;
+        $dom->formatOutput = false;
         $node = $dom->importNode($element, true);
         return $dom->saveXML($node);
     }

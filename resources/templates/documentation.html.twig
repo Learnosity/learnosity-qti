@@ -1,37 +1,80 @@
 {% import _self as self %}
 {% extends 'basedocumentation.html.twig' %}
 
+{% block head %}
+    <script type="application/javascript">{% include 'includes/foundation-5.5.2/js/vendor/jquery.js' only %}</script>
+    <script type="application/javascript">{% include 'includes/foundation-5.5.2/js/foundation.min.js' only %}</script>
+    <script type="application/javascript">
+        $(function () {
+            $(".expandable-name").on('click', function (e) {
+                e.preventDefault();
+                $(this.nextElementSibling).slideToggle('fast');
+            });
+        });
+    </script>
+        <style>
+        .doc-table { width: 100%; }
+        .doc-table tr td { vertical-align: top; }
+        .doc-table tr td.name { width: 20%; }
+        .doc-table tr td.support-status { width: 10%; }
+        .doc-table tr td.support-status-yes { background: green; color: white; }
+        .doc-table tr td.support-status-partial { background: yellowgreen; color: white; }
+        .doc-table tr td.support-status-no { background: indianred; color: white; }
+        .doc-table tr td.description { width: 70%; }
+        .expandable-name { margin-bottom: 15px; }
+    </style>
+{% endblock head %}
+
 {% block content %}
-    {% for interactionName, interaction in interactions %}
-        {{ _self.generateTables(interactionName, interaction) }}
-    {% endfor %}
+    <div style="width: 800px; margin: 40px auto">
+        <h1>QTI - Learnosity Documentation</h1>
+        {% for interactionName, interaction in interactions %}
+            <h3>{{ interactionName }}</h3>
+            {{ _self.generateTables(interactionName, interaction) }}
+            <hr/>
+        {% endfor %}
+    </div>
 {% endblock content %}
 
-
 {% macro generateTables(name, documentation) %}
-    <h1>{{ name }}</h1>
-    <p>Attributes: </p>
-    <ul>
-        {% for attributeName, attribute in attribute(documentation, '@attributes') %}
-            <li>{{ attributeName }} - support: {{ attribute.supportStatus }} {{ attribute.description }}</li>
-        {% endfor %}
-    </ul>
-    <table>
-        <tr>
-            <th>Elements</th>
-            <th>Support</th>
-            <th>Notes</th>
-        </tr>
-        {% for elementName, element in documentation %}
-            {% if element.type == 'row' %}
+    {% if attribute(documentation, '@notes') is not empty %}
+        <div class="panel">{{ attribute(documentation, '@notes') }}</div>
+    {% endif %}
+
+    {% if documentation is not empty %}
+        <table class="doc-table">
+            <tr>
+                <th></th>
+                <th>Support</th>
+                <th>Description</th>
+            </tr>
+            {% for attributeName, attribute in attribute(documentation, '@attributes') %}
                 <tr>
-                    <td>{{ elementName }}</td>
-                    <td>{{ element.supportStatus }}</td>
-                    <td>{{ element.supportStatus }}</td>
+                    <td class="name">@{{ attributeName }}</td>
+                    <td class="support-status support-status-{{ attribute.supportStatus|lower }}">{{ attribute.supportStatus }}</td>
+                    <td class="description">{{ attribute.description }}</td>
                 </tr>
-            {% elseif documentation is not null %}
-                {{ _self.generateTables(elementName, element) }}
-            {% endif %}
-        {% endfor %}
-    </table>
+            {% endfor %}
+            {% for elementName, element in documentation %}
+                {% if elementName[:1] != '@'  %}
+                    {% if element.type == 'row' %}
+                        <tr>
+                            <td class="name">{{ elementName }}</td>
+                            <td class="support-status support-status-{{ element.supportStatus|lower }}">{{ element.supportStatus }}</td>
+                            <td class="description">{{ element.description }}</td>
+                        </tr>
+                    {% elseif documentation is not null %}
+                        <tr>
+                            <td colspan="3">
+                                <div class="expandable-name"><a href="#">{{ elementName }}</a></div>
+                                <div class="expandable-content">
+                                    {{ _self.generateTables(elementName, element) }}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </table>
+    {% endif %}
 {% endmacro %}
