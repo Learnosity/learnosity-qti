@@ -3,11 +3,13 @@
 namespace Learnosity\Mappers\QtiV2\Import\Interactions;
 
 use Learnosity\Entities\QuestionTypes\mcq;
+use Learnosity\Entities\QuestionTypes\mcq_ui_style;
 use Learnosity\Entities\QuestionTypes\mcq_validation;
 use Learnosity\Entities\QuestionTypes\mcq_validation_valid_response;
 use Learnosity\Exceptions\MappingException;
 use Learnosity\Mappers\QtiV2\Import\ResponseProcessingTemplate;
 use Learnosity\Mappers\QtiV2\Import\Utils\QtiComponentUtil;
+use qtism\data\content\interactions\Orientation;
 use qtism\data\content\interactions\SimpleChoice;
 use qtism\data\content\interactions\SimpleChoiceCollection;
 use qtism\data\content\interactions\ChoiceInteraction as QtiChoiceInteraction;
@@ -26,6 +28,14 @@ class ChoiceInteraction extends AbstractInteraction
 
         // Support for @shuffle
         $mcq->set_shuffle_options($interaction->mustShuffle());
+
+        // Support for @orientation ('vertical' or 'horizontal')
+
+        $uiStyle = new mcq_ui_style();
+        if ($interaction->getOrientation() === Orientation::HORIZONTAL) {
+            $uiStyle->set_type('columns');
+            $mcq->set_ui_style($uiStyle);
+        }
 
         // Support mapping for <prompt>
         if (!empty($interaction->getPrompt())) {
@@ -56,13 +66,13 @@ class ChoiceInteraction extends AbstractInteraction
         $options = [];
         foreach ($simpleChoices as $key => $choice) {
             // Store 'SimpleChoice' identifier to key for validation purposes
+            // TODO: Filter $choice->getContent() because we ignore <printedVariable>, <feedbackBlock>,
+            // TODO: <feedbackInline>, <templateInline>, <templateBlock>, and <include>
             $this->choicesMapping[$choice->getIdentifier()] = $key;
             $options[] = [
                 'label' => QtiComponentUtil::marshallCollection($choice->getContent()),
                 'value' => (string)$key
             ];
-            // TODO: Filter $choice->getContent() because we ignore <printedVariable>, <feedbackBlock>,
-            // TODO: <feedbackInline>, <templateInline>, <templateBlock>, and <include>
         }
         return $options;
     }
