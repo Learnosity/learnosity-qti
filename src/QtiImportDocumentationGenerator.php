@@ -2,7 +2,6 @@
 
 namespace Learnosity;
 
-use Learnosity\Mappers\QtiV2\Import\Interactions\AbstractInteraction;
 use Learnosity\Utils\FileSystemUtil;
 
 class QtiImportDocumentationGenerator
@@ -17,13 +16,15 @@ class QtiImportDocumentationGenerator
         $this->twig = new \Twig_Environment(new \Twig_Loader_Filesystem($templateDirectory), [
             'debug' => true
         ]);
-
     }
 
     public function generateInterationDocument()
     {
         $supportedQtiClassName = [
             'choiceInteraction',
+            'textEntryInteraction',
+            'extendedTextInteraction',
+            'inlineChoiceInteraction'
         ];
 
         $interactionDocumentation = [];
@@ -45,5 +46,4 @@ class QtiImportDocumentationGenerator
         $content = $this->twig->render($template, $parameters);
         return file_put_contents($target, $content);
     }
-
 } 

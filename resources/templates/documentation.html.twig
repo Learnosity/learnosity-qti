@@ -38,7 +38,7 @@
 
 {% macro generateTables(name, documentation) %}
     {% if attribute(documentation, '@notes') is not empty %}
-        <div class="panel">{{ attribute(documentation, '@notes') }}</div>
+        <div class="panel">{{ attribute(documentation, '@notes')|raw }}</div>
     {% endif %}
 
     {% if documentation is not empty %}

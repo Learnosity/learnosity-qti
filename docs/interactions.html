@@ -6434,8 +6434,10 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
         <h1>QTI - Learnosity Documentation</h1>
                     <h3>ChoiceInteraction</h3>
                         <div class="panel">
-                The element &#039;choiceInteraction&#039; map to our &#039;mcq&#039; question.
-                We currently only support simple &#039;exactMatch&#039; validation.
+                The element 'choiceInteraction' map to our 'mcq' question.
+                Read the documentation: <a href='http://docs.learnosity.com/assessment/questions/questiontypes#mcq'>
+                http://docs.learnosity.com/assessment/questions/questiontypes#mcq</a>
+                We currently only support simple 'exactMatch' validation.
             </div>
     
             <table class="doc-table">
@@ -6594,6 +6596,108 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                             </td>
                         </tr>
                                                         </table>
+    
+            <hr/>
+                    <h3>TextEntryInteraction</h3>
+                        <div class="panel">
+                The element 'textEntryInteraction' map to our '' question.
+                Read the documentation: <a href='http://docs.learnosity.com/assessment/questions/questiontypes#clozetext'>
+                http://docs.learnosity.com/assessment/questions/questiontypes#clozetext</a>
+                We currently does not support validation for this item.
+            </div>
+    
+            <table class="doc-table">
+            <tr>
+                <th></th>
+                <th>Support</th>
+                <th>Description</th>
+            </tr>
+                            <tr>
+                    <td class="name">@xmlbase</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@id</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@class</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@xmllang</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@label</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@responseIdentifier</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description">At the moment we are not mapping this to anything. However eventually,
+                                            we want to use this to map to our question `reference`</td>
+                </tr>
+                            <tr>
+                    <td class="name">@base</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description">We always assume base to be 10</td>
+                </tr>
+                            <tr>
+                    <td class="name">@stringIdentifier</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@expectedLength</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description">We ignore this value for now. We does support `max_length` as a
+                                            validity constraint</td>
+                </tr>
+                            <tr>
+                    <td class="name">@patternMask</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@placeholderText</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description">Our `clozetext` question type does not support placeholder text</td>
+                </tr>
+                                                                                        </table>
+    
+            <hr/>
+                    <h3>ExtendedTextInteraction</h3>
+                        <div class="panel">
+                Documentation is in progress.
+            </div>
+    
+            <table class="doc-table">
+            <tr>
+                <th></th>
+                <th>Support</th>
+                <th>Description</th>
+            </tr>
+                                                            </table>
+    
+            <hr/>
+                    <h3>InlineChoiceInteraction</h3>
+                        <div class="panel">
+                Documentation is in progress.
+            </div>
+    
+            <table class="doc-table">
+            <tr>
+                <th></th>
+                <th>Support</th>
+                <th>Description</th>
+            </tr>
+                                                            </table>
     
             <hr/>
             </div>

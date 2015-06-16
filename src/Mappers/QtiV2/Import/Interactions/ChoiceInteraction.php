@@ -32,6 +32,8 @@ class ChoiceInteraction extends AbstractInteraction
             $promptContent = $interaction->getPrompt()->getContent();
             $mcq->set_stimulus(QtiComponentUtil::marshallCollection($promptContent));
         }
+
+        // Partial support for @maxChoices
         $maxChoiceNum = $interaction->getMaxChoices();
         if ($maxChoiceNum > 1) {
             if ($maxChoiceNum !== count($options)) {
@@ -72,9 +74,6 @@ class ChoiceInteraction extends AbstractInteraction
         }
         if ($this->responseProcessingTemplate->getTemplate() === ResponseProcessingTemplate::MATCH_CORRECT) {
             $correctResponse = $this->responseDeclaration->getCorrectResponse();
-            if (!empty($correctResponse->getInterpretation())) {
-                // TODO: should warn that this is ignored
-            }
 
             $validResponseValues = [];
             foreach ($correctResponse->getValues() as $key => $value) {

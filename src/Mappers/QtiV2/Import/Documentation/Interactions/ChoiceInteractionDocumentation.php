@@ -6,11 +6,15 @@ use Learnosity\Mappers\QtiV2\Import\Documentation\QtiDoc;
 
 class ChoiceInteractionDocumentation
 {
+    // TODO: Write more extensive validation on its response processing process
+
     public static function getDocumentation()
     {
         $documentation = [
             '@notes' => "
                 The element 'choiceInteraction' map to our 'mcq' question.
+                Read the documentation: <a href='http://docs.learnosity.com/assessment/questions/questiontypes#mcq'>
+                http://docs.learnosity.com/assessment/questions/questiontypes#mcq</a>
                 We currently only support simple 'exactMatch' validation.
             ",
             '@attributes' => [

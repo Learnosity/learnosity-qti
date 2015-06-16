@@ -13,29 +13,17 @@ class TextEntryInteraction extends AbstractInteraction
         $interaction = $this->interaction;
         $closetext = new clozetext('clozetext', '{{response}}');
 
-        /**
-         * Mapping <inlineInteraction>
-         */
-        // TODO: Nothing here, we put everything on the item level
-
-        /**
-         * Mapping <stringInteraction>
-         * Attributes:
-         *      base [0..1]: integer = 10
-         *      stringIdentifier [0..1]: identifier
-         *      expectedLength [0..1]: integer
-         *      patternMask [0..1]: string
-         *      placeholderText [0..1]: string
-         */
+        // TODO: template is ugly, shall we be smart and check for surrounding text so text shouldn't be
+        // TODO: at item level
         // TODO: Shall ignore base (always assume 10) and patternMask
         // TODO: Shall use stringIdentifier as part of question reference
         if ($interaction->getExpectedLength()) {
-            $closetext->set_max_length($interaction->getExpectedLength());
+            // TODO: we ignore this because this was supposed to simply provide hints so can't use `max_length`
+            // TODO: since it is a validity constraint
         }
         if ($interaction->getPlaceholderText()) {
             // TODO:: No support for placeholder text
         }
-
         return $closetext;
     }
 }
