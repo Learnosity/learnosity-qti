@@ -117,6 +117,13 @@ if (isset($_POST['filePath'])) {
             .validate-response {
                 float: right;
             }
+
+            .clipboard {
+                cursor: pointer;
+            }
+            .success {
+                background-color: #E9FFED;
+            }
         </style>
     </head>
 
@@ -162,21 +169,21 @@ if (isset($_POST['filePath'])) {
         <div class="row output-json-row">
             <div class="col-md-12">
                 <p><span class="label label-default">Converted Json Data</span></p>
-                <pre><code id="outputJson" class="html"></code></pre>
+                <pre><code id="outputJson" class="html clipboard"></code></pre>
             </div>
         </div>
 
         <div class="row output-json-row">
             <div class="col-md-12">
                 <p><span class="label label-default">Item Json Data</span></p>
-                <pre><code id="itemOutputJson" class="html"></code></pre>
+                <pre><code id="itemOutputJson" class="html clipboard"></code></pre>
             </div>
         </div>
 
         <div class="row output-json-row">
             <div class="col-md-12">
                 <p><span class="label label-default">Questions Json Data</span></p>
-                <pre><code id="questionsOutputJson" class="html"></code></pre>
+                <pre><code id="questionsOutputJson" class="html clipboard"></code></pre>
             </div>
         </div>
     </div>
@@ -234,7 +241,40 @@ if (isset($_POST['filePath'])) {
             $('#validateResponse').click(function () {
                 questionsApp.validateQuestions()
             });
+
+            $('.clipboard').click(copyRange);
         });
+
+        /**
+         * Adds copy to clickboard on any element
+         * that has a `clipboard` css class.
+         */
+        function copyRange (ev) {
+            var copyNode = ev.target,
+                range = document.createRange(),
+                success;
+
+            range.selectNode(copyNode);
+            window.getSelection().addRange(range);
+
+            try {
+                success = document.execCommand('copy');
+            } catch(err) {
+                console.log('Unable to copy ' . err);
+            }
+
+            if (success) {
+                $(copyNode).parent().addClass('success');
+                setTimeout(function () {
+                    $(copyNode).parent().removeClass('success');
+                }, 2000);
+                console.log('Copied contents to clipboard');
+            }
+
+            // Remove the selections - NOTE: Should use
+            // removeRange(range) when it is supported
+            window.getSelection().removeAllRanges();
+        }
     </script>
     </html>
 
