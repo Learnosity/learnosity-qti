@@ -33,6 +33,7 @@ if (isset($_POST['filePath'])) {
     // Special env var needs to be provided for MAC
     $process = proc_open($cmd, $descriptorspec, $pipes, null, array('DYLD_LIBRARY_PATH' => '/usr/lib'));
     if (is_resource($process)) {
+        stream_set_blocking($pipes[2], 0);
         fwrite($pipes[0], $postdata);
         fclose($pipes[0]);
         $result = stream_get_contents($pipes[1]);

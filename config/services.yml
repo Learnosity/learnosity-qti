@@ -6,6 +6,8 @@ services:
         arguments: ["@schemas_service"]
     qtiv2_item_mapper:
         class:      Learnosity\Mappers\QtiV2\Import\ItemMapper
+    qtiv2_test_mapper:
+        class:      Learnosity\Mappers\QtiV2\Import\TestMapper
     learnosity_item_writer:
         class:      Learnosity\Mappers\Learnosity\Export\ItemWriter
     imscp_manifest_mapper:
