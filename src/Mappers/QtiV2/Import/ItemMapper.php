@@ -47,7 +47,7 @@ class ItemMapper
         foreach ($interactionComponents as $component) {
             try {
                 /* @var $component Interaction */
-                $questionReference = QtiV2Util::getQuestionReference();
+                $questionReference = $assessmentItem->getIdentifier() . '_' . $component->getResponseIdentifier();
 
                 // Process <responseDeclaration>
                 // TODO: According to QTI, an item should have the corresponding responseDeclaration, thus shall throw error
@@ -76,7 +76,8 @@ class ItemMapper
             $content = str_replace($interactionXml, $questionSpan, $content);
         }
 
-        $item = new Item(QtiV2Util::getItemReference(), array_keys($questions), $content);
+        $item = new Item($assessmentItem->getIdentifier(), array_keys($questions), $content);
+        $item->set_status('published');
         return [$item, $questions, $this->exceptions];
     }
 
