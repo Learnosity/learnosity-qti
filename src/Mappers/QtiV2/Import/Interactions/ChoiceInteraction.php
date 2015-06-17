@@ -13,11 +13,10 @@ use qtism\data\content\interactions\Orientation;
 use qtism\data\content\interactions\SimpleChoice;
 use qtism\data\content\interactions\SimpleChoiceCollection;
 use qtism\data\content\interactions\ChoiceInteraction as QtiChoiceInteraction;
+use qtism\data\state\Value;
 
 class ChoiceInteraction extends AbstractInteraction
 {
-    private $choicesMapping;
-
     public function getQuestionType()
     {
         /* @var QtiChoiceInteraction $interaction */
@@ -30,10 +29,10 @@ class ChoiceInteraction extends AbstractInteraction
         $mcq->set_shuffle_options($interaction->mustShuffle());
 
         // Support for @orientation ('vertical' or 'horizontal')
-
         $uiStyle = new mcq_ui_style();
         if ($interaction->getOrientation() === Orientation::HORIZONTAL) {
-            $uiStyle->set_type('columns');
+            $uiStyle->set_type('horizontal');
+            $uiStyle->set_columns(count($options));
             $mcq->set_ui_style($uiStyle);
         }
 
@@ -68,10 +67,9 @@ class ChoiceInteraction extends AbstractInteraction
             // Store 'SimpleChoice' identifier to key for validation purposes
             // TODO: Filter $choice->getContent() because we ignore <printedVariable>, <feedbackBlock>,
             // TODO: <feedbackInline>, <templateInline>, <templateBlock>, and <include>
-            $this->choicesMapping[$choice->getIdentifier()] = $key;
             $options[] = [
                 'label' => QtiComponentUtil::marshallCollection($choice->getContent()),
-                'value' => (string)$key
+                'value' => $choice->getIdentifier()
             ];
         }
         return $options;
@@ -86,9 +84,9 @@ class ChoiceInteraction extends AbstractInteraction
             $correctResponse = $this->responseDeclaration->getCorrectResponse();
 
             $validResponseValues = [];
-            foreach ($correctResponse->getValues() as $key => $value) {
-                $optionIndex = $this->choicesMapping[$value->getValue()];
-                $validResponseValues[] = (string)$optionIndex;
+            /** @var Value $value */
+            foreach ($correctResponse->getValues() as $value) {
+                $validResponseValues[] = $value->getValue();
             }
 
             $validResponse = new mcq_validation_valid_response();

@@ -2,6 +2,7 @@
 
 namespace Learnosity;
 
+use Learnosity\Mappers\QtiV2\Import\Documentation\InteractionDocumentationInterface;
 use Learnosity\Utils\FileSystemUtil;
 
 class QtiImportDocumentationGenerator
@@ -20,6 +21,7 @@ class QtiImportDocumentationGenerator
 
     public function generateInterationDocument()
     {
+        //TODO: Need to store this somewhere
         $supportedQtiClassName = [
             'choiceInteraction',
             'textEntryInteraction',
@@ -29,9 +31,11 @@ class QtiImportDocumentationGenerator
 
         $interactionDocumentation = [];
         foreach ($supportedQtiClassName as $className) {
+            /** @var InteractionDocumentationInterface $mapperClass */
             $mapperClass = 'Learnosity\Mappers\QtiV2\Import\Documentation\Interactions\\' . ucfirst($className) . 'Documentation';
-            $interactionDocumentation[ucfirst($className)] = $mapperClass::getDocumentation();
-
+            $interactionDocumentation[ucfirst($className)] = [
+                'interactionMapping' => $mapperClass::getInteractionDocumentation()
+            ];
         }
         $this->renderFile('documentation.html.twig', $this->outputDir . '/interactions.html', [
             'interactions' => $interactionDocumentation

@@ -38,6 +38,7 @@ class ExtendedTextInteraction extends AbstractInteraction
         // TODO: Shall use stringIdentifier as part of question reference
         if ($interaction->getExpectedLength()) {
             $longtext->set_max_length($interaction->getExpectedLength());
+            $longtext->set_submit_over_limit(true);
         }
         if ($interaction->getPlaceholderText()) {
             $longtext->set_placeholder($interaction->getPlaceholderText());

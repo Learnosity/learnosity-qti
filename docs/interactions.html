@@ -55,12 +55,22 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
 <body>
     <div style="width: 800px; margin: 40px auto">
         <h1>QTI - Learnosity Documentation</h1>
-                    <h3>ChoiceInteraction</h3>
+        <hr/>
+        <h3>Importing Data</h3>
+        <p>TODO: Frank to fill in on how we parse manifest file and decide to parse item and questions) <br/>
+            TODO: Need to talk about how assessmentItem map to our item, interaction to question and test to activity</p>
+        <p>Documentation is in progress.</p>
+        <hr/>
+        <h3>Mapping Interactions</h3>
+        <p>QTI interaction is mapped to one of our question types: </p>
+        <h4>TODO: General handling of `responseProcessing`</h4>
+                    <h4>ChoiceInteraction</h4>
                         <div class="panel">
                 The element 'choiceInteraction' map to our 'mcq' question.
                 Read the documentation: <a href='http://docs.learnosity.com/assessment/questions/questiontypes#mcq'>
                 http://docs.learnosity.com/assessment/questions/questiontypes#mcq</a>
-                We currently only support simple 'exactMatch' validation.
+                <br /><br />
+                Currently only support simple `exactMatch` validation.
             </div>
     
             <table class="doc-table">
@@ -119,8 +129,10 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                 </tr>
                             <tr>
                     <td class="name">@orientation</td>
-                    <td class="support-status support-status-no">NO</td>
-                    <td class="description"></td>
+                    <td class="support-status support-status-yes">YES</td>
+                    <td class="description">By default mcq would be displayed vertically. We support do `horizontal`
+                                            orientation and map to the question `ui_style`, ie. `type` of `horizontal` and `columns`
+                                            will be number of the multiple choice options</td>
                 </tr>
                                                                                                                                             <tr>
                             <td class="name">prompt</td>
@@ -131,7 +143,9 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                             <td colspan="3">
                                 <div class="expandable-name"><a href="#">simpleChoice</a></div>
                                 <div class="expandable-content">
-                                        
+                                                <div class="panel">Attributes are ignored and elements are simply marshalled as HTML content and mapped to
+                    `value` in `options`</div>
+    
             <table class="doc-table">
             <tr>
                 <th></th>
@@ -178,7 +192,7 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                     <td class="support-status support-status-no">NO</td>
                     <td class="description"></td>
                 </tr>
-                                                                                                                <tr>
+                                                                                                                                            <tr>
                             <td class="name">printedVariable</td>
                             <td class="support-status support-status-no">NO</td>
                             <td class="description"></td>
@@ -221,12 +235,12 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                                                         </table>
     
             <hr/>
-                    <h3>TextEntryInteraction</h3>
+                    <h4>TextEntryInteraction</h4>
                         <div class="panel">
                 The element 'textEntryInteraction' map to our 'clozetext' question.
                 Read the documentation: <a href='http://docs.learnosity.com/assessment/questions/questiontypes#clozetext'>
-                http://docs.learnosity.com/assessment/questions/questiontypes#clozetext</a>
-                We currently does not support validation for this item.
+                http://docs.learnosity.com/assessment/questions/questiontypes#clozetext</a>.
+                We currently do not support validation for this interaction.
             </div>
     
             <table class="doc-table">
@@ -279,7 +293,7 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                             <tr>
                     <td class="name">@expectedLength</td>
                     <td class="support-status support-status-no">NO</td>
-                    <td class="description">We ignore this value for now. We does support `max_length` as a
+                    <td class="description">We ignore this value for now. We do support `max_length` as a
                                             validity constraint.</td>
                 </tr>
                             <tr>
@@ -295,9 +309,11 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                                                                                         </table>
     
             <hr/>
-                    <h3>ExtendedTextInteraction</h3>
+                    <h4>ExtendedTextInteraction</h4>
                         <div class="panel">
-                Documentation is in progress.
+                The element 'choiceInteraction' map to our 'mcq' question.
+                Read the documentation: <a href='http://docs.learnosity.com/assessment/questions/questiontypes#longtext'>
+                http://docs.learnosity.com/assessment/questions/questiontypes#longtext</a>.
             </div>
     
             <table class="doc-table">
@@ -306,12 +322,97 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                 <th>Support</th>
                 <th>Description</th>
             </tr>
-                                                            </table>
+                            <tr>
+                    <td class="name">@xmlbase</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@id</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@class</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@xmllang</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@label</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@responseIdentifier</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description">At the moment we are not mapping this to anything. However eventually,
+                                            we want to use this to map to our question `reference`.</td>
+                </tr>
+                            <tr>
+                    <td class="name">@base</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description">We always assume base to be 10.</td>
+                </tr>
+                            <tr>
+                    <td class="name">@stringIdentifier</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@expectedLength</td>
+                    <td class="support-status support-status-yes">YES</td>
+                    <td class="description">The number defined is used to set `max_length` and set `submit_over_limit` to
+                                            `true`. Thus, it is not a validity constraint.</td>
+                </tr>
+                            <tr>
+                    <td class="name">@patternMask</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@placeholderText</td>
+                    <td class="support-status support-status-yes">YES</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@maxStrings</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description">Always assumed to be 1. `longtext` question type does not support multiple
+                                            separate strings.</td>
+                </tr>
+                            <tr>
+                    <td class="name">@minStrings</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description">Always assumed to be 1.</td>
+                </tr>
+                            <tr>
+                    <td class="name">@expectedLines</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@format</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description">We capture response as plain text.</td>
+                </tr>
+                                                                                                                                            <tr>
+                            <td class="name">prompt</td>
+                            <td class="support-status support-status-yes">YES</td>
+                            <td class="description">We map this to our question `stimulus`.</td>
+                        </tr>
+                                                        </table>
     
             <hr/>
-                    <h3>InlineChoiceInteraction</h3>
+                    <h4>InlineChoiceInteraction</h4>
                         <div class="panel">
-                Documentation is in progress.
+                The element 'inlineChoiceInteraction' map to our 'clozedropdown' question.
+                Read the documentation: <a href='http://docs.learnosity.com/assessment/questions/questiontypes#clozedropdown'>
+                http://docs.learnosity.com/assessment/questions/questiontypes#clozedropdown</a>
             </div>
     
             <table class="doc-table">
@@ -320,7 +421,111 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                 <th>Support</th>
                 <th>Description</th>
             </tr>
-                                                            </table>
+                            <tr>
+                    <td class="name">@xmlbase</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@id</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@class</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@xmllang</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@label</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@responseIdentifier</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description">At the moment we are not mapping this to anything. However eventually,
+                                            we want to use this to map to our question `reference`.</td>
+                </tr>
+                            <tr>
+                    <td class="name">@shuffle</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description">Unfortunately `clozedropdown` does not support shuffling possible responses.</td>
+                </tr>
+                            <tr>
+                    <td class="name">@required</td>
+                    <td class="support-status support-status-??">??</td>
+                    <td class="description">No documentation provided yet. Please contact support.</td>
+                </tr>
+                                                                                                                                                                        <tr>
+                            <td colspan="3">
+                                <div class="expandable-name"><a href="#">inlineChoice</a></div>
+                                <div class="expandable-content">
+                                                <div class="panel">Attributes are ignored and elements are simply marshalled as HTML content and mapped to
+                    value in `possible_responses`</div>
+    
+            <table class="doc-table">
+            <tr>
+                <th></th>
+                <th>Support</th>
+                <th>Description</th>
+            </tr>
+                            <tr>
+                    <td class="name">@id</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@class</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@xmllang</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@label</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@identifier</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@fixed</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description">We do not support partial shuffle.</td>
+                </tr>
+                            <tr>
+                    <td class="name">@templateIdentifier</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@showHide</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                                                                                                                                            <tr>
+                            <td class="name">printedVariable</td>
+                            <td class="support-status support-status-no">NO</td>
+                            <td class="description"></td>
+                        </tr>
+                                                        </table>
+    
+                                </div>
+                            </td>
+                        </tr>
+                                                        </table>
     
             <hr/>
             </div>

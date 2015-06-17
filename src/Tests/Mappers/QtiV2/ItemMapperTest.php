@@ -20,5 +20,7 @@ class ItemMapperTest extends PHPUnit_Framework_TestCase
         $itemJson = $writer->convert($item);
         $questionConverter = new QuestionWriter();
         $qeustionJson = $questionConverter->convert(array_values($questions)[0]);
+
+        echo 'Done!';
     }
 }

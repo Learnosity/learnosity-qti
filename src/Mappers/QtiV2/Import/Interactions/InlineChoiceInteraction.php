@@ -9,25 +9,19 @@ use Learnosity\Entities\QuestionTypes\clozedropdown_validation_valid_response;
 use Learnosity\Exceptions\MappingException;
 use Learnosity\Mappers\QtiV2\Import\ResponseProcessingTemplate;
 use Learnosity\Mappers\QtiV2\Import\Utils\QtiComponentUtil;
-use qtism\data\content\interactions\InlineChoice;
 
 class InlineChoiceInteraction extends AbstractInteraction
 {
+    private $choicesMapping = [];
+
     public function getQuestionType()
     {
         /* @var \qtism\data\content\interactions\InlineChoiceInteraction $interaction */
         $interaction = $this->interaction;
-
-        $this->choicesMapping = [];
-        // todo
         $template = '{{response}}';
 
-        foreach ($interaction->getContent() as $i) {
-
-            if ($i instanceof InlineChoice) {
-                $this->choicesMapping[$i->getIdentifier()] = QtiComponentUtil::marshallCollection($i->getContent());
-            }
-
+        foreach ($interaction->getContent() as $inlineChoice) {
+            $this->choicesMapping[$inlineChoice->getIdentifier()] = QtiComponentUtil::marshallCollection($inlineChoice->getContent());
         }
 
         $validation = $this->buildValidation();
@@ -38,7 +32,6 @@ class InlineChoiceInteraction extends AbstractInteraction
 
     private function buildValidation()
     {
-
         if (empty($this->responseProcessingTemplate)) {
             return null;
         }
@@ -60,11 +53,11 @@ class InlineChoiceInteraction extends AbstractInteraction
             $validResponse->set_score(1);
             $validResponse->set_value($validResponseValues);
             $validation->set_valid_response($validResponse);
+
             return $validation;
         } else {
             throw new MappingException('Does not support template ' . $this->responseProcessingTemplate->getTemplate() .
                 ' on <responseProcessing>', MappingException::CRITICAL);
         }
-
     }
 }
