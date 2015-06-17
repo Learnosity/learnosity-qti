@@ -21,13 +21,14 @@
         .doc-table tr td.support-status-no { background: indianred; color: white; }
         .doc-table tr td.description { width: 70%; }
         .expandable-name { margin-bottom: 15px; }
+        .link-list {list-style: none;}
     </style>
 {% endblock head %}
 
 {% block content %}
     <div style="width: 800px; margin: 40px auto">
         <h1>QTI - Learnosity Documentation</h1>
-        <hr/>
+        <hr>
         <h3>Importing Data</h3>
         <p>TODO: Frank to fill in on how we parse manifest file and decide to parse item and questions) <br/>
             TODO: Need to talk about how assessmentItem map to our item, interaction to question and test to activity</p>
@@ -38,12 +39,17 @@
         <p>TODO: Need to fill this up</p>
 
         <h3>Mapping AssessmentItems and Interactions</h3>
+        <ul class="link-list">
+        {% for interactionName, interaction in interactions %}
+            <li><a href="#{{ interactionName }}">{{ interactionName }}</a></li>
+        {% endfor %}
+        </ul>
         <p>TODO: General handling of `responseProcessing`</p>
         {{ _self.generateTables('AssessmentItem', assessmentItem) }}
 
         <h4>Interactions</h4>
         {% for interactionName, interaction in interactions %}
-            <h4>{{ interactionName }}</h4>
+            <h4 id="{{ interactionName }}">{{ interactionName }}</h4>
             {{ _self.generateTables(interactionName, interaction.interactionMapping) }}
             <hr/>
         {% endfor %}

@@ -50,12 +50,13 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
         .doc-table tr td.support-status-no { background: indianred; color: white; }
         .doc-table tr td.description { width: 70%; }
         .expandable-name { margin-bottom: 15px; }
+        .link-list {list-style: none;}
     </style>
 </head>
 <body>
     <div style="width: 800px; margin: 40px auto">
         <h1>QTI - Learnosity Documentation</h1>
-        <hr/>
+        <hr>
         <h3>Importing Data</h3>
         <p>TODO: Frank to fill in on how we parse manifest file and decide to parse item and questions) <br/>
             TODO: Need to talk about how assessmentItem map to our item, interaction to question and test to activity</p>
@@ -66,6 +67,12 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
         <p>TODO: Need to fill this up</p>
 
         <h3>Mapping AssessmentItems and Interactions</h3>
+        <ul class="link-list">
+                    <li><a href="#ChoiceInteraction">ChoiceInteraction</a></li>
+                    <li><a href="#TextEntryInteraction">TextEntryInteraction</a></li>
+                    <li><a href="#ExtendedTextInteraction">ExtendedTextInteraction</a></li>
+                    <li><a href="#InlineChoiceInteraction">InlineChoiceInteraction</a></li>
+                </ul>
         <p>TODO: General handling of `responseProcessing`</p>
                     <div class="panel">QTI assessmentItem is mapped to Learnosity Item.</div>
     
@@ -241,7 +248,7 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
     
 
         <h4>Interactions</h4>
-                    <h4>ChoiceInteraction</h4>
+                    <h4 id="ChoiceInteraction">ChoiceInteraction</h4>
                         <div class="panel">
                 The element 'choiceInteraction' map to our 'mcq' question.
                 Read the documentation: <a href='http://docs.learnosity.com/assessment/questions/questiontypes#mcq'>
@@ -412,7 +419,7 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                                                         </table>
     
             <hr/>
-                    <h4>TextEntryInteraction</h4>
+                    <h4 id="TextEntryInteraction">TextEntryInteraction</h4>
                         <div class="panel">
                 The element 'textEntryInteraction' map to our 'clozetext' question.
                 Read the documentation: <a href='http://docs.learnosity.com/assessment/questions/questiontypes#clozetext'>
@@ -486,7 +493,7 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                                                                                         </table>
     
             <hr/>
-                    <h4>ExtendedTextInteraction</h4>
+                    <h4 id="ExtendedTextInteraction">ExtendedTextInteraction</h4>
                         <div class="panel">
                 The element 'extendedTextInteraction' map to our 'longtext' question.
                 Read the documentation: <a href='http://docs.learnosity.com/assessment/questions/questiontypes#longtext'>
@@ -585,7 +592,7 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                                                         </table>
     
             <hr/>
-                    <h4>InlineChoiceInteraction</h4>
+                    <h4 id="InlineChoiceInteraction">InlineChoiceInteraction</h4>
                         <div class="panel">
                 The element 'inlineChoiceInteraction' map to our 'clozedropdown' question.
                 Read the documentation: <a href='http://docs.learnosity.com/assessment/questions/questiontypes#clozedropdown'>
