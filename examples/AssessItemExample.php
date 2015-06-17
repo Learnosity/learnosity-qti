@@ -15,23 +15,23 @@ if (!isset($binaryPath)) {
 if (isset($_POST['filePath'])) {
     echo file_get_contents($_REQUEST['filePath']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $security = array(
+    $security = [
         'consumer_key' => $consumer_key,
         'domain' => $domain,
         'timestamp' => $timestamp
-    );
+    ];
 
     $postdata = file_get_contents("php://input");
 
     // prepare to use the phar binary
     $cmd = sprintf('%s convert qti json', $binaryPath);
-    $descriptorspec = array(
-        0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
-        1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
-         2 => array("pipe", "w")  // stderr is a pipe that the child will read from
-    );
+    $descriptorspec = [
+        0 => ["pipe", "r"],  // stdin is a pipe that the child will read from
+        1 => ["pipe", "w"],  // stdout is a pipe that the child will write to
+        2 => ["pipe", "w"]  // stderr is a pipe that the child will read from
+    ];
     // Special env var needs to be provided for MAC
-    $process = proc_open($cmd, $descriptorspec, $pipes, null, array('DYLD_LIBRARY_PATH' => '/usr/lib'));
+    $process = proc_open($cmd, $descriptorspec, $pipes, null, ['DYLD_LIBRARY_PATH' => '/usr/lib']);
     if (is_resource($process)) {
         fwrite($pipes[0], $postdata);
         fclose($pipes[0]);
@@ -43,9 +43,10 @@ if (isset($_POST['filePath'])) {
         $object = json_decode($result, true);
         $item = $object[0];
         $questions = $object[1];
+        $exceptions = $object[2];
     }
 
-    if($error) {
+    if ($error) {
         print_r($error);
         return;
     }
@@ -74,7 +75,9 @@ if (isset($_POST['filePath'])) {
         'showCorrectAnswers' => true
     ];
 
-    echo json_encode(['layout' => $item['content'], 'activity' => $activity, 'item' => $item, 'questions' => $originalQuestions]);
+    echo json_encode(['layout' => $item['content'], 'activity' => $activity, 'item' => $item, 'questions' => $originalQuestions,
+        'exceptions' => $exceptions
+    ]);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $files = scandir($sampleFileFolder);
     $fileList = [];
@@ -161,6 +164,13 @@ if (isset($_POST['filePath'])) {
         <div class="row output-json-row">
             <div class="col-md-12">
                 <p><span class="label label-default">Converted Json Data</span></p>
+                <pre><code id="errorsJson" class="html"></code></pre>
+            </div>
+        </div>
+
+        <div class="row output-json-row">
+            <div class="col-md-12">
+                <p><span class="label label-default">Converted Json Data</span></p>
                 <pre><code id="outputJson" class="html"></code></pre>
             </div>
         </div>
@@ -198,6 +208,7 @@ if (isset($_POST['filePath'])) {
                             var result = JSON.parse(data);
                             $('#render-wrapper').html(result.layout);
                             questionsApp = LearnosityApp.init(result.activity);
+                            $('#errorsJson').text(JSON.stringify(result.exceptions, null, 4));
                             $('#outputJson').text(JSON.stringify(result.activity, null, 4));
                             $('#itemOutputJson').text(JSON.stringify(result.item, null, 4));
                             $('#questionsOutputJson').text(JSON.stringify(result.questions, null, 4));

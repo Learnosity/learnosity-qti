@@ -54,11 +54,8 @@ class ConvertCommand extends Command
                 break;
         }
 
-        list($item, $questions) = Converter::convertQtiItemToLearnosity($inputData);
-
-        $outputData = json_encode([$item, $questions]);
-
+        list($item, $questions, $errors) = Converter::convertQtiItemToLearnosity($inputData);
+        $outputData = json_encode([$item, $questions, $errors]);
         $output->write($outputData);
-
     }
 }

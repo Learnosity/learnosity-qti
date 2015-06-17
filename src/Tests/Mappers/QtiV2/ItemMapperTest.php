@@ -14,7 +14,7 @@ class ItemMapperTest extends PHPUnit_Framework_TestCase
     {
         $xml = FileSystemUtil::readFile(FileSystemUtil::getRootPath() . '/src/Tests/Fixtures/choices.xml');
         $mapper = new ItemMapper();
-        list($item, $questions) = $mapper->parse($xml->getContents());
+        list($item, $questions, $exceptions) = $mapper->parse($xml->getContents());
 
         $writer = new ItemWriter($item);
         $itemJson = $writer->convert($item);

@@ -2,12 +2,12 @@
 
 namespace Learnosity\Mappers\QtiV2\Import;
 
+use Exception;
 use Learnosity\Entities\Item;
 use Learnosity\Entities\Question;
 use Learnosity\Exceptions\MappingException;
 use Learnosity\Mappers\QtiV2\Import\Interactions\AbstractInteraction;
 use Learnosity\Mappers\QtiV2\Import\Utils\QtiComponentUtil;
-use Learnosity\Mappers\QtiV2\Import\Utils\QtiV2Util;
 use qtism\data\AssessmentItem;
 use qtism\data\content\BlockCollection;
 use qtism\data\content\interactions\Interaction;
@@ -26,6 +26,8 @@ class ItemMapper
 
     public function parse($xmlString)
     {
+        $this->exceptions = [];
+
         $document = new XmlCompactDocument();
         // TODO: Create ResourceReplacer class here to replace images or take it outside this class!
         $document->loadFromString($xmlString);
@@ -78,7 +80,18 @@ class ItemMapper
 
         $item = new Item($assessmentItem->getIdentifier(), array_keys($questions), $content);
         $item->set_status('published');
-        return [$item, $questions, $this->exceptions];
+
+        return [$item, $questions, $this->getExceptionMessages()];
+    }
+
+    private function getExceptionMessages()
+    {
+        $result = [];
+        /** @var Exception $exception */
+        foreach ($this->exceptions as $exception) {
+            $result[] = $exception->getMessage();
+        }
+        return $result;
     }
 
     private function validateAssessmentItem(AssessmentItem $assessmentItem)
@@ -105,15 +118,15 @@ class ItemMapper
     {
         if (!empty($responseProcessing)) {
             if ($responseProcessing->getResponseRules()->count()) {
-                throw new MappingException('Does not support custom response processing on <responseProcessing>', MappingException::CRITICAL);
+                $this->exceptions[] = new MappingException('Does not support custom response processing on <responseProcessing>. Ignoring <responseProcessing>');
             }
             if (!empty($responseProcessing->getTemplateLocation())) {
-                throw new MappingException('Does not support \'templateLocation\' on <responseProcessing>', MappingException::CRITICAL);
+                $this->exceptions[] = new MappingException('Does not support \'templateLocation\' on <responseProcessing>. Ignoring <responseProcessing>');
             }
             if (!empty($responseProcessing->getTemplate())) {
                 $responseProcessingTemplate = ResponseProcessingTemplate::getFromTemplateUrl($responseProcessing->getTemplate());
                 if (empty($responseProcessingTemplate)) {
-                    throw new MappingException('Does not support custom response processing templates', MappingException::CRITICAL);
+                    $this->exceptions[] = new MappingException('Does not support custom response processing templates. Ignoring <responseProcessing>');
                 }
                 return $responseProcessingTemplate;
             }
@@ -150,5 +163,4 @@ class ItemMapper
         $itemBodyNew->setContent($newCollection);
         return $itemBodyNew;
     }
-
 }

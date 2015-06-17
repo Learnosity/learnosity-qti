@@ -19,7 +19,7 @@ class Converter
         $itemMapper = AppContainer::getApplicationContainer()->get('qtiv2_item_mapper');
         $itemWriter = AppContainer::getApplicationContainer()->get('learnosity_item_writer');
 
-        list($item, $questions) = $itemMapper->parse($data);
+        list($item, $questions, $exceptions) = $itemMapper->parse($data);
         $itemData = $itemWriter->convert($item);
 
         $questionsData = [];
@@ -27,7 +27,7 @@ class Converter
             $questionConverter = new QuestionWriter();
             $questionsData[] = $questionConverter->convert($question);
         }
-        return [$itemData, $questionsData];
+        return [$itemData, $questionsData, $exceptions];
     }
 
     public static function parseIMSCPPackage($path)

@@ -19,7 +19,7 @@ class InlineChoiceInteractionDocumentation implements InteractionDocumentationIn
             '@validation' => 'Currently only support simple `exactMatch` validation.',
             '@attributes' => [
                 'shuffle'  => QtiDoc::none('Unfortunately `clozedropdown` does not support shuffling possible responses.'),
-                'required' => QtiDoc::undefined()
+                'required' => QtiDoc::none('`clozedropdown` does not enforce a choice to be selected')
             ],
             'inlineChoice' => [
                 '@notes' => 'Attributes are ignored and elements are simply marshalled as HTML content and mapped to
