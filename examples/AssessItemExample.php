@@ -53,6 +53,7 @@ if (isset($_POST['filePath'])) {
     $activitySignature = hash("sha256", $consumer_key . '_' . $domain . '_'
         . $timestamp . '_' . $studentid . '_' . $consumer_secret);
 
+    $originalQuestions = $questions;
     $questionsList = [];
     foreach ($questions as $index => $q) {
         $questions[$index]['data']['response_id'] = $item['questionReferences'][$index];
@@ -73,7 +74,7 @@ if (isset($_POST['filePath'])) {
         'showCorrectAnswers' => true
     ];
 
-    echo json_encode(['layout' => $item['content'], 'activity' => $activity, 'item' => $item, 'questions' => $questions]);
+    echo json_encode(['layout' => $item['content'], 'activity' => $activity, 'item' => $item, 'questions' => $originalQuestions]);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $files = scandir($sampleFileFolder);
     $fileList = [];
