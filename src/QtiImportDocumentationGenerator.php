@@ -2,6 +2,7 @@
 
 namespace Learnosity;
 
+use Learnosity\Mappers\QtiV2\Import\Documentation\AssessmentItemDocumentation;
 use Learnosity\Mappers\QtiV2\Import\Documentation\InteractionDocumentationInterface;
 use Learnosity\Utils\FileSystemUtil;
 
@@ -19,8 +20,9 @@ class QtiImportDocumentationGenerator
         ]);
     }
 
-    public function generateInterationDocument()
+    public function generateDocumentation()
     {
+        // Generate interaction documentation
         //TODO: Need to store this somewhere
         $supportedQtiClassName = [
             'choiceInteraction',
@@ -28,7 +30,6 @@ class QtiImportDocumentationGenerator
             'extendedTextInteraction',
             'inlineChoiceInteraction'
         ];
-
         $interactionDocumentation = [];
         foreach ($supportedQtiClassName as $className) {
             /** @var InteractionDocumentationInterface $mapperClass */
@@ -37,8 +38,11 @@ class QtiImportDocumentationGenerator
                 'interactionMapping' => $mapperClass::getInteractionDocumentation()
             ];
         }
+
+        // Render
         $this->renderFile('documentation.html.twig', $this->outputDir . '/interactions.html', [
-            'interactions' => $interactionDocumentation
+            'interactions' => $interactionDocumentation,
+            'assessmentItem' => AssessmentItemDocumentation::getInteractionDocumentation()
         ]);
     }
 

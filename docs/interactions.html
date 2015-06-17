@@ -61,9 +61,186 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
             TODO: Need to talk about how assessmentItem map to our item, interaction to question and test to activity</p>
         <p>Documentation is in progress.</p>
         <hr/>
-        <h3>Mapping Interactions</h3>
-        <p>QTI interaction is mapped to one of our question types: </p>
-        <h4>TODO: General handling of `responseProcessing`</h4>
+
+        <h3>Mapping AssessmentTest and Interactions</h3>
+        <p>TODO: Need to fill this up</p>
+
+        <h3>Mapping AssessmentItems and Interactions</h3>
+        <p>TODO: General handling of `responseProcessing`</p>
+                    <div class="panel">QTI assessmentItem is mapped to Learnosity Item.</div>
+    
+            <table class="doc-table">
+            <tr>
+                <th></th>
+                <th>Support</th>
+                <th>Description</th>
+            </tr>
+                            <tr>
+                    <td class="name">@identifier</td>
+                    <td class="support-status support-status-yes">YES</td>
+                    <td class="description">This attribute is mapped Item `reference`.</td>
+                </tr>
+                            <tr>
+                    <td class="name">@title</td>
+                    <td class="support-status support-status-yes">YES</td>
+                    <td class="description">This attribute is mapped to Item `description`.</td>
+                </tr>
+                            <tr>
+                    <td class="name">@label</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@xmllang</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@toolName</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@toolVersion</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@adaptive</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@timeDependent</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                                                                                                                                            <tr>
+                            <td class="name">responseDeclaration</td>
+                            <td class="support-status support-status-partial">PARTIAL</td>
+                            <td class="description">Support only format defined for QTI response processing template `match_correct`.</td>
+                        </tr>
+                                                                                                            <tr>
+                            <td class="name">outcomeDeclaration</td>
+                            <td class="support-status support-status-no">NO</td>
+                            <td class="description"></td>
+                        </tr>
+                                                                                                            <tr>
+                            <td class="name">templateDeclaration</td>
+                            <td class="support-status support-status-no">NO</td>
+                            <td class="description">Having this element set will throw a critical exception and stop conversion process.</td>
+                        </tr>
+                                                                                                            <tr>
+                            <td class="name">templateProcessing</td>
+                            <td class="support-status support-status-no">NO</td>
+                            <td class="description">Having this element set will throw a critical exception and stop conversion process.</td>
+                        </tr>
+                                                                                                            <tr>
+                            <td class="name">stylesheet</td>
+                            <td class="support-status support-status-no">NO</td>
+                            <td class="description"></td>
+                        </tr>
+                                                                                                            <tr>
+                            <td colspan="3">
+                                <div class="expandable-name"><a href="#">itemBody</a></div>
+                                <div class="expandable-content">
+                                        
+            <table class="doc-table">
+            <tr>
+                <th></th>
+                <th>Support</th>
+                <th>Description</th>
+            </tr>
+                            <tr>
+                    <td class="name">@id</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@class</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@xmllang</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@label</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                                                                                                                <tr>
+                            <td class="name">rubricBlock</td>
+                            <td class="support-status support-status-no">NO</td>
+                            <td class="description"></td>
+                        </tr>
+                                                                                                            <tr>
+                            <td class="name">positionObjectStage</td>
+                            <td class="support-status support-status-no">NO</td>
+                            <td class="description"></td>
+                        </tr>
+                                                                                                            <tr>
+                            <td class="name">feedbackBlock</td>
+                            <td class="support-status support-status-no">NO</td>
+                            <td class="description"></td>
+                        </tr>
+                                                                                                            <tr>
+                            <td class="name">templateBlock</td>
+                            <td class="support-status support-status-no">NO</td>
+                            <td class="description"></td>
+                        </tr>
+                                                                                                            <tr>
+                            <td class="name">infoControl</td>
+                            <td class="support-status support-status-no">NO</td>
+                            <td class="description"></td>
+                        </tr>
+                                                                                                            <tr>
+                            <td class="name">m:math</td>
+                            <td class="support-status support-status-no">NO</td>
+                            <td class="description"></td>
+                        </tr>
+                                                                                                            <tr>
+                            <td class="name">x:include</td>
+                            <td class="support-status support-status-no">NO</td>
+                            <td class="description"></td>
+                        </tr>
+                                                                                                            <tr>
+                            <td class="name">xhtml*</td>
+                            <td class="support-status support-status-yes">YES</td>
+                            <td class="description">Support only block XHTML elements as per QTI specs.</td>
+                        </tr>
+                                                                                                            <tr>
+                            <td class="name">*Interaction</td>
+                            <td class="support-status support-status-partial">PARTIAL</td>
+                            <td class="description">Interactions will be parsed as Questions. See more documentation on Interactions below.</td>
+                        </tr>
+                                                        </table>
+    
+                                </div>
+                            </td>
+                        </tr>
+                                                                                                            <tr>
+                            <td class="name">responseProcessing</td>
+                            <td class="support-status support-status-partial">PARTIAL</td>
+                            <td class="description">We process QTI `match_corect` defined response processing template
+                                            on some of our interactions.</td>
+                        </tr>
+                                                                                                            <tr>
+                            <td class="name">modalFeedback</td>
+                            <td class="support-status support-status-no">NO</td>
+                            <td class="description"></td>
+                        </tr>
+                                                                                                            <tr>
+                            <td class="name">apip:apiAccessibility</td>
+                            <td class="support-status support-status-no">NO</td>
+                            <td class="description"></td>
+                        </tr>
+                                                        </table>
+    
+
+        <h4>Interactions</h4>
                     <h4>ChoiceInteraction</h4>
                         <div class="panel">
                 The element 'choiceInteraction' map to our 'mcq' question.
@@ -107,8 +284,8 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                             <tr>
                     <td class="name">@responseIdentifier</td>
                     <td class="support-status support-status-no">NO</td>
-                    <td class="description">At the moment we are not mapping this to anything. However eventually,
-                                            we want to use this to map to our question `reference`.</td>
+                    <td class="description">The value prepended by the assessementItem identifier is used to be
+                                        mapped to Question `reference`.</td>
                 </tr>
                             <tr>
                     <td class="name">@shuffle</td>
@@ -277,8 +454,8 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                             <tr>
                     <td class="name">@responseIdentifier</td>
                     <td class="support-status support-status-no">NO</td>
-                    <td class="description">At the moment we are not mapping this to anything. However eventually,
-                                            we want to use this to map to our question `reference`.</td>
+                    <td class="description">The value prepended by the assessementItem identifier is used to be
+                                        mapped to Question `reference`.</td>
                 </tr>
                             <tr>
                     <td class="name">@base</td>
@@ -311,7 +488,7 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
             <hr/>
                     <h4>ExtendedTextInteraction</h4>
                         <div class="panel">
-                The element 'choiceInteraction' map to our 'mcq' question.
+                The element 'extendedTextInteraction' map to our 'longtext' question.
                 Read the documentation: <a href='http://docs.learnosity.com/assessment/questions/questiontypes#longtext'>
                 http://docs.learnosity.com/assessment/questions/questiontypes#longtext</a>.
             </div>
@@ -350,8 +527,8 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                             <tr>
                     <td class="name">@responseIdentifier</td>
                     <td class="support-status support-status-no">NO</td>
-                    <td class="description">At the moment we are not mapping this to anything. However eventually,
-                                            we want to use this to map to our question `reference`.</td>
+                    <td class="description">The value prepended by the assessementItem identifier is used to be
+                                        mapped to Question `reference`.</td>
                 </tr>
                             <tr>
                     <td class="name">@base</td>
@@ -449,8 +626,8 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                             <tr>
                     <td class="name">@responseIdentifier</td>
                     <td class="support-status support-status-no">NO</td>
-                    <td class="description">At the moment we are not mapping this to anything. However eventually,
-                                            we want to use this to map to our question `reference`.</td>
+                    <td class="description">The value prepended by the assessementItem identifier is used to be
+                                        mapped to Question `reference`.</td>
                 </tr>
                             <tr>
                     <td class="name">@shuffle</td>
@@ -459,8 +636,8 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                 </tr>
                             <tr>
                     <td class="name">@required</td>
-                    <td class="support-status support-status-??">??</td>
-                    <td class="description">No documentation provided yet. Please contact support.</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description">`clozedropdown` does not enforce a choice to be selected</td>
                 </tr>
                                                                                                                                                                         <tr>
                             <td colspan="3">

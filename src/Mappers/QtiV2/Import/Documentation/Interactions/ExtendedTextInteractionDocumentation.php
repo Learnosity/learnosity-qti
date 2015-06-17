@@ -12,7 +12,7 @@ class ExtendedTextInteractionDocumentation implements InteractionDocumentationIn
         $documentation['@attributes'] = QtiDoc::defaultCommonInteractionAttributeRow();
         $documentation = array_replace_recursive($documentation, [
             '@notes' => "
-                The element 'choiceInteraction' map to our 'mcq' question.
+                The element 'extendedTextInteraction' map to our 'longtext' question.
                 Read the documentation: <a href='http://docs.learnosity.com/assessment/questions/questiontypes#longtext'>
                 http://docs.learnosity.com/assessment/questions/questiontypes#longtext</a>.
             ",

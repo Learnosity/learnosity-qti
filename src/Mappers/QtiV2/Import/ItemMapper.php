@@ -79,6 +79,9 @@ class ItemMapper
         }
 
         $item = new Item($assessmentItem->getIdentifier(), array_keys($questions), $content);
+        if ($assessmentItem->getTitle()) {
+            $item->set_description($assessmentItem->getTitle());
+        }
         $item->set_status('published');
 
         return [$item, $questions, $this->getExceptionMessages()];

@@ -32,8 +32,8 @@ class QtiDoc
             'class'              => QtiDoc::none(),
             'xmllang'            => QtiDoc::none(),
             'label'              => QtiDoc::none(),
-            'responseIdentifier' => QtiDoc::none('At the moment we are not mapping this to anything. However eventually,
-                                            we want to use this to map to our question `reference`.')
+            'responseIdentifier' => QtiDoc::none('The value prepended by the assessementItem identifier is used to be
+                                        mapped to Question `reference`.')
         ];
     }
 
