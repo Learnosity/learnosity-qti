@@ -11,31 +11,43 @@ if (!isset($binaryPath)) {
     $binaryPath = '/usr/local/bin/php ' . dirname(__FILE__) . '/../console.php';
 }
 
-if (isset($_REQUEST['qti'])) {
+// handle requests
+if (isset($_POST['filePath'])) {
+    echo file_get_contents($_REQUEST['filePath']);
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $security = array(
         'consumer_key' => $consumer_key,
         'domain' => $domain,
         'timestamp' => $timestamp
     );
 
+    $postdata = file_get_contents("php://input");
+
     // prepare to use the phar binary
     $cmd = sprintf('%s convert qti json', $binaryPath);
     $descriptorspec = array(
         0 => array("pipe", "r"),  // stdin is a pipe that the child will read from
         1 => array("pipe", "w"),  // stdout is a pipe that the child will write to
-        2 => array("file", "/tmp/error-output.txt", "a")
+         2 => array("pipe", "w")  // stderr is a pipe that the child will read from
     );
     // Special env var needs to be provided for MAC
     $process = proc_open($cmd, $descriptorspec, $pipes, null, array('DYLD_LIBRARY_PATH' => '/usr/lib'));
     if (is_resource($process)) {
-        fwrite($pipes[0], $_REQUEST['qti']);
+        fwrite($pipes[0], $postdata);
         fclose($pipes[0]);
         $result = stream_get_contents($pipes[1]);
         fclose($pipes[1]);
+        $error = stream_get_contents($pipes[2]);
+        fclose($pipes[2]);
         $return_value = proc_close($process);
         $object = json_decode($result, true);
         $item = $object[0];
         $questions = $object[1];
+    }
+
+    if($error) {
+        print_r($error);
+        return;
     }
 
     $activitySignature = hash("sha256", $consumer_key . '_' . $domain . '_'
@@ -62,9 +74,7 @@ if (isset($_REQUEST['qti'])) {
     ];
 
     echo json_encode(['layout' => $item['content'], 'activity' => $activity, 'item' => $item, 'questions' => $questions]);
-} elseif (isset($_REQUEST['filePath'])) {
-    echo file_get_contents($_REQUEST['filePath']);
-} else {
+} elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $files = scandir($sampleFileFolder);
     $fileList = [];
 
@@ -173,8 +183,6 @@ if (isset($_REQUEST['qti'])) {
     <script>
         var questionsApp;
         $(function () {
-
-
             $('#submit').click(function () {
                 var requestXML = $('#qti-xml').val();
                 $('#errorMsg').html('');
@@ -182,7 +190,8 @@ if (isset($_REQUEST['qti'])) {
                 $.ajax({
                     type: "POST",
                     url: '',
-                    data: 'qti=' + requestXML,
+                    cache: false,
+                    data: requestXML,
                     success: function (data) {
                         try {
                             var result = JSON.parse(data);
@@ -211,6 +220,7 @@ if (isset($_REQUEST['qti'])) {
                 $.ajax({
                     type: "POST",
                     url: '',
+                    cache: false,
                     data: 'filePath=' + requestFileName,
                     success: function (data) {
                         console.log(data);

@@ -8,4 +8,6 @@ services:
         class:      Learnosity\Mappers\QtiV2\Import\ItemMapper
     learnosity_item_writer:
         class:      Learnosity\Mappers\Learnosity\Export\ItemWriter
+    imscp_manifest_mapper:
+        class:      Learnosity\Mappers\IMSCP\Import\ManifestMapper
 
