@@ -124,7 +124,10 @@ if (isset($_POST['filePath'])) {
             .clipboard {
                 cursor: pointer;
             }
-            .success {
+            .clipboard:hover {
+                background-color: #EAEAEA;
+            }
+            .success, .success:hover {
                 background-color: #E9FFED;
             }
         </style>
@@ -172,28 +175,28 @@ if (isset($_POST['filePath'])) {
         <div class="row output-json-row">
             <div class="col-md-12">
                 <p><span class="label label-default">Converted Json Data</span></p>
-                <pre><code id="errorsJson" class="html"></code></pre>
+                <pre class="clipboard"><code id="errorsJson" class="html"></code></pre>
             </div>
         </div>
 
         <div class="row output-json-row">
             <div class="col-md-12">
                 <p><span class="label label-default">Converted Json Data</span></p>
-                <pre><code id="outputJson" class="html clipboard"></code></pre>
+                <pre class="clipboard"><code id="outputJson" class="html"></code></pre>
             </div>
         </div>
 
         <div class="row output-json-row">
             <div class="col-md-12">
                 <p><span class="label label-default">Item Json Data</span></p>
-                <pre><code id="itemOutputJson" class="html clipboard"></code></pre>
+                <pre class="clipboard"><code id="itemOutputJson" class="html"></code></pre>
             </div>
         </div>
 
         <div class="row output-json-row">
             <div class="col-md-12">
                 <p><span class="label label-default">Questions Json Data</span></p>
-                <pre><code id="questionsOutputJson" class="html clipboard"></code></pre>
+                <pre class="clipboard"><code id="questionsOutputJson" class="html"></code></pre>
             </div>
         </div>
     </div>
@@ -265,6 +268,10 @@ if (isset($_POST['filePath'])) {
                 range = document.createRange(),
                 success;
 
+            if ($(copyNode).is('code')) {
+                copyNode = $(copyNode).parent('pre')[0];
+            }
+
             range.selectNode(copyNode);
             window.getSelection().addRange(range);
 
@@ -275,9 +282,9 @@ if (isset($_POST['filePath'])) {
             }
 
             if (success) {
-                $(copyNode).parent().addClass('success');
+                $(copyNode).addClass('success');
                 setTimeout(function () {
-                    $(copyNode).parent().removeClass('success');
+                    $(copyNode).removeClass('success');
                 }, 2000);
                 console.log('Copied contents to clipboard');
             }
