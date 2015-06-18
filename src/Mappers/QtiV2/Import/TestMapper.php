@@ -7,11 +7,9 @@ use Learnosity\Entities\Activity\activity_data;
 use Learnosity\Entities\Activity\activity_data_config;
 use Learnosity\Entities\Activity\activity_data_config_time;
 use Learnosity\Exceptions\MappingException;
-use Learnosity\Mappers\QtiV2\Import\Utils\QtiV2Util;
-use Learnosity\Utils\FileSystemUtil;
 use qtism\data\AssessmentTest;
 use qtism\data\ExtendedAssessmentItemRef;
-use qtism\data\storage\xml\XmlCompactDocument;
+use qtism\data\storage\xml\XmlDocument;
 use qtism\data\storage\xml\XmlStorageException;
 
 class TestMapper
@@ -19,7 +17,7 @@ class TestMapper
     public function parse($xmlString)
     {
         try {
-            $document = new XmlCompactDocument();
+            $document = new XmlDocument();
             $document->loadFromString($xmlString);
 
             //get all assessmentItemRef
