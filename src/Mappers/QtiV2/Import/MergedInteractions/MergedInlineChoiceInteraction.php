@@ -9,6 +9,7 @@ use Learnosity\Entities\QuestionTypes\clozedropdown_validation_valid_response;
 use Learnosity\Exceptions\MappingException;
 use Learnosity\Mappers\QtiV2\Import\ResponseProcessingTemplate;
 use Learnosity\Mappers\QtiV2\Import\Utils\QtiComponentUtil;
+use Learnosity\Utils\ArrayUtil;
 use qtism\data\content\interactions\InlineChoice;
 use qtism\data\content\interactions\Interaction;
 use qtism\data\content\ItemBody;
@@ -61,13 +62,17 @@ class MergedInlineChoiceInteraction extends AbstractMergedInteraction
                 }
                 $validResponsesValues[] = $values;
             }
-            $combinationsValidResponseValues = $this->combinations($validResponsesValues);
+            $combinationsValidResponseValues = ArrayUtil::combinations($validResponsesValues);
 
             // First response pair shall be mapped to `valid_response`
             $firstValidResponseValue = array_shift($combinationsValidResponseValues);
             $validResponse = new clozedropdown_validation_valid_response();
             $validResponse->set_score(1);
-            $validResponse->set_value($firstValidResponseValue);
+            if (is_array($firstValidResponseValue)) {
+                $validResponse->set_value($firstValidResponseValue);
+            } else {
+                $validResponse->set_value([$firstValidResponseValue]);
+            }
 
             // Others go in `alt_responses`
             $altResponses = [];
@@ -90,34 +95,6 @@ class MergedInlineChoiceInteraction extends AbstractMergedInteraction
             throw new MappingException('Does not support template ' . $this->responseProcessingTemplate->getTemplate() .
                 ' on <responseProcessing>', MappingException::CRITICAL);
         }
-    }
-
-    /**
-     * @ref http://stackoverflow.com/questions/8567082/how-to-generate-in-php-all-combinations-of-items-in-multiple-arrays
-     */
-    private function combinations(array $arrays, $i = 0) {
-        if (!isset($arrays[$i])) {
-            return [];
-        }
-        if ($i == count($arrays) - 1) {
-            return $arrays[$i];
-        }
-
-        // get combinations from subsequent arrays
-        $tmp = $this->combinations($arrays, $i + 1);
-
-        $result = [];
-
-        // concat each array from tmp with each element from $arrays[$i]
-        foreach ($arrays[$i] as $v) {
-            foreach ($tmp as $t) {
-                $result[] = is_array($t) ?
-                    array_merge([$v], $t) :
-                    [$v, $t];
-            }
-        }
-
-        return $result;
     }
 
     private function buildTemplate(ItemBody $itemBody, array $interactionXmls)
