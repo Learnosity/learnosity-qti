@@ -95,14 +95,10 @@ if (isset($_POST['filePath'])) {
 <?php if ($_SERVER['REQUEST_METHOD'] === 'GET'): ?>
     <html>
     <head>
-        <title>Learnosity Documentation - Offline Package API demo</title>
+        <title>Learnosity Documentation - QTI Assessment Item Demo</title>
         <meta charset="utf-8">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-        <script src="http://underscorejs.org/underscore-min.js"></script>
-        <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/styles/default.min.css">
-        <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>
         <style>
             .xml-text, .lrn-json {
                 min-height: 600px;
@@ -201,7 +197,11 @@ if (isset($_POST['filePath'])) {
         </div>
     </div>
 
+    <script src="http://underscorejs.org/underscore-min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <script src="//questions.learnosity.com/?latest"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>
     <script>
         var questionsApp;
         $(function () {

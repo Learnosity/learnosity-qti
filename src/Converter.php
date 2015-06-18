@@ -32,12 +32,12 @@ class Converter
         return [$itemData, $questionsData, $exceptions];
     }
 
-    public static function parseIMSCPPackage($path)
+    public static function parseIMSCPPackage($srcPath, $outputPath = '/tmp')
     {
-        if (FileSystemUtil::getPathType($path) === FileSystemUtil::PATH_TYPE_DIRECTORY) {
+        if (FileSystemUtil::getPathType($srcPath) === FileSystemUtil::PATH_TYPE_DIRECTORY) {
 
             //parse imsmanifest.xml file
-            $manifestFile = FileSystemUtil::readFile($path . DIRECTORY_SEPARATOR . 'imsmanifest.xml');
+            $manifestFile = FileSystemUtil::readFile($srcPath . DIRECTORY_SEPARATOR . 'imsmanifest.xml');
 
             /* @var $manifestMapper ManifestMapper */
             $manifestMapper = AppContainer::getApplicationContainer()->get('imscp_manifest_mapper');
@@ -47,15 +47,14 @@ class Converter
                 throw new MappingException('The manifest file is not valid');
             }
 
-            $workPath = FileSystemUtil::createWorkingFolder('/tmp', 'IMSCP', $manifest->getIdentifier());
-
+            $workPath = FileSystemUtil::createWorkingFolder($outputPath, 'IMSCP', $manifest->getIdentifier());
 
             /* @var $resource Resource */
             foreach ($manifest->getResources() as $resource) {
                 $resourceType = $resource->getType();
                 //todo temporary logic for processing item only
                 if (strpos($resourceType, Resource::TYPE_PREFIX_ITEM) !== false) {
-                    $itemXmlFile = FileSystemUtil::readFile($path . DIRECTORY_SEPARATOR . $resource->getHref());
+                    $itemXmlFile = FileSystemUtil::readFile($srcPath . DIRECTORY_SEPARATOR . $resource->getHref());
                     list($itemData, $questionData) = self::convertQtiItemToLearnosity($itemXmlFile->getContents());
                     file_put_contents($workPath . DIRECTORY_SEPARATOR . 'item_' . $itemData['reference'] . '.json',
                         json_encode($itemData, JSON_PRETTY_PRINT));
@@ -69,7 +68,7 @@ class Converter
                     unset($itemXmlFile);
 
                 } elseif (strpos($resourceType, Resource::TYPE_PREFIX_TEST) !== false) {
-                    $testXmlFile = FileSystemUtil::readFile($path . DIRECTORY_SEPARATOR . $resource->getHref());
+                    $testXmlFile = FileSystemUtil::readFile($srcPath . DIRECTORY_SEPARATOR . $resource->getHref());
                     /* @var $testMapper TestMapper */
                     $testMapper = AppContainer::getApplicationContainer()->get('qtiv2_test_mapper');
 
@@ -84,7 +83,7 @@ class Converter
                     unset($activityItemsList);
                 }
             }
-
+            return $workPath;
         }
     }
 

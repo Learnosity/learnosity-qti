@@ -43,7 +43,7 @@ class FileSystemUtil
         $folderName = $prefix . '_' . StringUtil::generateRandomString(6) . '_' . $suffix;
         $folderName = $rootPath . DIRECTORY_SEPARATOR . $folderName;
 
-        if (!@mkdir($folderName, 0777, true)) {
+        if (!@mkdir($folderName, 0700, true)) {
             $error = error_get_last();
             throw new Exception($error['message']);
         }

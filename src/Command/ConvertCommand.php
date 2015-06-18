@@ -34,6 +34,18 @@ class ConvertCommand extends Command
                 null,
                 InputOption::VALUE_REQUIRED,
                 'Stdin mode'
+            )
+            ->addOption(
+                'path',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Path of the IMS CP package or folder'
+            )
+            ->addOption(
+                'outputPath',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Path of the IMS CP package or folder'
             );
     }
 
@@ -43,17 +55,28 @@ class ConvertCommand extends Command
         $inputFormat = $input->getArgument('input-format');
         $outputFormat = $input->getArgument('output-format');
 
-        $inputData = '';
+        $path = $input->getOption('path');
+        $outputPath = $input->getOption('outputPath');
 
-        switch ($mode) {
-
-            case 'stdin':
-                while ($f = fgets(STDIN)) {
-                    $inputData .= $f . "\n";
-                }
-                break;
+        if ($path && $outputPath) {
+            // it is a IMS CP Package
+            $outputPath = Converter::parseIMSCPPackage($path, $outputPath);
+            $output->writeln($outputPath);
+        } else {
+            $inputData = '';
+            switch ($mode) {
+                case 'stdin':
+                    while ($f = fgets(STDIN)) {
+                        $inputData .= $f . "\n";
+                    }
+                    break;
+            }
+            $this->processQtiAssessmentItem($inputData, $output);
         }
+    }
 
+    protected function processQtiAssessmentItem($inputData, OutputInterface $output)
+    {
         list($item, $questions, $errors) = Converter::convertQtiItemToLearnosity($inputData);
         $outputData = json_encode([$item, $questions, $errors]);
         $output->write($outputData);
