@@ -30,6 +30,7 @@
             <br/>
             le jardin de Giverny
             <br/>
+            <textEntryInteraction responseIdentifier="RESPONSE_2" expectedLength="6"/>
         </div>
         <p>
             <textEntryInteraction responseIdentifier="RESPONSE" expectedLength="6"/>

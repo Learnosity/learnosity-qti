@@ -23,4 +23,32 @@ class ItemMapperTest extends PHPUnit_Framework_TestCase
 
         echo 'Done!';
     }
+
+    public function testMergingInteractions()
+    {
+        $xml    = FileSystemUtil::readFile(FileSystemUtil::getRootPath() . '/src/Tests/Fixtures/textentryinteraction.xml');
+        $mapper = new ItemMapper();
+        list($item, $questions, $exceptions) = $mapper->parse($xml->getContents());
+
+        $writer            = new ItemWriter($item);
+        $itemJson          = $writer->convert($item);
+        $questionConverter = new QuestionWriter();
+        $qeustionJson      = $questionConverter->convert(array_values($questions)[0]);
+
+        echo 'Done!';
+    }
+
+    public function testParsingObjects()
+    {
+        $xml    = FileSystemUtil::readFile(FileSystemUtil::getRootPath() . '/src/Tests/Fixtures/withobjects.xml');
+        $mapper = new ItemMapper();
+        list($item, $questions, $exceptions) = $mapper->parse($xml->getContents());
+
+        $writer            = new ItemWriter($item);
+        $itemJson          = $writer->convert($item);
+        $questionConverter = new QuestionWriter();
+        $qeustionJson      = $questionConverter->convert(array_values($questions)[0]);
+
+        echo 'Done!';
+    }
 }

@@ -7,6 +7,7 @@ use Learnosity\Entities\Item;
 use Learnosity\Entities\Question;
 use Learnosity\Exceptions\MappingException;
 use Learnosity\Mappers\QtiV2\Import\Interactions\AbstractInteraction;
+use Learnosity\Mappers\QtiV2\Import\MergedInteractions\AbstractMergedInteraction;
 use Learnosity\Mappers\QtiV2\Import\Utils\QtiComponentUtil;
 use qtism\data\AssessmentItem;
 use qtism\data\content\BlockCollection;
@@ -29,7 +30,6 @@ class ItemMapper
         $this->exceptions = [];
 
         $document = new XmlCompactDocument();
-        // TODO: Create ResourceReplacer class here to replace images or take it outside this class!
         $document->loadFromString($xmlString);
 
         /* @var $assessmentItem AssessmentItem */
@@ -38,45 +38,79 @@ class ItemMapper
 
         // Process <itemBody>
         $questions = [];
-        $questionsSpan = [];
+        $content = '';
+
+        /** @var ItemBody $itemBody */
         $itemBody = $assessmentItem->getItemBody();
         $itemBody = $this->filterItemBody($itemBody);
 
+        // Mapping interactions
         $interactionComponents = $itemBody->getComponentsByClassName($this->supportedInteractions, true);
         if (!$interactionComponents || count($interactionComponents) === 0) {
             throw new MappingException('No supported interactions could be found', MappingException::CRITICAL);
         }
-        foreach ($interactionComponents as $component) {
-            try {
+
+        // Decide whether we shall merge interaction
+        $interactionTypes = array_unique(array_map(function ($component) {
+            /* @var $component Interaction */
+            return $component->getQtiClassName();
+        }, $interactionComponents->getArrayCopy()));
+        $possibleMergedInteractionTypes = ['textEntryInteraction', 'inlineChoiceInteraction'];
+
+        if (count($interactionComponents) > 1 && count($interactionTypes) === 1 && in_array($interactionTypes[0], $possibleMergedInteractionTypes)) {
+            $questionReference = $assessmentItem->getIdentifier();
+            foreach ($interactionComponents as $component) {
                 /* @var $component Interaction */
-                $questionReference = $assessmentItem->getIdentifier() . '_' . $component->getResponseIdentifier();
+                $questionReference .= '_' . $component->getResponseIdentifier();
+                // TODO: Need checking if merged exists, maybe again?
+            }
+            try {
+                $mapperClass = 'Learnosity\Mappers\QtiV2\Import\MergedInteractions\\Merged' . ucfirst($interactionTypes[0]);
 
-                // Process <responseDeclaration>
-                // TODO: According to QTI, an item should have the corresponding responseDeclaration, thus shall throw error
-                // TODO: if it doesn't or perhaps simply ignore?
-                /** @var ResponseDeclaration $responseDeclaration */
-                $responseDeclaration = $assessmentItem->getComponentByIdentifier($component->getResponseIdentifier());
-                $questions[$questionReference] = $this->buildLearnosityQuestion($questionReference, $component, $responseDeclaration, $responseProcessingTemplate);
+                /** @var AbstractMergedInteraction $parser */
+                $parser = new $mapperClass($questionReference, $itemBody, $responseProcessingTemplate);
+                $questionType = $parser->getQuestionType();
+                $content = $parser->getItemContent();
 
-                // Store 'span' for later replacement with preg replace
-                $questionSpan = new span();
-                $questionSpan->setClass('learnosity-response question-' . $questionReference);
-                $interactionXml = QtiComponentUtil::marshall($component);
-                $questionsSpan[$questionReference] = $interactionXml;
+                $questions[$questionReference] = new Question($questionType->get_type(), $questionReference, $questionType);
             } catch (MappingException $e) {
                 $this->exceptions[] = $e;
                 if ($e->getType() === MappingException::CRITICAL) {
                     throw $e;
                 }
             }
+        } else {
+            // Do stuff normally
+            $questionsSpan = [];
+
+            foreach ($interactionComponents as $component) {
+                try {
+                    /* @var $component Interaction */
+                    $questionReference = $assessmentItem->getIdentifier() . '_' . $component->getResponseIdentifier();
+
+                    // Process <responseDeclaration>
+                    /** @var ResponseDeclaration $responseDeclaration */
+                    $responseDeclaration = $assessmentItem->getComponentByIdentifier($component->getResponseIdentifier());
+                    $questions[$questionReference] = $this->buildLearnosityQuestion($questionReference, $component, $responseDeclaration, $responseProcessingTemplate);
+
+                    $interactionXml = QtiComponentUtil::marshall($component);
+                    $questionsSpan[$questionReference] = $interactionXml;
+                } catch (MappingException $e) {
+                    $this->exceptions[] = $e;
+                    if ($e->getType() === MappingException::CRITICAL) {
+                        throw $e;
+                    }
+                }
+            }
+
+            // Build item's HTML content
+            $content = QtiComponentUtil::marshallCollection($itemBody->getComponents());
+            foreach ($questionsSpan as $questionReference => $interactionXml) {
+                $questionSpan = '<span class="learnosity-response question-' . $questionReference . '"></span>';
+                $content = str_replace($interactionXml, $questionSpan, $content);
+            }
         }
 
-        // Build item's HTML content
-        $content = QtiComponentUtil::marshallCollection($itemBody->getComponents());
-        foreach ($questionsSpan as $questionReference => $interactionXml) {
-            $questionSpan = '<span class="learnosity-response question-' . $questionReference . '"></span>';
-            $content = str_replace($interactionXml, $questionSpan, $content);
-        }
 
         $item = new Item($assessmentItem->getIdentifier(), array_keys($questions), $content);
         if ($assessmentItem->getTitle()) {
@@ -103,10 +137,10 @@ class ItemMapper
             $this->exceptions[] = new MappingException('Ignoring <outcomeDeclaration> on <assessmentItem>. Generally we mapped <defaultValue> to 0');
         }
         if ($assessmentItem->getTemplateDeclarations()->count()) {
-            throw new MappingException('Does not support <templateDeclaration> on <assessmentItem>', MappingException::CRITICAL);
+            throw new MappingException('Does not support <templateDeclaration> on <assessmentItem>. Ignoring <templateDeclaration>', MappingException::CRITICAL);
         }
         if (!empty($assessmentItem->getTemplateProcessing())) {
-            throw new MappingException('Does not support <templateProcessing> on <assessmentItem>', MappingException::CRITICAL);
+            throw new MappingException('Does not support <templateProcessing> on <assessmentItem>. Ignoring <templateProcessing>', MappingException::CRITICAL);
         }
         if ($assessmentItem->getModalFeedbacks()->count()) {
             $this->exceptions[] = new MappingException('Ignoring <modalFeedback> on <assessmentItem>');
@@ -137,7 +171,12 @@ class ItemMapper
         return ResponseProcessingTemplate::matchCorrect();
     }
 
-    private function buildLearnosityQuestion($questionReference, Interaction $component, ResponseDeclaration $responseDeclaration = null, ResponseProcessingTemplate $responseProcessingTemplate = null)
+    private function buildLearnosityQuestion(
+        $questionReference,
+        Interaction $component,
+        ResponseDeclaration $responseDeclaration = null,
+        ResponseProcessingTemplate $responseProcessingTemplate = null
+    )
     {
         $mapperClass = 'Learnosity\Mappers\QtiV2\Import\Interactions\\' . ucfirst($component->getQtiClassName());
 

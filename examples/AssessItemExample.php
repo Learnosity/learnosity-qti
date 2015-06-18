@@ -174,14 +174,14 @@ if (isset($_POST['filePath'])) {
 
         <div class="row output-json-row">
             <div class="col-md-12">
-                <p><span class="label label-default">Converted Json Data</span></p>
+                <p><span class="label label-default">Exceptions and All Things Ignored</span></p>
                 <pre class="clipboard"><code id="errorsJson" class="html"></code></pre>
             </div>
         </div>
 
         <div class="row output-json-row">
             <div class="col-md-12">
-                <p><span class="label label-default">Converted Json Data</span></p>
+                <p><span class="label label-default">Questions API Initialisation Options Data</span></p>
                 <pre class="clipboard"><code id="outputJson" class="html"></code></pre>
             </div>
         </div>
