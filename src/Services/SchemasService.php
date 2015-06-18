@@ -12,6 +12,7 @@ class SchemasService
     {
         $schemasDirectory = FileSystemUtil::getRootPath() . '/resources/schemas';
         $this->questionsSchemas = FileSystemUtil::readJsonContent($schemasDirectory . '/questions.json');
+        $this->activitySchemas = FileSystemUtil::readJsonContent($schemasDirectory . '/activity.json');
     }
 
     public function getResponsesSchemas()
@@ -27,5 +28,9 @@ class SchemasService
     public function getVersions()
     {
         return $this->questionsSchemas['meta']['schema_version'];
+    }
+
+    public function getActivitySchemas() {
+        return $this->activitySchemas['data'];
     }
 }

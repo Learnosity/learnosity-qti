@@ -2,15 +2,17 @@
 {% autoescape false %}
 <?php
 
-namespace Learnosity\Entities\QuestionTypes;
+namespace {{ namespace }};
 
+{% if baseClass %}
 use Learnosity\Entities\{{ baseClass }};
+{% endif %}
 
 /**
 * This class is auto-generated based on Schemas API and you should not modify its content
 * Metadata: {{ schemasVersion|json_encode() }}
 */
-class {{ className }} extends {{ baseClass }}
+class {{ className }} {% if baseClass %}extends {{ baseClass }} {% endif %}
 {
     {% for fieldName, field in fields %}protected ${{ fieldName }};
     {% endfor %}

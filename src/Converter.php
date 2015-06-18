@@ -2,11 +2,13 @@
 
 namespace Learnosity;
 
+use Learnosity\Entities\Activity\activity;
 use Learnosity\Exceptions\MappingException;
 use Learnosity\Mappers\IMSCP\Entities\Manifest;
 use Learnosity\Mappers\IMSCP\Entities\Resource;
 use Learnosity\Mappers\IMSCP\Import\ManifestMapper;
 use Learnosity\Mappers\Learnosity\Export\QuestionWriter;
+use Learnosity\Mappers\QtiV2\Import\TestMapper;
 use Learnosity\Utils\FileSystemUtil;
 
 class Converter
@@ -55,18 +57,34 @@ class Converter
                 if (strpos($resourceType, Resource::TYPE_PREFIX_ITEM) !== false) {
                     $itemXmlFile = FileSystemUtil::readFile($path . DIRECTORY_SEPARATOR . $resource->getHref());
                     list($itemData, $questionData) = self::convertQtiItemToLearnosity($itemXmlFile->getContents());
-                    file_put_contents($workPath.DIRECTORY_SEPARATOR.'item_'.$itemData['reference'].'.json', json_encode($itemData,JSON_PRETTY_PRINT));
-                    foreach($questionData as $q) {
-                        file_put_contents($workPath.DIRECTORY_SEPARATOR.'question_'.$q['reference'].'.json', json_encode($q,JSON_PRETTY_PRINT));
+                    file_put_contents($workPath . DIRECTORY_SEPARATOR . 'item_' . $itemData['reference'] . '.json',
+                        json_encode($itemData, JSON_PRETTY_PRINT));
+                    foreach ($questionData as $q) {
+                        file_put_contents($workPath . DIRECTORY_SEPARATOR . 'question_' . $q['reference'] . '.json',
+                            json_encode($q, JSON_PRETTY_PRINT));
                     }
 
                     unset($itemData);
                     unset($questionData);
+                    unset($itemXmlFile);
 
+                } elseif (strpos($resourceType, Resource::TYPE_PREFIX_TEST) !== false) {
+                    $testXmlFile = FileSystemUtil::readFile($path . DIRECTORY_SEPARATOR . $resource->getHref());
+                    /* @var $testMapper TestMapper */
+                    $testMapper = AppContainer::getApplicationContainer()->get('qtiv2_test_mapper');
+
+                    /* @var $activity activity */
+                    list($activity, $activityItemsList) = $testMapper->parse($testXmlFile->getContents());
+
+                    file_put_contents($workPath . DIRECTORY_SEPARATOR . 'activity_' . $activity->get_reference() . '.json',
+                        json_encode($activity->to_array(), JSON_PRETTY_PRINT));
+
+                    unset($testXmlFile);
+                    unset($activity);
+                    unset($activityItemsList);
                 }
             }
 
-            //parse all resources for type imsqti_item
         }
     }
 
