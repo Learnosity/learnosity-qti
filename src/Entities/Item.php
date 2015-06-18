@@ -2,15 +2,15 @@
 
 namespace Learnosity\Entities;
 
-class Item
+class Item extends BaseEntity
 {
-    private $reference;
-    private $status;
-    private $content;
-    private $workflow;
-    private $metadata;
-    private $description;
-    private $questionReferences;
+    protected $reference;
+    protected $status;
+    protected $content;
+    protected $workflow;
+    protected $metadata;
+    protected $description;
+    protected $questionReferences;
 
     function __construct($reference, $questionReferences, $content)
     {
@@ -87,18 +87,5 @@ class Item
     public function set_workflow($workflow)
     {
         $this->workflow = $workflow;
-    }
-
-    public function to_array()
-    {
-        $res = [];
-        foreach (get_object_vars($this) as $name => $value) {
-            if (is_object($value) && is_callable(array($value, 'to_array'))) {
-                $res[$name] = $value->to_array();
-            } elseif (!is_null($value)) {
-                $res[$name] = $value;
-            }
-        }
-        return $res;
     }
 }

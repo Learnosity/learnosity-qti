@@ -90,7 +90,7 @@ class EntityGenerator
                 ]);
             } elseif (isset($attribute['type']) && $attribute['type'] === 'array') {
                 if (isset($attribute['items']['attributes'])) {
-                    $t = [$key . '_items' => $attribute['items']];
+                    $t = [$key . '_item' => $attribute['items']];
                     $this->generateAttributeClasses($outputDir, $questionId, $t);
                 }
             }

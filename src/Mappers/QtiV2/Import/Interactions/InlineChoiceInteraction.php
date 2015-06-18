@@ -5,6 +5,7 @@ namespace Learnosity\Mappers\QtiV2\Import\Interactions;
 
 use Learnosity\Entities\QuestionTypes\clozedropdown;
 use Learnosity\Entities\QuestionTypes\clozedropdown_validation;
+use Learnosity\Entities\QuestionTypes\clozedropdown_validation_alt_responses_item;
 use Learnosity\Entities\QuestionTypes\clozedropdown_validation_valid_response;
 use Learnosity\Exceptions\MappingException;
 use Learnosity\Mappers\QtiV2\Import\ResponseProcessingTemplate;
@@ -43,16 +44,28 @@ class InlineChoiceInteraction extends AbstractInteraction
 
             $validResponseValues = [];
             foreach ($correctResponse->getValues() as $key => $value) {
-                $optionIndex = $this->choicesMapping[$value->getValue()];
-                $validResponseValues[] = (string)$optionIndex;
+                $validResponseValues[] = (string) $this->choicesMapping[$value->getValue()];
             }
 
             $validation = new clozedropdown_validation();
             $validation->set_scoring_type('exactMatch');
+
+            // First response pair shall be mapped to `valid_response`
+            $firstValidResponseValue = array_shift($validResponseValues);
             $validResponse = new clozedropdown_validation_valid_response();
             $validResponse->set_score(1);
-            $validResponse->set_value($validResponseValues);
+            $validResponse->set_value([$firstValidResponseValue]);
             $validation->set_valid_response($validResponse);
+
+            // Others go in `alt_responses`
+            $altResponses = [];
+            foreach ($validResponseValues as $otherResponseValues) {
+                $item = new clozedropdown_validation_alt_responses_item();
+                $item->set_score(1);
+                $item->set_value([$otherResponseValues]);
+                $altResponses[] = $item;
+            }
+            $validation->set_alt_responses($altResponses);
 
             return $validation;
         } else {

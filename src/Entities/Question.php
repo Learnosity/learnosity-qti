@@ -2,7 +2,7 @@
 
 namespace Learnosity\Entities;
 
-class Question
+class Question extends BaseEntity
 {
     private $reference;
     private $type;
@@ -45,12 +45,13 @@ class Question
         $this->data = $data;
     }
 
+    /**
+     * @override
+     **/
     public function to_array()
     {
         $question = get_object_vars($this);
-
         $question['data'] = $this->data->to_array();
         return $question;
     }
-
 }

@@ -14,7 +14,6 @@ use qtism\data\content\BlockCollection;
 use qtism\data\content\interactions\Interaction;
 use qtism\data\content\ItemBody;
 use qtism\data\content\RubricBlock;
-use qtism\data\content\xhtml\text\Span;
 use qtism\data\processing\ResponseProcessing;
 use qtism\data\state\ResponseDeclaration;
 use qtism\data\storage\xml\XmlCompactDocument;
@@ -57,18 +56,20 @@ class ItemMapper
         }, $interactionComponents->getArrayCopy()));
         $possibleMergedInteractionTypes = ['textEntryInteraction', 'inlineChoiceInteraction'];
 
-        if (count($interactionComponents) > 1 && count($interactionTypes) === 1 && in_array($interactionTypes[0], $possibleMergedInteractionTypes)) {
+        if (count($interactionTypes) === 1 && in_array($interactionTypes[0], $possibleMergedInteractionTypes)) {
             $questionReference = $assessmentItem->getIdentifier();
             foreach ($interactionComponents as $component) {
                 /* @var $component Interaction */
                 $questionReference .= '_' . $component->getResponseIdentifier();
+                /** @var ResponseDeclaration $responseDeclaration */
                 // TODO: Need checking if merged exists, maybe again?
             }
             try {
                 $mapperClass = 'Learnosity\Mappers\QtiV2\Import\MergedInteractions\\Merged' . ucfirst($interactionTypes[0]);
+                $responseDeclarations = $assessmentItem->getComponentsByClassName('responseDeclaration', true);
 
                 /** @var AbstractMergedInteraction $parser */
-                $parser = new $mapperClass($questionReference, $itemBody, $responseProcessingTemplate);
+                $parser = new $mapperClass($questionReference, $itemBody, $responseDeclarations, $responseProcessingTemplate);
                 $questionType = $parser->getQuestionType();
                 $content = $parser->getItemContent();
 
