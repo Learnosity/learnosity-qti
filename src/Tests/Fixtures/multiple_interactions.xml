@@ -6,6 +6,11 @@
             <value>a3</value>
         </correctResponse>
     </responseDeclaration>
+    <responseDeclaration baseType="identifier" cardinality="single" identifier="RESPONSE2">
+        <correctResponse>
+            <value>a1</value>
+        </correctResponse>
+    </responseDeclaration>
     <outcomeDeclaration baseType="float" cardinality="single" identifier="NUMCORRECT"/>
     <outcomeDeclaration baseType="float" cardinality="single" identifier="SCORE"/>
     <stylesheet href="style/LiveInspect.css" type="text/css"/>
@@ -22,7 +27,26 @@
             </prompt>
             <simpleChoice identifier="a1">A1</simpleChoice>
             <simpleChoice identifier="a2">A2</simpleChoice>
-            <simpleChoice identifier="a3">A3</simpleChoice>
+            <simpleChoice identifier="a3">A3
+                <table class="frac">
+                    <tbody>
+                        <tr>
+                            <td class="nu">1</td></tr>
+                        <tr>
+                            <td class="de">2</td>
+                        </tr>
+                    </tbody>
+                </table>+
+                <table class="frac">
+                    <tbody>
+                        <tr>
+                            <td class="nu">3</td></tr>
+                        <tr>
+                            <td class="de">4</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </simpleChoice>
             <simpleChoice identifier="a4">A4</simpleChoice>
         </choiceInteraction>
         <rubricBlock use="Answer Choice Rationales" view="author proctor scorer testConstructor tutor">
@@ -41,6 +65,28 @@
             <div>
                 <span>4)</span>
                 <span>exerci nonumy. Malis etiam ignota cu nam, essent veritus pericula te sed. Quem oblique partiendo cum id, cu quo nisl mole</span>
+            </div>
+        </rubricBlock>
+        <div>
+            <strong>Part B:
+                <br/>
+                <br/>
+                ei quo reque phaedrum periculis, mel ea prompta tibique. Id natum altera duo. Vel et idque augue euismod, an audire suavitate usu. Ne movet
+                <br/>
+                <br/>
+                <strong>112334</strong>
+                <inlineChoiceInteraction responseIdentifier="RESPONSE2" shuffle="true">
+                    <inlineChoice identifier="a1">&gt;</inlineChoice>
+                    <inlineChoice identifier="a2">&lt;</inlineChoice></inlineChoiceInteraction>mpor ocurreret ex, viris deleniti dissentias in sed. Vim nusquam scripserit cu, sed no ullum exerci nonumy. Malis etiam ig</strong>
+        </div>
+        <rubricBlock use="Answer Choice Rationales" view="author proctor scorer testConstructor tutor">
+            <div>
+                <span>1)</span>
+                <span>mplectitur et ius. Ius soluta causae instructior cu, at nam erant fabulas ancillae, ex alii liber graecis mea. Fastidii accumsan ut eos, te aliquando adversarium mei. An vix quas liber epicuri, illum menandri repri</span>
+            </div>
+            <div>
+                <span>2)</span>
+                <span>initiones in, pro periculis pertinacia eu. Pro et iracundia disputando adversarium, latine equidem pri ea. Eu s</span>
             </div>
         </rubricBlock>
     </itemBody>
@@ -72,6 +118,22 @@
                     </sum>
                 </setOutcomeValue>
             </responseIf>
+        </responseCondition>
+        <responseCondition>
+            <responseIf>
+                <equal>
+                    <variable identifier="NUMCORRECT"/>
+                    <baseValue baseType="float">2</baseValue>
+                </equal>
+                <setOutcomeValue identifier="SCORE">
+                    <baseValue baseType="float">1</baseValue>
+                </setOutcomeValue>
+            </responseIf>
+            <responseElse>
+                <setOutcomeValue identifier="SCORE">
+                    <baseValue baseType="float">0</baseValue>
+                </setOutcomeValue>
+            </responseElse>
         </responseCondition>
     </responseProcessing>
 </assessmentItem>
