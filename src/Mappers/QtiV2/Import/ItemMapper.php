@@ -56,7 +56,7 @@ class ItemMapper
         }, $interactionComponents->getArrayCopy()));
         $possibleMergedInteractionTypes = ['textEntryInteraction', 'inlineChoiceInteraction'];
 
-        if (count($interactionComponents) > 1 && count($interactionTypes) === 1 && in_array($interactionTypes[0], $possibleMergedInteractionTypes)) {
+        if (count($interactionTypes) === 1 && in_array($interactionTypes[0], $possibleMergedInteractionTypes)) {
             $questionReference = $assessmentItem->getIdentifier();
             foreach ($interactionComponents as $component) {
                 /* @var $component Interaction */
