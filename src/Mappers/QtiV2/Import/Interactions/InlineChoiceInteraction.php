@@ -27,7 +27,9 @@ class InlineChoiceInteraction extends AbstractInteraction
 
         $validation = $this->buildValidation();
         $question = new clozedropdown('clozedropdown', $template, [array_values($this->choicesMapping)]);
-        $question->set_validation($validation);
+        if ($validation instanceof clozedropdown_validation) {
+            $question->set_validation($validation);
+        }
         return $question;
     }
 
@@ -44,7 +46,7 @@ class InlineChoiceInteraction extends AbstractInteraction
 
             $validResponseValues = [];
             foreach ($correctResponse->getValues() as $key => $value) {
-                $validResponseValues[] = (string) $this->choicesMapping[$value->getValue()];
+                $validResponseValues[] = (string)$this->choicesMapping[$value->getValue()];
             }
 
             $validation = new clozedropdown_validation();
