@@ -69,7 +69,8 @@ class ChoiceInteractionTest extends AbstractInteractionTest
     {
         $interaction = ChoiceInteractionBuilder::buildSimple('testIdentifier', [
             'choiceA' => 'Choice A',
-            'choiceB' => 'Choice B'
+            'choiceB' => 'Choice B',
+            'choiceC' => 'Choice C'
         ]);
         $interaction->setMaxChoices(2);
         $interactionMapper = new ChoiceInteraction($interaction);

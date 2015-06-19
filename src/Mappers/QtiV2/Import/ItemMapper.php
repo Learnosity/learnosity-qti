@@ -74,6 +74,7 @@ class ItemMapper
                 $content = $parser->getItemContent();
 
                 $questions[$questionReference] = new Question($questionType->get_type(), $questionReference, $questionType);
+                $this->exceptions = array_merge($this->exceptions, $parser->getExceptions());
             } catch (MappingException $e) {
                 $this->exceptions[] = $e;
                 if ($e->getType() === MappingException::CRITICAL) {
@@ -92,7 +93,13 @@ class ItemMapper
                     // Process <responseDeclaration>
                     /** @var ResponseDeclaration $responseDeclaration */
                     $responseDeclaration = $assessmentItem->getComponentByIdentifier($component->getResponseIdentifier());
-                    $questions[$questionReference] = $this->buildLearnosityQuestion($questionReference, $component, $responseDeclaration, $responseProcessingTemplate);
+                    $mapperClass = 'Learnosity\Mappers\QtiV2\Import\Interactions\\' . ucfirst($component->getQtiClassName());
+
+                    /** @var AbstractInteraction $parser */
+                    $parser = new $mapperClass($component, $responseDeclaration, $responseProcessingTemplate);
+                    $questionType = $parser->getQuestionType();
+                    $questions[$questionReference] = new Question($questionType->get_type(), $questionReference, $questionType);
+                    $this->exceptions = array_merge($this->exceptions, $parser->getExceptions());
 
                     $interactionXml = QtiComponentUtil::marshall($component);
                     $questionsSpan[$questionReference] = $interactionXml;
