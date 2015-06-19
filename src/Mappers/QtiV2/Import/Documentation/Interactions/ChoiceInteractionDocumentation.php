@@ -24,7 +24,7 @@ class ChoiceInteractionDocumentation implements InteractionDocumentationInterfac
                                             thus ignoring simpleChoice @fixed attribute.'),
                 'maxChoices'         => QtiDoc::partial('Learnosity does not support specifying the count of choices. If this value
                                             is more than one, then mcq `multiple_responses` is set to true.'),
-                'minChoices'         => QtiDoc::none('By default this would be one.'),
+                'minChoices'         => QtiDoc::none('By default this would be zero since we allow no response.'),
                 'orientation'        => QtiDoc::support('By default mcq would be displayed vertically. We support do `horizontal`
                                             orientation and map to the question `ui_style`, ie. `type` of `horizontal` and `columns`
                                             will be number of the multiple choice options')

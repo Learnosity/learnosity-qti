@@ -47,8 +47,8 @@ class ChoiceInteraction extends AbstractInteraction
         if ($maxChoiceNum > 1) {
             if ($maxChoiceNum !== count($options)) {
                 // We do not support specifying amount of choices
-                $this->exceptions[] = new MappingException("Allowing multiple responses (" . count($options) . ") for this MCQ, but
-                    maxChoices of $maxChoiceNum could not be supported");
+                $this->exceptions[] = new MappingException("Allowing multiple responses of max " . count($options) . " options, however " .
+                    "maxChoices of $maxChoiceNum would be ignored since we can't support exact number");
             }
             $mcq->set_multiple_responses(true);
         }
