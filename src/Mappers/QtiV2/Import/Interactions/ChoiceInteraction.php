@@ -47,10 +47,16 @@ class ChoiceInteraction extends AbstractInteraction
         if ($maxChoiceNum > 1) {
             if ($maxChoiceNum !== count($options)) {
                 // We do not support specifying amount of choices
-                $this->exceptions[] = new MappingException("Max Choice " . $maxChoiceNum . "is not supported");
+                $this->exceptions[] = new MappingException("Allowing multiple responses (" . count($options) . ") for this MCQ, but
+                    maxChoices of $maxChoiceNum could not be supported");
             }
             $mcq->set_multiple_responses(true);
         }
+
+        if (!empty($interaction->getMinChoices())) {
+            $this->exceptions[] = new MappingException('Attribute minChoices is not support. Thus, ignored');
+        }
+
         $validation = $this->buildValidation();
         if (!empty($validation)) {
             $mcq->set_validation($validation);

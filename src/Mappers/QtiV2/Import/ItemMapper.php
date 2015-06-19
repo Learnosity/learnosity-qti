@@ -169,7 +169,7 @@ class ItemMapper
                 return $responseProcessingTemplate;
             }
         }
-        return ResponseProcessingTemplate::matchCorrect();
+        return null;
     }
 
     private function buildLearnosityQuestion(

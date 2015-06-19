@@ -7,8 +7,6 @@
     <responseDeclaration identifier="RESPONSE" cardinality="single" baseType="identifier">
         <correctResponse>
             <value>ChoiceA</value>
-            <value>ChoiceB</value>
-            <value>ChoiceC</value>
         </correctResponse>
     </responseDeclaration>
     <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float">
