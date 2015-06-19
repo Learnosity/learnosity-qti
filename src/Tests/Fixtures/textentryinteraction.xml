@@ -7,10 +7,13 @@
     <responseDeclaration baseType="string" cardinality="single" identifier="RESPONSE">
         <mapping defaultValue="0">
             <mapEntry mapKey="a" mappedValue="1" caseSensitive="false"/>
-            <mapEntry mapKey="A" mappedValue="1" caseSensitive="false"/>
-            <mapEntry mapKey="a" mappedValue="1" caseSensitive="false"/>
-            <mapEntry mapKey="A" mappedValue="1" caseSensitive="false"/>
-            <mapEntry mapKey="A" mappedValue="1" caseSensitive="false"/>
+            <mapEntry mapKey="b" mappedValue="1" caseSensitive="false"/>
+        </mapping>
+    </responseDeclaration>
+    <responseDeclaration baseType="string" cardinality="single" identifier="RESPONSE_2">
+        <mapping defaultValue="0">
+            <mapEntry mapKey="OHMYGOD" mappedValue="1" caseSensitive="true"/>
+            <mapEntry mapKey="x7" mappedValue="1" caseSensitive="false"/>
         </mapping>
     </responseDeclaration>
     <outcomeDeclaration identifier="FEEDBACK" cardinality="single" baseType="identifier"/>

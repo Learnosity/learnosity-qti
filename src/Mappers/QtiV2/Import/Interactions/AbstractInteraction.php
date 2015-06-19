@@ -27,4 +27,28 @@ abstract class AbstractInteraction
     {
         return $this->exceptions;
     }
+
+    protected function mutateResponses(array $responses)
+    {
+        if (count($responses) <= 1) {
+            return array_values($responses[0]);
+        } else {
+            $res = [];
+            $first = array_shift($responses);
+            $remaining = $this->mutateResponses($responses);
+            foreach ($first as $fKey => $f) {
+                foreach ($remaining as $rKey => $r) {
+                    if (!is_array($f)) {
+                        $f = [$f];
+                    }
+                    if (!is_array($r)) {
+                        $r = [$r];
+                    }
+                    $res[] = array_merge($f, $r);
+                }
+            }
+            return $res;
+        }
+
+    }
 }
