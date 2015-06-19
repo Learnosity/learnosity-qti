@@ -9,7 +9,7 @@ class TextEntryInteractionTest extends \PHPUnit_Framework_TestCase
 {
     public function testSimpleCase()
     {
-        $xml = FileSystemUtil::readFile(FileSystemUtil::getRootPath() . '/src/Tests/Fixtures/textentryinteraction.xml');
+        $xml = FileSystemUtil::readFile(FileSystemUtil::getRootPath() . '/src/Tests/Fixtures/interactions/textentryinteraction.xml');
         $mapper = new ItemMapper();
         list($item, $questions) = $mapper->parse($xml->getContents());
 

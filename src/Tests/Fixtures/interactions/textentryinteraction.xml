@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/qti/qtiv2p1/imsqti_v2p1p1.xsd"
+                identifier="res_AA-FIB_B13_CH1_geoc_f1f1" title="AA-FIB_B13_CH1_geoc_f1f1" adaptive="false"
+                timeDependent="false">
+    <responseDeclaration baseType="string" cardinality="single" identifier="RESPONSE">
+        <mapping defaultValue="0">
+            <mapEntry mapKey="a" mappedValue="1" caseSensitive="false"/>
+            <mapEntry mapKey="b" mappedValue="1" caseSensitive="false"/>
+        </mapping>
+    </responseDeclaration>
+    <responseDeclaration baseType="string" cardinality="single" identifier="RESPONSE_2">
+        <mapping defaultValue="0">
+            <mapEntry mapKey="OHMYGOD" mappedValue="1" caseSensitive="true"/>
+            <mapEntry mapKey="x7" mappedValue="1" caseSensitive="false"/>
+        </mapping>
+    </responseDeclaration>
+    <outcomeDeclaration identifier="FEEDBACK" cardinality="single" baseType="identifier"/>
+    <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float"/>
+    <outcomeDeclaration identifier="MAXSCORE" cardinality="single" baseType="float">
+        <defaultValue>
+            <value>1</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <itemBody>
+        <div>Level 1 CH1 G&#233;oculture
+            <br/>
+            <strong>A</strong>Match each letter in the map of the Paris region with the name of the place it represents.
+            (10 points)
+            <br/>
+            <img src="L1_CH01101.gif" alt=""/>
+            <br/>
+            le jardin de Giverny
+            <br/>
+            <textEntryInteraction responseIdentifier="RESPONSE_2" expectedLength="6"/>
+        </div>
+        <p>
+            <textEntryInteraction responseIdentifier="RESPONSE" expectedLength="6"/>
+        </p>
+    </itemBody>
+
+    <responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/CC2_map_response"/>
+</assessmentItem>
