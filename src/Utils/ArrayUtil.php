@@ -4,7 +4,6 @@ namespace Learnosity\Utils;
 
 class ArrayUtil
 {
-
     /**
      * @ref http://stackoverflow.com/questions/8567082/how-to-generate-in-php-all-combinations-of-items-in-multiple-arrays
      */
@@ -31,5 +30,29 @@ class ArrayUtil
         }
 
         return $result;
+    }
+
+    public static function mutateResponses(array $responses)
+    {
+        if (count($responses) <= 1) {
+            return array_values($responses[0]);
+        } else {
+            $res = [];
+            $first = array_shift($responses);
+            $remaining = self::mutateResponses($responses);
+            foreach ($first as $fKey => $f) {
+                foreach ($remaining as $rKey => $r) {
+                    if (!is_array($f)) {
+                        $f = [$f];
+                    }
+                    if (!is_array($r)) {
+                        $r = [$r];
+                    }
+                    $res[] = array_merge($f, $r);
+                }
+            }
+            return $res;
+        }
+
     }
 } 
