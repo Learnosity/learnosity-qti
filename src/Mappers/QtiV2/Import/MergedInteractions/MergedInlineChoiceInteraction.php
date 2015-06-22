@@ -42,61 +42,69 @@ class MergedInlineChoiceInteraction extends AbstractMergedInteraction
         }
 
         $clozedropdown = new clozedropdown('clozedropdown', $template, $possibleResponses);
-        if (!empty($this->responseDeclarations)) {
-            $validation = $this->buildValidation($possibleResponsesMap, $this->responseDeclarations);
+        $validation = $this->buildValidation($possibleResponsesMap);
+        if (!empty($validation)) {
             $clozedropdown->set_validation($validation);
         }
         return $clozedropdown;
     }
 
-    private function buildValidation(array $possibleResponses, array $responseDeclarations)
+    private function buildValidation(array $possibleResponses)
     {
-        if (empty($this->responseProcessingTemplate)) {
+        if (empty($this->responseProcessingTemplate) || empty($this->responseDeclarations)) {
             return null;
         }
         if ($this->responseProcessingTemplate->getTemplate() === ResponseProcessingTemplate::MATCH_CORRECT) {
-            /** @var ResponseDeclaration $responseDeclaration */
-            $validResponsesValues = [];
-            foreach ($responseDeclarations as $responseIdentifier => $responseDeclaration) {
-                $values = [];
-                foreach ($responseDeclaration->getCorrectResponse()->getValues() as $value) {
-                    $values[] = $possibleResponses[$responseIdentifier][$value->getValue()];
-                }
-                $validResponsesValues[] = $values;
-            }
-            $combinationsValidResponseValues = ArrayUtil::combinations($validResponsesValues);
-
-            // First response pair shall be mapped to `valid_response`
-            $firstValidResponseValue = array_shift($combinationsValidResponseValues);
-            $validResponse = new clozedropdown_validation_valid_response();
-            $validResponse->set_score(1);
-            if (is_array($firstValidResponseValue)) {
-                $validResponse->set_value($firstValidResponseValue);
-            } else {
-                $validResponse->set_value([$firstValidResponseValue]);
-            }
-
-            // Others go in `alt_responses`
-            $altResponses = [];
-            foreach ($combinationsValidResponseValues as $otherResponseValues) {
-                $item = new clozedropdown_validation_alt_responses_item();
-                $item->set_score(1);
-                $item->set_value($otherResponseValues);
-                $altResponses[] = $item;
-            }
-
-            $validation = new clozedropdown_validation();
-            $validation->set_scoring_type('exactMatch');
-            $validation->set_valid_response($validResponse);
-            if (!empty($altResponses)) {
-                $validation->set_alt_responses($altResponses);
-            }
-
-            return $validation;
+            return $this->buildMatchCorrectValidation($possibleResponses, $this->responseDeclarations);
+        } else if ($this->responseProcessingTemplate->getTemplate() === ResponseProcessingTemplate::MAP_RESPONSE) {
+            return $this->buildMapResponseValidation($possibleResponses, $this->responseProcessingTemplate);
         } else {
-            throw new MappingException('Does not support template ' . $this->responseProcessingTemplate->getTemplate() .
-                ' on <responseProcessing>', MappingException::CRITICAL);
+            $this->exceptions[] = new MappingException('Does not support template ' . $this->responseProcessingTemplate->getTemplate() .
+                ' on <responseProcessing>');
+            return null;
         }
+    }
+
+    private function buildMatchCorrectValidation(array $possibleResponses, array $responseDeclarations)
+    {
+        /** @var ResponseDeclaration $responseDeclaration */
+        $validResponsesValues = [];
+        foreach ($responseDeclarations as $responseIdentifier => $responseDeclaration) {
+            $values = [];
+            foreach ($responseDeclaration->getCorrectResponse()->getValues() as $value) {
+                $values[] = $possibleResponses[$responseIdentifier][$value->getValue()];
+            }
+            $validResponsesValues[] = $values;
+        }
+        $combinationsValidResponseValues = ArrayUtil::combinations($validResponsesValues);
+
+        // First response pair shall be mapped to `valid_response`
+        $firstValidResponseValue = array_shift($combinationsValidResponseValues);
+        $validResponse = new clozedropdown_validation_valid_response();
+        $validResponse->set_score(1);
+        $validResponse->set_value(is_array($firstValidResponseValue) ? $firstValidResponseValue : [$firstValidResponseValue]);
+
+        // Others go in `alt_responses`
+        $altResponses = [];
+        foreach ($combinationsValidResponseValues as $otherResponseValues) {
+            $item = new clozedropdown_validation_alt_responses_item();
+            $item->set_score(1);
+            $item->set_value(is_array($otherResponseValues) ? $otherResponseValues : [$otherResponseValues]);
+            $altResponses[] = $item;
+        }
+
+        $validation = new clozedropdown_validation();
+        $validation->set_scoring_type('exactMatch');
+        $validation->set_valid_response($validResponse);
+        if (!empty($altResponses)) {
+            $validation->set_alt_responses($altResponses);
+        }
+
+        return $validation;
+    }
+
+    private function buildMapResponseValidation($possibleResponses, $responseProcessingTemplate)
+    {
     }
 
     private function buildTemplate(ItemBody $itemBody, array $interactionXmls)

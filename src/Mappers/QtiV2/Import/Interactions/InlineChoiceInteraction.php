@@ -19,7 +19,6 @@ class InlineChoiceInteraction extends AbstractInteraction
 
     public function getQuestionType()
     {
-
         /* @var \qtism\data\content\interactions\InlineChoiceInteraction $interaction */
         $interaction = $this->validateInteraction($this->interaction);
         $template = '{{response}}';
@@ -103,7 +102,12 @@ class InlineChoiceInteraction extends AbstractInteraction
         $validation->set_scoring_type('exactMatch');
 
         $altResponses = [];
-        foreach ($this->responseDeclaration->getMapping()->getMapEntries()->getArrayCopy(true) as $key => $mapEntry) {
+        $mapEntries = $this->responseDeclaration->getMapping()->getMapEntries()->getArrayCopy(true);
+        usort($mapEntries, function($mapEntry) {
+            /** @var MapEntry $mapEntry */
+            return $mapEntry->getMappedValue() > $mapEntry->getMappedValue();
+        });
+        foreach ($mapEntries as $key => $mapEntry) {
             /** @var MapEntry $mapEntry */
 
             // If one of them case sensitive, the whole things then be it

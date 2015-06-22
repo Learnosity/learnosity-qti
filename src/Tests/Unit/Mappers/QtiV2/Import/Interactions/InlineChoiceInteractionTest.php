@@ -127,16 +127,17 @@ class InlineChoiceInteractionTest extends AbstractInteractionTest
         $this->assertEquals('exactMatch', $validation->get_scoring_type());
 
         // Should set both `valid_response` and `alt_responses` for multiple correct values
+        // Also, the highest value should be put as `valid_response`
         $validResponse = $validation->get_valid_response();
         $this->assertNotNull($validResponse);
-        $this->assertEquals(0.5, $validResponse->get_score());
-        $this->assertEquals(["Sydney"], $validResponse->get_value());
+        $this->assertEquals(1, $validResponse->get_score());
+        $this->assertEquals(["Melbourne"], $validResponse->get_value());
 
         $altResponses = $validation->get_alt_responses();
         $this->assertNotNull($altResponses);
         $this->assertCount(1, $altResponses);
-        $this->assertEquals(1, $altResponses[0]->get_score());
-        $this->assertEquals(["Melbourne"], $altResponses[0]->get_value());
+        $this->assertEquals(0.5, $altResponses[0]->get_score());
+        $this->assertEquals(["Sydney"], $altResponses[0]->get_value());
 
         // Since one of them case sensitive, so the question would be case sensitive
         $this->assertTrue($question->get_case_sensitive());

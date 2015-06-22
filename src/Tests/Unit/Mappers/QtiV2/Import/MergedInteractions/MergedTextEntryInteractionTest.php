@@ -124,7 +124,7 @@ class MergedTextEntryInteractionTest extends AbstractInteractionTest
         // Other correct mapping values should be mapped to `alt_response`
         $altResponses = $validation->get_alt_responses();
         $this->assertNotNull($altResponses);
-        $this->assertCount(5, $altResponses);
+        $this->assertCount(3, $altResponses);
 
         $this->assertEquals(2.5, $altResponses[0]->get_score());
         $this->assertContains('Sydney', $altResponses[0]->get_value());
