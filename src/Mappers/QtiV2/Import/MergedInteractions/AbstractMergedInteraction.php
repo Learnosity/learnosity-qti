@@ -17,7 +17,7 @@ abstract class AbstractMergedInteraction
 
     public function __construct($questionReference,
         ItemBody $itemBody,
-        QtiComponentCollection $responseDeclarations,
+        QtiComponentCollection $responseDeclarations = null,
         ResponseProcessingTemplate $responseProcessingTemplate = null
     )
     {
@@ -26,8 +26,10 @@ abstract class AbstractMergedInteraction
         $this->responseProcessingTemplate = $responseProcessingTemplate;
         $this->exceptions = [];
 
-        foreach ($responseDeclarations as $responseDeclaration) {
-            $this->responseDeclarations[$responseDeclaration->getIdentifier()] = $responseDeclaration;
+        if (!empty($responseDeclarations)) {
+            foreach ($responseDeclarations as $responseDeclaration) {
+                $this->responseDeclarations[$responseDeclaration->getIdentifier()] = $responseDeclaration;
+            }
         }
     }
 

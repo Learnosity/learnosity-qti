@@ -6,7 +6,6 @@ use Learnosity\Mappers\QtiV2\Import\Interactions\TextEntryInteraction;
 
 class TextEntryInteractionTest extends AbstractInteractionTest
 {
-
     /* @var $interaction TextEntryInteraction */
     protected $interaction;
 

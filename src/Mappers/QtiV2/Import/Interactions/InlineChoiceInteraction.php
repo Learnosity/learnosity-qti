@@ -17,8 +17,9 @@ class InlineChoiceInteraction extends AbstractInteraction
 
     public function getQuestionType()
     {
+
         /* @var \qtism\data\content\interactions\InlineChoiceInteraction $interaction */
-        $interaction = $this->interaction;
+        $interaction = $this->validateInteraction($interaction);
         $template = '{{response}}';
 
         foreach ($interaction->getContent() as $inlineChoice) {
@@ -31,6 +32,17 @@ class InlineChoiceInteraction extends AbstractInteraction
             $question->set_validation($validation);
         }
         return $question;
+    }
+
+    private function validateInteraction(\qtism\data\content\interactions\InlineChoiceInteraction $interaction)
+    {
+        if (!empty($interaction->mustShuffle())) {
+            $this->exceptions[] = new MappingException('The attribute `shuffle` is not supported, thus is ignored');
+        }
+        if (!empty($interaction->isRequired())) {
+            $this->exceptions[] = new MappingException('The attribute `required` is not supported, thus is ignored');
+        }
+        return $interaction;
     }
 
     private function buildValidation()
