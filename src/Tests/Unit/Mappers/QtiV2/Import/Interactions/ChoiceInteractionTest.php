@@ -57,6 +57,32 @@ class ChoiceInteractionTest extends AbstractInteractionTest
         }
     }
 
+    public function testShouldHandleInvalidValidation()
+    {
+        $validResponseIdentifier = ['one', 'two'];
+        $responseDeclaration = ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifier',
+            $validResponseIdentifier);
+        $responseProcessingTemplate = 'UNKNOWN';
+        $optionsMap = [
+            'one'   => 'Label One',
+            'two'   => 'Label Two',
+            'three' => 'Label Three'
+        ];
+        $interaction = ChoiceInteractionBuilder::buildSimple('testIdentifier', $optionsMap);
+        $interactionMapper = new ChoiceInteraction($interaction, $responseDeclaration, $responseProcessingTemplate);
+        $mcq = $interactionMapper->getQuestionType();
+        $this->assertEquals('mcq', $mcq->get_type());
+
+        $validation = $mcq->get_validation();
+        $this->assertNotNull($validation);
+        $this->assertEquals(count($validResponseIdentifier), count($validation->get_valid_response()->get_value()));
+        $this->assertEquals(count($optionsMap), count($mcq->get_options()));
+        foreach ($mcq->get_options() as $option) {
+            $this->assertArrayHasKey($option['value'], $optionsMap);
+            $this->assertEquals($option['label'], $optionsMap[$option['value']]);
+        }
+    }
+
     public function testShouldHandleMultipleResponseIfMaxChoiceMoreThanOne()
     {
         $interaction = ChoiceInteractionBuilder::buildSimple('testIdentifier', [

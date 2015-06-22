@@ -84,9 +84,9 @@ class ChoiceInteraction extends AbstractInteraction
     private function buildValidation()
     {
         if (empty($this->responseProcessingTemplate)) {
-            return null;
-        }
-        if ($this->responseProcessingTemplate->getTemplate() === ResponseProcessingTemplate::MATCH_CORRECT) {
+            $this->exceptions[] =
+                new MappingException('Response processing template is missing', MappingException::CRITICAL);
+        } elseif ($this->responseProcessingTemplate->getTemplate() === ResponseProcessingTemplate::MATCH_CORRECT) {
             $correctResponse = $this->responseDeclaration->getCorrectResponse();
 
             $validResponseValues = [];
@@ -105,8 +105,9 @@ class ChoiceInteraction extends AbstractInteraction
 
             return $validation;
         } else {
-            throw new MappingException('Does not support template ' . $this->responseProcessingTemplate->getTemplate() .
-                ' on <responseProcessing>', MappingException::CRITICAL);
+            $this->exceptions[] =
+                new MappingException('Does not support template ' . $this->responseProcessingTemplate->getTemplate() .
+                    ' on <responseProcessing>', MappingException::CRITICAL);
         }
     }
 }
