@@ -19,7 +19,7 @@ class InlineChoiceInteraction extends AbstractInteraction
     {
 
         /* @var \qtism\data\content\interactions\InlineChoiceInteraction $interaction */
-        $interaction = $this->validateInteraction($interaction);
+        $interaction = $this->validateInteraction($this->interaction);
         $template = '{{response}}';
 
         foreach ($interaction->getContent() as $inlineChoice) {
