@@ -10,7 +10,6 @@ class TextEntryInteractionTest extends AbstractInteractionTest
     /* @var $interaction TextEntryInteraction */
     protected $interaction;
 
-
     public function setup()
     {
         parent::setup();
@@ -18,7 +17,4 @@ class TextEntryInteractionTest extends AbstractInteractionTest
             ->disableOriginalConstructor()->getMock();
         $this->interaction = new TextEntryInteraction($mockInteraction);
     }
-
-
-
 }

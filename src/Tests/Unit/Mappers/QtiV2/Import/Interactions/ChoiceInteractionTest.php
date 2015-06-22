@@ -6,14 +6,6 @@ use Learnosity\Mappers\QtiV2\Import\Interactions\ChoiceInteraction;
 use Learnosity\Mappers\QtiV2\Import\ResponseProcessingTemplate;
 use Learnosity\Tests\Unit\Mappers\QtiV2\Import\Fixtures\ChoiceInteractionBuilder;
 use Learnosity\Tests\Unit\Mappers\QtiV2\Import\Fixtures\ResponseDeclarationBuilder;
-use qtism\data\content\interactions\ChoiceInteraction as QtiChoiceInteraction;
-use qtism\data\content\interactions\SimpleChoice;
-use qtism\data\content\interactions\SimpleChoiceCollection;
-use qtism\data\processing\ResponseProcessing;
-use qtism\data\state\CorrectResponse;
-use qtism\data\state\ResponseDeclaration;
-use qtism\data\state\Value;
-use qtism\data\state\ValueCollection;
 
 class ChoiceInteractionTest extends AbstractInteractionTest
 {
