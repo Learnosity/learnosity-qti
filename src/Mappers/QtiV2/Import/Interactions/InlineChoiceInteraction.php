@@ -34,6 +34,10 @@ class InlineChoiceInteraction extends AbstractInteraction
             $question->set_validation($validation);
         }
         $question->set_case_sensitive($this->caseSensitive);
+        if ($this->caseSensitive) {
+            $this->exceptions[] = new MappingException('Partial `caseSensitive` per response is not supported.
+                Thus setting all validation as case sensitive');
+        }
         return $question;
     }
 
