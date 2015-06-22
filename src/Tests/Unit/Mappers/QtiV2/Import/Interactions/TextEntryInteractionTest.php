@@ -17,6 +17,7 @@ class TextEntryInteractionTest extends AbstractInteractionTest
 
         $this->assertNotNull($question);
         $this->assertNull($question->get_validation());
+        $this->assertCount(1,$mapper->getExceptions());
     }
 
     public function testShouldConsiderMaxLengthLessThan250()

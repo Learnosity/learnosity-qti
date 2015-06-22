@@ -8,7 +8,6 @@ use Learnosity\Entities\QuestionTypes\clozetext_validation_alt_responses_item;
 use Learnosity\Entities\QuestionTypes\clozetext_validation_valid_response;
 use Learnosity\Exceptions\MappingException;
 use Learnosity\Mappers\QtiV2\Import\ResponseProcessingTemplate;
-use Learnosity\Utils\ArrayUtil;
 use qtism\data\state\MapEntry;
 use qtism\data\state\Value;
 
@@ -40,23 +39,22 @@ class TextEntryInteraction extends AbstractInteraction
         $validation = null;
         $validResponse = null;
         $altResponses = [];
-        $rawAnswers = [];
+        $answers = [];
         if (!$this->responseProcessingTemplate) {
             $this->exceptions[] =
                 new MappingException('Response Processing Template is not defined so validation is not available.',
                     MappingException::WARNING);
             return null;
         } else {
-            $answer = [];
+
             switch ($this->responseProcessingTemplate->getTemplate()) {
                 case ResponseProcessingTemplate::MATCH_CORRECT:
                     //we set all scores to 1 by default
                     $score = 1;
                     /* @var $value Value */
                     foreach ($this->responseDeclaration->getCorrectResponse()->getValues() as $value) {
-                        $answer[] = [$value->getValue() => $score];
+                        $answers[] = [$value->getValue() => $score];
                     }
-                    $rawAnswers[] = $answer;
                     break;
                 case ResponseProcessingTemplate::MAP_RESPONSE:
                     /* @var $mapEntry MapEntry */
@@ -67,12 +65,11 @@ class TextEntryInteraction extends AbstractInteraction
                         }
                         if ($mapEntry->getMappedValue() > $highestScore) {
                             $highestScore = $mapEntry->getMappedValue();
-                            array_unshift($answer, [$mapEntry->getMapKey() => $mapEntry->getMappedValue()]);
+                            array_unshift($answers, [$mapEntry->getMapKey() => $mapEntry->getMappedValue()]);
                         } else {
-                            $answer[] = [$mapEntry->getMapKey() => $mapEntry->getMappedValue()];
+                            $answers[] = [$mapEntry->getMapKey() => $mapEntry->getMappedValue()];
                         }
                     }
-                    $rawAnswers[] = $answer;
                     break;
                 default:
                     $this->exceptions[] =
@@ -83,34 +80,26 @@ class TextEntryInteraction extends AbstractInteraction
 
         }
 
-        $mutatedRawAnswer = ArrayUtil::combinations($rawAnswers);
-
-        if (count($mutatedRawAnswer) > 0) {
-            $validResponse = new clozetext_validation_valid_response();
-            $scoreGlobal = 1;
-            $value = [];
-            foreach ($mutatedRawAnswer[0] as $answer => $score) {
-                $value[] = $answer;
-                $scoreGlobal = $score;
-            }
-            $validResponse->set_score($scoreGlobal);
-            $validResponse->set_value($value);
-        }
-
-        if (count($mutatedRawAnswer) > 1) {
-
-            for ($i = 1; $i < count($mutatedRawAnswer); $i++) {
-                $altResponseItem = new clozetext_validation_alt_responses_item();
+        if (count($answers) > 0) {
+            for ($i = 0; $i < count($answers); $i++) {
                 $scoreGlobal = 1;
                 $value = [];
-                foreach ($mutatedRawAnswer[$i] as $answer => $score) {
+                foreach ($answers[$i] as $answer => $score) {
                     $value[] = $answer;
                     $scoreGlobal = $score;
                 }
-                $altResponseItem->set_value($value);
-                $altResponseItem->set_score($scoreGlobal);
-                $altResponses[] = $altResponseItem;
+                if($i===0) {
+                    $validResponse = new clozetext_validation_valid_response();
+                    $validResponse->set_value($value);
+                    $validResponse->set_score($scoreGlobal);
+                }else {
+                    $altResponse = new clozetext_validation_alt_responses_item();
+                    $altResponse->set_value($value);
+                    $altResponse->set_score($scoreGlobal);
+                    $altResponses[] = $altResponse;
+                }
             }
+
         }
 
         if ($validResponse) {
