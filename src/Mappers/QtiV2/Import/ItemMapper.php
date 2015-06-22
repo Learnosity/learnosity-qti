@@ -99,10 +99,7 @@ class ItemMapper
                     $parser = new $mapperClass($component, $responseDeclaration, $responseProcessingTemplate);
                     $questionType = $parser->getQuestionType();
                     $questions[$questionReference] = new Question($questionType->get_type(), $questionReference, $questionType);
-                    if(is_array($parser->getExceptions()))
-                    {
-                        $this->exceptions = array_merge($this->exceptions, $parser->getExceptions());
-                    }
+                    $this->exceptions = array_merge($this->exceptions, $parser->getExceptions());
                     $interactionXml = QtiComponentUtil::marshall($component);
                     $questionsSpan[$questionReference] = $interactionXml;
                 } catch (MappingException $e) {

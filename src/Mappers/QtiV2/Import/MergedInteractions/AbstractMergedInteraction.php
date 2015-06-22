@@ -24,6 +24,7 @@ abstract class AbstractMergedInteraction
         $this->questionReference = $questionReference;
         $this->itemBody = $itemBody;
         $this->responseProcessingTemplate = $responseProcessingTemplate;
+        $this->exceptions = [];
 
         foreach ($responseDeclarations as $responseDeclaration) {
             $this->responseDeclarations[$responseDeclaration->getIdentifier()] = $responseDeclaration;

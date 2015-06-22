@@ -57,7 +57,10 @@ class MergedTextEntryInteraction extends AbstractMergedInteraction
         $originalResponseData = [];
         foreach ($interactionIdentifiers as $interactionIdentifier) {
             if (!isset($this->responseDeclarations[$interactionIdentifier])) {
-                throw new MappingException("Unable to locate {$interactionIdentifier}" . 'in response declarations');
+                $this->exceptions[] =
+                    new MappingException("Unable to locate {$interactionIdentifier}" . ' in response declarations',
+                        MappingException::CRITICAL);
+                continue;
             }
             /* @var $responseElement ResponseDeclaration */
             $responseElement = $this->responseDeclarations[$interactionIdentifier];
@@ -78,6 +81,9 @@ class MergedTextEntryInteraction extends AbstractMergedInteraction
         $altResponses = [];
 
         for ($i = 0; $i < count($mutatedOriginalResponses); $i++) {
+            if(!is_array($mutatedOriginalResponses[$i])) {
+                $mutatedOriginalResponses[$i] = [$mutatedOriginalResponses[$i]];
+            }
             if ($i === 0) {
                 $validResponse->set_value($mutatedOriginalResponses[$i]);
             } else {
