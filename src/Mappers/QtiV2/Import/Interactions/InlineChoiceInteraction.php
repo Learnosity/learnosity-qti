@@ -10,10 +10,12 @@ use Learnosity\Entities\QuestionTypes\clozedropdown_validation_valid_response;
 use Learnosity\Exceptions\MappingException;
 use Learnosity\Mappers\QtiV2\Import\ResponseProcessingTemplate;
 use Learnosity\Mappers\QtiV2\Import\Utils\QtiComponentUtil;
+use qtism\data\state\MapEntry;
 
 class InlineChoiceInteraction extends AbstractInteraction
 {
     private $choicesMapping = [];
+    private $caseSensitive = false;
 
     public function getQuestionType()
     {
@@ -31,6 +33,7 @@ class InlineChoiceInteraction extends AbstractInteraction
         if ($validation instanceof clozedropdown_validation) {
             $question->set_validation($validation);
         }
+        $question->set_case_sensitive($this->caseSensitive);
         return $question;
     }
 
@@ -51,40 +54,77 @@ class InlineChoiceInteraction extends AbstractInteraction
             return null;
         }
         if ($this->responseProcessingTemplate->getTemplate() === ResponseProcessingTemplate::MATCH_CORRECT) {
-            $correctResponse = $this->responseDeclaration->getCorrectResponse();
-            if (!empty($correctResponse->getInterpretation())) {
-                // TODO: should warn that this is ignored
-            }
+            return $this->buildMatchCorrectValidation();
+        } if ($this->responseProcessingTemplate->getTemplate() === ResponseProcessingTemplate::MAP_RESPONSE) {
+            return $this->buildMapResponseTemplate();
+        } else {
+            $this->exceptions[] = new MappingException('Does not support template ' . $this->responseProcessingTemplate->getTemplate() .
+                ' on <responseProcessing>. Ignoring <responseProcessing>');
+            return null;
+        }
+    }
 
-            $validResponseValues = [];
-            foreach ($correctResponse->getValues() as $key => $value) {
-                $validResponseValues[] = (string)$this->choicesMapping[$value->getValue()];
-            }
+    private function buildMatchCorrectValidation()
+    {
+        $validResponseValues = [];
+        foreach ($this->responseDeclaration->getCorrectResponse()->getValues() as $key => $value) {
+            $validResponseValues[] = (string) $this->choicesMapping[$value->getValue()];
+        }
 
-            $validation = new clozedropdown_validation();
-            $validation->set_scoring_type('exactMatch');
+        $validation = new clozedropdown_validation();
+        $validation->set_scoring_type('exactMatch');
+
+        // First response pair shall be mapped to `valid_response`
+        $firstValidResponseValue = array_shift($validResponseValues);
+        $validResponse = new clozedropdown_validation_valid_response();
+        $validResponse->set_score(1);
+        $validResponse->set_value([$firstValidResponseValue]);
+        $validation->set_valid_response($validResponse);
+
+        // Others go in `alt_responses`
+        $altResponses = [];
+        foreach ($validResponseValues as $otherResponseValues) {
+            $item = new clozedropdown_validation_alt_responses_item();
+            $item->set_score(1);
+            $item->set_value([$otherResponseValues]);
+            $altResponses[] = $item;
+        }
+        $validation->set_alt_responses($altResponses);
+        return $validation;
+    }
+
+    private function buildMapResponseTemplate()
+    {
+        $validation = new clozedropdown_validation();
+        $validation->set_scoring_type('exactMatch');
+
+        $altResponses = [];
+        foreach ($this->responseDeclaration->getMapping()->getMapEntries()->getArrayCopy(true) as $key => $mapEntry) {
+            /** @var MapEntry $mapEntry */
+
+            // If one of them case sensitive, the whole things then be it
+            if ($mapEntry->isCaseSensitive()) {
+                $this->caseSensitive = true;
+            }
 
             // First response pair shall be mapped to `valid_response`
-            $firstValidResponseValue = array_shift($validResponseValues);
-            $validResponse = new clozedropdown_validation_valid_response();
-            $validResponse->set_score(1);
-            $validResponse->set_value([$firstValidResponseValue]);
-            $validation->set_valid_response($validResponse);
-
-            // Others go in `alt_responses`
-            $altResponses = [];
-            foreach ($validResponseValues as $otherResponseValues) {
-                $item = new clozedropdown_validation_alt_responses_item();
-                $item->set_score(1);
-                $item->set_value([$otherResponseValues]);
-                $altResponses[] = $item;
+            if ($key === 0) {
+                $validResponse = new clozedropdown_validation_valid_response();
+                $validResponse->set_value([$this->choicesMapping[$mapEntry->getMapKey()]]);
+                $validResponse->set_score($mapEntry->getMappedValue());
+                $validation->set_valid_response($validResponse);
+            } else {
+                // Others go in `alt_responses`
+                $altResponseItem = new clozedropdown_validation_alt_responses_item();
+                $altResponseItem->set_value([$this->choicesMapping[$mapEntry->getMapKey()]]);
+                $altResponseItem->set_score($mapEntry->getMappedValue());
+                $altResponses[] = $altResponseItem;
             }
-            $validation->set_alt_responses($altResponses);
-
-            return $validation;
-        } else {
-            throw new MappingException('Does not support template ' . $this->responseProcessingTemplate->getTemplate() .
-                ' on <responseProcessing>', MappingException::CRITICAL);
         }
+
+        if (!empty($altResponses)) {
+            $validation->set_alt_responses($altResponses);
+        }
+        return $validation;
     }
 }
