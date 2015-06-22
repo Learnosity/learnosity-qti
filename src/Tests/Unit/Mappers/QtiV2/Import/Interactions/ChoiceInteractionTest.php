@@ -6,6 +6,12 @@ use Learnosity\Mappers\QtiV2\Import\Interactions\ChoiceInteraction;
 use Learnosity\Mappers\QtiV2\Import\ResponseProcessingTemplate;
 use Learnosity\Tests\Unit\Mappers\QtiV2\Import\Fixtures\ChoiceInteractionBuilder;
 use Learnosity\Tests\Unit\Mappers\QtiV2\Import\Fixtures\ResponseDeclarationBuilder;
+use qtism\data\content\FlowStaticCollection;
+use qtism\data\content\InlineCollection;
+use qtism\data\content\interactions\Orientation;
+use qtism\data\content\interactions\Prompt;
+use qtism\data\content\TextRun;
+use qtism\data\content\xhtml\text\P;
 
 class ChoiceInteractionTest extends AbstractInteractionTest
 {
@@ -38,8 +44,8 @@ class ChoiceInteractionTest extends AbstractInteractionTest
             $validResponseIdentifier);
         $responseProcessingTemplate = ResponseProcessingTemplate::matchCorrect();
         $optionsMap = [
-            'one'   => 'Label One',
-            'two'   => 'Label Two',
+            'one' => 'Label One',
+            'two' => 'Label Two',
             'three' => 'Label Three'
         ];
         $interaction = ChoiceInteractionBuilder::buildSimple('testIdentifier', $optionsMap);
@@ -62,10 +68,10 @@ class ChoiceInteractionTest extends AbstractInteractionTest
         $validResponseIdentifier = ['one', 'two'];
         $responseDeclaration = ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifier',
             $validResponseIdentifier);
-        $responseProcessingTemplate = 'UNKNOWN';
+        $responseProcessingTemplate = ResponseProcessingTemplate::mapResponse();
         $optionsMap = [
-            'one'   => 'Label One',
-            'two'   => 'Label Two',
+            'one' => 'Label One',
+            'two' => 'Label Two',
             'three' => 'Label Three'
         ];
         $interaction = ChoiceInteractionBuilder::buildSimple('testIdentifier', $optionsMap);
@@ -74,13 +80,9 @@ class ChoiceInteractionTest extends AbstractInteractionTest
         $this->assertEquals('mcq', $mcq->get_type());
 
         $validation = $mcq->get_validation();
-        $this->assertNotNull($validation);
-        $this->assertEquals(count($validResponseIdentifier), count($validation->get_valid_response()->get_value()));
-        $this->assertEquals(count($optionsMap), count($mcq->get_options()));
-        foreach ($mcq->get_options() as $option) {
-            $this->assertArrayHasKey($option['value'], $optionsMap);
-            $this->assertEquals($option['label'], $optionsMap[$option['value']]);
-        }
+        $this->assertNull($validation);
+
+        $this->assertTrue(count($interactionMapper->getExceptions()) === 1);
     }
 
     public function testShouldHandleMultipleResponseIfMaxChoiceMoreThanOne()
@@ -103,5 +105,53 @@ class ChoiceInteractionTest extends AbstractInteractionTest
         $interactionMapper = new ChoiceInteraction($interaction);
         $questionType = $interactionMapper->getQuestionType();
         $this->assertTrue($questionType->get_shuffle_options());
+    }
+
+    public function testHorizontalOrientation()
+    {
+        $interaction = ChoiceInteractionBuilder::buildSimple('testIdentifier', ['choiceA' => 'Choice A']);
+        $interaction->setOrientation(Orientation::HORIZONTAL);
+        $interactionMapper = new ChoiceInteraction($interaction);
+        $questionType = $interactionMapper->getQuestionType();
+        $this->assertTrue($questionType->get_ui_style()->get_type() === 'horizontal');
+        $this->assertTrue($questionType->get_ui_style()->get_columns() === 1);
+    }
+
+    public function testPrompt()
+    {
+        $interaction = ChoiceInteractionBuilder::buildSimple('testIdentifier', ['choiceA' => 'Choice A']);
+
+        $prompt = new Prompt();
+        $promptContent = new FlowStaticCollection();
+        $promptContent->attach(new TextRun('Test'));
+        $htmlCollection = new InlineCollection();
+        $htmlCollection->attach(new TextRun('123'));
+        $p = new P();
+        $p->setContent($htmlCollection);
+        $promptContent->attach($p);
+        $prompt->setContent($promptContent);
+        $interaction->setPrompt($prompt);
+
+        $interactionMapper = new ChoiceInteraction($interaction);
+        $questionType = $interactionMapper->getQuestionType();
+        $this->assertTrue($questionType->get_stimulus() === 'Test<p>123</p>');
+    }
+
+    public function testHasMinChoice()
+    {
+        $validResponseIdentifier = ['one', 'two'];
+        $responseDeclaration = ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifier',
+            $validResponseIdentifier);
+        $responseProcessingTemplate = ResponseProcessingTemplate::matchCorrect();
+        $optionsMap = [
+            'one' => 'Label One',
+            'two' => 'Label Two',
+            'three' => 'Label Three'
+        ];
+        $interaction = ChoiceInteractionBuilder::buildSimple('testIdentifier', $optionsMap);
+        $interaction->setMinChoices(1);
+        $interactionMapper = new ChoiceInteraction($interaction, $responseDeclaration, $responseProcessingTemplate);
+        $interactionMapper->getQuestionType();
+        $this->assertTrue(count($interactionMapper->getExceptions()) === 1);
     }
 }

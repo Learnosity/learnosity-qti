@@ -10,6 +10,7 @@ use Learnosity\Exceptions\MappingException;
 use Learnosity\Mappers\QtiV2\Import\ResponseProcessingTemplate;
 use Learnosity\Mappers\QtiV2\Import\Utils\QtiComponentUtil;
 use qtism\data\content\interactions\Orientation;
+use qtism\data\content\interactions\Prompt;
 use qtism\data\content\interactions\SimpleChoice;
 use qtism\data\content\interactions\SimpleChoiceCollection;
 use qtism\data\content\interactions\ChoiceInteraction as QtiChoiceInteraction;
@@ -37,7 +38,7 @@ class ChoiceInteraction extends AbstractInteraction
         }
 
         // Support mapping for <prompt>
-        if (!empty($interaction->getPrompt())) {
+        if ($interaction->getPrompt() instanceof Prompt) {
             $promptContent = $interaction->getPrompt()->getContent();
             $mcq->set_stimulus(QtiComponentUtil::marshallCollection($promptContent));
         }
