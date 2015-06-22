@@ -28,9 +28,9 @@ class MergedTextEntryInteractionTest extends AbstractInteractionTest
 
     public function testShouldConsiderMaxLengthLessThan250()
     {
-        $interactionOne = new TextEntryInteraction('testIdentifier');
+        $interactionOne = new TextEntryInteraction('testIdentifierOne');
         $interactionOne->setExpectedLength(50);
-        $interactionTwo = new TextEntryInteraction('testIdentifier');
+        $interactionTwo = new TextEntryInteraction('testIdentifierTwo');
         $interactionTwo->setExpectedLength(100);
         $itemBody = $this->buildItemBodyTestCase($interactionOne, $interactionTwo);
 
@@ -43,9 +43,9 @@ class MergedTextEntryInteractionTest extends AbstractInteractionTest
 
     public function testShouldConsiderMaxLengthMoreThan250()
     {
-        $interactionOne = new TextEntryInteraction('testIdentifier');
+        $interactionOne = new TextEntryInteraction('testIdentifierOne');
         $interactionOne->setExpectedLength(50);
-        $interactionTwo = new TextEntryInteraction('testIdentifier');
+        $interactionTwo = new TextEntryInteraction('testIdentifierTwo');
         $interactionTwo->setExpectedLength(500);
         $itemBody = $this->buildItemBodyTestCase($interactionOne, $interactionTwo);
 
@@ -62,7 +62,7 @@ class MergedTextEntryInteractionTest extends AbstractInteractionTest
         $itemBody = $this->buildItemBodyTestCase();
         $responseDeclarations = new QtiComponentCollection();
         $responseDeclarations->attach(ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifierOne', ['Sydney']));
-        $responseDeclarations->attach(ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifierOne', ['Gloria Foster', 'Keanu Reeves', 'Laurence Fishburne']));
+        $responseDeclarations->attach(ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifierTwo', ['Gloria Foster', 'Keanu Reeves', 'Laurence Fishburne']));
         $mapper = new MergedTextEntryInteraction('dummyReference', $itemBody, $responseDeclarations, ResponseProcessingTemplate::matchCorrect());
         $question = $mapper->getQuestionType();
 
