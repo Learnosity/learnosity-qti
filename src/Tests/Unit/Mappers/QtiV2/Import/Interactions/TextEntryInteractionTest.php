@@ -11,6 +11,7 @@ class TextEntryInteractionTest extends AbstractInteractionTest
     public function testSimpleCaseWithNoValidation()
     {
         $interaction = new \qtism\data\content\interactions\TextEntryInteraction('testIdentifier');
+
         $mapper = new TextEntryInteraction($interaction);
         $question = $mapper->getQuestionType();
 
@@ -47,26 +48,34 @@ class TextEntryInteractionTest extends AbstractInteractionTest
         $responseDeclaration = ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifier', ['hello', 'Hello']);
         $mapper = new TextEntryInteraction($interaction, $responseDeclaration, ResponseProcessingTemplate::matchCorrect());
         $question = $mapper->getQuestionType();
-
         $this->assertNotNull($question);
         $validation = $question->get_validation();
         $this->assertNotNull($validation);
-
         $validResponse = $validation->get_valid_response();
         $this->assertNotNull($validResponse);
         $this->assertEquals(1, $validResponse->get_score());
-        $this->assertContains('hello', $validResponse->get_value());
-        $this->assertContains('Hello', $validResponse->get_value());
+        $responses = [];
+        $responses[] = $validResponse->get_value()[0];
+        $altResponses = $validation->get_alt_responses();
+        $this->assertTrue(count($altResponses) === 1);
+        $this->assertEquals(1, $altResponses[0]->get_score());
+        foreach ($altResponses[0]->get_value() as $value) {
+            $responses[] = $value;
+        }
+        $this->assertTrue(count($responses) === 2);
+        $this->assertContains('hello', $responses);
+        $this->assertContains('Hello', $responses);
     }
 
     public function testSimpleCaseWithMapResponseValidation()
     {
         $interaction = new \qtism\data\content\interactions\TextEntryInteraction('testIdentifier');
         $responseDeclaration = ResponseDeclarationBuilder::buildWithMapping('testIdentifier', [
-            'York' => [2, false],
             'york' => [0.5, false],
             'Sydney' => [1, false],
-            'Junior' => [1, true]
+            'York' => [2, false],
+            'Junior' => [1.5, true],
+
         ]);
         $mapper = new TextEntryInteraction($interaction, $responseDeclaration, ResponseProcessingTemplate::mapResponse());
         $question = $mapper->getQuestionType();
@@ -87,15 +96,29 @@ class TextEntryInteractionTest extends AbstractInteractionTest
         $this->assertNotNull($altResponses);
         $this->assertCount(3, $altResponses);
 
-        $this->assertEquals(0.5, $altResponses[0]->get_score());
-        $this->assertContains('york', $altResponses[0]->get_value());
-        $this->assertEquals(1, $altResponses[1]->get_score());
-        $this->assertContains('Sydney', $altResponses[1]->get_value());
-        $this->assertEquals(1, $altResponses[2]->get_score());
-        $this->assertContains('Junior', $altResponses[2]->get_value());
+        foreach($altResponses as $altResponse) {
+            switch($altResponse->get_value()) {
+                case 'york':
+                    $this->assertEquals(0.5, $altResponse->get_score());
+                    break;
+                case 'Sydney':
+                    $this->assertEquals(1, $altResponse->get_score());
+                    break;
+                case 'Junior':
+                    $this->assertEquals(1.5, $altResponse->get_score());
+                    break;
+            }
+        }
 
         // Since one of them has is set to be case sensitive, so everything shall be case sensitive
         // TODO: Ensure a warning is thrown explaining that as well
         $this->assertTrue($question->get_case_sensitive());
+    }
+
+    public function testInvalidResponseProcessingTemplate() {
+        $interaction = new \qtism\data\content\interactions\TextEntryInteraction('testIdentifier');
+        $mapper = new TextEntryInteraction($interaction, null, ResponseProcessingTemplate::getFromTemplateUrl(''));
+        $question = $mapper->getQuestionType();
+        $this->assertCount(1, $mapper->getExceptions());
     }
 }
