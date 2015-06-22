@@ -7,6 +7,12 @@ use PHPUnit_Framework_TestCase;
 
 class ArrayUtilTest extends PHPUnit_Framework_TestCase
 {
+    public function testMutateEmptyArray()
+    {
+        $res = ArrayUtil::combinations([]);
+        $this->assertEquals($res, []);
+    }
+
     public function testMutateResponsesBase()
     {
         $res = ArrayUtil::combinations([['a', 'b']]);

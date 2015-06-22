@@ -18,7 +18,7 @@ class MergedInlineChoiceInteractionTest extends AbstractInteractionTest
 {
     public function testSimpleCaseWithNoValidation()
     {
-        $itemBody = $this->buildItemBodyTestCase();
+        $itemBody = $this->buildItemBodyWithTwoInteractions();
         $mapper = new MergedInlineChoiceInteraction('dummyQuestionReference', $itemBody, null, null);
         $question = $mapper->getQuestionType();
 
@@ -29,9 +29,39 @@ class MergedInlineChoiceInteractionTest extends AbstractInteractionTest
         $this->assertNull($question->get_validation());
     }
 
-    public function testSimpleCaseWithMatchCorrectValidation()
+    public function testSingleInteractionWithMatchCorrectValidation()
     {
-        $itemBody = $this->buildItemBodyTestCase();
+        $itemBody = $this->buildItemBodyWithSingleInteraction();
+        $responseDeclarations = new QtiComponentCollection();
+        $responseDeclarations->attach(ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifierOne', ['sydney', 'melbourne']));
+        $mapper = new MergedInlineChoiceInteraction('dummyQuestionReference', $itemBody, $responseDeclarations, ResponseProcessingTemplate::matchCorrect());
+        $question = $mapper->getQuestionType();
+
+        // Should map question correctly with `validation` object of `exactMatch` scoring type
+        $this->assertNotNull($question);
+        $this->assertEquals('<p>The Matrix movie is filmed at {{response}}. Boo!</p>', $question->get_template());
+        $this->assertEquals('clozedropdown', $question->get_type());
+
+        // Should set both `valid_response`
+        $validation = $question->get_validation();
+        $this->assertNotNull($validation);
+        $this->assertEquals('exactMatch', $validation->get_scoring_type());
+
+        $validResponse = $validation->get_valid_response();
+        $this->assertNotNull($validResponse);
+        $this->assertEquals(1, $validResponse->get_score());
+        $this->assertEquals(["Sydney"], $validResponse->get_value());
+
+        $altResponses = $validation->get_alt_responses();
+        $this->assertNotNull($altResponses);
+        $this->assertCount(1, $altResponses);
+        $this->assertEquals(1, $altResponses[0]->get_score());
+        $this->assertEquals(["Melbourne"], $altResponses[0]->get_value());
+    }
+
+    public function testMultipleInteractionWithMatchCorrectValidation()
+    {
+        $itemBody = $this->buildItemBodyWithTwoInteractions();
         $responseDeclarations = new QtiComponentCollection();
         $responseDeclarations->attach(ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifierOne', ['sydney']));
         $responseDeclarations->attach(ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifierTwo', ['keanu', 'gloria']));
@@ -60,7 +90,55 @@ class MergedInlineChoiceInteractionTest extends AbstractInteractionTest
         $this->assertEquals(["Sydney", "Gloria Foster"], $altResponses[0]->get_value());
     }
 
-    private function buildItemBodyTestCase()
+    public function testMultipleInteractionWithMapResponseValidation()
+    {
+        $itemBody = $this->buildItemBodyWithTwoInteractions();
+        $responseDeclarations = new QtiComponentCollection();
+        $responseDeclarations->attach(ResponseDeclarationBuilder::buildWithMapping('testIdentifierOne', [
+            'sydney' => [1, true]
+        ]));
+        $responseDeclarations->attach(ResponseDeclarationBuilder::buildWithMapping('testIdentifierTwo', [
+            'keanu' => [1, true],
+            'gloria' => [0.5, false]
+        ]));
+        $mapper = new MergedInlineChoiceInteraction('dummyQuestionReference', $itemBody, $responseDeclarations, ResponseProcessingTemplate::mapResponse());
+        $question = $mapper->getQuestionType();
+
+        // Should map question correctly with `validation` object of `exactMatch` scoring type
+        $this->assertNotNull($question);
+        $this->assertEquals('<p>The Matrix movie is filmed at {{response}}, and starring {{response}}</p>', $question->get_template());
+        $this->assertEquals('clozedropdown', $question->get_type());
+
+        $validation = $question->get_validation();
+        $this->assertNotNull($validation);
+    }
+
+    private function buildItemBodyWithSingleInteraction()
+    {
+        $interactionOne = InlineChoiceInteractionBuilder::buildSimple('testIdentifierOne', [
+            'sydney' => 'Sydney',
+            'melbourne' => 'Melbourne',
+            'canberra' => 'Canberra',
+        ]);
+        $itemBody = new ItemBody();
+        $itemBodyCollection = new BlockCollection();
+
+        // Build `<p>The Matrix .... <inlineChoiceInteraction...></inlineChoiceInteraction>.</p>`
+        $p = new P();
+        $pCollection = new InlineCollection();
+        $pCollection->attach(new TextRun('The Matrix movie is filmed at '));
+        $pCollection->attach($interactionOne);
+        $pCollection->attach(new TextRun('. Boo!'));
+        $p->setContent($pCollection);
+
+        // Build the <itemBody>
+        $itemBodyCollection->attach($p);
+        $itemBody->setContent($itemBodyCollection);
+
+        return $itemBody;
+    }
+
+    private function buildItemBodyWithTwoInteractions()
     {
         $interactionOne = InlineChoiceInteractionBuilder::buildSimple('testIdentifierOne', [
             'sydney' => 'Sydney',
@@ -83,6 +161,7 @@ class MergedInlineChoiceInteractionTest extends AbstractInteractionTest
         $pCollection->attach(new TextRun(', and starring '));
         $pCollection->attach($interactionTwo);
         $p->setContent($pCollection);
+
         // Build the <itemBody>
         $itemBodyCollection->attach($p);
         $itemBody->setContent($itemBodyCollection);

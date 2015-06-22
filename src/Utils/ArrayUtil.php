@@ -7,7 +7,8 @@ class ArrayUtil
     /**
      * @ref http://stackoverflow.com/questions/8567082/how-to-generate-in-php-all-combinations-of-items-in-multiple-arrays
      */
-    public static function combinations(array $arrays, $i = 0) {
+    public static function combinations(array $arrays, $i = 0)
+    {
         if (!isset($arrays[$i])) {
             return [];
         }
