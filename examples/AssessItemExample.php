@@ -148,6 +148,9 @@ if (isset($_POST['filePath'])) {
                     <button id="submit" type="button" class="btn btn-primary">Parse</button>
                 </p>
             </div>
+            <div class="col-md-6">
+                <div style="float: right"><a target="_blank" href="/documentation.html">View Documentation</a></div>
+            </div>
         </div>
 
         <div class="row">

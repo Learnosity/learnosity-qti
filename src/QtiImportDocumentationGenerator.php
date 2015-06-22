@@ -9,12 +9,12 @@ use Learnosity\Utils\FileSystemUtil;
 class QtiImportDocumentationGenerator
 {
     private $twig;
-    private $outputDir;
+    private $documentationPath;
 
     public function __construct()
     {
         $templateDirectory = FileSystemUtil::getRootPath() . '/resources/templates';
-        $this->outputDir = FileSystemUtil::getRootPath() . '/docs';
+        $this->documentationPath = FileSystemUtil::getRootPath() . '/examples/documentation.html';
         $this->twig = new \Twig_Environment(new \Twig_Loader_Filesystem($templateDirectory), [
             'debug' => true
         ]);
@@ -40,7 +40,7 @@ class QtiImportDocumentationGenerator
         }
 
         // Render
-        $this->renderFile('documentation.html.twig', $this->outputDir . '/interactions.html', [
+        $this->renderFile('documentation.html.twig', $this->documentationPath, [
             'interactions' => $interactionDocumentation,
             'assessmentItem' => AssessmentItemDocumentation::getInteractionDocumentation()
         ]);

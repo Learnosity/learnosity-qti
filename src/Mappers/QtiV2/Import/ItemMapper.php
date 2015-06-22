@@ -181,22 +181,6 @@ class ItemMapper
         return null;
     }
 
-    private function buildLearnosityQuestion(
-        $questionReference,
-        Interaction $component,
-        ResponseDeclaration $responseDeclaration = null,
-        ResponseProcessingTemplate $responseProcessingTemplate = null
-    )
-    {
-        $mapperClass = 'Learnosity\Mappers\QtiV2\Import\Interactions\\' . ucfirst($component->getQtiClassName());
-
-        /** @var AbstractInteraction $parser */
-        $parser = new $mapperClass($component, $responseDeclaration, $responseProcessingTemplate);
-        $questionType = $parser->getQuestionType();
-
-        return new Question($questionType->get_type(), $questionReference, $questionType);
-    }
-
     /**
      * Filter all components with non-supported classes
      * @param $itemBody
