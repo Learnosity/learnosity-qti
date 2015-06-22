@@ -18,6 +18,7 @@ abstract class AbstractInteraction
         $this->interaction = $interaction;
         $this->responseDeclaration = $responseDeclaration;
         $this->responseProcessingTemplate = $responseProcessingTemplate;
+        $this->exceptions = [];
     }
 
     // TODO: Need to verify for <math> tags to see whether we need to enable 'is_math'
