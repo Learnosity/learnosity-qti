@@ -9,6 +9,23 @@ use Learnosity\Tests\Unit\Mappers\QtiV2\Import\Fixtures\ResponseDeclarationBuild
 
 class InlineChoiceInteractionTest extends AbstractInteractionTest
 {
+    public function testSimpleCaseWithNoValidation()
+    {
+        $interaction = InlineChoiceInteractionBuilder::buildSimple('testIdentifier', [
+            'sydney' => 'Sydney',
+            'melbourne' => 'Melbourne',
+            'canberra' => 'Canberra',
+        ]);
+        $mapper = new InlineChoiceInteraction($interaction);
+        $question = $mapper->getQuestionType();
+
+        // Should map question correctly with no `validation` object
+        $this->assertNotNull($question);
+        $this->assertEquals('clozedropdown', $question->get_type());
+        $validation = $question->get_validation();
+        $this->assertNull($validation);
+    }
+
     public function testSimpleCaseWithMatchCorrectValidation()
     {
         $interaction = InlineChoiceInteractionBuilder::buildSimple('testIdentifier', [
@@ -44,20 +61,8 @@ class InlineChoiceInteractionTest extends AbstractInteractionTest
         $this->assertEquals(["Melbourne"], $altResponses[0]->get_value());
     }
 
-    public function testSimpleCaseWithNoValidation()
+    public function testSimpleCaseWithMapResponseValidation()
     {
-        $interaction = InlineChoiceInteractionBuilder::buildSimple('testIdentifier', [
-            'sydney' => 'Sydney',
-            'melbourne' => 'Melbourne',
-            'canberra' => 'Canberra',
-        ]);
-        $mapper = new InlineChoiceInteraction($interaction);
-        $question = $mapper->getQuestionType();
-
-        // Should map question correctly with no `validation` object
-        $this->assertNotNull($question);
-        $this->assertEquals('clozedropdown', $question->get_type());
-        $validation = $question->get_validation();
-        $this->assertNull($validation);
+        //TODO: Do it!
     }
-} 
+}
