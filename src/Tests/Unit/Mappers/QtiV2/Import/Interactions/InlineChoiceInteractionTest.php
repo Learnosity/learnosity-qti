@@ -16,7 +16,7 @@ class InlineChoiceInteractionTest extends AbstractInteractionTest
             'melbourne' => 'Melbourne',
             'canberra' => 'Canberra',
         ]);
-        $interaction->mustShuffle(true);
+        $interaction->setShuffle(true);
         $interaction->setRequired(true);
         $mapper = new InlineChoiceInteraction($interaction);
         $question = $mapper->getQuestionType();
@@ -29,6 +29,23 @@ class InlineChoiceInteractionTest extends AbstractInteractionTest
 
         // By default case sensitive should be false
         $this->assertFalse($question->get_case_sensitive());
+    }
+
+    public function testSimpleCaseWithInvalidValidation()
+    {
+        $interaction = InlineChoiceInteractionBuilder::buildSimple('testIdentifier', [
+            'doesntmatter' => 'Doesntmatter'
+        ]);
+        $mapper = new InlineChoiceInteraction($interaction, null, ResponseProcessingTemplate::mapResponsePoint());
+        $question = $mapper->getQuestionType();
+
+        // Should map question correctly with no `validation` object
+        $this->assertNotNull($question);
+        $this->assertEquals('clozedropdown', $question->get_type());
+        $validation = $question->get_validation();
+        $this->assertNull($validation);
+
+        $this->assertTrue(count($mapper->getExceptions()) === 1);
     }
 
     public function testSimpleCaseWithMatchCorrectValidation()
