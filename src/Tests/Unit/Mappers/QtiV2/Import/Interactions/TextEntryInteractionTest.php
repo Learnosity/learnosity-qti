@@ -37,7 +37,7 @@ class TextEntryInteractionTest extends AbstractInteractionTest
         $question = $mapper->getQuestionType();
 
         $this->assertNotNull($question);
-        $this->assertTrue($question->get_max_length() == 250);
+        $this->assertTrue($question->get_max_length() >= 250);
         $this->assertTrue($question->get_multiple_line());
     }
 
@@ -89,10 +89,10 @@ class TextEntryInteractionTest extends AbstractInteractionTest
 
         $this->assertEquals(0.5, $altResponses[0]->get_score());
         $this->assertContains('york', $altResponses[0]->get_value());
-        $this->assertEquals(1, $altResponses[0]->get_score());
-        $this->assertContains('Sydney', $altResponses[0]->get_value());
-        $this->assertEquals(1, $altResponses[0]->get_score());
-        $this->assertContains('Junior', $altResponses[0]->get_value());
+        $this->assertEquals(1, $altResponses[1]->get_score());
+        $this->assertContains('Sydney', $altResponses[1]->get_value());
+        $this->assertEquals(1, $altResponses[2]->get_score());
+        $this->assertContains('Junior', $altResponses[2]->get_value());
 
         // Since one of them has is set to be case sensitive, so everything shall be case sensitive
         // TODO: Ensure a warning is thrown explaining that as well
