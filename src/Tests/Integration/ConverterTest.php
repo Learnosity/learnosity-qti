@@ -10,15 +10,11 @@ class ConverterTest extends \PHPUnit_Framework_TestCase
 
     public function testConvertQtiToJson()
     {
-        $file = FileSystemUtil::readFile(__DIR__ . '/../Fixtures/choices_with_html_escape.xml');
-       // $file = FileSystemUtil::readFile('/Users/frankan/workspace/learnosity-qti/examples/SampleAssessmentItem/655308.xml');
-        list($item, $questions) = Converter::convertQtiItemToLearnosity($file->getContents());
-        die;
     }
 
-    public function testParseIMSPackage() {
+    public function testParseIMSPackage()
+    {
 
-        $res = Converter::parseIMSCPPackage(__DIR__ . '/../Fixtures/HMH_package_1');
     }
 
 }
