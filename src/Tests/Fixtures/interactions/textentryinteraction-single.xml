@@ -5,15 +5,12 @@
                 identifier="res_AA-FIB_B13_CH1_geoc_f1f1" title="AA-FIB_B13_CH1_geoc_f1f1" adaptive="false"
                 timeDependent="false">
     <responseDeclaration baseType="string" cardinality="single" identifier="RESPONSE">
+        <correctResponse>
+            <value>a</value>
+        </correctResponse>
         <mapping defaultValue="0">
             <mapEntry mapKey="a" mappedValue="1" caseSensitive="false"/>
             <mapEntry mapKey="b" mappedValue="2" caseSensitive="false"/>
-        </mapping>
-    </responseDeclaration>
-    <responseDeclaration baseType="string" cardinality="single" identifier="RESPONSE_2">
-        <mapping defaultValue="0">
-            <mapEntry mapKey="OHMYGOD" mappedValue="3" caseSensitive="true"/>
-            <mapEntry mapKey="x7" mappedValue="4" caseSensitive="false"/>
         </mapping>
     </responseDeclaration>
     <outcomeDeclaration identifier="FEEDBACK" cardinality="single" baseType="identifier"/>
@@ -33,12 +30,8 @@
             <br/>
             le jardin de Giverny
             <br/>
-            <textEntryInteraction responseIdentifier="RESPONSE_2" expectedLength="6"/>
-        </div>
-        <p>
             <textEntryInteraction responseIdentifier="RESPONSE" expectedLength="6"/>
-        </p>
+        </div>
     </itemBody>
-
     <responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/CC2_map_response"/>
 </assessmentItem>
