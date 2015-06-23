@@ -18,7 +18,7 @@ class MergedTextEntryInteractionTest extends AbstractInteractionTest
 {
     public function testSimpleCaseWithNoValidation()
     {
-        $itemBody = $this->buildItemBodyTestCase();
+        $itemBody = $this->buildItemBodyWithTwoInteraction();
         $mapper = new MergedTextEntryInteraction('dummyReference', $itemBody, null, null);
         $question = $mapper->getQuestionType();
 
@@ -32,7 +32,7 @@ class MergedTextEntryInteractionTest extends AbstractInteractionTest
         $interactionOne->setExpectedLength(50);
         $interactionTwo = new TextEntryInteraction('testIdentifierTwo');
         $interactionTwo->setExpectedLength(100);
-        $itemBody = $this->buildItemBodyTestCase($interactionOne, $interactionTwo);
+        $itemBody = $this->buildItemBodyWithTwoInteraction($interactionOne, $interactionTwo);
 
         $mapper = new MergedTextEntryInteraction('dummyReference', $itemBody);
         $question = $mapper->getQuestionType();
@@ -47,7 +47,7 @@ class MergedTextEntryInteractionTest extends AbstractInteractionTest
         $interactionOne->setExpectedLength(50);
         $interactionTwo = new TextEntryInteraction('testIdentifierTwo');
         $interactionTwo->setExpectedLength(500);
-        $itemBody = $this->buildItemBodyTestCase($interactionOne, $interactionTwo);
+        $itemBody = $this->buildItemBodyWithTwoInteraction($interactionOne, $interactionTwo);
 
         $mapper = new MergedTextEntryInteraction('dummyReference', $itemBody);
         $question = $mapper->getQuestionType();
@@ -57,9 +57,45 @@ class MergedTextEntryInteractionTest extends AbstractInteractionTest
         $this->assertTrue($question->get_multiple_line());
     }
 
-    public function testSimpleCaseWithCorrectAnswersValidation()
+    public function testSingleInteractionWithCorrectAnswersValidation()
     {
-        $itemBody = $this->buildItemBodyTestCase();
+        $itemBody = $this->buildItemBodyWithSingleInteraction();
+        $responseDeclarations = new QtiComponentCollection();
+        $responseDeclarations->attach(ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifierOne',
+            ['Gloria Foster', 'Keanu Reeves', 'Laurence Fishburne']));
+        $mapper = new MergedTextEntryInteraction('dummyReference', $itemBody, $responseDeclarations, ResponseProcessingTemplate::matchCorrect());
+        $question = $mapper->getQuestionType();
+
+        // Should map question correctly with `validation` object of `exactMatch` scoring type
+        $this->assertNotNull($question);
+        $this->assertEquals('<p>The Matrix movie is starring {{response}}.</p>', $question->get_template());
+        $this->assertEquals('clozetext', $question->get_type());
+
+        // Should set both `valid_response` and `alt_responses` for multiple correct values
+        $validation = $question->get_validation();
+        $this->assertNotNull($validation);
+        $this->assertEquals('exactMatch', $validation->get_scoring_type());
+
+        $validResponse = $validation->get_valid_response();
+        $this->assertNotNull($validResponse);
+        $this->assertEquals(1, $validResponse->get_score());
+        $this->assertEquals(['Gloria Foster'], $validResponse->get_value());
+
+        $altResponses = $validation->get_alt_responses();
+        $this->assertNotNull($altResponses);
+        $this->assertCount(2, $altResponses);
+        $this->assertEquals(1, $altResponses[0]->get_score());
+        $this->assertEquals(['Keanu Reeves'], $altResponses[0]->get_value());
+        $this->assertEquals(1, $altResponses[1]->get_score());
+        $this->assertEquals(['Laurence Fishburne'], $altResponses[1]->get_value());
+
+        // `match_correct` validation template always do not set casesensitive
+        $this->assertFalse($question->get_case_sensitive());
+    }
+
+    public function testTwoInteractionWithCorrectAnswersValidation()
+    {
+        $itemBody = $this->buildItemBodyWithTwoInteraction();
         $responseDeclarations = new QtiComponentCollection();
         $responseDeclarations->attach(ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifierOne', ['Sydney']));
         $responseDeclarations->attach(ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifierTwo', ['Gloria Foster', 'Keanu Reeves', 'Laurence Fishburne']));
@@ -93,19 +129,16 @@ class MergedTextEntryInteractionTest extends AbstractInteractionTest
         $this->assertFalse($question->get_case_sensitive());
     }
 
-    public function testSimpleCaseWithMapResponseValidation()
+    public function testSingleInteractionWithMapResponseValidation()
     {
-        $itemBody = $this->buildItemBodyTestCase();
+        $itemBody = $this->buildItemBodyWithSingleInteraction();
         $responseDeclarations = new QtiComponentCollection();
         $responseDeclarations->attach(ResponseDeclarationBuilder::buildWithMapping('testIdentifierOne', [
-            'Sydney' => [2, false],
-            'sydney' => [1, false],
+            'Keanu Reeves' => [1.75, true],
+            'Gloria Foster' => [2, false],
+            'Stella Lie' => [5, false]
         ]));
-        $responseDeclarations->attach(ResponseDeclarationBuilder::buildWithMapping('testIdentifierTwo', [
-            'Keanu Reeves' => [1, true],
-            'Gloria Foster' => [0.5, false],
-        ]));
-        $mapper = new MergedTextEntryInteraction('dummyReference', $itemBody, $responseDeclarations, ResponseProcessingTemplate::matchCorrect());
+        $mapper = new MergedTextEntryInteraction('dummyReference', $itemBody, $responseDeclarations, ResponseProcessingTemplate::mapResponse());
         $question = $mapper->getQuestionType();
 
         $this->assertNotNull($question);
@@ -117,7 +150,37 @@ class MergedTextEntryInteractionTest extends AbstractInteractionTest
         // First correct mapping value should be mapped to `valid_response`
         $validResponse = $validation->get_valid_response();
         $this->assertNotNull($validResponse);
-        $this->assertEquals(3, $validResponse->get_score()); // The score would be the total `mappedValue` of the combination
+        $this->assertEquals(5, $validResponse->get_score()); // The score would be the total `mappedValue` of the combination with highest score
+        $this->assertContains('Stella Lie', $validResponse->get_value());
+
+        // TODO: Check alt_responses as well?
+    }
+
+    public function testTwoInteractionsWithMapResponseValidation()
+    {
+        $itemBody = $this->buildItemBodyWithTwoInteraction();
+        $responseDeclarations = new QtiComponentCollection();
+        $responseDeclarations->attach(ResponseDeclarationBuilder::buildWithMapping('testIdentifierOne', [
+            'Sydney' => [2, false],
+            'sydney' => [1, false],
+        ]));
+        $responseDeclarations->attach(ResponseDeclarationBuilder::buildWithMapping('testIdentifierTwo', [
+            'Keanu Reeves' => [1, true],
+            'Gloria Foster' => [0.5, false],
+        ]));
+        $mapper = new MergedTextEntryInteraction('dummyReference', $itemBody, $responseDeclarations, ResponseProcessingTemplate::mapResponse());
+        $question = $mapper->getQuestionType();
+
+        $this->assertNotNull($question);
+        $this->assertEquals('clozetext', $question->get_type());
+
+        $validation = $question->get_validation();
+        $this->assertNotNull($validation);
+
+        // First correct mapping value should be mapped to `valid_response`
+        $validResponse = $validation->get_valid_response();
+        $this->assertNotNull($validResponse);
+        $this->assertEquals(3, $validResponse->get_score()); // The score would be the total `mappedValue` of the combination with highest score
         $this->assertContains('Sydney', $validResponse->get_value());
         $this->assertContains('Keanu Reeves', $validResponse->get_value());
 
@@ -142,7 +205,7 @@ class MergedTextEntryInteractionTest extends AbstractInteractionTest
         $this->assertTrue($question->get_case_sensitive());
     }
 
-    private function buildItemBodyTestCase(TextEntryInteraction $interactionOne = null, TextEntryInteraction $interactionTwo = null)
+    private function buildItemBodyWithTwoInteraction(TextEntryInteraction $interactionOne = null, TextEntryInteraction $interactionTwo = null)
     {
         $interactionOne = (empty($interactionOne)) ? new TextEntryInteraction('testIdentifierOne') : $interactionOne;
         $interactionTwo = (empty($interactionTwo)) ? new TextEntryInteraction('testIdentifierTwo') : $interactionTwo;
@@ -156,6 +219,27 @@ class MergedTextEntryInteractionTest extends AbstractInteractionTest
         $pCollection->attach($interactionOne);
         $pCollection->attach(new TextRun(', and starring '));
         $pCollection->attach($interactionTwo);
+        $p->setContent($pCollection);
+
+        // Build the <itemBody>
+        $itemBodyCollection->attach($p);
+        $itemBody->setContent($itemBodyCollection);
+
+        return $itemBody;
+    }
+
+    private function buildItemBodyWithSingleInteraction(TextEntryInteraction $interactionOne = null)
+    {
+        $interactionOne = (empty($interactionOne)) ? new TextEntryInteraction('testIdentifierOne') : $interactionOne;
+        $itemBody = new ItemBody();
+        $itemBodyCollection = new BlockCollection();
+
+        // Build `<p>The Matrix .... <inlineChoiceInteraction...></inlineChoiceInteraction>.</p>`
+        $p = new P();
+        $pCollection = new InlineCollection();
+        $pCollection->attach(new TextRun('The Matrix movie is starring '));
+        $pCollection->attach($interactionOne);
+        $pCollection->attach(new TextRun('.'));
         $p->setContent($pCollection);
 
         // Build the <itemBody>
