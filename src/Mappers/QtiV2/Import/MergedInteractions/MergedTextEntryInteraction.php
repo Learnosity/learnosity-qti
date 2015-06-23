@@ -9,6 +9,7 @@ use Learnosity\Entities\QuestionTypes\clozetext_validation_valid_response;
 use Learnosity\Exceptions\MappingException;
 use Learnosity\Mappers\QtiV2\Import\ResponseProcessingTemplate;
 use Learnosity\Mappers\QtiV2\Import\Utils\QtiComponentUtil;
+use Learnosity\Mappers\QtiV2\Import\Validation\TextEntryValidationBuilder;
 use Learnosity\Utils\ArrayUtil;
 use qtism\data\content\interactions\Interaction;
 use qtism\data\content\interactions\TextEntryInteraction;
@@ -31,14 +32,11 @@ class MergedTextEntryInteraction extends AbstractMergedInteraction
             $interactionXmls[] = QtiComponentUtil::marshall($component);
             $interactionIdentifiers[] = $component->getResponseIdentifier();
         }
-
         $validation = $this->buildValidation($interactionIdentifiers, $isCaseSensitive);
-
         $closetext = new clozetext('clozetext', $this->buildTemplate($this->itemBody, $interactionXmls));
         if ($validation) {
             $closetext->set_validation($validation);
         }
-
         $isMultiLine = false;
         $maxLength = $this->getExpectedLength($isMultiLine);
         $closetext->set_max_length($maxLength);
@@ -140,44 +138,7 @@ class MergedTextEntryInteraction extends AbstractMergedInteraction
             return array_sum(array_values($a)) < array_sum(array_values($b));
         });
 
-        // todo merging this logic with text entry interaction
-        $validResponse = new clozetext_validation_valid_response();
-
-        $altResponses = [];
-        $validation = null;
-
-        if (count($mutatedOriginalResponses) > 0) {
-            for ($i = 0; $i < count($mutatedOriginalResponses); $i++) {
-                $scoreGlobal = 0;
-                $value = [];
-                foreach ($mutatedOriginalResponses[$i] as $answer => $score) {
-                    $value[] = $answer;
-                    $scoreGlobal += $score;
-                }
-                if ($i === 0) {
-                    $validResponse = new clozetext_validation_valid_response();
-                    $validResponse->set_value($value);
-                    $validResponse->set_score($scoreGlobal);
-                } else {
-                    $altResponse = new clozetext_validation_alt_responses_item();
-                    $altResponse->set_value($value);
-                    $altResponse->set_score($scoreGlobal);
-                    $altResponses[] = $altResponse;
-                }
-            }
-
-        }
-
-        if ($validResponse) {
-            $validation = new clozetext_validation();
-            $validation->set_scoring_type('exactMatch');
-            $validation->set_valid_response($validResponse);
-        }
-
-        if ($altResponses && $validation) {
-            $validation->set_alt_responses($altResponses);
-        }
-
-        return $validation;
+        $validationBuilder = new TextEntryValidationBuilder();
+        return $validationBuilder->buildValidation($mutatedOriginalResponses);
     }
 }
