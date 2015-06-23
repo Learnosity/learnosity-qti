@@ -124,6 +124,9 @@ class MergedInlineChoiceInteractionTest extends AbstractInteractionTest
         $this->assertCount(1, $altResponses);
         $this->assertEquals(1.5, $altResponses[0]->get_score());
         $this->assertEquals(["Sydney", "Gloria Foster"], $altResponses[0]->get_value());
+
+        // If one of them is case sensitive then everything else should be
+        $this->assertTrue($question->get_case_sensitive());
     }
 
     public function testSingleInteractionWithMapResponseValidation()
@@ -132,7 +135,7 @@ class MergedInlineChoiceInteractionTest extends AbstractInteractionTest
         $responseDeclarations = new QtiComponentCollection();
         $responseDeclarations->attach(ResponseDeclarationBuilder::buildWithMapping('testIdentifierOne', [
             'canberra' => [0.5, false],
-            'sydney' => [2, true]
+            'sydney' => [2, false]
         ]));
         $mapper = new MergedInlineChoiceInteraction('dummyQuestionReference', $itemBody, $responseDeclarations, ResponseProcessingTemplate::mapResponse());
         $question = $mapper->getQuestionType();
@@ -157,6 +160,9 @@ class MergedInlineChoiceInteractionTest extends AbstractInteractionTest
         $this->assertCount(1, $altResponses);
         $this->assertEquals(0.5, $altResponses[0]->get_score());
         $this->assertEquals(["Canberra"], $altResponses[0]->get_value());
+
+        // If none of them is case sensitive then everything else should be none too
+        $this->assertFalse($question->get_case_sensitive());
     }
 
     private function buildItemBodyWithSingleInteraction()
