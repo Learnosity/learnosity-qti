@@ -49,6 +49,7 @@ class MergedInlineChoiceInteraction extends AbstractMergedInteraction
         if (!empty($validation)) {
             $clozedropdown->set_validation($validation);
         }
+        $clozedropdown->set_case_sensitive($this->isCaseSensitive);
         return $clozedropdown;
     }
 
@@ -124,6 +125,10 @@ class MergedInlineChoiceInteraction extends AbstractMergedInteraction
                     'score' => $mapEntry->getMappedValue(),
                     'value' => $responseValue
                 ];
+                // Find out if one of them is case sensitive
+                if ($mapEntry->isCaseSensitive()) {
+                    $this->isCaseSensitive = true;
+                }
             }
             $keyScoreMapping[] = $mapping;
         }
@@ -149,7 +154,6 @@ class MergedInlineChoiceInteraction extends AbstractMergedInteraction
             return $a['score'] < $b['score'];
          });
 
-        // Map the first
         $validation = new clozedropdown_validation();
         $validation->set_scoring_type('exactMatch');
 
