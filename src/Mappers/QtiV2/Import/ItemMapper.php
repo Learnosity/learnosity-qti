@@ -178,20 +178,22 @@ class ItemMapper
         return null;
     }
 
-    /**
-     * Filter all components with non-supported classes
-     * @param $itemBody
-     * @return array
-     */
     private function filterItemBody($itemBody)
     {
         $newCollection = new BlockCollection();
         $itemBodyNew = new ItemBody();
 
+        // TODO: Yea, we ignore rubric but what happen if the rubric is deep inside nested
+        $hasRubric = false;
         foreach ($itemBody->getContent() as $key => $component) {
             if (!($component instanceof RubricBlock)) {
                 $newCollection->attach($component);
+            } else {
+                $hasRubric = true;
             }
+        }
+        if ($hasRubric) {
+            $this->exceptions[] = new MappingException('Does not support <rubricBlock>. Ignoring <rubricBlock>');
         }
         $itemBodyNew->setContent($newCollection);
         return $itemBodyNew;
