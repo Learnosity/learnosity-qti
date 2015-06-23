@@ -13,7 +13,7 @@ abstract class AbstractMergedInteraction
     protected $responseDeclarations;
     protected $responseProcessingTemplate;
 
-    protected $exceptions;
+    protected $exceptions = [];
 
     public function __construct($questionReference,
         ItemBody $itemBody,
