@@ -76,18 +76,22 @@ class MergedTextEntryInteractionTest extends AbstractInteractionTest
         $this->assertNotNull($validation);
         $this->assertEquals('exactMatch', $validation->get_scoring_type());
 
+        $options = [];
+
         $validResponse = $validation->get_valid_response();
         $this->assertNotNull($validResponse);
         $this->assertEquals(1, $validResponse->get_score());
-        $this->assertEquals(['Gloria Foster'], $validResponse->get_value());
+        $options = array_merge($options, $validResponse->get_value());
 
         $altResponses = $validation->get_alt_responses();
-        $this->assertNotNull($altResponses);
         $this->assertCount(2, $altResponses);
-        $this->assertEquals(1, $altResponses[0]->get_score());
-        $this->assertEquals(['Keanu Reeves'], $altResponses[0]->get_value());
-        $this->assertEquals(1, $altResponses[1]->get_score());
-        $this->assertEquals(['Laurence Fishburne'], $altResponses[1]->get_value());
+        foreach ($altResponses as $altResponse) {
+            $this->assertEquals(1, $altResponse->get_score());
+            $options = array_merge($options, $altResponse->get_value());
+        }
+        $this->assertContains('Gloria Foster', $options);
+        $this->assertContains('Keanu Reeves', $options);
+        $this->assertContains('Laurence Fishburne', $options);
 
         // `match_correct` validation template always do not set casesensitive
         $this->assertFalse($question->get_case_sensitive());
@@ -112,18 +116,23 @@ class MergedTextEntryInteractionTest extends AbstractInteractionTest
         $this->assertNotNull($validation);
         $this->assertEquals('exactMatch', $validation->get_scoring_type());
 
+        $options = [];
+
         $validResponse = $validation->get_valid_response();
         $this->assertNotNull($validResponse);
-        $this->assertEquals(1, $validResponse->get_score());
-        $this->assertEquals(['Sydney', 'Keanu Reeves'], $validResponse->get_value());
+        $this->assertEquals(2, $validResponse->get_score());
+        $options[] = $validResponse->get_value();
 
         $altResponses = $validation->get_alt_responses();
         $this->assertNotNull($altResponses);
         $this->assertCount(2, $altResponses);
-        $this->assertEquals(1, $altResponses[0]->get_score());
-        $this->assertEquals(['Sydney', 'Gloria Foster'], $altResponses[0]->get_value());
-        $this->assertEquals(1, $altResponses[1]->get_score());
-        $this->assertEquals(['Sydney', 'Laurence Fishburne'], $altResponses[1]->get_value());
+        foreach ($altResponses as $altResponse) {
+            $this->assertEquals(2, $altResponse->get_score());
+            $options[] = $altResponse->get_value();
+        }
+        $this->assertContains(['Sydney', 'Gloria Foster'], $options);
+        $this->assertContains(['Sydney', 'Keanu Reeves'], $options);
+        $this->assertContains(['Sydney', 'Laurence Fishburne'], $options);
 
         // `match_correct` validation template always do not set casesensitive
         $this->assertFalse($question->get_case_sensitive());
@@ -152,7 +161,7 @@ class MergedTextEntryInteractionTest extends AbstractInteractionTest
         $this->assertNotNull($validResponse);
         $this->assertEquals(5, $validResponse->get_score()); // The score would be the total `mappedValue` of the combination with highest score
         $this->assertContains('Stella Lie', $validResponse->get_value());
-
+        $this->assertTrue($question->get_case_sensitive());
         // TODO: Check alt_responses as well?
     }
 
@@ -203,6 +212,22 @@ class MergedTextEntryInteractionTest extends AbstractInteractionTest
 
         // If one of the mapping has case sensitivity as true, then everything become case sensitive
         $this->assertTrue($question->get_case_sensitive());
+    }
+
+    public function testInvalidResponseProcessingTemplate()
+    {
+        $itemBody = $this->buildItemBodyWithSingleInteraction();
+        $responseDeclarations = new QtiComponentCollection();
+        $responseDeclarations->attach(ResponseDeclarationBuilder::buildWithMapping('testIdentifierOne', [
+            'Sydney' => [2, false],
+            'sydney' => [1, false],
+        ]));
+        $mapper = new MergedTextEntryInteraction('dummyReference', $itemBody, $responseDeclarations, ResponseProcessingTemplate::getFromTemplateUrl(''));
+        $question = $mapper->getQuestionType();
+
+        $this->assertNotNull($question);
+        $this->assertNull($question->get_validation());
+        $this->assertCount(1, $mapper->getExceptions());
     }
 
     private function buildItemBodyWithTwoInteraction(TextEntryInteraction $interactionOne = null, TextEntryInteraction $interactionTwo = null)

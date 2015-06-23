@@ -9,13 +9,13 @@ class ArrayUtilTest extends PHPUnit_Framework_TestCase
 {
     public function testMutateEmptyArray()
     {
-        $res = ArrayUtil::combinations([]);
+        $res = ArrayUtil::mutateResponses([]);
         $this->assertEquals($res, []);
     }
 
     public function testMutateResponsesBase()
     {
-        $res = ArrayUtil::combinations([['a', 'b']]);
+        $res = ArrayUtil::mutateResponses([['a', 'b']]);
         $this->assertTrue(count($res) === 2);
         $this->assertEquals($res[0], 'a');
         $this->assertEquals($res[1], 'b');
@@ -23,7 +23,7 @@ class ArrayUtilTest extends PHPUnit_Framework_TestCase
 
     public function testMutateResponsesMultiple()
     {
-        $res = ArrayUtil::combinations([['a', 'b'], ['c', 'd']]);
+        $res = ArrayUtil::mutateResponses([['a', 'b'], ['c', 'd']]);
         $this->assertTrue(count($res) === 4);
         $this->assertEquals($res[0], ['a', 'c']);
         $this->assertEquals($res[1], ['a', 'd']);
@@ -33,7 +33,7 @@ class ArrayUtilTest extends PHPUnit_Framework_TestCase
 
     public function testMutateResponsesMultipleUnEven()
     {
-        $res = ArrayUtil::combinations([['a', 'b', 'f'], ['c', 'd']]);
+        $res = ArrayUtil::mutateResponses([['a', 'b', 'f'], ['c', 'd']]);
         $this->assertTrue(count($res) === 6);
         $this->assertEquals($res[0], ['a', 'c']);
         $this->assertEquals($res[1], ['a', 'd']);

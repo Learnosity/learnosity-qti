@@ -36,7 +36,7 @@ class ArrayUtil
     public static function mutateResponses(array $responses)
     {
         if (count($responses) <= 1) {
-            return array_values($responses[0]);
+            return array_values(isset($responses[0]) ? $responses[0] : []);
         } else {
             $res = [];
             $first = array_shift($responses);
