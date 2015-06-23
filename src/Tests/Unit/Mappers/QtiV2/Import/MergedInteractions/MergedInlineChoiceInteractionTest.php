@@ -80,13 +80,13 @@ class MergedInlineChoiceInteractionTest extends AbstractInteractionTest
 
         $validResponse = $validation->get_valid_response();
         $this->assertNotNull($validResponse);
-        $this->assertEquals(1, $validResponse->get_score());
+        $this->assertEquals(2, $validResponse->get_score());
         $this->assertEquals(["Sydney", "Keanu Reeves"], $validResponse->get_value());
 
         $altResponses = $validation->get_alt_responses();
         $this->assertNotNull($altResponses);
         $this->assertCount(1, $altResponses);
-        $this->assertEquals(1, $altResponses[0]->get_score());
+        $this->assertEquals(2, $altResponses[0]->get_score());
         $this->assertEquals(["Sydney", "Gloria Foster"], $altResponses[0]->get_value());
     }
 

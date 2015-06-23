@@ -49,17 +49,20 @@ class InlineChoiceInteractionValidationBuilder
         }
         $combinationsValidResponseValues = ArrayUtil::combinations($validResponsesValues);
 
+        // Interaction count
+        $interactionCount = count($responseDeclarations);
+
         // First response pair shall be mapped to `valid_response`
         $firstValidResponseValue = array_shift($combinationsValidResponseValues);
         $validResponse = new clozedropdown_validation_valid_response();
-        $validResponse->set_score(1);
+        $validResponse->set_score($interactionCount);
         $validResponse->set_value(is_array($firstValidResponseValue) ? $firstValidResponseValue : [$firstValidResponseValue]);
 
         // Others go in `alt_responses`
         $altResponses = [];
         foreach ($combinationsValidResponseValues as $otherResponseValues) {
             $item = new clozedropdown_validation_alt_responses_item();
-            $item->set_score(1);
+            $item->set_score($interactionCount);
             $item->set_value(is_array($otherResponseValues) ? $otherResponseValues : [$otherResponseValues]);
             $altResponses[] = $item;
         }
