@@ -59,7 +59,7 @@ class InlineChoiceInteraction extends AbstractInteraction
         if ($this->responseProcessingTemplate->getTemplate() === ResponseProcessingTemplate::MATCH_CORRECT) {
             return $this->buildMatchCorrectValidation();
         } if ($this->responseProcessingTemplate->getTemplate() === ResponseProcessingTemplate::MAP_RESPONSE) {
-            return $this->buildMapResponseTemplate();
+            return $this->buildMapResponseValidation();
         } else {
             $this->exceptions[] = new MappingException('Does not support template ' . $this->responseProcessingTemplate->getTemplate() .
                 ' on <responseProcessing>. Ignoring <responseProcessing>');
@@ -96,16 +96,17 @@ class InlineChoiceInteraction extends AbstractInteraction
         return $validation;
     }
 
-    private function buildMapResponseTemplate()
+    private function buildMapResponseValidation()
     {
         $validation = new clozedropdown_validation();
         $validation->set_scoring_type('exactMatch');
 
         $altResponses = [];
         $mapEntries = $this->responseDeclaration->getMapping()->getMapEntries()->getArrayCopy(true);
-        usort($mapEntries, function($mapEntry) {
-            /** @var MapEntry $mapEntry */
-            return $mapEntry->getMappedValue() > $mapEntry->getMappedValue();
+
+        // Sort by score value, as the first/biggest would be used for `valid_response` object
+        usort($mapEntries, function($a, $b) {
+            return $a->getMappedValue() < $b->getMappedValue();
         });
         foreach ($mapEntries as $key => $mapEntry) {
             /** @var MapEntry $mapEntry */
