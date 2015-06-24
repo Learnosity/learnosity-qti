@@ -2,15 +2,13 @@
 
 namespace Learnosity\Mappers\QtiV2\Export;
 
-use Learnosity\Entities\Item;
-use Learnosity\Entities\Question;
+use Learnosity\Entities\Item\item;
 use Learnosity\Exceptions\MappingException;
 use qtism\data\AssessmentItem;
-use qtism\data\storage\xml\XmlCompactDocument;
 
 class ItemWriter
 {
-    public function convert(Item $item, array $questions)
+    public function convert(item $item, array $questions)
     {
         // TODO: Stop development because now we want to focus on import, can do export later
         die;

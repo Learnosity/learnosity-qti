@@ -6,7 +6,7 @@ class ItemMapper
 {
     public function parse(array $itemJson)
     {
-        $item = EntityBuilder::build('Learnosity\Entities\Item', $itemJson);
+        $item = EntityBuilder::build('Learnosity\Entities\Item\item', $itemJson);
         return $item;
     }
 }

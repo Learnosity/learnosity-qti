@@ -16,9 +16,11 @@ class EntityGenerator
     {
         $this->templateDirectory = FileSystemUtil::getRootPath() . '/resources/templates';
         $this->questionOutputDir = FileSystemUtil::getRootPath() . '/src/Entities/QuestionTypes';
+        $this->itemOutputDir = FileSystemUtil::getRootPath() . '/src/Entities/Item';
         $this->activityOutputDir = FileSystemUtil::getRootPath() . '/src/Entities/Activity';
+
         $this->schemasService = $schemasService;
-        $this->currentNamespace = '';
+        $this->currentNamespace = ''; //TODO: Fix this hack properly!
     }
 
     private function cleanUp($path)
@@ -74,13 +76,13 @@ class EntityGenerator
         return $attribute;
     }
 
-    private function generateAttributeClasses($outputDir, $questionId, array &$attributes)
+    private function generateAttributeClasses($outputDir, $identifier, array &$attributes)
     {
         foreach ($attributes as $key => $attribute) {
-            $attributes[$key] = $this->updateAttribute($attribute, $questionId . '_' . $key);
+            $attributes[$key] = $this->updateAttribute($attribute, $identifier . '_' . $key);
 
             if (isset($attribute['attributes'])) {
-                $attributeId = $questionId . '_' . $key;
+                $attributeId = $identifier . '_' . $key;
                 $path = $outputDir . DIRECTORY_SEPARATOR . $attributeId . '.php';
                 $this->generateAttributeClasses($outputDir, $attributeId, $attribute['attributes']);
                 $this->renderFile('entity.php.twig', $path, [
@@ -91,9 +93,33 @@ class EntityGenerator
             } elseif (isset($attribute['type']) && $attribute['type'] === 'array') {
                 if (isset($attribute['items']['attributes'])) {
                     $t = [$key . '_item' => $attribute['items']];
-                    $this->generateAttributeClasses($outputDir, $questionId, $t);
+                    $this->generateAttributeClasses($outputDir, $identifier, $t);
                 }
             }
+        }
+    }
+
+    private function generateClasses(array $schemas, $outputDir, $baseClass)
+    {
+        $classes = [];
+        foreach ($schemas as $identifier => $schema) {
+            $attributes = $schema['attributes'];
+            foreach ($attributes as $key => $attribute) {
+                $attributes[$key] = $this->updateAttribute($attribute, $identifier . '_' . $key);
+            }
+            $this->generateAttributeClasses($outputDir, $identifier, $attributes);
+            $classes[$identifier] = [
+                'className'      => $identifier,
+                'requiredFields' => array_filter($attributes, function ($attribute) {
+                    return isset($attribute['required']) && $attribute['required'] === true;
+                }),
+                'fields'         => $attributes,
+                'baseClass'      => $baseClass
+            ];
+        }
+        foreach ($classes as $key => $value) {
+            $this->renderFile('entity.php.twig',
+                $outputDir . DIRECTORY_SEPARATOR . $value['className'] . '.php', $value);
         }
     }
 
@@ -101,28 +127,17 @@ class EntityGenerator
     {
         $this->cleanUp($this->questionOutputDir);
         $this->currentNamespace = 'Learnosity\Entities\QuestionTypes';
-        $classes = [];
-        $schemas = array_merge($this->schemasService->getResponsesSchemas(), $this->schemasService->getFeaturesSchemas());
-        foreach ($schemas as $questionId => $schema) {
-            $attributes = $schema['attributes'];
-            foreach ($attributes as $key => $attribute) {
-                $attributes[$key] = $this->updateAttribute($attribute, $questionId . '_' . $key);
-            }
-            $this->generateAttributeClasses($this->questionOutputDir, $questionId, $attributes);
-            $classes[$questionId] = [
-                'className' => $questionId,
-                'requiredFields' => array_filter($attributes, function ($attribute) {
-                    return isset($attribute['required']) && $attribute['required'] === true;
-                }),
-                'fields' => $attributes,
-                'baseClass' => 'BaseQuestionType'
-            ];
-        }
+        $schemas = array_merge($this->schemasService->getResponsesSchemas(),
+            $this->schemasService->getFeaturesSchemas());
+        $this->generateClasses($schemas, $this->questionOutputDir, 'BaseQuestionType');
+    }
 
-        foreach ($classes as $key => $value) {
-            $this->renderFile('entity.php.twig',
-                $this->questionOutputDir . DIRECTORY_SEPARATOR . $value['className'] . '.php', $value);
-        }
+    public function generateItemClasses()
+    {
+        $this->cleanUp($this->itemOutputDir);
+        $this->currentNamespace = 'Learnosity\Entities\Item';
+        $schemas = $this->schemasService->getItemSchemas();
+        $this->generateClasses($schemas, $this->itemOutputDir, 'BaseEntity');
     }
 
     public function generateActivityClasses()
@@ -130,27 +145,6 @@ class EntityGenerator
         $this->cleanUp($this->activityOutputDir);
         $this->currentNamespace = 'Learnosity\Entities\Activity';
         $schemas = $this->schemasService->getActivitySchemas();
-
-
-        foreach ($schemas as $questionId => $schema) {
-            $attributes = $schema['attributes'];
-            foreach ($attributes as $key => $attribute) {
-                $attributes[$key] = $this->updateAttribute($attribute, $questionId . '_' . $key);
-            }
-            $this->generateAttributeClasses($this->activityOutputDir, $questionId, $attributes);
-            $classes[$questionId] = [
-                'className' => $questionId,
-                'requiredFields' => array_filter($attributes, function ($attribute) {
-                    return isset($attribute['required']) && $attribute['required'] === true;
-                }),
-                'fields' => $attributes,
-                'baseClass' => 'BaseActivity'
-            ];
-        }
-        foreach ($classes as $key => $value) {
-            $this->renderFile('entity.php.twig',
-                $this->activityOutputDir . DIRECTORY_SEPARATOR . $value['className'] . '.php', $value);
-        }
+        $this->generateClasses($schemas, $this->activityOutputDir, 'BaseEntity');
     }
-
 }

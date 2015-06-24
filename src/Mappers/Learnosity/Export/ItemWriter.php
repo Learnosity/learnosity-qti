@@ -2,7 +2,7 @@
 
 namespace Learnosity\Mappers\Learnosity\Export;
 
-use Learnosity\Entities\Item;
+use Learnosity\Entities\Item\item;
 
 class ItemWriter
 {
@@ -10,7 +10,7 @@ class ItemWriter
     {
     }
 
-    public function convert(Item $item)
+    public function convert(item $item)
     {
         return $item->to_array();
     }

@@ -1,0 +1,42 @@
+{
+    "data": {
+        "item": {
+            "attributes": {
+                "reference": {
+                    "required": true,
+                    "type": "string"
+                },
+                "status": {
+                    "required": false,
+                    "type": "string",
+                    "options": [
+                        {"value": "unpublished"},
+                        {"value": "published"},
+                        {"value": "deleted"}
+                    ],
+                    "default": "unpublished"
+                },
+                "questionReferences": {
+                    "required": true,
+                    "type": "array"
+                },
+                "description": {
+                    "required": false,
+                    "type": "string"
+                },
+                "content": {
+                    "required": true,
+                    "type": "string"
+                },
+                "metadata": {
+                    "required": false,
+                    "type": "array"
+                },
+                "workflow": {
+                    "required": false,
+                    "type": "array"
+                }
+            }
+        }
+    }
+}

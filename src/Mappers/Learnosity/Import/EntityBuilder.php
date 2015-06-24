@@ -6,13 +6,6 @@ use Learnosity\Exceptions\MappingException;
 
 class EntityBuilder
 {
-    /**
-     * @param       $className
-     * @param array $json
-     *
-     * @return object
-     * @throws MappingException
-     */
     public static function build($className, array $json)
     {
         $clazz = new \ReflectionClass($className);

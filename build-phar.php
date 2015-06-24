@@ -10,7 +10,7 @@ $finder = new \Symfony\Component\Finder\Finder();
 $finder->files()
     ->ignoreVCS(true)
     ->name('*.php')
-    ->name('dcoumentation.html')
+    ->name('documentation.html')
     ->name('*.yml')
     ->notName('build-phar.php')
     ->in(__DIR__ . '');
