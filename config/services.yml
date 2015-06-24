@@ -1,11 +1,16 @@
 services:
+    qtism_xml_compat_document:
+        class:     qtism\data\storage\xml\XmlCompactDocument
     schemas_service:
         class:     Learnosity\Services\SchemasService
+    mapper_factory:
+        class:     Learnosity\Mappers\QtiV2\Import\MapperFactory
     learnosity_entity_generator:
         class:     Learnosity\EntityGenerator
         arguments: ["@schemas_service"]
     qtiv2_item_mapper:
         class:      Learnosity\Mappers\QtiV2\Import\ItemMapper
+        arguments: ["@qtism_xml_compat_document", "@mapper_factory"]
     qtiv2_test_mapper:
         class:      Learnosity\Mappers\QtiV2\Import\TestMapper
     learnosity_item_writer:

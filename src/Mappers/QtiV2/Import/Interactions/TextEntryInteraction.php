@@ -50,6 +50,7 @@ class TextEntryInteraction extends AbstractInteraction
                         $answers[] = [$value->getValue() => $score];
                     }
                     break;
+                case ResponseProcessingTemplate::CC2_MAP_RESPONSE:
                 case ResponseProcessingTemplate::MAP_RESPONSE:
                     /* @var $mapEntry MapEntry */
                     $highestScore = -1;

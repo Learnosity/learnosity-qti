@@ -20,19 +20,33 @@ use qtism\data\storage\xml\XmlCompactDocument;
 
 class ItemMapper
 {
+    /* @var $xmlDocument XmlCompactDocument */
+    private $xmlDocument;
+    /* @var $mapperFactory MapperFactory */
+    private $mapperFactory;
     private $exceptions = [];
     private $supportedInteractions = ['inlineChoiceInteraction', 'choiceInteraction',
         'extendedTextInteraction', 'textEntryInteraction'];
 
+
+    public function __construct(XmlCompactDocument $document, MapperFactory $mapperFactory)
+    {
+        $this->xmlDocument = $document;
+        $this->exceptions = [];
+        $this->mapperFactory = $mapperFactory;
+    }
+
+    public function getExceptions()
+    {
+        return $this->exceptions;
+    }
+
     public function parse($xmlString)
     {
-        $this->exceptions = [];
-
-        $document = new XmlCompactDocument();
-        $document->loadFromString($xmlString);
+        $this->xmlDocument->loadFromString($xmlString);
 
         /* @var $assessmentItem AssessmentItem */
-        $assessmentItem = $this->validateAssessmentItem($document->getDocumentComponent());
+        $assessmentItem = $this->validateAssessmentItem($this->xmlDocument->getDocumentComponent());
         $responseProcessingTemplate = $this->getResponseProcessingTemplate($assessmentItem->getResponseProcessing());
 
         // Process <itemBody>
@@ -46,7 +60,9 @@ class ItemMapper
         // Mapping interactions
         $interactionComponents = $itemBody->getComponentsByClassName($this->supportedInteractions, true);
         if (!$interactionComponents || count($interactionComponents) === 0) {
-            throw new MappingException('No supported interactions could be found', MappingException::CRITICAL);
+            $this->exceptions[] =
+                new MappingException('No supported interactions could be found', MappingException::CRITICAL);
+            return null;
         }
 
         // Decide whether we shall merge interaction
@@ -64,17 +80,19 @@ class ItemMapper
                 /** @var ResponseDeclaration $responseDeclaration */
                 // TODO: Need checking if merged exists, maybe again?
             }
+            $responseDeclarations = $assessmentItem->getComponentsByClassName('responseDeclaration', true);
             try {
-                $mapperClass = 'Learnosity\Mappers\QtiV2\Import\MergedInteractions\\Merged' . ucfirst($interactionTypes[0]);
-                $responseDeclarations = $assessmentItem->getComponentsByClassName('responseDeclaration', true);
+                /** @var AbstractMergedInteraction $mapper */
+                $mapper = $this->mapperFactory->getMapper(
+                    ucfirst($interactionTypes[0]),
+                    [$questionReference, $itemBody, $responseDeclarations, $responseProcessingTemplate],
+                    MapperFactory::MAPPER_TYPE_MERGED
+                );
 
-                /** @var AbstractMergedInteraction $parser */
-                $parser = new $mapperClass($questionReference, $itemBody, $responseDeclarations, $responseProcessingTemplate);
-                $questionType = $parser->getQuestionType();
-                $content = $parser->getItemContent();
-
-                $questions[$questionReference] = new Question($questionType->get_type(), $questionReference, $questionType);
-                $this->exceptions = array_merge($this->exceptions, $parser->getExceptions());
+                $questionType = $mapper->getQuestionType();
+                $questions[$questionReference] = $this->getQuestion($questionType, $questionReference);
+                $content = $mapper->getItemContent();
+                $this->exceptions = array_merge($this->exceptions, $mapper->getExceptions());
             } catch (MappingException $e) {
                 $this->exceptions[] = $e;
                 if ($e->getType() === MappingException::CRITICAL) {
@@ -93,13 +111,17 @@ class ItemMapper
                     // Process <responseDeclaration>
                     /** @var ResponseDeclaration $responseDeclaration */
                     $responseDeclaration = $assessmentItem->getComponentByIdentifier($component->getResponseIdentifier());
-                    $mapperClass = 'Learnosity\Mappers\QtiV2\Import\Interactions\\' . ucfirst($component->getQtiClassName());
 
-                    /** @var AbstractInteraction $parser */
-                    $parser = new $mapperClass($component, $responseDeclaration, $responseProcessingTemplate);
-                    $questionType = $parser->getQuestionType();
-                    $questions[$questionReference] = new Question($questionType->get_type(), $questionReference, $questionType);
-                    $this->exceptions = array_merge($this->exceptions, $parser->getExceptions());
+                    $factory = $this->mapperFactory;
+                    $mapper = $factory->getMapper(
+                        ucfirst($component->getQtiClassName()),
+                        [$component, $responseDeclaration, $responseProcessingTemplate],
+                        MapperFactory::MAPPER_TYPE_STD
+                    );
+                    $questionType = $mapper->getQuestionType();
+
+                    $questions[$questionReference] =  $this->getQuestion($questionType, $questionReference);
+                    $this->exceptions = array_merge($this->exceptions, $mapper->getExceptions());
                     $interactionXml = QtiComponentUtil::marshall($component);
                     $questionsSpan[$questionReference] = $interactionXml;
                 } catch (MappingException $e) {
@@ -126,6 +148,10 @@ class ItemMapper
         $item->set_status('published');
 
         return [$item, $questions, $this->getExceptionMessages()];
+    }
+
+    protected function getQuestion($questionType, $questionReference) {
+        return new Question($questionType->get_type(), $questionReference, $questionType);
     }
 
     private function getExceptionMessages()

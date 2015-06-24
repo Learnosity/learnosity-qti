@@ -2,6 +2,7 @@
 
 namespace Learnosity\Tests\Integration\Mappers\QtiV2\MergedInteractions;
 
+use Learnosity\AppContainer;
 use Learnosity\Mappers\QtiV2\Import\ItemMapper;
 use Learnosity\Utils\ArrayUtil;
 use Learnosity\Utils\FileSystemUtil;
@@ -10,17 +11,19 @@ class MergedTextEntryInteractionTest extends \PHPUnit_Framework_TestCase
 {
 
     private $file;
+    /* @var $mapper ItemMapper*/
+    private $mapper;
 
     public function setup()
     {
         $this->file = FileSystemUtil::readFile(FileSystemUtil::getRootPath() .
             '/src/Tests/Fixtures/interactions/textentryinteraction.xml');
+        $this->mapper = AppContainer::getApplicationContainer()->get('qtiv2_item_mapper');
     }
 
     public function testMergedTextInteraction()
     {
-        $mapper = new ItemMapper();
-        list($item, $questions) = $mapper->parse($this->file->getContents());
+        list($item, $questions) = $this->mapper->parse($this->file->getContents());
 
         /** @var \Learnosity\Entities\Item $item */
         $this->assertInstanceOf('Learnosity\Entities\Item', $item);
@@ -53,7 +56,7 @@ class MergedTextEntryInteractionTest extends \PHPUnit_Framework_TestCase
         $validResponse = $validation->get_valid_response();
         $this->assertInstanceOf('\Learnosity\Entities\QuestionTypes\clozetext_validation_valid_response',
             $validResponse);
-        $this->assertEquals(1, $validResponse->get_score());
+        $this->assertEquals(6, $validResponse->get_score());
 
         $options = [];
         $options[] = $validResponse->get_value();
@@ -64,9 +67,12 @@ class MergedTextEntryInteractionTest extends \PHPUnit_Framework_TestCase
         foreach ($altResponses as $altResponse) {
             $this->assertInstanceOf('\Learnosity\Entities\QuestionTypes\clozetext_validation_alt_responses_item',
                 $altResponse);
-            $this->assertEquals(1, $altResponse->get_score());
             $options[] = $altResponse->get_value();
         }
+
+        $this->assertEquals(5, $altResponses[0]->get_score());
+        $this->assertEquals(5, $altResponses[1]->get_score());
+        $this->assertEquals(4, $altResponses[2]->get_score());
 
         $expectedOptions = ArrayUtil::mutateResponses([['a', 'b'], ['OHMYGOD', 'x7']]);
         $matchCount = 0;

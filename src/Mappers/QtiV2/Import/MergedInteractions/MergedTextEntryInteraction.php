@@ -105,6 +105,7 @@ class MergedTextEntryInteraction extends AbstractMergedInteraction
                     }
                     $originalResponseData[] = $answers;
                     break;
+                case ResponseProcessingTemplate::CC2_MAP_RESPONSE:
                 case ResponseProcessingTemplate::MAP_RESPONSE:
                     /* @var $responseElement ResponseDeclaration */
                     $responseElement = $this->responseDeclarations[$interactionIdentifier];
