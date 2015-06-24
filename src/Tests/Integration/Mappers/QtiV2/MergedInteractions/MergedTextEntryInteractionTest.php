@@ -25,8 +25,8 @@ class MergedTextEntryInteractionTest extends \PHPUnit_Framework_TestCase
     {
         list($item, $questions) = $this->mapper->parse($this->file->getContents());
 
-        /** @var \Learnosity\Entities\Item $item */
-        $this->assertInstanceOf('Learnosity\Entities\Item', $item);
+        /** @var \Learnosity\Entities\Item\item $item */
+        $this->assertInstanceOf('Learnosity\Entities\Item\item', $item);
         $this->assertTrue($item->get_reference() === 'res_AA-FIB_B13_CH1_geoc_f1f1');
         $this->assertTrue($item->get_status() === 'published');
 

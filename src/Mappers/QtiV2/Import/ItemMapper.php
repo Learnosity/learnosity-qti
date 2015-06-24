@@ -6,7 +6,6 @@ use Exception;
 use Learnosity\Entities\Item\item;
 use Learnosity\Entities\Question;
 use Learnosity\Exceptions\MappingException;
-use Learnosity\Mappers\QtiV2\Import\Interactions\AbstractInteraction;
 use Learnosity\Mappers\QtiV2\Import\MergedInteractions\AbstractMergedInteraction;
 use Learnosity\Mappers\QtiV2\Import\Utils\QtiComponentUtil;
 use qtism\data\AssessmentItem;

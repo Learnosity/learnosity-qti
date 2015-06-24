@@ -64,8 +64,8 @@ class ItemMapperTest extends \PHPUnit_Framework_TestCase
 
         $this->assertcount(3, $data);
 
-        $this->assertInstanceOf('Learnosity\Entities\Item', $data[0]);
-        /* @var $item \Learnosity\Entities\Item */
+        $this->assertInstanceOf('Learnosity\Entities\Item\item', $data[0]);
+        /* @var $item \Learnosity\Entities\Item\item */
         $item = $data[0];
         $this->assertEquals('testItemID', $item->get_reference());
         $this->assertEquals('published', $item->get_status());
@@ -98,8 +98,8 @@ class ItemMapperTest extends \PHPUnit_Framework_TestCase
 
         $data = $this->itemMapper->parse('');
         $this->assertcount(3, $data);
-        $this->assertInstanceOf('Learnosity\Entities\Item', $data[0]);
-        /* @var $item \Learnosity\Entities\Item */
+        $this->assertInstanceOf('Learnosity\Entities\Item\item', $data[0]);
+        /* @var $item \Learnosity\Entities\Item\item */
         $item = $data[0];
         $this->assertEquals('testItemID', $item->get_reference());
         $this->assertEquals('published', $item->get_status());
