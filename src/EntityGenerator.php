@@ -4,6 +4,7 @@ namespace Learnosity;
 
 use Learnosity\Services\SchemasService;
 use Learnosity\Utils\FileSystemUtil;
+use Twig_Extension_Debug;
 use Twig_Extensions_Extension_Text;
 
 class EntityGenerator
@@ -28,17 +29,14 @@ class EntityGenerator
         @FileSystemUtil::recursiveRemoveDirectory($path);
     }
 
-    private function getTwigEnvironment()
-    {
-        return new \Twig_Environment(new \Twig_Loader_Filesystem($this->templateDirectory), [
-            'debug' => true
-        ]);
-    }
-
     private function renderFile($template, $target, $parameters)
     {
-        $twig = $this->getTwigEnvironment();
+        $twig = new \Twig_Environment(new \Twig_Loader_Filesystem($this->templateDirectory), [
+            'debug' => true
+        ]);
         $twig->addExtension(new Twig_Extensions_Extension_Text());
+        $twig->addExtension(new Twig_Extension_Debug());
+
         if (!is_dir(dirname($target))) {
             mkdir(dirname($target), 0777, true);
         }

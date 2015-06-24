@@ -4,7 +4,18 @@
             "attributes": {
                 "reference": {
                     "required": true,
-                    "type": "string"
+                    "type": "string",
+                    "description": "A unique item identifier across Itembank. It has a limitation of maximum of 150 characters and must only contain ASCII printable characters, except for double quotes, single quotes and accent."
+                },
+                "questionReferences": {
+                    "required": true,
+                    "type": "array",
+                    "description": "An array of question references. Like item reference, it has a limitation of maximum of 150 characters and must only contain ASCII printable characters, except for double quotes, single quotes and accent. ie. `questionReferenceOne`"
+                },
+                "content": {
+                    "required": true,
+                    "type": "string",
+                    "description": "A valid HTML string that may contains the structure that holds Questions. It shall include questions placeholder set in `questionReferences`, ie. <span class=\"learnosity-response question-questionReferenceOne\"></span>"
                 },
                 "status": {
                     "required": false,
@@ -14,18 +25,11 @@
                         {"value": "published"},
                         {"value": "deleted"}
                     ],
-                    "default": "unpublished"
-                },
-                "questionReferences": {
-                    "required": true,
-                    "type": "array"
+                    "default": "unpublished",
+                    "description": "ie. `published`, `unpublished`, and `deleted`"
                 },
                 "description": {
                     "required": false,
-                    "type": "string"
-                },
-                "content": {
-                    "required": true,
                     "type": "string"
                 },
                 "metadata": {

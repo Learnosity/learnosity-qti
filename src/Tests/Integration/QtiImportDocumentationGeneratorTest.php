@@ -2,13 +2,13 @@
 
 namespace Learnosity\Tests\Integration;
 
-use Learnosity\QtiImportDocumentationGenerator;
+use Learnosity\AppContainer;
 
 class QtiImportDocumentationGeneratorTest extends \PHPUnit_Framework_TestCase
 {
     public function testGenerateImportDocs()
     {
-        $generator = new QtiImportDocumentationGenerator();
+        $generator = AppContainer::getApplicationContainer()->get('learnosity_documentation_generator');
         $generator->generateDocumentation();
     }
 } 

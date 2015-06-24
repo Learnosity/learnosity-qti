@@ -41,8 +41,8 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
         });
     </script>
         <style>
-        .doc-table { width: 100%; }
-        .doc-table tr td { vertical-align: top; }
+        table { width: 100%; }
+        table tr td { vertical-align: top; }
         .doc-table tr td.name { width: 20%; }
         .doc-table tr td.support-status { width: 10%; }
         .doc-table tr td.support-status-yes { background: green; color: white; }
@@ -63,19 +63,180 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
         <p>Documentation is in progress.</p>
         <hr/>
 
-        <h3>Mapping AssessmentTest and Interactions</h3>
+        <h3>Mapping AssessmentTest</h3>
         <p>TODO: Need to fill this up</p>
 
-        <h3>Mapping AssessmentItems and Interactions</h3>
-        <ul class="link-list">
-                    <li><a href="#ChoiceInteraction">ChoiceInteraction</a></li>
-                    <li><a href="#TextEntryInteraction">TextEntryInteraction</a></li>
-                    <li><a href="#ExtendedTextInteraction">ExtendedTextInteraction</a></li>
-                    <li><a href="#InlineChoiceInteraction">InlineChoiceInteraction</a></li>
-                </ul>
-        <p>TODO: General handling of `responseProcessing`</p>
-                    <div class="panel">QTI assessmentItem is mapped to Learnosity Item.</div>
-    
+        <h3>Mapping AssessmentItems</h3>
+        <p>An `assessmentItem` element in QTI is generally mapped one to one to a Learnosity Item and its `interactions`
+    are mapped to Learnosity Question(s). To learn more about Item and Question in Learnosity context please read our documentation:
+    <a target="_blank" href="http://docs.learnosity.com/tutorials/tutorial_101#intro">http://docs.learnosity.com/tutorials/tutorial_101#intro</a>
+</p>
+
+<p>An Item can be represented in a JSON format with below attributes.</p>
+<table>
+    <tr>
+        <th style="width: 10%">Attribute</th>
+        <th style="width: 10%">Mandatory</th>
+        <th style="width: 10%">Type</th>
+        <th>Notes</th>
+    </tr>
+            <tr>
+            <td><pre>reference</pre></td>
+            <td><pre>Y</pre></td>
+            <td><pre>string</pre></td>
+            <td>A unique item identifier across Itembank. It has a limitation of maximum of 150 characters and must only contain ASCII printable characters, except for double quotes, single quotes and accent.</td>
+        </tr>
+            <tr>
+            <td><pre>questionReferences</pre></td>
+            <td><pre>Y</pre></td>
+            <td><pre>array</pre></td>
+            <td>An array of question references. Like item reference, it has a limitation of maximum of 150 characters and must only contain ASCII printable characters, except for double quotes, single quotes and accent. ie. `questionReferenceOne`</td>
+        </tr>
+            <tr>
+            <td><pre>content</pre></td>
+            <td><pre>Y</pre></td>
+            <td><pre>string</pre></td>
+            <td>A valid HTML string that may contains the structure that holds Questions. It shall include questions placeholder set in `questionReferences`, ie. &lt;span class=&quot;learnosity-response question-questionReferenceOne&quot;&gt;&lt;/span&gt;</td>
+        </tr>
+            <tr>
+            <td><pre>status</pre></td>
+            <td><pre>N</pre></td>
+            <td><pre>string</pre></td>
+            <td>ie. `published`, `unpublished`, and `deleted`</td>
+        </tr>
+            <tr>
+            <td><pre>description</pre></td>
+            <td><pre>N</pre></td>
+            <td><pre>string</pre></td>
+            <td></td>
+        </tr>
+            <tr>
+            <td><pre>metadata</pre></td>
+            <td><pre>N</pre></td>
+            <td><pre>array</pre></td>
+            <td></td>
+        </tr>
+            <tr>
+            <td><pre>workflow</pre></td>
+            <td><pre>N</pre></td>
+            <td><pre>array</pre></td>
+            <td></td>
+        </tr>
+    </table>
+<hr/>
+
+<p><strong>Mapping Rules 101</strong></p>
+<ul>
+    <li>Item `reference` is taken from &lt;assessmentItem&gt; identifier</li>
+    <li>Question `reference` would be mapped from the combination of &lt;assessmentItem&gt; and interaction identifier separated by underscore</li>
+    <li>Status is mapped as `published`</li>
+    <li>Generally &lt;itemBody&gt; content would have its &lt;rubricBlock&gt; stripped and be mapped to Item's `content` with interaction elements replaced with
+        Question placeholder. Special case for an assessment item with only either `inlineChoiceInteraction` or
+    `textEntryInteraction` types, the entire &lt;itemBody&gt; content would be mapped to Question `template`. See example on `inlineChoiceInteraction` below.</li>
+</ul>
+<p>Easily import these items and questions JSON to Learnosity Itembank using Data API. See documentation at
+    <a href="http://docs.learnosity.com/reporting/data/initialisation" target="_blank">http://docs.learnosity.com/reporting/data/initialisation</a>
+</p>
+<hr/>
+
+<p><strong>Examples</strong></p>
+<p>An example of mapping a QTI `choiceInteraction` assessment item (choice.xml) at
+    <a target="_blank" href="http://www.imsglobal.org/question/qtiv2p1/examples/items/choice.xml">http://www.imsglobal.org/question/qtiv2p1/examples/items/choice.xml</a>
+    to Learnosity Item and Question with `mcq` question type.
+</p>
+<div class="panel" style="word-wrap: break-word">
+    <pre>{
+    "reference": "choice",
+    "status": "published",
+    "questionReferences": [
+        "choice_RESPONSE"
+    ],
+    "description": "Unattended Luggage",
+    "content": "&lt;p&gt;Look at the text in the picture.&lt;/p&gt;&lt;p&gt;&lt;img src=\&quot;images/sign.png\&quot; alt=\&quot;NEVER LEAVE LUGGAGE UNATTENDED\&quot;/&gt;&lt;/p&gt;&lt;span class=\&quot;learnosity-response question-choice_RESPONSE\&quot;&gt;&lt;/span&gt;"
+}</pre>
+</div>
+<div class="panel" style="word-wrap: break-word">
+    <pre>[
+    {
+        "reference": "choice_RESPONSE",
+        "type": "mcq",
+        "data": {
+            "stimulus": "What does it say?",
+            "type": "mcq",
+            "validation": {
+                "scoring_type": "exactMatch",
+                "valid_response": {
+                    "score": 1,
+                    "value": [
+                        "ChoiceA"
+                    ]
+                }
+            },
+            "options": [
+                {
+                    "label": "You must stay with your luggage at all times.",
+                    "value": "ChoiceA"
+                },
+                {
+                    "label": "Do not let someone else look after your luggage.",
+                    "value": "ChoiceB"
+                },
+                {
+                    "label": "Remember your luggage when you leave.",
+                    "value": "ChoiceC"
+                }
+            ],
+            "shuffle_options": false
+        }
+    }
+]</pre>
+</div>
+<hr/>
+<p>Another example of mapping a QTI `inlineChoiceInteraction` assessment item (inline_choice.xml) at
+    <a target="_blank" href="http://www.imsglobal.org/question/qtiv2p1/examples/items/inline_choice.xml">http://www.imsglobal.org/question/qtiv2p1/examples/items/inline_choice.xml</a>
+    to Learnosity Item and Question with `clozedropdown` question type. Note that the entire  &lt;itemBody&gt; is mapped to Question `template`.
+</p>
+<div class="panel" style="word-wrap: break-word">
+    <pre>{
+    "reference": "inlineChoice",
+    "status": "published",
+    "content": "&lt;span class=\&quot;learnosity-response question-inlineChoice_RESPONSE\&quot;&gt;&lt;/span&gt;",
+    "description": "Richard III (Take 2)",
+    "questionReferences": [
+        "inlineChoice_RESPONSE"
+    ]
+}</pre>
+</div>
+<div class="panel" style="word-wrap: break-word">
+    <pre>[
+    {
+        "reference": "inlineChoice_RESPONSE",
+        "type": "clozedropdown",
+        "data": {
+            "type": "clozedropdown",
+            "validation": {
+                "scoring_type": "exactMatch",
+                "valid_response": {
+                    "score": 1,
+                    "value": [
+                        "York"
+                    ]
+                }
+            },
+            "template": "&lt;p&gt;Identify the missing word in this famous quote from Shakespeare's Richard III.&lt;/p&gt;&lt;blockquote&gt;&lt;p&gt;Now is the winter of our discontent&lt;br/&gt; Made glorious summer by this sun of\n\n\t\t\t\t\t;&lt;br/&gt; And all the clouds that lour'd upon our house&lt;br/&gt;\n\n\t\t\t\tIn the deep bosom of the ocean buried.&lt;/p&gt;&lt;/blockquote&gt;",
+            "possible_responses": [
+                [
+                    "Gloucester",
+                    "Lancaster",
+                    "York"
+                ]
+            ]
+        }
+    }
+]</pre>
+</div>
+<hr/>
+            
             <table class="doc-table">
             <tr>
                 <th></th>
@@ -122,10 +283,11 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                     <td class="support-status support-status-no">NO</td>
                     <td class="description"></td>
                 </tr>
-                                                                                                                                            <tr>
+                                                                                                                <tr>
                             <td class="name">responseDeclaration</td>
                             <td class="support-status support-status-partial">PARTIAL</td>
-                            <td class="description">Support only format defined for QTI response processing template `match_correct`.</td>
+                            <td class="description">Support only format defined for standard QTI response processing template,
+                                            ie. `match_correct`, `map_response`, `cc2_map_response`</td>
                         </tr>
                                                                                                             <tr>
                             <td class="name">outcomeDeclaration</td>
@@ -144,6 +306,22 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                         </tr>
                                                                                                             <tr>
                             <td class="name">stylesheet</td>
+                            <td class="support-status support-status-no">NO</td>
+                            <td class="description"></td>
+                        </tr>
+                                                                                                            <tr>
+                            <td class="name">responseProcessing</td>
+                            <td class="support-status support-status-partial">PARTIAL</td>
+                            <td class="description">Support only format defined for standard QTI response processing template,
+                                            ie. `match_correct`, `map_response`, `cc2_map_response`</td>
+                        </tr>
+                                                                                                            <tr>
+                            <td class="name">modalFeedback</td>
+                            <td class="support-status support-status-no">NO</td>
+                            <td class="description"></td>
+                        </tr>
+                                                                                                            <tr>
+                            <td class="name">apip:apiAccessibility</td>
                             <td class="support-status support-status-no">NO</td>
                             <td class="description"></td>
                         </tr>
@@ -228,26 +406,18 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                                 </div>
                             </td>
                         </tr>
-                                                                                                            <tr>
-                            <td class="name">responseProcessing</td>
-                            <td class="support-status support-status-partial">PARTIAL</td>
-                            <td class="description">We process QTI `match_corect` defined response processing template
-                                            on some of our interactions.</td>
-                        </tr>
-                                                                                                            <tr>
-                            <td class="name">modalFeedback</td>
-                            <td class="support-status support-status-no">NO</td>
-                            <td class="description"></td>
-                        </tr>
-                                                                                                            <tr>
-                            <td class="name">apip:apiAccessibility</td>
-                            <td class="support-status support-status-no">NO</td>
-                            <td class="description"></td>
-                        </tr>
                                                         </table>
     
+        <hr/>
 
-        <h4>Interactions</h4>
+        <h4>Supported Interactions</h4>
+        <ul class="link-list">
+                            <li><a href="#ChoiceInteraction">ChoiceInteraction</a></li>
+                            <li><a href="#TextEntryInteraction">TextEntryInteraction</a></li>
+                            <li><a href="#ExtendedTextInteraction">ExtendedTextInteraction</a></li>
+                            <li><a href="#InlineChoiceInteraction">InlineChoiceInteraction</a></li>
+                    </ul>
+        <hr/>
                     <h4 id="ChoiceInteraction">ChoiceInteraction</h4>
                         <div class="panel">
                 The element 'choiceInteraction' map to our 'mcq' question.

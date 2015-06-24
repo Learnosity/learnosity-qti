@@ -1,6 +1,9 @@
 services:
     schemas_service:
         class:     Learnosity\Services\SchemasService
+    learnosity_documentation_generator:
+        class:     Learnosity\QtiImportDocumentationGenerator
+        arguments: ["@schemas_service"]
     learnosity_entity_generator:
         class:     Learnosity\EntityGenerator
         arguments: ["@schemas_service"]
