@@ -5,6 +5,9 @@ services:
         class:     Learnosity\Services\SchemasService
     mapper_factory:
         class:     Learnosity\Mappers\QtiV2\Import\MapperFactory
+    learnosity_documentation_generator:
+        class:     Learnosity\QtiImportDocumentationGenerator
+        arguments: ["@schemas_service"]
     learnosity_entity_generator:
         class:     Learnosity\EntityGenerator
         arguments: ["@schemas_service"]

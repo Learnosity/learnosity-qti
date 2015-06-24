@@ -3,7 +3,7 @@
 namespace Learnosity\Mappers\QtiV2\Import;
 
 use Exception;
-use Learnosity\Entities\Item;
+use Learnosity\Entities\Item\item;
 use Learnosity\Entities\Question;
 use Learnosity\Exceptions\MappingException;
 use Learnosity\Mappers\QtiV2\Import\Interactions\AbstractInteraction;
@@ -140,8 +140,7 @@ class ItemMapper
             }
         }
 
-
-        $item = new Item($assessmentItem->getIdentifier(), array_keys($questions), $content);
+        $item = new item($assessmentItem->getIdentifier(), array_keys($questions), $content);
         if ($assessmentItem->getTitle()) {
             $item->set_description($assessmentItem->getTitle());
         }

@@ -12,8 +12,8 @@
         });
     </script>
         <style>
-        .doc-table { width: 100%; }
-        .doc-table tr td { vertical-align: top; }
+        table { width: 100%; }
+        table tr td { vertical-align: top; }
         .doc-table tr td.name { width: 20%; }
         .doc-table tr td.support-status { width: 10%; }
         .doc-table tr td.support-status-yes { background: green; color: white; }
@@ -35,19 +35,21 @@
         <p>Documentation is in progress.</p>
         <hr/>
 
-        <h3>Mapping AssessmentTest and Interactions</h3>
+        <h3>Mapping AssessmentTest</h3>
         <p>TODO: Need to fill this up</p>
 
-        <h3>Mapping AssessmentItems and Interactions</h3>
-        <ul class="link-list">
-        {% for interactionName, interaction in interactions %}
-            <li><a href="#{{ interactionName }}">{{ interactionName }}</a></li>
-        {% endfor %}
-        </ul>
-        <p>TODO: General handling of `responseProcessing`</p>
+        <h3>Mapping AssessmentItems</h3>
+        {% include 'docs/assessmentitem.html.twig' with itemSchemas %}
         {{ _self.generateTables('AssessmentItem', assessmentItem) }}
+        <hr/>
 
-        <h4>Interactions</h4>
+        <h4>Supported Interactions</h4>
+        <ul class="link-list">
+            {% for interactionName, interaction in interactions %}
+                <li><a href="#{{ interactionName }}">{{ interactionName }}</a></li>
+            {% endfor %}
+        </ul>
+        <hr/>
         {% for interactionName, interaction in interactions %}
             <h4 id="{{ interactionName }}">{{ interactionName }}</h4>
             {{ _self.generateTables(interactionName, interaction.interactionMapping) }}

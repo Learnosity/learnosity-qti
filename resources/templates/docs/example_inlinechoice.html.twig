@@ -1,0 +1,43 @@
+<p>Another example of mapping a QTI `inlineChoiceInteraction` assessment item (inline_choice.xml) at
+    <a target="_blank" href="http://www.imsglobal.org/question/qtiv2p1/examples/items/inline_choice.xml">http://www.imsglobal.org/question/qtiv2p1/examples/items/inline_choice.xml</a>
+    to Learnosity Item and Question with `clozedropdown` question type. Note that the entire  &lt;itemBody&gt; is mapped to Question `template`.
+</p>
+<div class="panel" style="word-wrap: break-word">
+    <pre>{
+    "reference": "inlineChoice",
+    "status": "published",
+    "content": "&lt;span class=\&quot;learnosity-response question-inlineChoice_RESPONSE\&quot;&gt;&lt;/span&gt;",
+    "description": "Richard III (Take 2)",
+    "questionReferences": [
+        "inlineChoice_RESPONSE"
+    ]
+}</pre>
+</div>
+<div class="panel" style="word-wrap: break-word">
+    <pre>[
+    {
+        "reference": "inlineChoice_RESPONSE",
+        "type": "clozedropdown",
+        "data": {
+            "type": "clozedropdown",
+            "validation": {
+                "scoring_type": "exactMatch",
+                "valid_response": {
+                    "score": 1,
+                    "value": [
+                        "York"
+                    ]
+                }
+            },
+            "template": "&lt;p&gt;Identify the missing word in this famous quote from Shakespeare's Richard III.&lt;/p&gt;&lt;blockquote&gt;&lt;p&gt;Now is the winter of our discontent&lt;br/&gt; Made glorious summer by this sun of\n\n\t\t\t\t\t{{response}};&lt;br/&gt; And all the clouds that lour'd upon our house&lt;br/&gt;\n\n\t\t\t\tIn the deep bosom of the ocean buried.&lt;/p&gt;&lt;/blockquote&gt;",
+            "possible_responses": [
+                [
+                    "Gloucester",
+                    "Lancaster",
+                    "York"
+                ]
+            ]
+        }
+    }
+]</pre>
+</div>

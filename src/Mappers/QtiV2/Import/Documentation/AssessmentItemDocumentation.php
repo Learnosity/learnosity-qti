@@ -7,7 +7,6 @@ class AssessmentItemDocumentation
     public static function getInteractionDocumentation()
     {
         return [
-            '@notes'                => "QTI assessmentItem is mapped to Learnosity Item.",
             '@attributes'           => [
                 'identifier'    => QtiDoc::support('This attribute is mapped Item `reference`.'),
                 'title'         => QtiDoc::support('This attribute is mapped to Item `description`.'),
@@ -18,11 +17,16 @@ class AssessmentItemDocumentation
                 'adaptive'      => QtiDoc::none(),
                 'timeDependent' => QtiDoc::none()
             ],
-            'responseDeclaration'   => QtiDoc::partial('Support only format defined for QTI response processing template `match_correct`.'),
+            'responseDeclaration'   => QtiDoc::partial('Support only format defined for standard QTI response processing template,
+                                            ie. `match_correct`, `map_response`, `cc2_map_response`'),
             'outcomeDeclaration'    => QtiDoc::none(),
             'templateDeclaration'   => QtiDoc::none('Having this element set will throw a critical exception and stop conversion process.'),
             'templateProcessing'    => QtiDoc::none('Having this element set will throw a critical exception and stop conversion process.'),
             'stylesheet'            => QtiDoc::none(),
+            'responseProcessing'    => QtiDoc::partial('Support only format defined for standard QTI response processing template,
+                                            ie. `match_correct`, `map_response`, `cc2_map_response`'),
+            'modalFeedback'         => QtiDoc::none(),
+            'apip:apiAccessibility' => QtiDoc::none(),
             'itemBody'              => [
                 '@attributes'       => [
                     'id'      => QtiDoc::none(),
@@ -40,10 +44,6 @@ class AssessmentItemDocumentation
                 'xhtml*'              => QtiDoc::support('Support only block XHTML elements as per QTI specs.'),
                 '*Interaction' => QtiDoc::partial('Interactions will be parsed as Questions. See more documentation on Interactions below.')
             ],
-            'responseProcessing'    => QtiDoc::partial('We process QTI `match_corect` defined response processing template
-                                            on some of our interactions.'),
-            'modalFeedback'         => QtiDoc::none(),
-            'apip:apiAccessibility' => QtiDoc::none(),
         ];
     }
 } 
