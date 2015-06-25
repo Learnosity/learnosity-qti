@@ -19,20 +19,20 @@ class ItemMapper
     private $supportedInteractions = ['inlineChoiceInteraction', 'choiceInteraction',
         'extendedTextInteraction', 'textEntryInteraction'];
 
-    /* @var $regularItemMapper RegularItemBuilder */
-    private $regularItemMapper;
-    /* @var $mergedItemMapper MergedItemBuilder */
-    private $mergedItemMapper;
+    /* @var $regularItemBuilder RegularItemBuilder */
+    private $regularItemBuilder;
+    /* @var $mergedItemBuilder MergedItemBuilder */
+    private $mergedItemBuilder;
 
 
     public function __construct(XmlCompactDocument $document,
-                                MergedItemBuilder $mergedItemMapper,
-                                RegularItemBuilder $regularItemMapper)
+                                MergedItemBuilder $mergedItemBuilder,
+                                RegularItemBuilder $regularItemBuilder)
     {
         $this->xmlDocument = $document;
         $this->exceptions = [];
-        $this->mergedItemMapper = $mergedItemMapper;
-        $this->regularItemMapper = $regularItemMapper;
+        $this->mergedItemBuilder = $mergedItemBuilder;
+        $this->regularItemBuilder = $regularItemBuilder;
     }
 
     public function getExceptions()
@@ -62,7 +62,7 @@ class ItemMapper
 
         $responseDeclarations = $assessmentItem->getComponentsByClassName('responseDeclaration', true);
 
-        $mergedMapResult = $this->mergedItemMapper->map(
+        $mergedMapResult = $this->mergedItemBuilder->map(
             $assessmentItem->getIdentifier(),
             $itemBody,
             $interactionComponents,
@@ -70,7 +70,7 @@ class ItemMapper
             $responseProcessingTemplate
         );
 
-        $mapper = ($mergedMapResult) ? $this->mergedItemMapper : $this->regularItemMapper;
+        $mapper = ($mergedMapResult) ? $this->mergedItemBuilder : $this->regularItemBuilder;
 
         if (!$mergedMapResult) {
             $mapper->map(

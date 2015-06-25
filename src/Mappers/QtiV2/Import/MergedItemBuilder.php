@@ -3,6 +3,7 @@
 namespace Learnosity\Mappers\QtiV2\Import;
 
 use Learnosity\Entities\Question;
+use Learnosity\Mappers\QtiV2\Import\MergedInteractions\AbstractMergedInteraction;
 use qtism\data\content\interactions\Interaction;
 use qtism\data\content\ItemBody;
 use qtism\data\QtiComponentCollection;
@@ -39,7 +40,7 @@ class MergedItemBuilder extends AbstractItemBuilder
         return true;
     }
 
-    public function buildMergedQuestionReference(QtiComponentCollection $interactionComponents)
+    protected function buildMergedQuestionReference(QtiComponentCollection $interactionComponents)
     {
         $questionReference = $this->assessmentItemIdentifier;
         foreach ($interactionComponents as $component) {
@@ -51,7 +52,7 @@ class MergedItemBuilder extends AbstractItemBuilder
         return $questionReference;
     }
 
-    public function getMergedInteractionType(QtiComponentCollection $interactionComponents)
+    protected function getMergedInteractionType(QtiComponentCollection $interactionComponents)
     {
         // Decide whether we shall merge interaction
         $interactionTypes = array_unique(array_map(function ($component) {

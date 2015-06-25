@@ -24,9 +24,12 @@ class RegularItemBuilder extends AbstractItemBuilder
 
         $questionsSpan = [];
         $responseDeclarationsMap = [];
-        /** @var ResponseDeclaration $responseDeclaration */
-        foreach ($responseDeclarations as $responseDeclaration) {
-            $responseDeclarationsMap[$responseDeclaration->getIdentifier()] = $responseDeclaration;
+
+        if ($responseDeclarations) {
+            /** @var ResponseDeclaration $responseDeclaration */
+            foreach ($responseDeclarations as $responseDeclaration) {
+                $responseDeclarationsMap[$responseDeclaration->getIdentifier()] = $responseDeclaration;
+            }
         }
 
         foreach ($interactionComponents as $component) {
@@ -34,7 +37,8 @@ class RegularItemBuilder extends AbstractItemBuilder
             $questionReference = $assessmentItemIdentifier . '_' . $component->getResponseIdentifier();
 
             // Process <responseDeclaration>
-            $responseDeclaration = $responseDeclarationsMap[$component->getResponseIdentifier()];
+            $responseDeclaration = isset($responseDeclarationsMap[$component->getResponseIdentifier()]) ?
+                $responseDeclarationsMap[$component->getResponseIdentifier()] : null;
 
             $mapper = $this->getMapperInstance(
                 $component->getQtiClassName(),

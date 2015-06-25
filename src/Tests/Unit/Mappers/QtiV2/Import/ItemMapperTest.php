@@ -1,6 +1,7 @@
 <?php
 namespace Learnosity\Tests\Unit\Mappers\QtiV2\Import;
 
+use Learnosity\Entities\Item\item;
 use Learnosity\Entities\QuestionTypes\clozetext;
 use Learnosity\Mappers\QtiV2\Import\ItemMapper;
 use Learnosity\Mappers\QtiV2\Import\ResponseProcessingTemplate;
@@ -19,8 +20,9 @@ class ItemMapperTest extends \PHPUnit_Framework_TestCase
     /* @var $itemMapper ItemMapper */
     private $itemMapper;
     private $mockXmlDocument;
-    private $mockMapperFactory;
     private $mockMapper;
+    private $mockMergedItemBuilder;
+    private $mockRegularItemBuilder;
 
     public function setup()
     {
@@ -29,17 +31,19 @@ class ItemMapperTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $this->mockXmlDocument->method('loadFromString')->willReturn(true);
 
-        $this->mockMapperFactory = $this->getMockBuilder('Learnosity\Mappers\QtiV2\Import\MapperFactory')
-            ->disableOriginalConstructor()
-            ->getMock();
 
-        $this->mockMapper = $this
-            ->getMockBuilder('Learnosity\Mappers\QtiV2\Import\MergedInteractions\MergedInlineChoiceInteraction')
+        $this->mockMapper =
+            $this->getMockBuilder('Learnosity\Mappers\QtiV2\Import\MergedInteractions\MergedInlineChoiceInteraction')
+                ->disableOriginalConstructor()->getMock();
+
+        $this->mockMergedItemBuilder = $this->getMockBuilder('Learnosity\Mappers\QtiV2\Import\MergedItemBuilder')
             ->disableOriginalConstructor()->getMock();
 
-        $this->mockMapperFactory->method('getMapper')->willReturn($this->mockMapper);
+        $this->mockRegularItemBuilder = $this->getMockBuilder('Learnosity\Mappers\QtiV2\Import\RegularItemBuilder')
+            ->disableOriginalConstructor()->getMock();
 
-        $this->itemMapper = new ItemMapper($this->mockXmlDocument, $this->mockMapperFactory);
+        $this->itemMapper =
+            new ItemMapper($this->mockXmlDocument, $this->mockMergedItemBuilder, $this->mockRegularItemBuilder);
     }
 
     public function testParseWithoutInteraction()
@@ -56,34 +60,23 @@ class ItemMapperTest extends \PHPUnit_Framework_TestCase
         $this->mockXmlDocument->method('getDocumentComponent')
             ->willReturn($this->buildAssessmentItemWithSameInteractionTypes());
 
-        $this->mockMapper->method('getQuestionType')->willReturn($this->buildQuestion());
-        $this->mockMapper->method('getItemContent')->willReturn('testQuestionReference');
-        $this->mockMapper->method('getExceptions')->willReturn([]);
+        $testItem = $this->buildItem();
+        $testQuestion = $this->buildQuestion();
+
+        $this->mockMergedItemBuilder->expects($this->once())->method('getExceptions')->willReturn([]);
+        $this->mockMergedItemBuilder->expects($this->once())->method('getItem')->willReturn($testItem);
+        $this->mockMergedItemBuilder->expects($this->once())->method('getQuestions')->willReturn([$testQuestion]);
+        $this->mockMergedItemBuilder->expects($this->once())->method('map')->willReturn(true);
 
         $data = $this->itemMapper->parse('');
 
         $this->assertcount(3, $data);
 
-        $this->assertInstanceOf('Learnosity\Entities\Item\item', $data[0]);
-        /* @var $item \Learnosity\Entities\Item\item */
         $item = $data[0];
-        $this->assertEquals('testItemID', $item->get_reference());
-        $this->assertEquals('published', $item->get_status());
-        $this->assertEquals('testQuestionReference', $item->get_content());
-        $this->assertNull($item->get_workflow());
-        $this->assertNull($item->get_metadata());
-        $this->assertEquals('testItemTitle', $item->get_description());
-        $this->assertCount(1, $item->get_questionReferences());
-        $this->assertEquals('testItemID_testInteractionOne_testInteractionTwo', $item->get_questionReferences()[0]);
+        $this->assertEquals($testItem, $item);
 
         $this->assertCount(1, $data[1]);
-        $this->assertInstanceOf('Learnosity\Entities\Question',
-            $data[1]['testItemID_testInteractionOne_testInteractionTwo']);
-        /* @var $question \Learnosity\Entities\Question */
-        $question = $data[1]['testItemID_testInteractionOne_testInteractionTwo'];
-        $this->assertEquals('testItemID_testInteractionOne_testInteractionTwo', $question->get_reference());
-        $this->assertEquals('testQuestionType', $question->get_type());
-        $this->assertNotNull($question->get_data());
+        $this->assertEquals([$testQuestion], $data[1]);
         $this->assertEmpty($data[2], 'Should have no exception');
     }
 
@@ -92,37 +85,32 @@ class ItemMapperTest extends \PHPUnit_Framework_TestCase
 
         $this->mockXmlDocument->method('getDocumentComponent')
             ->willReturn($this->buildAssessmentItemWithDifferentInteractionTypes());
-        $this->mockMapper->method('getQuestionType')->willReturn($this->buildQuestion());
-        $this->mockMapper->method('getItemContent')->willReturn('testQuestionReference');
-        $this->mockMapper->method('getExceptions')->willReturn([]);
+        $testItem = $this->buildItem();
+        $testQuestion = $this->buildQuestion();
+
+        // item(s) cannot be merged
+        $this->mockMergedItemBuilder->expects($this->once())->method('map')->willReturn(false);
+
+        $this->mockRegularItemBuilder->expects($this->once())->method('getExceptions')->willReturn([]);
+        $this->mockRegularItemBuilder->expects($this->once())->method('getItem')->willReturn($testItem);
+        $this->mockRegularItemBuilder->expects($this->once())->method('getQuestions')->willReturn([$testQuestion]);
+        $this->mockRegularItemBuilder->expects($this->once())->method('map')->willReturn(true);
+
 
         $data = $this->itemMapper->parse('');
         $this->assertcount(3, $data);
-        $this->assertInstanceOf('Learnosity\Entities\Item\item', $data[0]);
-        /* @var $item \Learnosity\Entities\Item\item */
+
         $item = $data[0];
-        $this->assertEquals('testItemID', $item->get_reference());
-        $this->assertEquals('published', $item->get_status());
-        $this->assertEquals('<p>The Matrix movie is starring .<span class="learnosity-response question-testItemID_testInteractionOne"></span><span class="learnosity-response question-testItemID_testInteractionTwo"></span></p>', $item->get_content());
-        $this->assertNull($item->get_workflow());
-        $this->assertNull($item->get_metadata());
-        $this->assertEquals('testItemTitle', $item->get_description());
-        $this->assertCount(2, $item->get_questionReferences());
-        $this->assertEquals('testItemID_testInteractionOne', $item->get_questionReferences()[0]);
-        $this->assertEquals('testItemID_testInteractionTwo', $item->get_questionReferences()[1]);
+        $this->assertEquals($testItem, $item);
 
-        $this->assertCount(2, $data[1]);
-        $questions = $data[1];
-        foreach ($questions as $question) {
-            $this->assertInstanceOf('Learnosity\Entities\Question', $question);
-            $this->assertNotNull($question->get_data());
-        }
-
-        $this->assertEquals('testItemID_testInteractionOne', $questions['testItemID_testInteractionOne']->get_reference());
-        $this->assertEquals('testQuestionType', $questions['testItemID_testInteractionOne']->get_type());
-        $this->assertEquals('testItemID_testInteractionTwo', $questions['testItemID_testInteractionTwo']->get_reference());
-        $this->assertEquals('testQuestionType', $questions['testItemID_testInteractionTwo']->get_type());
+        $this->assertCount(1, $data[1]);
+        $this->assertEquals([$testQuestion], $data[1]);
         $this->assertEmpty($data[2], 'Should have no exception');
+    }
+
+    protected function buildItem()
+    {
+        return new item('testItemID', ['testQuestionReference'], 'testContent');
     }
 
     protected function buildQuestion()
