@@ -3,8 +3,10 @@ services:
         class:     qtism\data\storage\xml\XmlCompactDocument
     schemas_service:
         class:     Learnosity\Services\SchemasService
-    mapper_factory:
-        class:     Learnosity\Mappers\QtiV2\Import\MapperFactory
+    merged_item_builder:
+        class:     Learnosity\Mappers\QtiV2\Import\MergedItemBuilder
+    regular_item_builder:
+        class:     Learnosity\Mappers\QtiV2\Import\RegularItemBuilder
     learnosity_documentation_generator:
         class:     Learnosity\QtiImportDocumentationGenerator
         arguments: ["@schemas_service"]
@@ -13,7 +15,7 @@ services:
         arguments: ["@schemas_service"]
     qtiv2_item_mapper:
         class:      Learnosity\Mappers\QtiV2\Import\ItemMapper
-        arguments: ["@qtism_xml_compat_document", "@mapper_factory"]
+        arguments: ["@qtism_xml_compat_document", "@merged_item_builder", "@regular_item_builder"]
     qtiv2_test_mapper:
         class:      Learnosity\Mappers\QtiV2\Import\TestMapper
     learnosity_item_writer:
