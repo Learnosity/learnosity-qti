@@ -22,7 +22,7 @@ abstract class AbstractItemBuilder
 
     public function getQuestions()
     {
-        return $this->questions;
+        return array_values($this->questions);
     }
 
     public function getExceptions()

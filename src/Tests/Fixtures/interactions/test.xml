@@ -1,149 +1,42 @@
-<?xml version="1.0" encoding="utf-8"?>
-<assessmentItem adaptive="false" identifier="a663445" timeDependent="false" title="a663445" xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd">
-    <responseDeclaration baseType="identifier" cardinality="multiple" identifier="RESPONSE1">
+<?xml version="1.0" encoding="UTF-8"?>
+<assessmentItem xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1  http://www.imsglobal.org/xsd/qti/qtiv2p1/imsqti_v2p1.xsd"
+                identifier="match" title="Characters and Plays" adaptive="false" timeDependent="false">
+    <responseDeclaration identifier="RESPONSE" cardinality="multiple" baseType="directedPair">
         <correctResponse>
-            <value>a2</value>
-            <value>a3</value>
+            <value>C R</value>
+            <value>D M</value>
+            <value>L M</value>
+            <value>P T</value>
         </correctResponse>
+        <mapping defaultValue="0">
+            <mapEntry mapKey="C R" mappedValue="1"></mapEntry>
+            <mapEntry mapKey="D M" mappedValue="0.5"></mapEntry>
+            <mapEntry mapKey="L M" mappedValue="0.5"></mapEntry>
+            <mapEntry mapKey="P T" mappedValue="1"></mapEntry>
+        </mapping>
     </responseDeclaration>
-    <responseDeclaration baseType="identifier" cardinality="single" identifier="RESPONSE2">
-        <correctResponse>
-            <value>a1</value>
-        </correctResponse>
-    </responseDeclaration>
-    <outcomeDeclaration baseType="float" cardinality="single" identifier="NUMCORRECT"/>
-    <outcomeDeclaration baseType="float" cardinality="single" identifier="SCORE"/>
-    <stylesheet href="style/LiveInspect.css" type="text/css"/>
+    <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float"></outcomeDeclaration>
     <itemBody>
-        <rubricBlock use="Teacher Instructions (this text not seen)" view="author proctor testConstructor tutor scorer">
-            <strong>TEACHER READS:</strong>
-            <br/>
-            <br/>Read the question to yourself and select the best answer(s).</rubricBlock>
-        <choiceInteraction maxChoices="4" responseIdentifier="RESPONSE1" shuffle="true">
-            <prompt>
-                <strong>Part A:
-                    <br/>
-                    <br/>
-                    Which of the following represents the number 568.42?  Select
-                    <em>
-                        all</em>that are correct.</strong>
-            </prompt>
-            <simpleChoice identifier="a1">five hundred sixty–eight and forty–two </simpleChoice>
-            <simpleChoice identifier="a2">five hundred sixty–eight and forty–two hundredths</simpleChoice>
-            <simpleChoice identifier="a3">500 + 60 + 8 +
-                <table class="frac">
-                    <tbody>
-                        <tr>
-                            <td class="nu">
-                                4</td>
-                        </tr>
-                        <tr>
-                            <td class="de">10</td>
-                        </tr>
-                    </tbody>
-                </table> +
-                <table class="frac">
-                    <tbody>
-                        <tr>
-                            <td class="nu">
-                                2</td>
-                        </tr>
-                        <tr>
-                            <td class="de">100</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </simpleChoice>
-            <simpleChoice identifier="a4">5 + 6 + 8 + .4 + .2</simpleChoice>
-        </choiceInteraction>
-        <rubricBlock use="Answer Choice Rationales" view="author proctor scorer testConstructor tutor">
-            <div>
-                <span>1)</span>
-                <span>Student(s) may not have correctly understood how to display decimals in number names. </span>
-            </div>
-            <div>
-                <span>2)</span>
-                <span>Correct answer</span>
-            </div>
-            <div>
-                <span>3)</span>
-                <span>Correct answer</span>
-            </div>
-            <div>
-                <span>4)</span>
-                <span>Student(s) may not have completely understood expanded form. Student(s) may have added each digit, rather than taking into account place value.</span>
-            </div>
-        </rubricBlock>
-        <div>
-            <strong>Part B:
-                <br/>
-                <br/>
-                Select the symbol that correctly completes this comparison.
-
-                <br/>
-                <br/>
-                <strong>
-                    568.42 </strong>
-                <inlineChoiceInteraction responseIdentifier="RESPONSE2" shuffle="true">
-                    <inlineChoice identifier="a1">&gt;</inlineChoice>
-                    <inlineChoice identifier="a2">&lt;</inlineChoice>
-                </inlineChoiceInteraction>five hundred sixty–seven and forty–eight hundredths</strong>
-        </div>
-        <rubricBlock use="Answer Choice Rationales" view="author proctor scorer testConstructor tutor">
-            <div>
-                <span>1)</span>
-                <span>Correct answer</span>
-            </div>
-            <div>
-                <span>2)</span>
-                <span>Student(s) may have only compared the last two digits in the numbers. Student(s) may have assumed that because .48 was greater than .42, then 567.48 was greater than 568.42.</span>
-            </div>
-        </rubricBlock>
+        <matchInteraction responseIdentifier="RESPONSE" shuffle="true" maxAssociations="4">
+            <prompt>Match the following characters to the Shakespeare play they appeared in:</prompt>
+            <simpleMatchSet>
+                <simpleAssociableChoice identifier="C" matchMax="1">Capulet</simpleAssociableChoice>
+                <simpleAssociableChoice identifier="D" matchMax="1">Demetrius</simpleAssociableChoice>
+                <simpleAssociableChoice identifier="L" matchMax="1">Lysander</simpleAssociableChoice>
+                <simpleAssociableChoice identifier="P" matchMax="1"
+                        >Prospero</simpleAssociableChoice>
+            </simpleMatchSet>
+            <simpleMatchSet>
+                <simpleAssociableChoice identifier="M" matchMax="4">A Midsummer-Night's Dream</simpleAssociableChoice>
+                <simpleAssociableChoice identifier="R" matchMax="4">Romeo and Juliet</simpleAssociableChoice>
+                <simpleAssociableChoice identifier="T" matchMax="4">The
+                    Tempest</simpleAssociableChoice>
+            </simpleMatchSet>
+        </matchInteraction>
     </itemBody>
-    <responseProcessing>
-        <responseCondition>
-            <responseIf>
-                <match>
-                    <variable identifier="RESPONSE1"/>
-                    <correct identifier="RESPONSE1"/>
-                </match>
-                <setOutcomeValue identifier="NUMCORRECT">
-                    <sum>
-                        <variable identifier="NUMCORRECT"/>
-                        <baseValue baseType="float">1</baseValue>
-                    </sum>
-                </setOutcomeValue>
-            </responseIf>
-        </responseCondition>
-        <responseCondition>
-            <responseIf>
-                <match>
-                    <variable identifier="RESPONSE2"/>
-                    <correct identifier="RESPONSE2"/>
-                </match>
-                <setOutcomeValue identifier="NUMCORRECT">
-                    <sum>
-                        <variable identifier="NUMCORRECT"/>
-                        <baseValue baseType="float">1</baseValue>
-                    </sum>
-                </setOutcomeValue>
-            </responseIf>
-        </responseCondition>
-        <responseCondition>
-            <responseIf>
-                <equal>
-                    <variable identifier="NUMCORRECT"/>
-                    <baseValue baseType="float">2</baseValue>
-                </equal>
-                <setOutcomeValue identifier="SCORE">
-                    <baseValue baseType="float">1</baseValue>
-                </setOutcomeValue>
-            </responseIf>
-            <responseElse>
-                <setOutcomeValue identifier="SCORE">
-                    <baseValue baseType="float">0</baseValue>
-                </setOutcomeValue>
-            </responseElse>
-        </responseCondition>
-    </responseProcessing>
+    <responseProcessing
+            template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/map_response"></responseProcessing>
 </assessmentItem>
+
