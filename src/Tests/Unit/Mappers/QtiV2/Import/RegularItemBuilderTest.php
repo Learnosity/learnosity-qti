@@ -3,7 +3,7 @@
 namespace Learnosity\Tests\Unit\Mappers\QtiV2\Import;
 
 
-use Learnosity\Mappers\QtiV2\Import\RegularItemBuilder;
+use Learnosity\Mappers\QtiV2\Import\ItemBuilders\RegularItemBuilder;
 use Learnosity\Tests\Unit\Mappers\QtiV2\Import\Fixtures\ChoiceInteractionBuilder;
 use Learnosity\Tests\Unit\Mappers\QtiV2\Import\Fixtures\ItemBodyBuilder;
 use Learnosity\Tests\Unit\Mappers\QtiV2\Import\Fixtures\ResponseDeclarationBuilder;
@@ -39,15 +39,15 @@ class RegularItemBuilderTest extends \PHPUnit_Framework_TestCase
             '<p>The Matrix movie is starring <span class="learnosity-response question-testAssessmentItemIdentifier_testTextEntryInteractionIdentifier"></span></p><span class="learnosity-response question-testAssessmentItemIdentifier_testChoiceInteractionIdentifier"></span>',
             $this->regularItemBuilder->getItem()->get_content());
 
-        $this->assertTrue(isset($questions['testAssessmentItemIdentifier_testChoiceInteractionIdentifier']));
-        $this->assertTrue(isset($questions['testAssessmentItemIdentifier_testTextEntryInteractionIdentifier']));
+        $this->assertTrue(isset($questions[0]));
+        $this->assertTrue(isset($questions[1]));
 
-        $q1 = $questions['testAssessmentItemIdentifier_testChoiceInteractionIdentifier'];
+        $q1 = $questions[0];
         $this->assertEquals('testAssessmentItemIdentifier_testChoiceInteractionIdentifier', $q1->get_reference());
         $this->assertEquals('mcq', $q1->get_type());
         $this->assertInstanceOf('Learnosity\Entities\QuestionTypes\mcq', $q1->get_data());
 
-        $q2 = $questions['testAssessmentItemIdentifier_testTextEntryInteractionIdentifier'];
+        $q2 = $questions[1];
         $this->assertEquals('testAssessmentItemIdentifier_testTextEntryInteractionIdentifier', $q2->get_reference());
         $this->assertEquals('clozetext', $q2->get_type());
         $this->assertInstanceOf('Learnosity\Entities\QuestionTypes\clozetext', $q2->get_data());

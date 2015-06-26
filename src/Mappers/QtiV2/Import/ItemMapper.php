@@ -17,7 +17,6 @@ use qtism\data\storage\xml\XmlCompactDocument;
 
 class ItemMapper
 {
-    private $xmlDocument;
     private $exceptions = [];
     private $supportedInteractions = [
         'inlineChoiceInteraction',
@@ -25,18 +24,12 @@ class ItemMapper
         'extendedTextInteraction',
         'textEntryInteraction'
     ];
-    private $regularItemBuilder;
-    private $mergedItemBuilder;
+    private $itemBuilderFactory;
     private $hasMathML = false;
 
-    public function __construct(XmlCompactDocument $document,
-                                MergedItemBuilder $mergedItemBuilder,
-                                RegularItemBuilder $regularItemBuilder)
+    public function __construct(ItemBuilderFactory $itemBuilderFactory)
     {
-        $this->xmlDocument = $document;
-        $this->exceptions = [];
-        $this->mergedItemBuilder = $mergedItemBuilder;
-        $this->regularItemBuilder = $regularItemBuilder;
+        $this->itemBuilderFactory = $itemBuilderFactory;
     }
 
     public function getExceptions()
@@ -46,10 +39,20 @@ class ItemMapper
 
     public function parse($xmlString)
     {
-        $this->xmlDocument->loadFromString($xmlString);
+        $xmlDocument = new XmlCompactDocument();
+        $xmlDocument->loadFromString($xmlString);
 
-        /* @var $assessmentItem AssessmentItem */
-        $assessmentItem = $this->validateAssessmentItem($this->xmlDocument->getDocumentComponent());
+        /** @var AssessmentItem $assessmentItem */
+        $assessmentItem = $xmlDocument->getDocumentComponent();
+        if (!($assessmentItem instanceof AssessmentItem)) {
+            throw new MappingException('XML is not a valid <assessmentItem> document', MappingException::CRITICAL);
+        }
+        return $this->parseWithAssessmentItemComponent($assessmentItem);
+    }
+
+    public function parseWithAssessmentItemComponent(AssessmentItem $assessmentItem)
+    {
+        $assessmentItem = $this->validateAssessmentItem($assessmentItem);
         $responseProcessingTemplate = $this->getResponseProcessingTemplate($assessmentItem->getResponseProcessing());
 
         /** @var ItemBody $itemBody */
@@ -59,41 +62,26 @@ class ItemMapper
         // Mapping interactions
         $interactionComponents = $itemBody->getComponentsByClassName($this->supportedInteractions, true);
         if (!$interactionComponents || count($interactionComponents) === 0) {
-            $this->exceptions[] =
-                new MappingException('No supported interactions could be found', MappingException::CRITICAL);
-            return null;
+            throw new MappingException('No supported interactions could be found', MappingException::CRITICAL);
         }
-
         $responseDeclarations = $assessmentItem->getComponentsByClassName('responseDeclaration', true);
 
-        $mergedMapResult = $this->mergedItemBuilder->map(
+        $itemBuilder = $this->itemBuilderFactory->getItemBuilder($interactionComponents);
+        $itemBuilder->map(
             $assessmentItem->getIdentifier(),
             $itemBody,
             $interactionComponents,
             $responseDeclarations,
             $responseProcessingTemplate
         );
-
-        $mapper = ($mergedMapResult) ? $this->mergedItemBuilder : $this->regularItemBuilder;
-
-        if (!$mergedMapResult) {
-            $mapper->map(
-                $assessmentItem->getIdentifier(),
-                $itemBody,
-                $interactionComponents,
-                $responseDeclarations,
-                $responseProcessingTemplate
-            );
-        }
-
-        $item = $mapper->getItem();
-        $this->exceptions = array_merge($this->exceptions, $mapper->getExceptions());
+        $item = $itemBuilder->getItem();
+        $this->exceptions = array_merge($this->exceptions, $itemBuilder->getExceptions());
         if ($assessmentItem->getTitle()) {
             $item->set_description($assessmentItem->getTitle());
         }
 
         // Add `is_math` to questions if needed
-        $questions = $mapper->getQuestions();
+        $questions = $itemBuilder->getQuestions();
         if ($this->hasMathML) {
             /** @var Question $question */
             foreach ($questions as &$question) {

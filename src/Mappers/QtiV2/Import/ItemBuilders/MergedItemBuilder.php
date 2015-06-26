@@ -1,10 +1,11 @@
 <?php
 
-namespace Learnosity\Mappers\QtiV2\Import;
+namespace Learnosity\Mappers\QtiV2\Import\ItemBuilders;
 
 use Learnosity\Entities\BaseQuestionType;
 use Learnosity\Entities\Question;
 use Learnosity\Mappers\QtiV2\Import\MergedInteractions\AbstractMergedInteraction;
+use Learnosity\Mappers\QtiV2\Import\ResponseProcessingTemplate;
 use qtism\data\content\interactions\Interaction;
 use qtism\data\content\ItemBody;
 use qtism\data\QtiComponentCollection;
@@ -18,7 +19,8 @@ class MergedItemBuilder extends AbstractItemBuilder
                         ItemBody $itemBody,
                         QtiComponentCollection $interactionComponents,
                         QtiComponentCollection $responseDeclarations = null,
-                        ResponseProcessingTemplate $responseProcessingTemplate = null) {
+                        ResponseProcessingTemplate $responseProcessingTemplate = null)
+    {
 
         $mergedInteractionType = $this->getMergedInteractionType($interactionComponents);
         if (!$mergedInteractionType) {

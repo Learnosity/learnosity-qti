@@ -3,7 +3,7 @@
 namespace Learnosity\Tests\Unit\Mappers\QtiV2\Import;
 
 
-use Learnosity\Mappers\QtiV2\Import\MergedItemBuilder;
+use Learnosity\Mappers\QtiV2\Import\ItemBuilders\MergedItemBuilder;
 use Learnosity\Tests\Unit\Mappers\QtiV2\Import\Fixtures\ChoiceInteractionBuilder;
 use Learnosity\Tests\Unit\Mappers\QtiV2\Import\Fixtures\ItemBodyBuilder;
 use qtism\data\content\interactions\TextEntryInteraction;
@@ -42,8 +42,8 @@ class MergedItemBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(1, $this->mergedItemBuilder->getExceptions());
         $questions = $this->mergedItemBuilder->getQuestions();
         $this->assertCount(1, $questions);
-        $this->assertInstanceOf('Learnosity\Entities\Question', $questions['testAssessmentItemIdentifier_testTextEntryInteractionOne_testTextEntryInteractionTwo']);
-        $q = $questions['testAssessmentItemIdentifier_testTextEntryInteractionOne_testTextEntryInteractionTwo'];
+        $this->assertInstanceOf('Learnosity\Entities\Question', $questions[0]);
+        $q = $questions[0];
         $this->assertEquals('testAssessmentItemIdentifier_testTextEntryInteractionOne_testTextEntryInteractionTwo', $q->get_reference());
         $this->assertEquals('clozetext', $q->get_type());
         $qData = $q->get_data();
