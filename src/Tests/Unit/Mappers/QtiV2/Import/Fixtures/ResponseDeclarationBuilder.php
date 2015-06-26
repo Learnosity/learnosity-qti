@@ -2,6 +2,7 @@
 
 namespace Learnosity\Tests\Unit\Mappers\QtiV2\Import\Fixtures;
 
+use qtism\common\datatypes\DirectedPair;
 use qtism\data\state\CorrectResponse;
 use qtism\data\state\MapEntry;
 use qtism\data\state\MapEntryCollection;
@@ -25,7 +26,7 @@ class ResponseDeclarationBuilder
 
     /**
      * @param string $identifier
-     * @param array  $mapping Mapping of `mapKey` to [`mappedValue`, `caseSensitive`]
+     * @param array $mapping Mapping of `mapKey` to [`mappedValue`, `caseSensitive`]
      * ie. {
      *      "York" => [1, false]
      *      "york" => [1, false]
@@ -34,14 +35,18 @@ class ResponseDeclarationBuilder
      *
      * @return \qtism\data\state\ResponseDeclaration
      */
-    public static function buildWithMapping($identifier, array $mapping)
+    public static function buildWithMapping($identifier, array $mapping, $mapEntryKeyType = null)
     {
         $responseDeclaration = new ResponseDeclaration($identifier);
         $mapEntryCollection = new MapEntryCollection();
-        foreach ($mapping as $mapKey => $values)
-        {
+        foreach ($mapping as $mapKey => $values) {
             $mappedValue = $values[0];
             $caseSensitive = $values[1];
+
+            if ($mapEntryKeyType) {
+                $keyParts = explode(' ', $mapKey);
+                $mapKey = new DirectedPair($keyParts[0], $keyParts[1]);
+            }
             $mapEntryCollection->attach(new MapEntry($mapKey, floatval($mappedValue), $caseSensitive));
         }
         $responseDeclaration->setMapping(new Mapping($mapEntryCollection));

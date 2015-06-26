@@ -37,5 +37,5 @@
 		</matchInteraction>
 	</itemBody>
 	<responseProcessing
-		template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"/>
+		template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/map_response"/>
 </assessmentItem>

@@ -5,6 +5,7 @@ services:
         class:     Learnosity\Services\SchemasService
     merged_item_builder:
         class:     Learnosity\Mappers\QtiV2\Import\MergedItemBuilder
+        scope:     prototype
     regular_item_builder:
         class:     Learnosity\Mappers\QtiV2\Import\RegularItemBuilder
     learnosity_documentation_generator:

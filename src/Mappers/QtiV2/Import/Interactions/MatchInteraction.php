@@ -13,7 +13,7 @@ use qtism\common\datatypes\DirectedPair;
 use qtism\data\content\interactions\MatchInteraction as QtiMatchInteraction;
 use qtism\data\content\interactions\SimpleAssociableChoice;
 use qtism\data\content\interactions\SimpleMatchSet;
-use qtism\data\state\Value;
+use qtism\data\state\MapEntry;
 
 class MatchInteraction extends AbstractInteraction
 {
@@ -25,7 +25,7 @@ class MatchInteraction extends AbstractInteraction
     {
         /* @var QtiMatchInteraction $interaction */
         $interaction = $this->interaction;
-        if(!$this->validate($interaction)) {
+        if (!$this->validate($interaction)) {
             return null;
         }
         $simpleMatchSetCollection = $this->interaction->getSimpleMatchSets();
@@ -40,19 +40,18 @@ class MatchInteraction extends AbstractInteraction
         $uiStyle = new choicematrix_ui_style();
         $uiStyle->set_type('table');
 
-        $question = new choicematrix('choicematrix',$isMultipleResponse, $options, $steams);
+        $question = new choicematrix('choicematrix', $isMultipleResponse, $options, $steams);
         $question->set_stimulus($stimulus);
         $question->set_ui_style($uiStyle);
-        if($validation) {
+        if ($validation) {
             $question->set_validation($validation);
         }
         return $question;
     }
 
-    private function validate(QtiMatchInteraction $interaction) {
-
-        if($interaction->mustShuffle())
-        {
+    private function validate(QtiMatchInteraction $interaction)
+    {
+        if ($interaction->mustShuffle()) {
             $this->exceptions[] = new MappingException('Shuffle attribute is not supported', MappingException::WARNING);
         }
 
@@ -97,13 +96,22 @@ class MatchInteraction extends AbstractInteraction
                 case ResponseProcessingTemplate::MATCH_CORRECT:
                     $score = 1;
                     foreach ($this->responseDeclaration->getCorrectResponse()->getValues() as $value) {
-                        if($value->getValue() instanceof DirectedPair) {
-                            $answers[] = [$value->getValue()->getFirst().' '.$value->getValue()->getSecond() => $score];
+                        if ($value->getValue() instanceof DirectedPair) {
+                            $answers[] = [$value->getValue()->getFirst() . ' ' . $value->getValue()->getSecond() => $score];
                         }
                     }
                     break;
                 case ResponseProcessingTemplate::CC2_MAP_RESPONSE:
                 case ResponseProcessingTemplate::MAP_RESPONSE:
+                    /* @var $mapEntry MapEntry */
+                    $totalScore = 0;
+                    foreach ($this->responseDeclaration->getMapping()->getMapEntries() as $mapEntry) {
+                        /** @var MapEntry $mapEntry */
+                        $totalScore += $mapEntry->getMappedValue();
+                        if ($mapEntry->getMapKey() instanceof DirectedPair) {
+                            $answers[] = [$mapEntry->getMapKey()->getFirst() . ' ' . $mapEntry->getMapKey()->getSecond() => $mapEntry->getMappedValue()];
+                        }
+                    }
                     break;
                 default:
                     $this->exceptions[] =
@@ -116,7 +124,7 @@ class MatchInteraction extends AbstractInteraction
         $responseValue = [];
         foreach ($answers as $answer) {
             $answerIDStr = array_keys($answer)[0];
-           // $answerIDScore = array_values($answer)[0];
+            // $answerIDScore = array_values($answer)[0];
             $answerIDList = explode(' ', $answerIDStr);
 
             if (count($answerIDList) !== 2) {
@@ -130,11 +138,11 @@ class MatchInteraction extends AbstractInteraction
 
             $stemMapIndex = $this->stemMapping[$stemIdentifier];
 
-            if(!isset($responseValue[$stemMapIndex])) {
+            if (!isset($responseValue[$stemMapIndex])) {
                 $responseValue[$stemMapIndex] = [];
             }
 
-            if(!$isMultipleResponse && count($responseValue[$stemMapIndex])===1) {
+            if (!$isMultipleResponse && count($responseValue[$stemMapIndex]) === 1) {
                 $isMultipleResponse = true;
             }
             $responseValue[$stemMapIndex][] = $this->optionsMapping[$optionIdentifier];
