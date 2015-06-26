@@ -1,13 +1,8 @@
 services:
-    qtism_xml_compat_document:
-        class:     qtism\data\storage\xml\XmlCompactDocument
     schemas_service:
         class:     Learnosity\Services\SchemasService
-    merged_item_builder:
-        class:     Learnosity\Mappers\QtiV2\Import\MergedItemBuilder
-        scope:     prototype
-    regular_item_builder:
-        class:     Learnosity\Mappers\QtiV2\Import\RegularItemBuilder
+    item_builder_factory:
+        class:     Learnosity\Mappers\QtiV2\Import\ItemBuilderFactory
     learnosity_documentation_generator:
         class:     Learnosity\QtiImportDocumentationGenerator
         arguments: ["@schemas_service"]
@@ -16,11 +11,15 @@ services:
         arguments: ["@schemas_service"]
     qtiv2_item_mapper:
         class:      Learnosity\Mappers\QtiV2\Import\ItemMapper
-        arguments: ["@qtism_xml_compat_document", "@merged_item_builder", "@regular_item_builder"]
+        arguments: ["@item_builder_factory"]
+        scope: prototype
     qtiv2_test_mapper:
         class:      Learnosity\Mappers\QtiV2\Import\TestMapper
+        scope: prototype
     learnosity_item_writer:
         class:      Learnosity\Mappers\Learnosity\Export\ItemWriter
+        scope: prototype
     imscp_manifest_mapper:
         class:      Learnosity\Mappers\IMSCP\Import\ManifestMapper
+        scope: prototype
 

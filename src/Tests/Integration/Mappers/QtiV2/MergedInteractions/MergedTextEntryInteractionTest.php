@@ -34,7 +34,7 @@ class MergedTextEntryInteractionTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(substr_count($item->get_content(),
                 '<span class="learnosity-response question-' . $item->get_questionReferences()[0] . '"></span>') === 1);
         $this->assertTrue(count($questions) === 1);
-        $q = $questions[$item->get_questionReferences()[0]];
+        $q = $questions[0];
         $this->assertInstanceOf('\Learnosity\Entities\Question', $q);
 
         /* @var $q \Learnosity\Entities\Question */

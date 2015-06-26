@@ -24,6 +24,7 @@ class ItemMapperTest extends PHPUnit_Framework_TestCase
         list($item, $questions, $exceptions) = $itemMapper->parse($xml->getContents());
 
         $this->assertTrue($item instanceof item);
+        $this->assertCount(1, $questions);
 
         /** @var mcq $question */
         $question = $questions[0]->get_data();

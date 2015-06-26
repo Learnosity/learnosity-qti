@@ -2,8 +2,8 @@
 
 namespace Learnosity\Tests\Integration\Mappers\QtiV2\Interactions;
 
-use Learnosity\Entities\Item;
-use Learnosity\Mappers\QtiV2\Import\ItemMapper;
+use Learnosity\AppContainer;
+use Learnosity\Entities\Item\item;
 use Learnosity\Utils\FileSystemUtil;
 
 class ChoiceInteractionTest extends \PHPUnit_Framework_TestCase
@@ -15,11 +15,11 @@ class ChoiceInteractionTest extends \PHPUnit_Framework_TestCase
 
     public function testIntegrationSimpleChoiceInteraction()
     {
-        $mapper = new ItemMapper();
+        $mapper = AppContainer::getApplicationContainer()->get('qtiv2_item_mapper');
         list($item, $questions) = $mapper->parse($this->getFixtureFile('interactions/choice.xml'));
 
-        /** @var Item $item */
-        $this->assertInstanceOf('Learnosity\Entities\Item', $item);
+        /** @var item $item */
+        $this->assertInstanceOf('Learnosity\Entities\Item\item', $item);
         $this->assertTrue($item->get_reference() === 'choice');
         $this->assertTrue($item->get_status() === 'published');
 
@@ -27,7 +27,7 @@ class ChoiceInteractionTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(substr_count($item->get_content(),
                 '<span class="learnosity-response question-' . $item->get_questionReferences()[0] . '"></span>') === 1);
         $this->assertTrue(count($questions) === 1);
-        $q = $questions[$item->get_questionReferences()[0]];
+        $q = $questions[0];
         $this->assertInstanceOf('\Learnosity\Entities\Question', $q);
 
         /* @var $q \Learnosity\Entities\Question */

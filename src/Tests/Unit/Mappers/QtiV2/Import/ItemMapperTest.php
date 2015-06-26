@@ -2,10 +2,12 @@
 namespace Learnosity\Tests\Unit\Mappers\QtiV2\Import;
 
 use Learnosity\Entities\Item\item;
+use Learnosity\Entities\Question;
 use Learnosity\Entities\QuestionTypes\clozetext;
 use Learnosity\Mappers\QtiV2\Import\ItemMapper;
 use Learnosity\Mappers\QtiV2\Import\ResponseProcessingTemplate;
 use Learnosity\Tests\Unit\Mappers\QtiV2\Import\Fixtures\InlineChoiceInteractionBuilder;
+use PHPUnit_Framework_MockObject_MockObject;
 use qtism\data\AssessmentItem;
 use qtism\data\content\BlockCollection;
 use qtism\data\content\InlineCollection;
@@ -17,90 +19,69 @@ use qtism\data\processing\ResponseProcessing;
 
 class ItemMapperTest extends \PHPUnit_Framework_TestCase
 {
-    /* @var $itemMapper ItemMapper */
+    /* @var ItemMapper $itemMapper */
     private $itemMapper;
-    private $mockXmlDocument;
-    private $mockMapper;
-    private $mockMergedItemBuilder;
-    private $mockRegularItemBuilder;
+    /* @var PHPUnit_Framework_MockObject_MockObject $itemMapper */
+    private $itemBuilderFactoryMock;
 
     public function setup()
     {
-        $this->mockXmlDocument = $this->getMockBuilder('qtism\data\storage\xml\XmlCompactDocument')
-            ->disableOriginalConstructor()
-            ->getMock();
-        $this->mockXmlDocument->method('loadFromString')->willReturn(true);
-
-        $this->mockMapper =
-            $this->getMockBuilder('Learnosity\Mappers\QtiV2\Import\MergedInteractions\MergedInlineChoiceInteraction')
-                ->disableOriginalConstructor()->getMock();
-        $this->mockMergedItemBuilder = $this->getMockBuilder('Learnosity\Mappers\QtiV2\Import\MergedItemBuilder')
+        $this->itemBuilderFactoryMock = $this->getMockBuilder('Learnosity\Mappers\QtiV2\Import\ItemBuilderFactory')
             ->disableOriginalConstructor()->getMock();
-        $this->mockRegularItemBuilder = $this->getMockBuilder('Learnosity\Mappers\QtiV2\Import\RegularItemBuilder')
-            ->disableOriginalConstructor()->getMock();
-        $this->itemMapper =
-            new ItemMapper($this->mockXmlDocument, $this->mockMergedItemBuilder, $this->mockRegularItemBuilder);
+        $this->itemMapper = new ItemMapper($this->itemBuilderFactoryMock);
     }
 
     public function testParseWithoutInteraction()
     {
-        $this->mockXmlDocument->method('getDocumentComponent')
-            ->willReturn($this->buildAssessmentItemWithoutInteraction());
-        $item = $this->itemMapper->parse('');
-        $this->assertCount(1, $this->itemMapper->getExceptions());
-        $this->assertEmpty($item[0]);
-        $this->assertEmpty($item[1]);
-        $this->assertCount(1, $item[2]);
+        $this->setExpectedException('Learnosity\Exceptions\MappingException');
+        $assessmentItem = $this->buildAssessmentItemWithoutInteraction();
+        $this->itemMapper->parseWithAssessmentItemComponent($assessmentItem);
+    }
+
+    private function getMockItemBuilderWith(item $item, array $questions, array $exceptions = [])
+    {
+        $mockItemBuilder = $this->getMockBuilder('Learnosity\Mappers\QtiV2\Import\ItemBuilders\AbstractItemBuilder')
+            ->disableOriginalConstructor()->getMock();
+        $mockItemBuilder->expects($this->once())->method('getExceptions')->willReturn($exceptions);
+        $mockItemBuilder->expects($this->once())->method('getItem')->willReturn($item);
+        $mockItemBuilder->expects($this->once())->method('getQuestions')->willReturn($questions);
+        return $mockItemBuilder;
     }
 
     public function testParseWithSameInteractionType()
     {
-        $this->mockXmlDocument->method('getDocumentComponent')
-            ->willReturn($this->buildAssessmentItemWithSameInteractionTypes());
+        $assessmentItem = $this->buildAssessmentItemWithSameInteractionTypes();
 
         $testItem = $this->buildItem();
         $testQuestion = $this->buildQuestion();
+        $this->itemBuilderFactoryMock->expects($this->once())
+            ->method('getItemBuilder')
+            ->willReturn($this->getMockItemBuilderWith($testItem, [$testQuestion]));
 
-        $this->mockMergedItemBuilder->expects($this->once())->method('getExceptions')->willReturn([]);
-        $this->mockMergedItemBuilder->expects($this->once())->method('getItem')->willReturn($testItem);
-        $this->mockMergedItemBuilder->expects($this->once())->method('getQuestions')->willReturn([$testQuestion]);
-        $this->mockMergedItemBuilder->expects($this->once())->method('map')->willReturn(true);
+        list($item, $questions, $exceptions) = $this->itemMapper->parseWithAssessmentItemComponent($assessmentItem);
 
-        $data = $this->itemMapper->parse('');
-
-        $this->assertcount(3, $data);
-
-        $item = $data[0];
         $this->assertEquals($testItem, $item);
-
-        $this->assertCount(1, $data[1]);
-        $this->assertEquals([$testQuestion], $data[1]);
-        $this->assertEmpty($data[2], 'Should have no exception');
+        $this->assertCount(1, $questions);
+        $this->assertEquals([$testQuestion], $questions);
+        $this->assertEmpty($exceptions, 'Should have no exception');
     }
 
     public function testParseWithMultipleInteractionType()
     {
-        $this->mockXmlDocument->method('getDocumentComponent')
-            ->willReturn($this->buildAssessmentItemWithDifferentInteractionTypes());
+        $assessmentItem = $this->buildAssessmentItemWithDifferentInteractionTypes();
+
         $testItem = $this->buildItem();
         $testQuestion = $this->buildQuestion();
+        $this->itemBuilderFactoryMock->expects($this->once())
+            ->method('getItemBuilder')
+            ->willReturn($this->getMockItemBuilderWith($testItem, [$testQuestion]));
 
-        // item(s) cannot be merged
-        $this->mockMergedItemBuilder->expects($this->once())->method('map')->willReturn(false);
+        list($item, $questions, $exceptions) = $this->itemMapper->parseWithAssessmentItemComponent($assessmentItem);
 
-        $this->mockRegularItemBuilder->expects($this->once())->method('getExceptions')->willReturn([]);
-        $this->mockRegularItemBuilder->expects($this->once())->method('getItem')->willReturn($testItem);
-        $this->mockRegularItemBuilder->expects($this->once())->method('getQuestions')->willReturn([$testQuestion]);
-        $this->mockRegularItemBuilder->expects($this->once())->method('map')->willReturn(true);
-
-        $data = $this->itemMapper->parse('');
-        $this->assertcount(3, $data);
-
-        $item = $data[0];
         $this->assertEquals($testItem, $item);
-        $this->assertCount(1, $data[1]);
-        $this->assertEquals([$testQuestion], $data[1]);
-        $this->assertEmpty($data[2], 'Should have no exception');
+        $this->assertCount(1, $questions);
+        $this->assertEquals([$testQuestion], $questions);
+        $this->assertEmpty($exceptions, 'Should have no exception');
     }
 
     protected function buildItem()
@@ -110,7 +91,7 @@ class ItemMapperTest extends \PHPUnit_Framework_TestCase
 
     protected function buildQuestion()
     {
-        return new clozetext('testQuestionType', '');
+        return new Question('clozetext', 'testQuestionID', new clozetext('testQuestionType', ''));
     }
 
     protected function buildAssessmentItemWithoutInteraction()
@@ -159,5 +140,4 @@ class ItemMapperTest extends \PHPUnit_Framework_TestCase
 
         return $assessmentItem;
     }
-
 }

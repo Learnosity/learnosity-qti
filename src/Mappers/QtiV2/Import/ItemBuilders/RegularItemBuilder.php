@@ -1,9 +1,10 @@
 <?php
 
-namespace Learnosity\Mappers\QtiV2\Import;
+namespace Learnosity\Mappers\QtiV2\Import\ItemBuilders;
 
 
 use Learnosity\Entities\Question;
+use Learnosity\Mappers\QtiV2\Import\ResponseProcessingTemplate;
 use Learnosity\Mappers\QtiV2\Import\Utils\QtiComponentUtil;
 use qtism\data\content\interactions\Interaction;
 use qtism\data\content\ItemBody;

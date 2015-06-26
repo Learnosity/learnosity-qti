@@ -1,8 +1,9 @@
 <?php
 
-namespace Learnosity\Mappers\QtiV2\Import;
+namespace Learnosity\Mappers\QtiV2\Import\ItemBuilders;
 
 use Learnosity\Entities\Item\item;
+use Learnosity\Mappers\QtiV2\Import\ResponseProcessingTemplate;
 use qtism\data\content\ItemBody;
 use qtism\data\QtiComponentCollection;
 
@@ -30,7 +31,8 @@ abstract class AbstractItemBuilder
         return $this->exceptions;
     }
 
-    protected function getMapperInstance($interactionType, $params){
+    protected function getMapperInstance($interactionType, $params)
+    {
         $reflectionClass = new \ReflectionClass(static::MAPPER_CLASS_BASE.  ucfirst($interactionType));
         return $reflectionClass->newInstanceArgs($params);
     }
