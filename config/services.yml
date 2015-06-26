@@ -12,10 +12,14 @@ services:
     qtiv2_item_mapper:
         class:      Learnosity\Mappers\QtiV2\Import\ItemMapper
         arguments: ["@item_builder_factory"]
+        scope: prototype
     qtiv2_test_mapper:
         class:      Learnosity\Mappers\QtiV2\Import\TestMapper
+        scope: prototype
     learnosity_item_writer:
         class:      Learnosity\Mappers\Learnosity\Export\ItemWriter
+        scope: prototype
     imscp_manifest_mapper:
         class:      Learnosity\Mappers\IMSCP\Import\ManifestMapper
+        scope: prototype
 
