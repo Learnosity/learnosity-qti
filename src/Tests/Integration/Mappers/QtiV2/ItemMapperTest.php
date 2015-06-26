@@ -2,53 +2,34 @@
 
 namespace Learnosity\Tests\Mappers\QtiV2;
 
-use Learnosity\Mappers\Learnosity\Export\ItemWriter;
-use Learnosity\Mappers\Learnosity\Export\QuestionWriter;
-use Learnosity\Mappers\QtiV2\Import\ItemMapper;
+use Learnosity\AppContainer;
+use Learnosity\Entities\Item\item;
+use Learnosity\Entities\QuestionTypes\mcq;
 use Learnosity\Utils\FileSystemUtil;
 use PHPUnit_Framework_TestCase;
 
 class ItemMapperTest extends PHPUnit_Framework_TestCase
 {
-    public function testParse()
+    private $fixturesDirectory;
+
+    public function setup()
     {
-        $xml = FileSystemUtil::readFile(FileSystemUtil::getRootPath() . '/src/Tests/Fixtures/choices.xml');
-        $mapper = new ItemMapper();
-        list($item, $questions, $exceptions) = $mapper->parse($xml->getContents());
-
-        $writer = new ItemWriter($item);
-        $itemJson = $writer->convert($item);
-        $questionConverter = new QuestionWriter();
-        $qeustionJson = $questionConverter->convert(array_values($questions)[0]);
-
-        echo 'Done!';
+        $this->fixturesDirectory = FileSystemUtil::getRootPath() . '/src/Tests/Fixtures/';
     }
 
-    public function testMergingInteractions()
+    public function testParsingWithMathML()
     {
-        $xml    = FileSystemUtil::readFile(FileSystemUtil::getRootPath() . '/src/Tests/Fixtures/textentryinteraction.xml');
-        $mapper = new ItemMapper();
-        list($item, $questions, $exceptions) = $mapper->parse($xml->getContents());
+        $xml = FileSystemUtil::readFile($this->fixturesDirectory . 'interactions/math.xml');
+        $itemMapper = AppContainer::getApplicationContainer()->get('qtiv2_item_mapper');
+        list($item, $questions, $exceptions) = $itemMapper->parse($xml->getContents());
 
-        $writer            = new ItemWriter($item);
-        $itemJson          = $writer->convert($item);
-        $questionConverter = new QuestionWriter();
-        $qeustionJson      = $questionConverter->convert(array_values($questions)[0]);
+        $this->assertTrue($item instanceof item);
 
-        echo 'Done!';
-    }
+        /** @var mcq $question */
+        $question = $questions[0]->get_data();
+        $this->assertTrue($question instanceof mcq);
 
-    public function testParsingObjects()
-    {
-        $xml    = FileSystemUtil::readFile(FileSystemUtil::getRootPath() . '/src/Tests/Fixtures/withobjects.xml');
-        $mapper = new ItemMapper();
-        list($item, $questions, $exceptions) = $mapper->parse($xml->getContents());
-
-        $writer            = new ItemWriter($item);
-        $itemJson          = $writer->convert($item);
-        $questionConverter = new QuestionWriter();
-        $qeustionJson      = $questionConverter->convert(array_values($questions)[0]);
-
-        echo 'Done!';
+        $this->assertTrue($question->get_is_math());
+        $this->assertContains('<math>', $question->get_stimulus());
     }
 }

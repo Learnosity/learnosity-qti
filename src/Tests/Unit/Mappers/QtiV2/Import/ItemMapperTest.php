@@ -31,17 +31,13 @@ class ItemMapperTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $this->mockXmlDocument->method('loadFromString')->willReturn(true);
 
-
         $this->mockMapper =
             $this->getMockBuilder('Learnosity\Mappers\QtiV2\Import\MergedInteractions\MergedInlineChoiceInteraction')
                 ->disableOriginalConstructor()->getMock();
-
         $this->mockMergedItemBuilder = $this->getMockBuilder('Learnosity\Mappers\QtiV2\Import\MergedItemBuilder')
             ->disableOriginalConstructor()->getMock();
-
         $this->mockRegularItemBuilder = $this->getMockBuilder('Learnosity\Mappers\QtiV2\Import\RegularItemBuilder')
             ->disableOriginalConstructor()->getMock();
-
         $this->itemMapper =
             new ItemMapper($this->mockXmlDocument, $this->mockMergedItemBuilder, $this->mockRegularItemBuilder);
     }
@@ -82,7 +78,6 @@ class ItemMapperTest extends \PHPUnit_Framework_TestCase
 
     public function testParseWithMultipleInteractionType()
     {
-
         $this->mockXmlDocument->method('getDocumentComponent')
             ->willReturn($this->buildAssessmentItemWithDifferentInteractionTypes());
         $testItem = $this->buildItem();
@@ -96,13 +91,11 @@ class ItemMapperTest extends \PHPUnit_Framework_TestCase
         $this->mockRegularItemBuilder->expects($this->once())->method('getQuestions')->willReturn([$testQuestion]);
         $this->mockRegularItemBuilder->expects($this->once())->method('map')->willReturn(true);
 
-
         $data = $this->itemMapper->parse('');
         $this->assertcount(3, $data);
 
         $item = $data[0];
         $this->assertEquals($testItem, $item);
-
         $this->assertCount(1, $data[1]);
         $this->assertEquals([$testQuestion], $data[1]);
         $this->assertEmpty($data[2], 'Should have no exception');
@@ -134,14 +127,13 @@ class ItemMapperTest extends \PHPUnit_Framework_TestCase
     {
         $interactionOne = new TextEntryInteraction('testInteractionOne');
         $interactionTwo = InlineChoiceInteractionBuilder::buildSimple('testInteractionTwo', [
-            'Choice1' => 'A'
+            'choice' => 'The Choice Label'
         ]);
         return $this->buildAssessmentItem([$interactionOne, $interactionTwo], ResponseProcessingTemplate::MAP_RESPONSE);
     }
 
     protected function buildAssessmentItem(array $interactions, $responseProcessingTemplate = '')
     {
-
         $assessmentItem = new AssessmentItem('testItemID', 'testItemTitle', false);
 
         $responseProcessing = new ResponseProcessing();
@@ -157,9 +149,7 @@ class ItemMapperTest extends \PHPUnit_Framework_TestCase
         foreach ($interactions as $interaction) {
             $pCollection->attach($interaction);
         }
-
         $p->setContent($pCollection);
-
         $collection = new BlockCollection();
         $collection->attach($p);
         $itemBody->setContent($collection);
