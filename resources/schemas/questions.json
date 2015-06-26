@@ -1948,6 +1948,14 @@
                         "type": "boolean",
                         "group": "validation"
                     },
+                    "multiple_responses": {
+                      "default": false,
+                      "description": "If multiple_responses is true the user will be able to select multiple responses using a checkbox for each response.",
+                      "name": "Multiple responses",
+                      "required": true,
+                      "type": "boolean",
+                      "group": "basic"
+                    },
                     "validation": {
                         "attributes": {
                             "penalty": {

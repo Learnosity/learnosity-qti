@@ -76,9 +76,15 @@ if (isset($_POST['filePath'])) {
         'showCorrectAnswers' => true
     ];
 
-    echo json_encode(['layout' => $item['content'], 'activity' => $activity, 'item' => $item, 'questions' => $originalQuestions,
-        'exceptions' => $exceptions
-    ]);
+
+    echo json_encode(
+        [
+            'layout' => isset($item['content']) ? $item['content'] : '',
+            'activity' => $activity,
+            'item' => $item,
+            'questions' => $originalQuestions,
+            'exceptions' => $exceptions
+        ]);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $files = scandir($sampleFileFolder);
     $fileList = [];
@@ -120,9 +126,11 @@ if (isset($_POST['filePath'])) {
             .clipboard {
                 cursor: pointer;
             }
+
             .clipboard:hover {
                 background-color: #EAEAEA;
             }
+
             .success, .success:hover {
                 background-color: #E9FFED;
             }
@@ -266,7 +274,7 @@ if (isset($_POST['filePath'])) {
          * Adds copy to clickboard on any element
          * that has a `clipboard` css class.
          */
-        function copyRange (ev) {
+        function copyRange(ev) {
             var copyNode = ev.target,
                 range = document.createRange(),
                 success;
@@ -280,8 +288,8 @@ if (isset($_POST['filePath'])) {
 
             try {
                 success = document.execCommand('copy');
-            } catch(err) {
-                console.log('Unable to copy ' . err);
+            } catch (err) {
+                console.log('Unable to copy '.err);
             }
 
             if (success) {

@@ -52,7 +52,9 @@ class ItemMapperTest extends \PHPUnit_Framework_TestCase
             ->willReturn($this->buildAssessmentItemWithoutInteraction());
         $item = $this->itemMapper->parse('');
         $this->assertCount(1, $this->itemMapper->getExceptions());
-        $this->assertNull($item);
+        $this->assertEmpty($item[0]);
+        $this->assertEmpty($item[1]);
+        $this->assertCount(1, $item[2]);
     }
 
     public function testParseWithSameInteractionType()

@@ -3,6 +3,7 @@
 namespace Learnosity;
 
 use Learnosity\Entities\Activity\activity;
+use Learnosity\Entities\Item\item;
 use Learnosity\Exceptions\MappingException;
 use Learnosity\Mappers\IMSCP\Entities\Manifest;
 use Learnosity\Mappers\IMSCP\Entities\Resource;
@@ -22,12 +23,17 @@ class Converter
         $itemWriter = AppContainer::getApplicationContainer()->get('learnosity_item_writer');
 
         list($item, $questions, $exceptions) = $itemMapper->parse($data);
-        $itemData = $itemWriter->convert($item);
+        $itemData = [];
+        if ($item instanceof item) {
+            $itemData = $itemWriter->convert($item);
+        }
 
         $questionsData = [];
-        foreach ($questions as $question) {
-            $questionConverter = new QuestionWriter();
-            $questionsData[] = $questionConverter->convert($question);
+        if (is_array($questions)) {
+            foreach ($questions as $question) {
+                $questionConverter = new QuestionWriter();
+                $questionsData[] = $questionConverter->convert($question);
+            }
         }
         return [$itemData, $questionsData, $exceptions];
     }

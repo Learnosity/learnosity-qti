@@ -17,7 +17,7 @@ class ItemMapper
     private $xmlDocument;
     private $exceptions = [];
     private $supportedInteractions = ['inlineChoiceInteraction', 'choiceInteraction',
-        'extendedTextInteraction', 'textEntryInteraction'];
+        'extendedTextInteraction', 'textEntryInteraction', 'matchInteraction'];
 
     /* @var $regularItemBuilder RegularItemBuilder */
     private $regularItemBuilder;
@@ -57,7 +57,7 @@ class ItemMapper
         if (!$interactionComponents || count($interactionComponents) === 0) {
             $this->exceptions[] =
                 new MappingException('No supported interactions could be found', MappingException::CRITICAL);
-            return null;
+            return [[], [], $this->getExceptionMessages()];
         }
 
         $responseDeclarations = $assessmentItem->getComponentsByClassName('responseDeclaration', true);
