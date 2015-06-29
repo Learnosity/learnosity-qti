@@ -15,8 +15,9 @@ class InlineChoiceInteractionDocumentation implements InteractionDocumentationIn
                 The element 'inlineChoiceInteraction' map to our 'clozedropdown' question.
                 Read the documentation: <a href='http://docs.learnosity.com/assessment/questions/questiontypes#clozedropdown'>
                 http://docs.learnosity.com/assessment/questions/questiontypes#clozedropdown</a>
+                <br/><br/>
+                Currently support `exactMatch` and `map_response` validation.
             ",
-            '@validation' => 'Currently only support simple `exactMatch` validation.',
             '@attributes' => [
                 'shuffle'  => QtiDoc::none('Unfortunately `clozedropdown` does not support shuffling possible responses.'),
                 'required' => QtiDoc::none('`clozedropdown` does not enforce a choice to be selected')

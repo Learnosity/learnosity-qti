@@ -41,7 +41,7 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
         });
     </script>
         <style>
-        table { width: 100%; }
+        table { width: 100%; word-break: break-word; }
         table tr td { vertical-align: top; }
         .doc-table tr td.name { width: 20%; }
         .doc-table tr td.support-status { width: 10%; }
@@ -313,7 +313,7 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                             <td class="name">responseProcessing</td>
                             <td class="support-status support-status-partial">PARTIAL</td>
                             <td class="description">Support only format defined for standard QTI response processing template,
-                                            ie. `match_correct`, `map_response`, `cc2_map_response`</td>
+                                            ie. `match_correct`, `map_response`, `cc2_map_response`.</td>
                         </tr>
                                                                                                             <tr>
                             <td class="name">modalFeedback</td>
@@ -383,8 +383,9 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                         </tr>
                                                                                                             <tr>
                             <td class="name">m:math</td>
-                            <td class="support-status support-status-no">NO</td>
-                            <td class="description"></td>
+                            <td class="support-status support-status-yes">YES</td>
+                            <td class="description">Having <math> element in content will set `is_math` on the corresponding
+                                                questions to be set to true, thus allowed it to be rendered correctly</td>
                         </tr>
                                                                                                             <tr>
                             <td class="name">x:include</td>
@@ -416,6 +417,7 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                             <li><a href="#TextEntryInteraction">TextEntryInteraction</a></li>
                             <li><a href="#ExtendedTextInteraction">ExtendedTextInteraction</a></li>
                             <li><a href="#InlineChoiceInteraction">InlineChoiceInteraction</a></li>
+                            <li><a href="#HottextInteraction">HottextInteraction</a></li>
                     </ul>
         <hr/>
                     <h4 id="ChoiceInteraction">ChoiceInteraction</h4>
@@ -568,8 +570,9 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                         </tr>
                                                                                                             <tr>
                             <td class="name">m:math</td>
-                            <td class="support-status support-status-no">NO</td>
-                            <td class="description">This is to be implemented later on.</td>
+                            <td class="support-status support-status-yes">YES</td>
+                            <td class="description">Having <math> element in content will set `is_math` on the corresponding
+                                                questions to be set to true, thus allowed it to be rendered correctly</td>
                         </tr>
                                                                                                             <tr>
                             <td class="name">x:include</td>
@@ -579,7 +582,8 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                                                                                                             <tr>
                             <td class="name">(xhtml)*</td>
                             <td class="support-status support-status-yes">YES</td>
-                            <td class="description"></td>
+                            <td class="description">Other common XHTML elements as defined
+                <a href="http://www.imsglobal.org/question/qtiv2p1/imsqti_infov2p1.html#element10124">http://www.imsglobal.org/question/qtiv2p1/imsqti_infov2p1.html#element10124</a></td>
                         </tr>
                                                         </table>
     
@@ -594,7 +598,8 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                 The element 'textEntryInteraction' map to our 'clozetext' question.
                 Read the documentation: <a href='http://docs.learnosity.com/assessment/questions/questiontypes#clozetext'>
                 http://docs.learnosity.com/assessment/questions/questiontypes#clozetext</a>.
-                We currently do not support validation for this interaction.
+                <br/><br/>
+                Currently support `exactMatch` and `map_response` validation.
             </div>
     
             <table class="doc-table">
@@ -767,6 +772,8 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                 The element 'inlineChoiceInteraction' map to our 'clozedropdown' question.
                 Read the documentation: <a href='http://docs.learnosity.com/assessment/questions/questiontypes#clozedropdown'>
                 http://docs.learnosity.com/assessment/questions/questiontypes#clozedropdown</a>
+                <br/><br/>
+                Currently support `exactMatch` and `map_response` validation.
             </div>
     
             <table class="doc-table">
@@ -816,7 +823,7 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                     <td class="support-status support-status-no">NO</td>
                     <td class="description">`clozedropdown` does not enforce a choice to be selected</td>
                 </tr>
-                                                                                                                                                                        <tr>
+                                                                                                                                            <tr>
                             <td colspan="3">
                                 <div class="expandable-name"><a href="#">inlineChoice</a></div>
                                 <div class="expandable-content">
@@ -878,6 +885,97 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
     
                                 </div>
                             </td>
+                        </tr>
+                                                        </table>
+    
+            <hr/>
+                    <h4 id="HottextInteraction">HottextInteraction</h4>
+                        <div class="panel">
+                The element 'hottextInteraction' map to our 'tokenhighlight' question.
+                Read the documentation: <a href='http://docs.learnosity.com/assessment/questions/questiontypes#tokenhighlight'>
+                http://docs.learnosity.com/assessment/questions/questiontypes#tokenhighlight</a>
+                <br /><br />
+                Currently support `exactMatch` and `map_response` validation.
+            </div>
+    
+            <table class="doc-table">
+            <tr>
+                <th></th>
+                <th>Support</th>
+                <th>Description</th>
+            </tr>
+                            <tr>
+                    <td class="name">@xmlbase</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@id</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@class</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@xmllang</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@label</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@responseIdentifier</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description">The value prepended by the assessementItem identifier is used to be
+                                        mapped to Question `reference`.</td>
+                </tr>
+                            <tr>
+                    <td class="name">@maxChoices</td>
+                    <td class="support-status support-status-yes">YES</td>
+                    <td class="description">This map to `max_selection`</td>
+                </tr>
+                            <tr>
+                    <td class="name">@minChoices</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description">By default this would be zero since we allow no response.</td>
+                </tr>
+                                                                                                                                            <tr>
+                            <td class="name">prompt</td>
+                            <td class="support-status support-status-yes">YES</td>
+                            <td class="description">We map this to our question `stimulus`.</td>
+                        </tr>
+                                                                                                            <tr>
+                            <td class="name">feedbackBlock</td>
+                            <td class="support-status support-status-no">NO</td>
+                            <td class="description"></td>
+                        </tr>
+                                                                                                            <tr>
+                            <td class="name">templateBlock</td>
+                            <td class="support-status support-status-no">NO</td>
+                            <td class="description"></td>
+                        </tr>
+                                                                                                            <tr>
+                            <td class="name">m:math</td>
+                            <td class="support-status support-status-yes">YES</td>
+                            <td class="description">Having <math> element in content will set `is_math` on the corresponding
+                                                questions to be set to true, thus allowed it to be rendered correctly</td>
+                        </tr>
+                                                                                                            <tr>
+                            <td class="name">x:include</td>
+                            <td class="support-status support-status-no">NO</td>
+                            <td class="description"></td>
+                        </tr>
+                                                                                                            <tr>
+                            <td class="name">(xhtml)*</td>
+                            <td class="support-status support-status-yes">YES</td>
+                            <td class="description">Other common XHTML elements as defined
+                <a href="http://www.imsglobal.org/question/qtiv2p1/imsqti_infov2p1.html#element10123">http://www.imsglobal.org/question/qtiv2p1/imsqti_infov2p1.html#element10123</a></td>
                         </tr>
                                                         </table>
     

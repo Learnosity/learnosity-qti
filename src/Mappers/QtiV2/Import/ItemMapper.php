@@ -23,7 +23,8 @@ class ItemMapper
         'choiceInteraction',
         'extendedTextInteraction',
         'textEntryInteraction',
-        'matchInteraction'
+        'matchInteraction',
+        'hottextInteraction'
     ];
     private $itemBuilderFactory;
     private $hasMathML = false;

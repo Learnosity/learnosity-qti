@@ -44,9 +44,24 @@ class QtiDoc
             'feedbackBlock' => QtiDoc::row(SupportStatus::NO, ''),
             'feedbackInline' => QtiDoc::row(SupportStatus::NO, ''),
             'templateInline' => QtiDoc::row(SupportStatus::NO, ''),
-            'm:math' => QtiDoc::row(SupportStatus::NO, 'This is to be implemented later on.'),
+            'm:math' => QtiDoc::support('Having <math> element in content will set `is_math` on the corresponding
+                                                questions to be set to true, thus allowed it to be rendered correctly'),
             'x:include' => QtiDoc::row(SupportStatus::NO, ''),
-            '(xhtml)*' => QtiDoc::row(SupportStatus::YES, '')
+            '(xhtml)*' => QtiDoc::row(SupportStatus::YES, 'Other common XHTML elements as defined
+                <a href="http://www.imsglobal.org/question/qtiv2p1/imsqti_infov2p1.html#element10124">http://www.imsglobal.org/question/qtiv2p1/imsqti_infov2p1.html#element10124</a>')
+        ];
+    }
+
+    public static function defaultBlockStaticRow()
+    {
+        return [
+            'feedbackBlock' => QtiDoc::row(SupportStatus::NO, ''),
+            'templateBlock' => QtiDoc::row(SupportStatus::NO, ''),
+            'm:math' => QtiDoc::support('Having <math> element in content will set `is_math` on the corresponding
+                                                questions to be set to true, thus allowed it to be rendered correctly'),
+            'x:include' => QtiDoc::row(SupportStatus::NO, ''),
+            '(xhtml)*' => QtiDoc::row(SupportStatus::YES, 'Other common XHTML elements as defined
+                <a href="http://www.imsglobal.org/question/qtiv2p1/imsqti_infov2p1.html#element10123">http://www.imsglobal.org/question/qtiv2p1/imsqti_infov2p1.html#element10123</a>')
         ];
     }
 

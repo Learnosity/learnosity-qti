@@ -149,7 +149,6 @@ class InlineChoiceInteractionValidationBuilder
         return $validation;
     }
 
-
     public function getExceptions()
     {
         return $this->exceptions;

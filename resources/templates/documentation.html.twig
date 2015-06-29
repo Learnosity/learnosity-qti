@@ -12,7 +12,7 @@
         });
     </script>
         <style>
-        table { width: 100%; }
+        table { width: 100%; word-break: break-word; }
         table tr td { vertical-align: top; }
         .doc-table tr td.name { width: 20%; }
         .doc-table tr td.support-status { width: 10%; }
@@ -74,7 +74,7 @@
                 <tr>
                     <td class="name">@{{ attributeName }}</td>
                     <td class="support-status support-status-{{ attribute.supportStatus|lower }}">{{ attribute.supportStatus }}</td>
-                    <td class="description">{{ attribute.description }}</td>
+                    <td class="description">{{ attribute.description|raw }}</td>
                 </tr>
             {% endfor %}
             {% for elementName, element in documentation %}
@@ -83,7 +83,7 @@
                         <tr>
                             <td class="name">{{ elementName }}</td>
                             <td class="support-status support-status-{{ element.supportStatus|lower }}">{{ element.supportStatus }}</td>
-                            <td class="description">{{ element.description }}</td>
+                            <td class="description">{{ element.description|raw }}</td>
                         </tr>
                     {% elseif documentation is not null %}
                         <tr>

@@ -20,6 +20,13 @@ class SchemasService
 
     public function getResponsesSchemas()
     {
+        // TODO: Hack here because Chappo hide `tokenization` for texthighlight in QE and always set to `custom`
+        $this->questionsSchemas['data']['responses']['tokenhighlight']['attributes']['tokenization'] = [
+            'description' => 'This need to always be set to `custom`',
+            'required' => true,
+            'default' => 'custom',
+            'type' => 'string'
+        ];
         return $this->questionsSchemas['data']['responses'];
     }
 

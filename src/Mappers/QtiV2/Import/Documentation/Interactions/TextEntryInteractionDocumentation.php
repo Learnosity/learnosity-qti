@@ -15,7 +15,8 @@ class TextEntryInteractionDocumentation implements InteractionDocumentationInter
                 The element 'textEntryInteraction' map to our 'clozetext' question.
                 Read the documentation: <a href='http://docs.learnosity.com/assessment/questions/questiontypes#clozetext'>
                 http://docs.learnosity.com/assessment/questions/questiontypes#clozetext</a>.
-                We currently do not support validation for this interaction.
+                <br/><br/>
+                Currently support `exactMatch` and `map_response` validation.
             ",
             '@attributes' => [
                 'base'               => QtiDoc::none('We always assume base to be 10.'),
