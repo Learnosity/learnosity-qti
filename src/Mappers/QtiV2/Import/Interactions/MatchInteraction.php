@@ -107,7 +107,6 @@ class MatchInteraction extends AbstractInteraction
                         }
                     }
                     break;
-                case ResponseProcessingTemplate::CC2_MAP_RESPONSE:
                 case ResponseProcessingTemplate::MAP_RESPONSE:
                     /* @var $mapEntry MapEntry */
                     $totalScore = 0;
