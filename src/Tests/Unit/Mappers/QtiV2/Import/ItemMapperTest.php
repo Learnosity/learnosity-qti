@@ -13,6 +13,7 @@ use qtism\data\content\BlockCollection;
 use qtism\data\content\InlineCollection;
 use qtism\data\content\interactions\TextEntryInteraction;
 use qtism\data\content\ItemBody;
+use qtism\data\content\Math;
 use qtism\data\content\TextRun;
 use qtism\data\content\xhtml\text\P;
 use qtism\data\processing\ResponseProcessing;
@@ -84,6 +85,38 @@ class ItemMapperTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(1, $questions);
         $this->assertEquals([$testQuestion], $questions);
         $this->assertEmpty($exceptions, 'Should have no exception');
+    }
+
+    public function testParseWithMathTags()
+    {
+        $assessmentItem = $this->buildAssessmentItemWithDifferentInteractionTypes();
+        $itemBody = $assessmentItem->getItemBody();
+        $itemBodyComponents = $itemBody->getComponents();
+        $math = new Math('<m:math xmlns:m="http://www.w3.org/1998/Math/MathML">
+                    <m:mrow>
+                        <m:mi>E</m:mi>
+                        <m:mo>=</m:mo>
+                        <m:mi>m</m:mi>
+                        <m:msup>
+                            <m:mi>c</m:mi>
+                            <m:mn>2</m:mn>
+                        </m:msup>
+                    </m:mrow>
+                </m:math>');
+        $itemBodyComponents->attach($math);
+        $itemBody->setContent($itemBodyComponents);
+        $assessmentItem->setItemBody($itemBody);
+
+        $testItem = $this->buildItem();
+        $testQuestion = $this->buildQuestion();
+        $this->itemBuilderFactoryMock->expects($this->once())
+            ->method('getItemBuilder')
+            ->willReturn($this->getMockItemBuilderWith($testItem, [$testQuestion]));
+
+        list($item, $questions, $exceptions) = $this->itemMapper->parseWithAssessmentItemComponent($assessmentItem);
+
+        $this->assertCount(1, $questions);
+        $this->assertTrue($questions[0]->get_data()->get_is_math());
     }
 
     protected function buildItem()
