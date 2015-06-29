@@ -7,6 +7,12 @@ use PHPUnit_Framework_TestCase;
 
 class ArrayUtilTest extends PHPUnit_Framework_TestCase
 {
+    public function testCombination()
+    {
+        $res = ArrayUtil::combinations(['A', 'B', 'C', 'D']);
+        $this->assertCount(16, $res);
+    }
+
     public function testMutateEmptyArray()
     {
         $res = ArrayUtil::mutateResponses([]);
