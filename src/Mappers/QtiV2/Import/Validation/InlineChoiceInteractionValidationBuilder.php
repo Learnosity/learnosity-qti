@@ -47,7 +47,7 @@ class InlineChoiceInteractionValidationBuilder
             }
             $validResponsesValues[] = $values;
         }
-        $combinationsValidResponseValues = ArrayUtil::combinations($validResponsesValues);
+        $combinationsValidResponseValues = ArrayUtil::mutateResponses($validResponsesValues);
 
         // Interaction count
         $interactionCount = count($responseDeclarations);
@@ -105,7 +105,7 @@ class InlineChoiceInteractionValidationBuilder
 
         // Get an array of correct responses for Learnosity object
         $correctResponses = [];
-        foreach (ArrayUtil::combinations(array_map('array_keys', array_values($keyScoreMapping))) as $combination) {
+        foreach (ArrayUtil::mutateResponses(array_map('array_keys', array_values($keyScoreMapping))) as $combination) {
             $responseValues = [];
             $score = 0;
             $combination = is_array($combination) ? $combination : [$combination];

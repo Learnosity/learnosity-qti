@@ -41,8 +41,7 @@ class ResponseDeclarationBuilder
         $mapEntryCollection = new MapEntryCollection();
         foreach ($mapping as $mapKey => $values) {
             $mappedValue = $values[0];
-            $caseSensitive = $values[1];
-
+            $caseSensitive = isset($values[1]) ? $values[1] : false;
             if ($mapEntryKeyType) {
                 $keyParts = explode(' ', $mapKey);
                 $mapKey = new DirectedPair($keyParts[0], $keyParts[1]);
