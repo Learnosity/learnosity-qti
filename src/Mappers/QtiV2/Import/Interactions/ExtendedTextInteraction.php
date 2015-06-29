@@ -33,7 +33,7 @@ class ExtendedTextInteraction extends AbstractInteraction
          */
         if ($interaction->getExpectedLength()) {
             $maxStrings = $interaction->getMaxStrings() > 0 ? $interaction->getMaxStrings() : 1;
-            $expectedLength = $interaction->getExpectedLength();
+            $expectedLength = $interaction->getExpectedLength() / 5;
             $longtext->set_max_length($maxStrings * $expectedLength);
             $longtext->set_submit_over_limit(true);
         }

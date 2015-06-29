@@ -19,8 +19,9 @@ class ExtendedTextInteractionDocumentation implements InteractionDocumentationIn
             '@attributes' => [
                 'base'               => QtiDoc::none('We always assume base to be 10.'),
                 'stringIdentifier'   => QtiDoc::none(),
-                'expectedLength'     => QtiDoc::support('The number defined is used to set `max_length` and set `submit_over_limit` to
-                                            `true`. Thus, it is not a validity constraint.'),
+                'expectedLength'     => QtiDoc::support('The number defined is used to determine `max_length` with the assumption of
+                                            5 characters per sentence and set `submit_over_limit` to
+                                            `true` since it is not a validity constraint.'),
                 'patternMask'        => QtiDoc::none(),
                 'placeholderText'    => QtiDoc::support(),
                 'maxStrings'         => QtiDoc::none('Always assumed to be 1. `longtext` question type does not support multiple
