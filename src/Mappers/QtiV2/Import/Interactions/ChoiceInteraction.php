@@ -87,6 +87,9 @@ class ChoiceInteraction extends AbstractInteraction
         if (empty($this->responseProcessingTemplate)) {
             $this->exceptions[] =
                 new MappingException('Response processing template is missing', MappingException::CRITICAL);
+        } elseif (!$this->responseDeclaration) {
+            $this->exceptions[] =
+                new MappingException('Response Declaration is missing', MappingException::CRITICAL);
         } elseif ($this->responseProcessingTemplate->getTemplate() === ResponseProcessingTemplate::MATCH_CORRECT) {
             $correctResponse = $this->responseDeclaration->getCorrectResponse();
 
