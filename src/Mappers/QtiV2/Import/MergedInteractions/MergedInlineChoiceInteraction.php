@@ -30,7 +30,7 @@ class MergedInlineChoiceInteraction extends AbstractMergedInteraction
         }
 
         $template = $this->buildTemplate($this->itemBody, $interactionXmls);
-        $clozedropdown = new clozedropdown('clozedropdown', $template, array_values($possibleResponsesMap));
+        $clozedropdown = new clozedropdown('clozedropdown', $template, array_values(array_map('array_values', $possibleResponsesMap)));
 
         $validationBuilder = new InlineChoiceInteractionValidationBuilder(
             $possibleResponsesMap, $this->responseDeclarations, $this->responseProcessingTemplate
