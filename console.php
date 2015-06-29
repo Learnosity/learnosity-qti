@@ -6,4 +6,5 @@ $application = new \Symfony\Component\Console\Application('LearnosiyConverter', 
 
 $application->add(new \Learnosity\Command\ConvertCommand());
 $application->add(new \Learnosity\Command\EntityCommand());
+$application->add(new \Learnosity\Command\DocumentCommand());
 $application->run();

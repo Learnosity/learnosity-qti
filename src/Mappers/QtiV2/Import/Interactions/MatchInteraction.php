@@ -36,6 +36,12 @@ class MatchInteraction extends AbstractInteraction
         $validation = $this->buildValidation($isMultipleResponse);
         $stimulus = $this->getPrompt();
 
+        if ($interaction->getMaxAssociations() !== count($steams)) {
+            $this->exceptions[] =
+                new MappingException('Max Association number not equals to number of stems is not supported',
+                    MappingException::WARNING);
+        }
+
         // TODO
         $uiStyle = new choicematrix_ui_style();
         $uiStyle->set_type('table');
@@ -124,7 +130,6 @@ class MatchInteraction extends AbstractInteraction
         $responseValue = [];
         foreach ($answers as $answer) {
             $answerIDStr = array_keys($answer)[0];
-            // $answerIDScore = array_values($answer)[0];
             $answerIDList = explode(' ', $answerIDStr);
 
             if (count($answerIDList) !== 2) {

@@ -85,6 +85,9 @@ if (isset($_POST['filePath'])) {
             'questions' => $originalQuestions,
             'exceptions' => $exceptions
         ]);
+
+} elseif (isset($_GET['documentation'])) {
+    echo file_get_contents(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'documentation.html');
 } elseif ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $files = scandir($sampleFileFolder);
     $fileList = [];
@@ -94,11 +97,12 @@ if (isset($_POST['filePath'])) {
             $fileList[$f] = $sampleFileFolder . DIRECTORY_SEPARATOR . $f;
         }
     }
+    $isDefault = true;
 }
 
 ?>
 
-<?php if ($_SERVER['REQUEST_METHOD'] === 'GET'): ?>
+<?php if (isset($isDefault)): ?>
     <html>
     <head>
         <title>Learnosity Documentation - QTI Assessment Item Demo</title>

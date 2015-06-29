@@ -36,7 +36,8 @@ class QtiImportDocumentationGenerator
             'textEntryInteraction',
             'extendedTextInteraction',
             'inlineChoiceInteraction',
-            'hottextInteraction'
+            'hottextInteraction',
+            'matchInteraction'
         ];
         $interactionDocumentation = [];
         foreach ($supportedQtiClassName as $className) {
