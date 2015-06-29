@@ -1,4 +1,7 @@
 .idea
+.sonar
+src/Tests/Unit/coverage.xml
+src/Tests/Unit/junit.xml
 src/Entities/QuestionTypes
 src/Entities/Activity
 src/Entities/Item

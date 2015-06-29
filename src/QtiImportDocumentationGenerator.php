@@ -64,4 +64,4 @@ class QtiImportDocumentationGenerator
         $content = $this->twig->render($template, $parameters);
         return file_put_contents($target, $content);
     }
-} 
+}

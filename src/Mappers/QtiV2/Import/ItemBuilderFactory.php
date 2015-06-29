@@ -29,4 +29,4 @@ class ItemBuilderFactory
 
         return $interactionTypes;
     }
-} 
+}

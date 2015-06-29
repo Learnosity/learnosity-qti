@@ -47,4 +47,4 @@ class EntityBuilder
         }
         return $class;
     }
-} 
+}
