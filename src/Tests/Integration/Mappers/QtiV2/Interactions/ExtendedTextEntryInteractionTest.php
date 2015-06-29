@@ -49,7 +49,7 @@ class ExtendedTextEntryInteractionTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Learnosity\Entities\QuestionTypes\longtext', $q);
         $this->assertEquals('longtext', $q->get_type());
         $this->assertEquals('Write Sam a postcard. Answer the questions. Write 25-35 words.', $q->get_stimulus());
-        $this->assertEquals(200, $q->get_max_length());
+        $this->assertEquals(40, $q->get_max_length());
         $this->assertTrue($q->get_submit_over_limit());
 
         $this->assertNull($q->get_validation());

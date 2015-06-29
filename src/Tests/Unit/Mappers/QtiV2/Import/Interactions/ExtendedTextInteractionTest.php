@@ -40,7 +40,7 @@ class ExtendedTextInteractionTest extends AbstractInteractionTest
         $question = $mapper->getQuestionType();
 
         $this->assertNotNull($question);
-        $this->assertEquals(200, $question->get_max_length());
+        $this->assertEquals(40, $question->get_max_length());
         $this->assertTrue($question->get_submit_over_limit());
     }
 
@@ -53,7 +53,7 @@ class ExtendedTextInteractionTest extends AbstractInteractionTest
         $question = $mapper->getQuestionType();
 
         $this->assertNotNull($question);
-        $this->assertEquals(50, $question->get_max_length());
+        $this->assertEquals(10, $question->get_max_length());
         $this->assertTrue($question->get_submit_over_limit());
     }
 

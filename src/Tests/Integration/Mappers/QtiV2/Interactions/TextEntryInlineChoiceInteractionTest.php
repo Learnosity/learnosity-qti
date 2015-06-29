@@ -11,6 +11,7 @@ use Learnosity\Entities\QuestionTypes\clozedropdown_validation_valid_response;
 use Learnosity\Entities\QuestionTypes\clozetext;
 use Learnosity\Entities\QuestionTypes\clozetext_validation;
 use Learnosity\Entities\QuestionTypes\clozetext_validation_valid_response;
+use Learnosity\Mappers\QtiV2\Import\ItemMapper;
 use Learnosity\Utils\FileSystemUtil;
 
 class TextEntryInlineChoiceInteractionTest extends \PHPUnit_Framework_TestCase
