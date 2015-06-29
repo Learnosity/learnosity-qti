@@ -3,9 +3,6 @@
 namespace Learnosity\Mappers\QtiV2\Import\Interactions;
 
 use Learnosity\Entities\QuestionTypes\clozetext;
-use Learnosity\Entities\QuestionTypes\clozetext_validation;
-use Learnosity\Entities\QuestionTypes\clozetext_validation_alt_responses_item;
-use Learnosity\Entities\QuestionTypes\clozetext_validation_valid_response;
 use Learnosity\Exceptions\MappingException;
 use Learnosity\Mappers\QtiV2\Import\ResponseProcessingTemplate;
 use Learnosity\Mappers\QtiV2\Import\Validation\TextEntryValidationBuilder;
