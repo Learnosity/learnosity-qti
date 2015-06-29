@@ -33,9 +33,11 @@ class ItemMapperTest extends \PHPUnit_Framework_TestCase
 
     public function testParseWithoutInteraction()
     {
-        $this->setExpectedException('Learnosity\Exceptions\MappingException');
         $assessmentItem = $this->buildAssessmentItemWithoutInteraction();
-        $this->itemMapper->parseWithAssessmentItemComponent($assessmentItem);
+        $data = $this->itemMapper->parseWithAssessmentItemComponent($assessmentItem);
+        $this->assertEmpty($data[0]);
+        $this->assertEmpty($data[1]);
+        $this->assertCount(1, $data[2]);
     }
 
     private function getMockItemBuilderWith(item $item, array $questions, array $exceptions = [])
