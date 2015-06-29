@@ -113,6 +113,14 @@ if (isset($_POST['filePath'])) {
             .xml-text, .lrn-json {
                 min-height: 600px;
                 min-width: 570px;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+            }
+
+            .container {
+                width: 100%;
             }
 
             .output-json-row {
@@ -138,6 +146,7 @@ if (isset($_POST['filePath'])) {
             .success, .success:hover {
                 background-color: #E9FFED;
             }
+
         </style>
     </head>
 
@@ -168,7 +177,7 @@ if (isset($_POST['filePath'])) {
         <div class="row">
             <div class="col-md-6">
                 <p><span class="label label-default">QTI XML</span></p>
-                <textarea id="qti-xml" class="xml-text" name="qtiXML" type="text"></textarea>
+                <div id="qti-xml" class="xml-text" name="qtiXML"></div>
             </div>
             <div class="col-md-6">
                 <p>
@@ -212,16 +221,26 @@ if (isset($_POST['filePath'])) {
         </div>
     </div>
 
+    <div id="editor">function foo(items) {
+        var x = "All this is syntax highlighted";
+        return x;
+        }</div>
+
     <script src="http://underscorejs.org/underscore-min.js"></script>
     <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <script src="//questions.learnosity.com/?latest"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.6/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.1.9/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+        var editor = ace.edit("qti-xml");
+        editor.getSession().setMode("ace/mode/xml");
+    </script>
     <script>
         var questionsApp;
         $(function () {
             $('#submit').click(function () {
-                var requestXML = $('#qti-xml').val();
+                var requestXML = editor.getValue();
                 $('#errorMsg').html('');
                 $('#render-wrapper').html('');
                 $.ajax({
@@ -262,7 +281,7 @@ if (isset($_POST['filePath'])) {
                     data: 'filePath=' + requestFileName,
                     success: function (data) {
                         console.log(data);
-                        $('#qti-xml').html(data);
+                        editor.setValue(data);
                     }
                 });
             });
