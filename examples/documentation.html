@@ -726,8 +726,9 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                             <tr>
                     <td class="name">@expectedLength</td>
                     <td class="support-status support-status-yes">YES</td>
-                    <td class="description">The number defined is used to set `max_length` and set `submit_over_limit` to
-                                            `true`. Thus, it is not a validity constraint.</td>
+                    <td class="description">The number defined is used to determine `max_length` with the assumption of
+                                            5 characters per sentence and set `submit_over_limit` to
+                                            `true` since it is not a validity constraint.</td>
                 </tr>
                             <tr>
                     <td class="name">@patternMask</td>

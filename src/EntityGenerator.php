@@ -112,7 +112,9 @@ class EntityGenerator
                     return isset($attribute['required']) && $attribute['required'] === true;
                 }),
                 'fields'         => $attributes,
-                'baseClass'      => $baseClass
+                'baseClass'      => $baseClass,
+                // TODO: this is questions schemas only to populate `widget_type`. Need tidy up!
+                'widgetType'     => isset($schema['type']) ? $schema['type'] : null
             ];
         }
         foreach ($classes as $key => $value) {
@@ -125,8 +127,10 @@ class EntityGenerator
     {
         $this->cleanUp($this->questionOutputDir);
         $this->currentNamespace = 'Learnosity\Entities\QuestionTypes';
-        $schemas = array_merge($this->schemasService->getResponsesSchemas(),
-            $this->schemasService->getFeaturesSchemas());
+        $schemas = array_merge(
+            $this->schemasService->getResponsesSchemas(),
+            $this->schemasService->getFeaturesSchemas()
+        );
         $this->generateClasses($schemas, $this->questionOutputDir, 'BaseQuestionType');
     }
 

@@ -17,6 +17,10 @@ class {{ className }} {% if baseClass %}extends {{ baseClass }} {% endif %}
     {% for fieldName, field in fields %}protected ${{ fieldName }};
     {% endfor %}
 
+{% if widgetType %}
+protected $widget_type = '{{ widgetType }}';
+{% endif %}
+
     public function __construct(
         {% for fieldName in requiredFields|keys %}
             {% if loop.last %}${{ fieldName }}{% else %}${{ fieldName }},{% endif %}
@@ -47,6 +51,12 @@ class {{ className }} {% if baseClass %}extends {{ baseClass }} {% endif %}
     }
 
     {% endfor %}
+
+{% if widgetType %}
+    public function get_widget_type() {
+    return $this->widget_type;
+    }
+{% endif %}
 }
 {% endautoescape %}
 
