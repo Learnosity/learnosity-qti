@@ -40,7 +40,7 @@ class InlineChoiceInteraction extends AbstractInteraction
                 Thus setting all validation as case sensitive');
         }
 
-        $this->exceptions[] = array_merge($this->exceptions, $validationBuilder->getExceptions());
+        $this->exceptions = array_merge($this->exceptions, $validationBuilder->getExceptions());
         return $question;
     }
 
