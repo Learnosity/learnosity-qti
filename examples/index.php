@@ -230,6 +230,8 @@ if (isset($_POST['filePath'])) {
     <script>
         var editor = ace.edit("qti-xml");
         editor.getSession().setMode("ace/mode/xml");
+        editor.getSession().setUseWrapMode(true);
+        editor.setShowPrintMargin(false);
     </script>
     <script>
         var questionsApp;
