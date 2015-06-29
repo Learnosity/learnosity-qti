@@ -14,4 +14,4 @@ class ItemWriter
     {
         return $item->to_array();
     }
-} 
+}

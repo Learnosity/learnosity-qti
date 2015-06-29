@@ -19,4 +19,4 @@ class StringUtil
         $bytes = $length / 2;
         return bin2hex(openssl_random_pseudo_bytes($bytes));
     }
-} 
+}

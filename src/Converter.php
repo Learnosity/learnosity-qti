@@ -92,5 +92,4 @@ class Converter
             return $workPath;
         }
     }
-
-} 
+}

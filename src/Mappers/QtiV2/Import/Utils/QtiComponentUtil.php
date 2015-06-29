@@ -29,4 +29,4 @@ class QtiComponentUtil
         $node = $dom->importNode($element, true);
         return $dom->saveXML($node);
     }
-} 
+}
