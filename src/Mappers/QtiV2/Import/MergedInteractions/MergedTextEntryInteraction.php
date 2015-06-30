@@ -3,15 +3,11 @@
 namespace Learnosity\Mappers\QtiV2\Import\MergedInteractions;
 
 use Learnosity\Entities\QuestionTypes\clozetext;
-use Learnosity\Entities\QuestionTypes\clozetext_validation;
-use Learnosity\Entities\QuestionTypes\clozetext_validation_alt_responses_item;
-use Learnosity\Entities\QuestionTypes\clozetext_validation_valid_response;
 use Learnosity\Exceptions\MappingException;
 use Learnosity\Mappers\QtiV2\Import\ResponseProcessingTemplate;
 use Learnosity\Mappers\QtiV2\Import\Utils\QtiComponentUtil;
 use Learnosity\Mappers\QtiV2\Import\Validation\TextEntryInteractionValidationBuilder;
 use Learnosity\Utils\ArrayUtil;
-use qtism\data\content\interactions\Interaction;
 use qtism\data\content\interactions\TextEntryInteraction;
 use qtism\data\content\ItemBody;
 use qtism\data\state\MapEntry;
@@ -50,7 +46,7 @@ class MergedTextEntryInteraction extends AbstractMergedInteraction
         $maxExpectedLength = -1;
         /** @var TextEntryInteraction $component */
         foreach ($this->interactionComponents as $component) {
-            $length = $component->getExpectedLength();;
+            $length = $component->getExpectedLength();
             if ($maxExpectedLength < $length) {
                 $maxExpectedLength = $length;
             }
@@ -64,7 +60,6 @@ class MergedTextEntryInteraction extends AbstractMergedInteraction
 
     private function buildTemplate(ItemBody $itemBody, array $interactionXmls)
     {
-        // Build item's HTML content
         $content = QtiComponentUtil::marshallCollection($itemBody->getComponents());
         foreach ($interactionXmls as $interactionXml) {
             $content = str_replace($interactionXml, '{{response}}', $content);
@@ -83,15 +78,19 @@ class MergedTextEntryInteraction extends AbstractMergedInteraction
         $originalResponseData = [];
         if (!($this->responseProcessingTemplate instanceof ResponseProcessingTemplate)) {
             $this->exceptions[] =
-                new MappingException('Response declaration is not defined',
-                    MappingException::CRITICAL);
+                new MappingException(
+                    'Response declaration is not defined',
+                    MappingException::CRITICAL
+                );
             return null;
         }
         foreach ($interactionIdentifiers as $interactionIdentifier) {
             if (!isset($this->responseDeclarations[$interactionIdentifier])) {
                 $this->exceptions[] =
-                    new MappingException("Unable to locate {$interactionIdentifier}" . ' in response declarations',
-                        MappingException::CRITICAL);
+                    new MappingException(
+                        "Unable to locate {$interactionIdentifier}" . ' in response declarations',
+                        MappingException::CRITICAL
+                    );
                 continue;
             }
             switch ($this->responseProcessingTemplate->getTemplate()) {
@@ -133,7 +132,8 @@ class MergedTextEntryInteraction extends AbstractMergedInteraction
         }
 
         $mutatedOriginalResponses = ArrayUtil::mutateResponses($originalResponseData);
-        // order score from highest to lowest
+
+        // Order score from highest to lowest
         usort($mutatedOriginalResponses, function ($a, $b) {
             return array_sum(array_values($a)) < array_sum(array_values($b));
         });

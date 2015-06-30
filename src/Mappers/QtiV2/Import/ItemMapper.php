@@ -24,7 +24,8 @@ class ItemMapper
         'extendedTextInteraction',
         'textEntryInteraction',
         'matchInteraction',
-        'hottextInteraction'
+        'hottextInteraction',
+        'gapMatchInteraction'
     ];
     private $itemBuilderFactory;
     private $hasMathML = false;

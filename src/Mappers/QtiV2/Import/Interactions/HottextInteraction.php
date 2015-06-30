@@ -43,6 +43,9 @@ class HottextInteraction extends AbstractInteraction
 
     private function buildTemplate(QtiHottextInteraction $interaction)
     {
+        // Ignore `prompt` since its going to be mapped to `stimulus`
+        $interaction->setPrompt(null);
+
         $content = QtiComponentUtil::marshallCollection($interaction->getComponents());
         foreach ($interaction->getComponentsByClassName('hottext') as $hottext) {
             /** @var Hottext $hottext */
