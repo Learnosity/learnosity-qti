@@ -15,6 +15,7 @@ use qtism\data\content\interactions\Hottext;
 use qtism\data\content\interactions\Prompt;
 use qtism\data\content\xhtml\text\Span;
 use qtism\data\content\interactions\HottextInteraction as QtiHottextInteraction;
+use qtism\data\QtiComponentCollection;
 use qtism\data\state\MapEntry;
 use qtism\data\state\ResponseDeclaration;
 use qtism\data\state\Value;
@@ -43,10 +44,14 @@ class HottextInteraction extends AbstractInteraction
 
     private function buildTemplate(QtiHottextInteraction $interaction)
     {
-        // Ignore `prompt` since its going to be mapped to `stimulus`
-        $interaction->setPrompt(null);
-
-        $content = QtiComponentUtil::marshallCollection($interaction->getComponents());
+        $templateCollection = new QtiComponentCollection();
+        foreach ($interaction->getComponents() as $component) {
+            // Ignore `prompt` since its going to be mapped to `stimulus`
+            if (!$component instanceof Prompt) {
+                $templateCollection->attach($component);
+            }
+        }
+        $content = QtiComponentUtil::marshallCollection($templateCollection);
         foreach ($interaction->getComponentsByClassName('hottext') as $hottext) {
             /** @var Hottext $hottext */
             $hottextString = QtiComponentUtil::marshall($hottext);
