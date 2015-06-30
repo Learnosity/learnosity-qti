@@ -5,7 +5,7 @@ namespace Learnosity\Mappers\QtiV2\Import\Interactions;
 use Learnosity\Entities\QuestionTypes\clozetext;
 use Learnosity\Exceptions\MappingException;
 use Learnosity\Mappers\QtiV2\Import\ResponseProcessingTemplate;
-use Learnosity\Mappers\QtiV2\Import\Validation\TextEntryValidationBuilder;
+use Learnosity\Mappers\QtiV2\Import\Validation\TextEntryInteractionValidationBuilder;
 use qtism\data\state\MapEntry;
 use qtism\data\state\Value;
 
@@ -65,12 +65,11 @@ class TextEntryInteraction extends AbstractInteraction
                     break;
                 default:
                     $this->exceptions[] =
-                        new MappingException('Unrecognised response processing template. Validation is not available',
-                            MappingException::WARNING);
+                        new MappingException('Unrecognised response processing template. Validation is not available');
                     return null;
             }
         }
-        $validationBuilder = new TextEntryValidationBuilder();
+        $validationBuilder = new TextEntryInteractionValidationBuilder();
         return $validationBuilder->buildValidation($answers);
     }
 }

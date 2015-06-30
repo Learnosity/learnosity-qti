@@ -8,16 +8,12 @@ use Learnosity\Mappers\IMSCP\Entities\File;
 use Learnosity\Mappers\IMSCP\Entities\Manifest;
 use Learnosity\Mappers\IMSCP\Entities\Resource;
 use qtism\data\storage\xml\marshalling\Marshaller;
-use qtism\data\storage\xml\XmlCompactDocument;
-use qtism\data\storage\xml\XmlDocument;
 
 class ManifestMapper
 {
-
     public function parse($xmlString)
     {
         $manifest = new Manifest();
-
         $document = new \DOMDocument();
         $document->preserveWhiteSpace = false;
         $document->loadXML($xmlString);
@@ -28,7 +24,6 @@ class ManifestMapper
         }
 
         $manifest->setIdentifier(Marshaller::getDOMElementAttributeAs($rootElement, 'identifier'));
-
         $resourcesListElements = Marshaller::getChildElementsByTagName($resourcesElement[0], 'resource');
 
         $resources = [];
@@ -56,7 +51,8 @@ class ManifestMapper
                 foreach ($dependencyListElements as $dependencyElement) {
                     $dependency = new Dependency();
                     $dependency->setIdentifierref(
-                        Marshaller::getDOMElementAttributeAs($dependencyElement, 'identifierref'));
+                        Marshaller::getDOMElementAttributeAs($dependencyElement, 'identifierref')
+                    );
                     $dependencies[] = $dependency;
                 }
             }
@@ -69,9 +65,9 @@ class ManifestMapper
         $manifest->setResources($resources);
 
         $issues = $this->validate($manifest);
-        if(count($issues)) {
-           return $issues;
-        }else {
+        if (count($issues)) {
+            return $issues;
+        } else {
             return $manifest;
         }
     }
@@ -80,7 +76,10 @@ class ManifestMapper
      * checking if
      * a). all files are available
      * b). dependency are met
+     *
      * @param Manifest $manifest
+     *
+     * @return array
      */
     public function validate(Manifest $manifest)
     {
@@ -103,9 +102,6 @@ class ManifestMapper
                 }
             }
         }
-
         return $issues;
     }
-
-
 }

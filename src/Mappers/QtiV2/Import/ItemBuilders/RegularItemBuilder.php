@@ -15,12 +15,13 @@ class RegularItemBuilder extends AbstractItemBuilder
 {
     const MAPPER_CLASS_BASE = 'Learnosity\Mappers\QtiV2\Import\Interactions\\';
 
-    public function map($assessmentItemIdentifier,
-                        ItemBody $itemBody,
-                        QtiComponentCollection $interactionComponents,
-                        QtiComponentCollection $responseDeclarations = null,
-                        ResponseProcessingTemplate $responseProcessingTemplate = null)
-    {
+    public function map(
+        $assessmentItemIdentifier,
+        ItemBody $itemBody,
+        QtiComponentCollection $interactionComponents,
+        QtiComponentCollection $responseDeclarations = null,
+        ResponseProcessingTemplate $responseProcessingTemplate = null
+    ) {
         $this->assessmentItemIdentifier = $assessmentItemIdentifier;
 
         $questionsSpan = [];

@@ -21,11 +21,11 @@ class ResponseProcessingTemplate
         $template = strtolower(basename($url, '.xml'));
         if ($template === self::MATCH_CORRECT) {
             return self::matchCorrect();
-        } else if ($template === self::MAP_RESPONSE) {
+        } elseif ($template === self::MAP_RESPONSE) {
             return self::mapResponse();
-        } else if ($template === self::CC2_MAP_RESPONSE) {
+        } elseif ($template === self::CC2_MAP_RESPONSE) {
             return self::cc2ResponseMap();
-        } else if ($template === self::MAP_RESPONSE_POINT) {
+        } elseif ($template === self::MAP_RESPONSE_POINT) {
             return self::mapResponsePoint();
         }
         return null;

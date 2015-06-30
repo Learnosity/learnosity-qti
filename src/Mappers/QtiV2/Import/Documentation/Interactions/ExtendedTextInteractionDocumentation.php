@@ -34,5 +34,4 @@ class ExtendedTextInteractionDocumentation implements InteractionDocumentationIn
         ]);
         return $documentation;
     }
-
 }

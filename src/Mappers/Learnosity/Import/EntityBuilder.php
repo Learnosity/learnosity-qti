@@ -13,17 +13,19 @@ class EntityBuilder
         foreach ($clazz->getConstructor()->getParameters() as $parameter) {
             $parameterName = $parameter->getName();
             if (isset($json[$parameterName])) {
-                $parameters[$parameterName] = ($parameter->getClass()) ? self::build($parameter->getClass()->getName(),
-                    $json[$parameterName]) : $json[$parameterName];
+                $parameters[$parameterName] = ($parameter->getClass()) ? self::build(
+                    $parameter->getClass()->getName(),
+                    $json[$parameterName]
+                ) : $json[$parameterName];
             } else {
-                throw new MappingException('Invalid JSON. Required key ' . $parameter->getName() . ' does not exists',
-                    MappingException::CRITICAL);
+                throw new MappingException(
+                    'Invalid JSON. Required key ' . $parameter->getName() . ' does not exists',
+                    MappingException::CRITICAL
+                );
             }
         }
         $class = $clazz->newInstanceArgs($parameters);
-
         self::populateClassFields($class, array_diff_key($json, $parameters));
-
         return $class;
     }
 

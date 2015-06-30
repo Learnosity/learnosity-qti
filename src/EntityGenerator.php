@@ -118,8 +118,10 @@ class EntityGenerator
             ];
         }
         foreach ($classes as $key => $value) {
-            $this->renderFile('entity.php.twig',
-                $outputDir . DIRECTORY_SEPARATOR . $value['className'] . '.php', $value);
+            $this->renderFile(
+                'entity.php.twig',
+                $outputDir . DIRECTORY_SEPARATOR . $value['className'] . '.php', $value
+            );
         }
     }
 

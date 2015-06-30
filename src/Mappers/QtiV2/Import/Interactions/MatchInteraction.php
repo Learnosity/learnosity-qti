@@ -17,7 +17,6 @@ use qtism\data\state\MapEntry;
 
 class MatchInteraction extends AbstractInteraction
 {
-
     private $stemMapping = [];
     private $optionsMapping = [];
 
@@ -38,8 +37,7 @@ class MatchInteraction extends AbstractInteraction
 
         if ($interaction->getMaxAssociations() !== count($steams)) {
             $this->exceptions[] =
-                new MappingException('Max Association number not equals to number of stems is not supported',
-                    MappingException::WARNING);
+                new MappingException('Max Association number not equals to number of stems is not supported');
         }
 
         // TODO
@@ -64,10 +62,11 @@ class MatchInteraction extends AbstractInteraction
         $simpleMatchSetCollection = $interaction->getSimpleMatchSets();
         if (count($simpleMatchSetCollection) !== 2) {
             $this->exceptions[] = new MappingException(
-                'Match Interaction must contains 2 simpleMatchSet element', MappingException::CRITICAL);
+                'Match Interaction must contains 2 simpleMatchSet element',
+                MappingException::CRITICAL
+            );
             return false;
         }
-
         return true;
     }
 
@@ -94,8 +93,7 @@ class MatchInteraction extends AbstractInteraction
 
         if (!$this->responseProcessingTemplate) {
             $this->exceptions[] =
-                new MappingException('Response Processing Template is not defined so validation is not available.',
-                    MappingException::WARNING);
+                new MappingException('Response Processing Template is not defined so validation is not available.');
             return null;
         } else {
             switch ($this->responseProcessingTemplate->getTemplate()) {
@@ -103,7 +101,8 @@ class MatchInteraction extends AbstractInteraction
                     $score = 1;
                     foreach ($this->responseDeclaration->getCorrectResponse()->getValues() as $value) {
                         if ($value->getValue() instanceof DirectedPair) {
-                            $answers[] = [$value->getValue()->getFirst() . ' ' . $value->getValue()->getSecond() => $score];
+                            $answers[] = [$value->getValue()->getFirst() . ' ' .
+                                          $value->getValue()->getSecond() => $score];
                         }
                     }
                     break;
@@ -114,14 +113,14 @@ class MatchInteraction extends AbstractInteraction
                         /** @var MapEntry $mapEntry */
                         $totalScore += $mapEntry->getMappedValue();
                         if ($mapEntry->getMapKey() instanceof DirectedPair) {
-                            $answers[] = [$mapEntry->getMapKey()->getFirst() . ' ' . $mapEntry->getMapKey()->getSecond() => $mapEntry->getMappedValue()];
+                            $answers[] = [$mapEntry->getMapKey()->getFirst() . ' ' .
+                                          $mapEntry->getMapKey()->getSecond() => $mapEntry->getMappedValue()];
                         }
                     }
                     break;
                 default:
                     $this->exceptions[] =
-                        new MappingException('Unrecognised response processing template. Validation is not available',
-                            MappingException::WARNING);
+                        new MappingException('Unrecognised response processing template. Validation is not available');
                     return null;
             }
         }

@@ -18,6 +18,5 @@ class AppContainer
             $loader->load('services.yml');
         }
         return self::$appContainer;
-
     }
 }

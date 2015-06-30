@@ -2,7 +2,6 @@
 
 namespace Learnosity\Command;
 
-
 use Learnosity\Converter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -12,14 +11,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ConvertCommand extends Command
 {
-
     protected function configure()
     {
         $this->setName('convert')->setDescription('Convert Format')
-//            ->addArgument(
-//                'mode',
-//                InputArgument::REQUIRED,
-//                'IO Mode')
             ->addArgument(
                 'input-format',
                 InputArgument::REQUIRED,
@@ -59,7 +53,7 @@ class ConvertCommand extends Command
         $outputPath = $input->getOption('outputPath');
 
         if ($path && $outputPath) {
-            // it is a IMS CP Package
+            // It is a IMS CP Package
             $outputPath = Converter::parseIMSCPPackage($path, $outputPath);
             $output->writeln($outputPath);
         } else {

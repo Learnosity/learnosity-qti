@@ -4,9 +4,9 @@ namespace Learnosity\Utils;
 
 class ArrayUtil
 {
-    public static function combinations(array $array, $maxCount = null)
+    public static function combinations(array $array)
     {
-        // initialize by adding the empty set
+        // Initialize by adding the empty set
         $results = array(array());
         foreach ($array as $element) {
             foreach ($results as $combination) {

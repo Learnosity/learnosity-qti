@@ -69,18 +69,21 @@ class HottextInteraction extends AbstractInteraction
             $template = $this->responseProcessingTemplate->getTemplate();
             if ($template === ResponseProcessingTemplate::MATCH_CORRECT) {
                 return $this->buildMatchCorrectValidation($interaction, $responseDeclaration);
-            } else if ($template === ResponseProcessingTemplate::MAP_RESPONSE) {
+            } elseif ($template === ResponseProcessingTemplate::MAP_RESPONSE) {
                 return $this->buildMapResponseValidation($interaction, $responseDeclaration);
             } else {
-                $this->exceptions[] = new MappingException('Does not support template ' . $template .
-                    ' on <responseProcessing>');
+                $this->exceptions[] = new MappingException(
+                    'Does not support template ' . $template . ' on <responseProcessing>'
+                );
             }
         }
         return null;
     }
 
-    private function buildMatchCorrectValidation(QtiHottextInteraction $interaction, ResponseDeclaration $responseDeclaration)
-    {
+    private function buildMatchCorrectValidation(
+        QtiHottextInteraction $interaction,
+        ResponseDeclaration $responseDeclaration
+    ) {
         $hottextComponents = array_flip(array_map(function ($component) {
             return $component->getIdentifier();
         }, $interaction->getComponentsByClassName('hottext')->getArrayCopy(true)));
@@ -127,7 +130,7 @@ class HottextInteraction extends AbstractInteraction
                 ];
             }
         }
-        usort($correctResponses, function($a, $b) {
+        usort($correctResponses, function ($a, $b) {
             return $a['score'] < $b['score'];
         });
 

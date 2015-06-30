@@ -9,8 +9,8 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class DocumentCommand extends Command {
-
+class DocumentCommand extends Command
+{
     protected function configure()
     {
         $this->setName('doc:generate')->setDescription('Generate Documentation');

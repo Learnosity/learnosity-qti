@@ -42,7 +42,7 @@ class Converter
     {
         if (FileSystemUtil::getPathType($srcPath) === FileSystemUtil::PATH_TYPE_DIRECTORY) {
 
-            //parse imsmanifest.xml file
+            // Parse imsmanifest.xml file
             $manifestFile = FileSystemUtil::readFile($srcPath . DIRECTORY_SEPARATOR . 'imsmanifest.xml');
 
             /* @var $manifestMapper ManifestMapper */
@@ -62,11 +62,15 @@ class Converter
                 if (strpos($resourceType, Resource::TYPE_PREFIX_ITEM) !== false) {
                     $itemXmlFile = FileSystemUtil::readFile($srcPath . DIRECTORY_SEPARATOR . $resource->getHref());
                     list($itemData, $questionData) = self::convertQtiItemToLearnosity($itemXmlFile->getContents());
-                    file_put_contents($workPath . DIRECTORY_SEPARATOR . 'item_' . $itemData['reference'] . '.json',
-                        json_encode($itemData, JSON_PRETTY_PRINT));
+                    file_put_contents(
+                        $workPath . DIRECTORY_SEPARATOR . 'item_' . $itemData['reference'] . '.json',
+                        json_encode($itemData, JSON_PRETTY_PRINT)
+                    );
                     foreach ($questionData as $q) {
-                        file_put_contents($workPath . DIRECTORY_SEPARATOR . 'question_' . $q['reference'] . '.json',
-                            json_encode($q, JSON_PRETTY_PRINT));
+                        file_put_contents(
+                            $workPath . DIRECTORY_SEPARATOR . 'question_' . $q['reference'] . '.json',
+                            json_encode($q, JSON_PRETTY_PRINT)
+                        );
                     }
 
                     unset($itemData);
@@ -81,8 +85,10 @@ class Converter
                     /* @var $activity activity */
                     list($activity, $activityItemsList) = $testMapper->parse($testXmlFile->getContents());
 
-                    file_put_contents($workPath . DIRECTORY_SEPARATOR . 'activity_' . $activity->get_reference() . '.json',
-                        json_encode($activity->to_array(), JSON_PRETTY_PRINT));
+                    file_put_contents(
+                        $workPath . DIRECTORY_SEPARATOR . 'activity_' . $activity->get_reference() . '.json',
+                        json_encode($activity->to_array(), JSON_PRETTY_PRINT)
+                    );
 
                     unset($testXmlFile);
                     unset($activity);

@@ -21,17 +21,18 @@ class InlineChoiceInteractionValidationBuilder
         array $possibleResponses,
         array $responseDeclarations = null,
         ResponseProcessingTemplate $responseProcessingTemplate = null
-    )
-    {
-        if (!empty($responseProcessingTemplate) && !empty($responseDeclarations)) {
+    ) {
+        if (!empty($responseProcessingTemplate) && ! empty($responseDeclarations)) {
             $template = $responseProcessingTemplate->getTemplate();
             if ($template === ResponseProcessingTemplate::MATCH_CORRECT) {
                 $this->validation = $this->buildMatchCorrectValidation($possibleResponses, $responseDeclarations);
-            } else if ($template === ResponseProcessingTemplate::MAP_RESPONSE) {
+            } elseif ($template === ResponseProcessingTemplate::MAP_RESPONSE) {
                 $this->validation = $this->buildMapResponseValidation($possibleResponses, $responseDeclarations);
             } else {
-                $this->exceptions[] = new MappingException('Does not support template ' . $template .
-                    ' on <responseProcessing>');
+                $this->exceptions[] = new MappingException(
+                    'Does not support template ' . $template .
+                    ' on <responseProcessing>'
+                );
             }
         }
     }
@@ -120,7 +121,7 @@ class InlineChoiceInteractionValidationBuilder
         }
 
         // Sort by score value, as the first/biggest would be used for `valid_response` object
-        usort($correctResponses, function($a, $b) {
+        usort($correctResponses, function ($a, $b) {
             return $a['score'] < $b['score'];
         });
 

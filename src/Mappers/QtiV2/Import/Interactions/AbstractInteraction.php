@@ -31,7 +31,8 @@ abstract class AbstractInteraction
         return $this->exceptions;
     }
 
-    public function getPrompt() {
+    public function getPrompt()
+    {
         if ($this->interaction->getPrompt() instanceof Prompt) {
             $promptContent = $this->interaction->getPrompt()->getContent();
             return QtiComponentUtil::marshallCollection($promptContent);

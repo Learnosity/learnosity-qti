@@ -20,7 +20,8 @@ class InlineChoiceInteraction extends AbstractInteraction
         $template = '{{response}}';
 
         foreach ($interaction->getContent() as $inlineChoice) {
-            $this->choicesMapping[$inlineChoice->getIdentifier()] = QtiComponentUtil::marshallCollection($inlineChoice->getContent());
+            $this->choicesMapping[$inlineChoice->getIdentifier()] =
+                QtiComponentUtil::marshallCollection($inlineChoice->getContent());
         }
 
         $validationBuilder = new InlineChoiceInteractionValidationBuilder(

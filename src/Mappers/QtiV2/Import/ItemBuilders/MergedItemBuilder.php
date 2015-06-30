@@ -15,12 +15,13 @@ class MergedItemBuilder extends AbstractItemBuilder
 {
     const MAPPER_CLASS_BASE = 'Learnosity\Mappers\QtiV2\Import\MergedInteractions\\Merged';
 
-    public function map($assessmentItemIdentifier,
-                        ItemBody $itemBody,
-                        QtiComponentCollection $interactionComponents,
-                        QtiComponentCollection $responseDeclarations = null,
-                        ResponseProcessingTemplate $responseProcessingTemplate = null)
-    {
+    public function map(
+        $assessmentItemIdentifier,
+        ItemBody $itemBody,
+        QtiComponentCollection $interactionComponents,
+        QtiComponentCollection $responseDeclarations = null,
+        ResponseProcessingTemplate $responseProcessingTemplate = null
+    ) {
 
         $mergedInteractionType = $this->getMergedInteractionType($interactionComponents);
         if (!$mergedInteractionType) {

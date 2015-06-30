@@ -2,7 +2,6 @@
 
 namespace Learnosity\Mappers\IMSCP\Entities;
 
-
 class File
 {
     protected $href;
@@ -22,5 +21,4 @@ class File
     {
         $this->href = $href;
     }
-
 }

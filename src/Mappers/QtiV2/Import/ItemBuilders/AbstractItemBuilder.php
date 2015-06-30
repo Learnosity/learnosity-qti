@@ -37,9 +37,11 @@ abstract class AbstractItemBuilder
         return $reflectionClass->newInstanceArgs($params);
     }
 
-    abstract public function map($assessmentItemIdentifier,
-                                 ItemBody $itemBody,
-                                 QtiComponentCollection $interactionComponents,
-                                 QtiComponentCollection $responseDeclarations = null,
-                                 ResponseProcessingTemplate $responseProcessingTemplate = null);
+    abstract public function map(
+        $assessmentItemIdentifier,
+        ItemBody $itemBody,
+        QtiComponentCollection $interactionComponents,
+        QtiComponentCollection $responseDeclarations = null,
+        ResponseProcessingTemplate $responseProcessingTemplate = null
+    );
 }

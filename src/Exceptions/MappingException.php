@@ -4,7 +4,6 @@ namespace Learnosity\Exceptions;
 
 class MappingException extends \Exception
 {
-
     const WARNING = 'warning';
     const CRITICAL = 'critical';
 
@@ -23,5 +22,4 @@ class MappingException extends \Exception
     {
         return "[" . $this->type . "]" . $this->getMessage();
     }
-
 }

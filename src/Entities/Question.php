@@ -11,9 +11,9 @@ class Question extends BaseEntity
 
     function __construct($type, $reference, BaseQuestionType $data)
     {
-        $this->data      = $data;
-        $this->reference = $reference;
-        $this->type      = $type;
+        $this->data        = $data;
+        $this->reference   = $reference;
+        $this->type        = $type;
         $this->widget_type = $data->get_widget_type();
     }
 
@@ -52,7 +52,7 @@ class Question extends BaseEntity
      **/
     public function to_array()
     {
-        $question = get_object_vars($this);
+        $question         = get_object_vars($this);
         $question['data'] = $this->data->to_array();
         return $question;
     }

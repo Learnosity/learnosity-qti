@@ -8,7 +8,6 @@ use Learnosity\Mappers\QtiV2\Import\Documentation\QtiDoc;
 
 class MatchInteractionDocumentation implements InteractionDocumentationInterface
 {
-
     public static function getInteractionDocumentation()
     {
         $documentation['@attributes'] = QtiDoc::defaultCommonInteractionAttributeRow();
@@ -44,8 +43,10 @@ class MatchInteractionDocumentation implements InteractionDocumentationInterface
                 ]
             ],
         ]);
-        $documentation['simpleMatchSet']['simpleAssociableChoice'] = array_merge($documentation['simpleMatchSet']['simpleAssociableChoice'],
-            QtiDoc::defaultFlowStaticRow());
+        $documentation['simpleMatchSet']['simpleAssociableChoice'] = array_merge(
+            $documentation['simpleMatchSet']['simpleAssociableChoice'],
+            QtiDoc::defaultFlowStaticRow()
+        );
         return $documentation;
     }
 }

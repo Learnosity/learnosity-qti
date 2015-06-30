@@ -15,12 +15,12 @@ abstract class AbstractMergedInteraction
 
     protected $exceptions = [];
 
-    public function __construct($questionReference,
+    public function __construct(
+        $questionReference,
         ItemBody $itemBody,
         QtiComponentCollection $responseDeclarations = null,
         ResponseProcessingTemplate $responseProcessingTemplate = null
-    )
-    {
+    ) {
         $this->questionReference = $questionReference;
         $this->itemBody = $itemBody;
         $this->responseProcessingTemplate = $responseProcessingTemplate;
@@ -33,7 +33,6 @@ abstract class AbstractMergedInteraction
         }
     }
 
-    // TODO: Need to verify for <math> tags to see whether we need to enable 'is_math'
     abstract public function getQuestionType();
 
     abstract public function getItemContent();

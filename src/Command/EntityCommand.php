@@ -2,7 +2,6 @@
 
 namespace Learnosity\Command;
 
-
 use Learnosity\AppContainer;
 use Learnosity\EntityGenerator;
 use Symfony\Component\Console\Command\Command;
@@ -11,7 +10,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class EntityCommand extends Command
 {
-
     protected function configure()
     {
         $this->setName('entity:generate')->setDescription('Generate Learnosity Entity Classes');

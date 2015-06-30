@@ -9,7 +9,7 @@ use Learnosity\Entities\QuestionTypes\clozetext_validation_valid_response;
 use Learnosity\Exceptions\MappingException;
 use Learnosity\Mappers\QtiV2\Import\ResponseProcessingTemplate;
 use Learnosity\Mappers\QtiV2\Import\Utils\QtiComponentUtil;
-use Learnosity\Mappers\QtiV2\Import\Validation\TextEntryValidationBuilder;
+use Learnosity\Mappers\QtiV2\Import\Validation\TextEntryInteractionValidationBuilder;
 use Learnosity\Utils\ArrayUtil;
 use qtism\data\content\interactions\Interaction;
 use qtism\data\content\interactions\TextEntryInteraction;
@@ -122,8 +122,7 @@ class MergedTextEntryInteraction extends AbstractMergedInteraction
                     break;
                 default:
                     $this->exceptions[] =
-                        new MappingException('Unrecognised response processing template. Validation is not available',
-                            MappingException::WARNING);
+                        new MappingException('Unrecognised response processing template. Validation is not available');
                     return null;
 
             }
@@ -139,7 +138,7 @@ class MergedTextEntryInteraction extends AbstractMergedInteraction
             return array_sum(array_values($a)) < array_sum(array_values($b));
         });
 
-        $validationBuilder = new TextEntryValidationBuilder();
+        $validationBuilder = new TextEntryInteractionValidationBuilder();
         return $validationBuilder->buildValidation($mutatedOriginalResponses);
     }
 }

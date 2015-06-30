@@ -48,8 +48,10 @@ class ChoiceInteraction extends AbstractInteraction
         if ($maxChoiceNum > 1) {
             if ($maxChoiceNum !== count($options)) {
                 // We do not support specifying amount of choices
-                $this->exceptions[] = new MappingException("Allowing multiple responses of max " . count($options) . " options, however " .
-                    "maxChoices of $maxChoiceNum would be ignored since we can't support exact number");
+                $this->exceptions[] = new MappingException(
+                    "Allowing multiple responses of max " . count($options) . " options, however " .
+                    "maxChoices of $maxChoiceNum would be ignored since we can't support exact number"
+                );
             }
             $mcq->set_multiple_responses(true);
         }
@@ -110,8 +112,11 @@ class ChoiceInteraction extends AbstractInteraction
             return $validation;
         } else {
             $this->exceptions[] =
-                new MappingException('Does not support template ' . $this->responseProcessingTemplate->getTemplate() .
-                    ' on <responseProcessing>', MappingException::CRITICAL);
+                new MappingException(
+                    'Does not support template ' . $this->responseProcessingTemplate->getTemplate() .
+                    ' on <responseProcessing>',
+                    MappingException::CRITICAL
+                );
         }
     }
 }

@@ -20,14 +20,14 @@ class TestMapper
             $document = new XmlDocument();
             $document->loadFromString($xmlString);
 
-            //get all assessmentItemRef
+            // Get all assessmentItemRef
             /* @var $assessmentTest AssessmentTest*/
             $assessmentTest = $document->getDocumentComponent();
             $activityReference = $assessmentTest->getIdentifier();
             $description = $assessmentTest->getTitle();
             $timeLimitElement = $assessmentTest->getTimeLimits();
             $timeConfig = new activity_data_config_time();
-            if($timeLimitElement) {
+            if ($timeLimitElement) {
                 $interval = $timeLimitElement->getMaxTime();
                 $timeConfig->set_max_time($interval->getSeconds(true));
                 $limitType = $timeLimitElement->doesAllowLateSubmission() ? 'soft': 'hard';
@@ -37,7 +37,7 @@ class TestMapper
             $assessmentItemRefs = $assessmentTest->getComponentsByClassName('assessmentItemRef', true);
             $activityItemsList = [];
             /* @var $assessmentItemRef ExtendedAssessmentItemRef*/
-            foreach($assessmentItemRefs as $assessmentItemRef) {
+            foreach ($assessmentItemRefs as $assessmentItemRef) {
                 $activityItemsList[$assessmentItemRef->getIdentifier()] = $assessmentItemRef->getHref();
             }
 
@@ -54,7 +54,7 @@ class TestMapper
         } catch (XmlStorageException $e) {
             $previousException = $e->getPrevious();
             $msg = $e->getMessage(). "\n";
-            if($previousException) {
+            if ($previousException) {
                 $previousException->getMessage();
             }
             throw new MappingException($msg, MappingException::CRITICAL, $previousException);

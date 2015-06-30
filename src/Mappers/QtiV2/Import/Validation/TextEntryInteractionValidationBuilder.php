@@ -5,9 +5,8 @@ use Learnosity\Entities\QuestionTypes\clozetext_validation;
 use Learnosity\Entities\QuestionTypes\clozetext_validation_alt_responses_item;
 use Learnosity\Entities\QuestionTypes\clozetext_validation_valid_response;
 
-class TextEntryValidationBuilder
+class TextEntryInteractionValidationBuilder
 {
-
     public function buildValidation(array $originalResponses)
     {
         $validResponse = new clozetext_validation_valid_response();

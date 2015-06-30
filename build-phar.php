@@ -1,4 +1,5 @@
 <?php
+
 require_once "vendor/autoload.php";
 
 $phar = new \Phar('build/learnosity-qti.phar', 0, 'learnosity-qti.phar');
@@ -16,7 +17,7 @@ $finder->files()
     ->in(__DIR__ . '');
 
 $totalFileCount = count($finder);
-$i = 0;
+$i              = 0;
 echo 'Total File: ' . $totalFileCount . "\n";
 echo 'Progress:     ';
 

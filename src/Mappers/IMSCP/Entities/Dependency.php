@@ -2,7 +2,6 @@
 
 namespace Learnosity\Mappers\IMSCP\Entities;
 
-
 class Dependency
 {
     protected $identifierref;
@@ -22,6 +21,4 @@ class Dependency
     {
         $this->identifierref = $identifierref;
     }
-
-
 }
