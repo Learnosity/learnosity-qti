@@ -103,6 +103,7 @@ if (isset($_POST['filePath'])) {
 ?>
 
 <?php if (isset($isDefault)): ?>
+    <!DOCTYPE html>
     <html>
     <head>
         <title>Learnosity Documentation - QTI Assessment Item Demo</title>
