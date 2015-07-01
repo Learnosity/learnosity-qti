@@ -2,10 +2,13 @@
 
 namespace Learnosity\Mappers\QtiV2\Import\Interactions;
 
+use Learnosity\Entities\QuestionTypes\clozeassociation;
+use Learnosity\Entities\QuestionTypes\clozeassociation_response_container;
 use Learnosity\Mappers\QtiV2\Import\Utils\QtiComponentUtil;
+use Learnosity\Mappers\QtiV2\Import\Validation\GapMatchInteractionValidationBuilder;
+use qtism\data\content\interactions\Gap;
 use qtism\data\content\interactions\GapChoice;
 use qtism\data\content\interactions\GapMatchInteraction as QtiGapMatchInteraction;
-use Learnosity\Entities\QuestionTypes\clozeassociation;
 use qtism\data\content\interactions\Prompt;
 use qtism\data\QtiComponentCollection;
 
@@ -15,26 +18,43 @@ class GapMatchInteraction extends AbstractInteraction
     {
         /** @var QtiGapMatchInteraction $interaction */
         $interaction = $this->interaction;
+        $possibleResponseMapping = $this->buildPossibleResponseMapping($interaction);
 
-        $possibleResponses = [];
-        $gapChoices = $interaction->getComponentsByClassName('gapText', true);
-        $gapChoices->merge($interaction->getComponentsByClassName('gapImg', true));
-        /** @var GapChoice $gapChoice */
-        foreach ($gapChoices as $gapChoice) {
-            $gapChoiceContent = QtiComponentUtil::marshallCollection($gapChoice->getComponents());
-            $possibleResponses[$gapChoice->getIdentifier()] = $gapChoiceContent;
-        }
-        $question = new clozeassociation('clozeassociation', $this->buildTemplate($interaction), array_values($possibleResponses));
+        list($template, $gapIdentifiers) = $this->buildTemplate($interaction);
+        $question = new clozeassociation('clozeassociation', $template, array_values($possibleResponseMapping));
+        $container = new clozeassociation_response_container();
+        $question->set_response_container($container);
 
         if ($interaction->getPrompt() instanceof Prompt) {
             $promptContent = $interaction->getPrompt()->getContent();
             $question->set_stimulus(QtiComponentUtil::marshallCollection($promptContent));
         }
-        $validation = $this->buildValidation();
+
+        $validationBuilder = new GapMatchInteractionValidationBuilder(
+            $gapIdentifiers,
+            $possibleResponseMapping,
+            $this->responseDeclaration,
+            $this->responseProcessingTemplate
+        );
+
+        $validation = $validationBuilder->getValidation();
         if ($validation) {
             $question->set_validation($validation);
         }
         return $question;
+    }
+
+    private function buildPossibleResponseMapping(QtiGapMatchInteraction $interaction)
+    {
+        $possibleResponseMapping = [];
+        $gapChoices = $interaction->getComponentsByClassName('gapText', true);
+        $gapChoices->merge($interaction->getComponentsByClassName('gapImg', true));
+        /** @var GapChoice $gapChoice */
+        foreach ($gapChoices as $gapChoice) {
+            $gapChoiceContent = QtiComponentUtil::marshallCollection($gapChoice->getComponents());
+            $possibleResponseMapping[$gapChoice->getIdentifier()] = $gapChoiceContent;
+        }
+        return $possibleResponseMapping;
     }
 
     private function buildTemplate(QtiGapMatchInteraction $interaction)
@@ -46,16 +66,14 @@ class GapMatchInteraction extends AbstractInteraction
                 $templateCollection->attach($component);
             }
         }
+        $gapIdentifiers = [];
         $content = QtiComponentUtil::marshallCollection($templateCollection);
         foreach ($interaction->getComponentsByClassName('gap', true) as $gap) {
+            /** @var Gap $gap */
+            $gapIdentifiers[] = $gap->getIdentifier();
             $gapString = QtiComponentUtil::marshall($gap);
             $content = str_replace($gapString, '{{response}}', $content);
         }
-        return $content;
-    }
-
-    private function buildValidation()
-    {
-        return null;
+        return [$content, $gapIdentifiers];
     }
 }
