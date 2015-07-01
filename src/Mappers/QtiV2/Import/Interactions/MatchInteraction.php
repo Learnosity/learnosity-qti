@@ -150,7 +150,7 @@ class MatchInteraction extends AbstractInteraction
             }
             $responseValue[$stemMapIndex][] = $this->optionsMapping[$optionIdentifier];
         }
-
+        ksort($responseValue);
         $validResponse = new choicematrix_validation_valid_response();
         $validResponse->set_value($responseValue);
         $validResponse->set_score($totalScore);
