@@ -11,8 +11,6 @@ use Learnosity\Utils\FileSystemUtil;
 
 class MatchInteractionTest extends \PHPUnit_Framework_TestCase
 {
-
-
     private $file;
     /* @var $mapper ItemMapper */
     private $mapper;
