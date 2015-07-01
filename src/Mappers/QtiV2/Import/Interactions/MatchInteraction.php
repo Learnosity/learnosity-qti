@@ -24,50 +24,33 @@ class MatchInteraction extends AbstractInteraction
     {
         /* @var QtiMatchInteraction $interaction */
         $interaction = $this->interaction;
-        if (!$this->validate($interaction)) {
-            return null;
-        }
-        $simpleMatchSetCollection = $this->interaction->getSimpleMatchSets();
 
-        $steams = $this->buildOptions($simpleMatchSetCollection[0], $this->stemMapping);
+        if ($interaction->mustShuffle()) {
+            $this->exceptions[] = new MappingException('Shuffle attribute is not supported', MappingException::WARNING);
+        }
+        $simpleMatchSetCollection = $interaction->getSimpleMatchSets();
+
+        $stems = $this->buildOptions($simpleMatchSetCollection[0], $this->stemMapping);
         $options = $this->buildOptions($simpleMatchSetCollection[1], $this->optionsMapping);
+
         $isMultipleResponse = false;
         $validation = $this->buildValidation($isMultipleResponse);
-        $stimulus = $this->getPrompt();
 
-        if ($interaction->getMaxAssociations() !== count($steams)) {
+        if ($interaction->getMaxAssociations() !== count($stems)) {
             $this->exceptions[] =
                 new MappingException('Max Association number not equals to number of stems is not supported');
         }
 
-        // TODO
         $uiStyle = new choicematrix_ui_style();
         $uiStyle->set_type('table');
 
-        $question = new choicematrix('choicematrix', $isMultipleResponse, $options, $steams);
-        $question->set_stimulus($stimulus);
+        $question = new choicematrix('choicematrix', $isMultipleResponse, $options, $stems);
+        $question->set_stimulus($this->getPrompt());
         $question->set_ui_style($uiStyle);
         if ($validation) {
             $question->set_validation($validation);
         }
         return $question;
-    }
-
-    private function validate(QtiMatchInteraction $interaction)
-    {
-        if ($interaction->mustShuffle()) {
-            $this->exceptions[] = new MappingException('Shuffle attribute is not supported', MappingException::WARNING);
-        }
-
-        $simpleMatchSetCollection = $interaction->getSimpleMatchSets();
-        if (count($simpleMatchSetCollection) !== 2) {
-            $this->exceptions[] = new MappingException(
-                'Match Interaction must contains 2 simpleMatchSet element',
-                MappingException::CRITICAL
-            );
-            return false;
-        }
-        return true;
     }
 
     private function buildOptions(SimpleMatchSet $simpleMatchSet, &$mapping)
