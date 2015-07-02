@@ -48,4 +48,39 @@ class ArrayUtilTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($res[4], ['f', 'c']);
         $this->assertEquals($res[5], ['f', 'd']);
     }
+
+    public function testMutateResponsesWithSameValue()
+    {
+        $res = ArrayUtil::mutateResponses([
+            [[['a' => 1]], [['b' => 2]]],
+            [[['a' => 3]], [['c' => 4]]]
+        ]);
+        $this->assertTrue(count($res) === 4);
+        $this->assertEquals($res[0], [['a' => 1], ['a' => 3]]);
+        $this->assertEquals($res[1], [['a' => 1], ['c' => 4]]);
+        $this->assertEquals($res[2], [['b' => 2], ['a' => 3]]);
+        $this->assertEquals($res[3], [['b' => 2], ['c' => 4]]);
+    }
+
+    public function testArrayKeysMulti()
+    {
+        $res = ArrayUtil::arrayKeysMulti(
+            [
+                ['a' => 1],
+                ['b' => 2]
+            ]
+        );
+        $this->assertEquals(['a', 'b'], $res);
+    }
+
+    public function testArrayValsMulti()
+    {
+        $res = ArrayUtil::arrayValsMulti(
+            [
+                ['a' => 1],
+                ['b' => 2]
+            ]
+        );
+        $this->assertEquals([1, 2], $res);
+    }
 }
