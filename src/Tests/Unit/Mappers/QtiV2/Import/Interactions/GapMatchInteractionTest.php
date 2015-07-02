@@ -33,9 +33,68 @@ class GapMatchInteractionTest extends AbstractInteractionTest
         $this->assertNull($question->get_validation());
     }
 
-    public function testWithMapResponseValidDuplicatedResponses()
-    {
+    public function testWithMapResponseValidationMissingGapIdentifier() {
+        $testInteraction =
+            GapMatchInteractionBuilder::buildGapMatchInteraction(
+                'testGapMatchInteraction',
+                [
+                    'A' => 'Gap A',
+                    'B' => 'Gap B',
+                    'C' => 'Gap C'
+                ],
+                [],
+                ['G1', 'G2']);
+        $responseProcessingTemplate = ResponseProcessingTemplate::mapResponse();
+        $validResponseIdentifier = [
+            'A G1' => [1, false],
+            'B G1' => [2, false]
+        ];
+        $responseDeclaration = ResponseDeclarationBuilder::buildWithMapping('testIdentifier',
+            $validResponseIdentifier, 'DirectedPair');
+        $mapper = new GapMatchInteraction($testInteraction, $responseDeclaration, $responseProcessingTemplate);
+        /** @var clozeassociation $q */
+        $q = $mapper->getQuestionType();
+        $this->assertEquals('clozeassociation', $q->get_type());
+        $this->assertEquals('<p>{{response}}{{response}}</p>', $q->get_template());
+        $this->assertEquals(['Gap A', 'Gap B', 'Gap C'], $q->get_possible_responses());
+        $this->assertFalse($q->get_duplicate_responses());
+        $this->assertNull($q->get_validation());
 
+        $this->assertCount(1, $mapper->getExceptions());
+        $this->assertEquals('Gap Identifier G2 does not exist', $mapper->getExceptions()[0]->getMessage());
+    }
+
+    public function testWithMatchCorrectValidationMissingGapIdentifier() {
+        $testInteraction =
+            GapMatchInteractionBuilder::buildGapMatchInteraction(
+                'testGapMatchInteraction',
+                [
+                    'A' => 'Gap A',
+                    'B' => 'Gap B',
+                    'C' => 'Gap C'
+                ],
+                [],
+                ['G1', 'G2']);
+        $responseProcessingTemplate = ResponseProcessingTemplate::matchCorrect();
+        $validResponseIdentifier = [
+            new DirectedPair('A', 'G1')
+        ];
+        $responseDeclaration =
+            ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifier', $validResponseIdentifier);
+        $mapper = new GapMatchInteraction($testInteraction, $responseDeclaration, $responseProcessingTemplate);
+        /** @var clozeassociation $q */
+        $q = $mapper->getQuestionType();
+        $this->assertEquals('clozeassociation', $q->get_type());
+        $this->assertEquals('<p>{{response}}{{response}}</p>', $q->get_template());
+        $this->assertEquals(['Gap A', 'Gap B', 'Gap C'], $q->get_possible_responses());
+        $this->assertFalse($q->get_duplicate_responses());
+        $this->assertNull($q->get_validation());
+        $this->assertCount(1, $mapper->getExceptions());
+        $this->assertEquals('Amount of Gap Identifiers 2 does not match the amount 1 for responseDeclaration', $mapper->getExceptions()[0]->getMessage());
+    }
+
+    public function testWithMapResponseValidationDuplicatedResponses()
+    {
         $testInteraction =
             GapMatchInteractionBuilder::buildGapMatchInteraction(
                 'testGapMatchInteraction',
@@ -88,7 +147,7 @@ class GapMatchInteractionTest extends AbstractInteractionTest
         $this->assertEmpty($mapper->getExceptions());
     }
 
-    public function testWithMatchCorrectResponseValidDuplicatedResponses()
+    public function testWithMatchCorrectResponseValidationDuplicatedResponses()
     {
         $testInteraction =
             GapMatchInteractionBuilder::buildGapMatchInteraction(

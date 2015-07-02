@@ -41,7 +41,8 @@ class GapMatchInteractionValidationBuilder
         }
     }
 
-    public function isDuplicatedResponse() {
+    public function isDuplicatedResponse()
+    {
         return $this->isDuplicatedResponse;
     }
 
@@ -65,6 +66,15 @@ class GapMatchInteractionValidationBuilder
             // Build valid response array in the correct order matching the `gap` elements
             $validResponses[$responseIndex][] = $responseValue;
         }
+        if (count($gapIdentifiers) !== count($validResponses)) {
+            $this->exceptions[] =
+                new MappingException(
+                    'Amount of Gap Identifiers ' . count($gapIdentifiers) . ' does not match the amount ' .
+                    count($validResponses) . ' for responseDeclaration',
+                    MappingException::CRITICAL);
+            return null;
+        }
+
         ksort($validResponses);
         $combinationValidResponse = ArrayUtil::mutateResponses($validResponses);
 
@@ -129,6 +139,13 @@ class GapMatchInteractionValidationBuilder
         }
         $responseValue = [];
         foreach ($gapIdentifiers as $key => $value) {
+            if (!isset($gapMapping[$value])) {
+                $this->exceptions[] = new MappingException(
+                    'Gap Identifier ' . $value . ' does not exist',
+                    MappingException::CRITICAL
+                );
+                return null;
+            }
             $responseValue[$key] = $gapMapping[$value];
         }
         $responseValue = ArrayUtil::mutateResponses($responseValue);
