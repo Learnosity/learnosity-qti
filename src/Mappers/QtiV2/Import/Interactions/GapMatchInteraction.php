@@ -41,6 +41,8 @@ class GapMatchInteraction extends AbstractInteraction
         if ($validation) {
             $question->set_validation($validation);
         }
+        $question->set_duplicate_responses($validationBuilder->isDuplicatedResponse());
+        $this->exceptions = array_merge($validationBuilder->getExceptions(), $this->exceptions);
         return $question;
     }
 

@@ -38,4 +38,44 @@ class ArrayUtil
             return $res;
         }
     }
+
+    /**
+     * Only Support following structure for now
+     * [
+     *   ['a'=>1],
+     *   ['b'=>2]
+     * ]
+     * @param array $target
+     * @return array
+     */
+    public static function arrayKeysMulti(array $target) {
+        $keys = [];
+        foreach($target as $value) {
+            $keyList= array_keys($value);
+            foreach($keyList as $v) {
+                $keys[] = $v;
+            }
+        }
+        return $keys;
+    }
+
+    /**
+     * Only Support following structure for now
+     * [
+     *   ['a'=>1],
+     *   ['b'=>2]
+     * ]
+     * @param array $target
+     * @return array
+     */
+    public static function arrayValsMulti(array $target) {
+        $keys = [];
+        foreach($target as $value) {
+            $keyList= array_values($value);
+            foreach($keyList as $v) {
+                $keys[] = $v;
+            }
+        }
+        return $keys;
+    }
 }
