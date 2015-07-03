@@ -70,4 +70,11 @@ class GapMatchInteractionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['winter', 'summer'], $altResponses[4]->get_value());
         $this->assertCount(1, $exceptions);
     }
+
+    public function testMapResponseWithImageObject()
+    {
+        $mapper = AppContainer::getApplicationContainer()->get('qtiv2_item_mapper');
+        list($item, $questions, $exceptions) = $mapper->parse($this->getFixtureFile('interactions/gap_match_with_imageObject.xml'));
+     //   die;
+    }
 }
