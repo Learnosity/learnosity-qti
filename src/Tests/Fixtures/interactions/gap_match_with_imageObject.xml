@@ -7,10 +7,16 @@
         <correctResponse>
             <value>W G1</value>
             <value>Su G2</value>
+            <value>Sp G2</value>
+            <value>A G1</value>
+            <value>Sp G1</value>
         </correctResponse>
         <mapping defaultValue="-1" lowerBound="0">
             <mapEntry mapKey="W G1" mappedValue="1"/>
             <mapEntry mapKey="Su G2" mappedValue="2"/>
+            <mapEntry mapKey="Sp G2" mappedValue="3"/>
+            <mapEntry mapKey="A G1" mappedValue="4"/>
+            <mapEntry mapKey="Sp G1" mappedValue="5"/>
         </mapping>
     </responseDeclaration>
     <outcomeDeclaration identifier="SCORE" cardinality="single" baseType="float"/>
@@ -18,7 +24,9 @@
         <gapMatchInteraction responseIdentifier="RESPONSE" shuffle="false">
             <prompt>Identify the missing words in this famous quote from Shakespeare's Richard III.</prompt>
             <gapImg identifier="W" matchMax="1"><object class="style2" data="images/664892_p01_gi01.gif" type="image/gif"/></gapImg>
-            <gapImg identifier="Su" matchMax="1"><object class="style2" data="images/664892_p01_gi01.gif" type="image/gif"/></gapImg>
+            <gapImg identifier="Su" matchMax="1"><object class="style2" data="images/664892_p01_gi02.gif" type="image/gif"/></gapImg>
+            <gapText identifier="Sp" matchMax="1">spring</gapText>
+            <gapText identifier="A" matchMax="1">autumn</gapText>
             <blockquote>
                 <p>Now is the <gap identifier="G1"/> of our discontent<br/> Made glorious <gap
                         identifier="G2"/> by this sun of York;<br/> And all the clouds that lour'd
