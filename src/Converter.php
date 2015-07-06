@@ -35,6 +35,7 @@ class Converter
                 $questionsData[] = $questionConverter->convert($question);
             }
         }
+
         return [$itemData, $questionsData, $exceptions];
     }
 

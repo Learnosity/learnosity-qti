@@ -2,6 +2,7 @@
 
 namespace Learnosity\Command;
 
+use Learnosity\AppContainer;
 use Learnosity\Converter;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -30,6 +31,12 @@ class ConvertCommand extends Command
                 'Stdin mode'
             )
             ->addOption(
+                'base-assets-url',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Base asset URL used to prepend to internal URLs'
+            )
+            ->addOption(
                 'path',
                 null,
                 InputOption::VALUE_REQUIRED,
@@ -46,8 +53,13 @@ class ConvertCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $mode = 'stdin';
+
         $inputFormat = $input->getArgument('input-format');
         $outputFormat = $input->getArgument('output-format');
+        $baseAssetsUrl = $input->getOption('base-assets-url');
+
+        $p = AppContainer::getApplicationContainer()->get('assets_processing');
+        $p->setBaseAssetUrl($baseAssetsUrl);
 
         $path = $input->getOption('path');
         $outputPath = $input->getOption('outputPath');
@@ -65,13 +77,13 @@ class ConvertCommand extends Command
                     }
                     break;
             }
-            $this->processQtiAssessmentItem($inputData, $output);
+            $this->processQtiAssessmentItem($inputData, $output, $baseAssetsUrl);
         }
     }
 
-    protected function processQtiAssessmentItem($inputData, OutputInterface $output)
+    protected function processQtiAssessmentItem($inputData, OutputInterface $output, $baseAssetsUrl = '')
     {
-        list($item, $questions, $errors) = Converter::convertQtiItemToLearnosity($inputData);
+        list($item, $questions, $errors) = Converter::convertQtiItemToLearnosity($inputData, $baseAssetsUrl);
         $outputData = json_encode([$item, $questions, $errors]);
         $output->write($outputData);
     }

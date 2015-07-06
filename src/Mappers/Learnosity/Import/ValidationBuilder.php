@@ -36,10 +36,10 @@ class ValidationBuilder
             }
         }
 
-        if($validResponse) {
+        if ($validResponse) {
             $validation->set_valid_response($validResponse);
         }
-        if(!empty($altResponses)) {
+        if (!empty($altResponses)) {
             $validation->set_alt_responses($altResponses);
         }
 

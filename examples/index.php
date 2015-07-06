@@ -22,9 +22,17 @@ if (isset($_POST['filePath'])) {
     ];
 
     $postdata = file_get_contents("php://input");
+    if (empty($postdata)) {
+        print_r('There is no XML to parse');
+        return;
+    }
 
     // prepare to use the phar binary
-    $cmd = sprintf('%s convert qti json', $binaryPath);
+    $baseAssetsUrlCommand = '';
+    if (!empty($_GET['baseAssetsUrl'])) {
+        $baseAssetsUrlCommand = '--base-assets-url=' . $_GET['baseAssetsUrl'];
+    }
+    $cmd = sprintf('%s convert %s qti json', $binaryPath, $baseAssetsUrlCommand);
     $descriptorspec = [
         0 => ["pipe", "r"],  // stdin is a pipe that the child will read from
         1 => ["pipe", "w"],  // stdout is a pipe that the child will write to
@@ -157,7 +165,7 @@ if (isset($_POST['filePath'])) {
         </div>
 
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-9">
                 <p>
                     <select id="fileSelect">
                         <?php
@@ -166,11 +174,12 @@ if (isset($_POST['filePath'])) {
                         }
                         ?>
                     </select>
+                    <input style="width: 500px" id="baseAssetsUrl" placeholder="Base asset url, ie. '//s3...com/organisation/1'" type="text"/>
                     <button id="loadFile" type="button" class="btn btn-primary">Load</button>
                     <button id="submit" type="button" class="btn btn-primary">Parse</button>
                 </p>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-3">
                 <div style="float: right"><a target="_blank" href="?documentation">View Documentation</a></div>
             </div>
         </div>
@@ -239,11 +248,12 @@ if (isset($_POST['filePath'])) {
         $(function () {
             $('#submit').click(function () {
                 var requestXML = editor.getValue();
+                var baseAssetsUrl = $('#baseAssetsUrl').val();
                 $('#errorMsg').html('');
                 $('#render-wrapper').html('');
                 $.ajax({
                     type: "POST",
-                    url: '',
+                    url: '?baseAssetsUrl=' + baseAssetsUrl,
                     cache: false,
                     data: requestXML,
                     success: function (data) {

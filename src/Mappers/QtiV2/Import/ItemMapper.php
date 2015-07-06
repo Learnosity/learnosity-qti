@@ -3,6 +3,7 @@
 namespace Learnosity\Mappers\QtiV2\Import;
 
 use Exception;
+use Learnosity\AppContainer;
 use Learnosity\Exceptions\MappingException;
 use Learnosity\Mappers\QtiV2\Import\Processings\MathsProcessing;
 use Learnosity\Mappers\QtiV2\Import\Processings\ProcessingInterface;
@@ -55,7 +56,8 @@ class ItemMapper
     {
         $processings = [
             new RubricsProcessing(),
-            new MathsProcessing()
+            new MathsProcessing(),
+            AppContainer::getApplicationContainer()->get('assets_processing')
         ];
         // Pre-processing works
         /** @var ProcessingInterface $processing */

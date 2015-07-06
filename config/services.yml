@@ -22,4 +22,6 @@ services:
     imscp_manifest_mapper:
         class:      Learnosity\Mappers\IMSCP\Import\ManifestMapper
         scope: prototype
+    assets_processing:
+        class:      Learnosity\Mappers\QtiV2\Import\Processings\AssetsProcessing
 

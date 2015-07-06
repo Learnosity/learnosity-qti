@@ -17,15 +17,14 @@ abstract class BaseGapMatchInteractionValidationBuilder
     private $validation = null;
     private $isDuplicatedResponse = false;
 
-    abstract function getValidationClassName();
+    abstract public function getValidationClassName();
 
     public function __construct(
         array $gapIdentifiers,
         array $possibleResponses,
         ResponseDeclaration $responseDeclaration = null,
         ResponseProcessingTemplate $responseProcessingTemplate = null
-    )
-    {
+    ) {
         if (!empty($responseProcessingTemplate) && !empty($responseDeclaration)) {
             $template = $responseProcessingTemplate->getTemplate();
             if ($template === ResponseProcessingTemplate::MATCH_CORRECT) {
@@ -71,7 +70,8 @@ abstract class BaseGapMatchInteractionValidationBuilder
                 new MappingException(
                     'Amount of Gap Identifiers ' . count($gapIdentifiers) . ' does not match the amount ' .
                     count($validResponses) . ' for responseDeclaration',
-                    MappingException::CRITICAL);
+                    MappingException::CRITICAL
+                );
             return null;
         }
 
