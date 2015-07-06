@@ -4,6 +4,7 @@ namespace Learnosity\Mappers\QtiV2\Import\Utils;
 
 use DOMDocument;
 use Learnosity\Mappers\QtiV2\Import\Marshallers\LearnosityMarshallerFactory;
+use qtism\common\datatypes\Shape;
 use qtism\data\QtiComponent;
 use qtism\data\QtiComponentCollection;
 
