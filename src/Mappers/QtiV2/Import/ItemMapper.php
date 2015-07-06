@@ -3,16 +3,13 @@
 namespace Learnosity\Mappers\QtiV2\Import;
 
 use Exception;
-use Learnosity\Entities\BaseQuestionType;
-use Learnosity\Entities\Question;
 use Learnosity\Exceptions\MappingException;
+use Learnosity\Mappers\QtiV2\Import\Processings\MathsProcessing;
+use Learnosity\Mappers\QtiV2\Import\Processings\ProcessingInterface;
+use Learnosity\Mappers\QtiV2\Import\Processings\RubricsProcessing;
 use qtism\data\AssessmentItem;
-use qtism\data\content\BlockCollection;
 use qtism\data\content\ItemBody;
-use qtism\data\content\Math;
-use qtism\data\content\RubricBlock;
 use qtism\data\processing\ResponseProcessing;
-use qtism\data\QtiComponent;
 use qtism\data\storage\xml\XmlCompactDocument;
 
 class ItemMapper
@@ -30,7 +27,6 @@ class ItemMapper
         'graphicGapMatchInteraction'
     ];
     private $itemBuilderFactory;
-    private $hasMathML = false;
 
     public function __construct(ItemBuilderFactory $itemBuilderFactory)
     {
@@ -57,12 +53,21 @@ class ItemMapper
 
     public function parseWithAssessmentItemComponent(AssessmentItem $assessmentItem)
     {
+        $processings = [
+            new RubricsProcessing(),
+            new MathsProcessing()
+        ];
+        // Pre-processing works
+        /** @var ProcessingInterface $processing */
+        foreach ($processings as $processing) {
+            $assessmentItem = $processing->processAssessmentItem($assessmentItem);
+        }
+
         $assessmentItem = $this->validateAssessmentItem($assessmentItem);
         $responseProcessingTemplate = $this->getResponseProcessingTemplate($assessmentItem->getResponseProcessing());
 
         /** @var ItemBody $itemBody */
         $itemBody = $assessmentItem->getItemBody();
-        $itemBody = $this->filterItemBody($itemBody);
 
         // Mapping interactions
         $interactionComponents = $itemBody->getComponentsByClassName($this->supportedInteractions, true);
@@ -81,58 +86,21 @@ class ItemMapper
             $responseDeclarations,
             $responseProcessingTemplate
         );
+
         $item = $itemBuilder->getItem();
-        $this->exceptions = array_merge($this->exceptions, $itemBuilder->getExceptions());
         if ($assessmentItem->getTitle()) {
             $item->set_description($assessmentItem->getTitle());
         }
-
-        // Add `is_math` to questions if needed
         $questions = $itemBuilder->getQuestions();
-        if ($this->hasMathML) {
-            /** @var Question $question */
-            foreach ($questions as &$question) {
-                /** @var BaseQuestionType $questionType */
-                $questionType = $question->get_data();
-                if (method_exists($questionType, 'set_is_math')) {
-                    $questionType->set_is_math(true);
-                }
-            }
+        $this->exceptions = array_merge($this->exceptions, $itemBuilder->getExceptions());
+
+        // Post-processing works
+        /** @var ProcessingInterface $processing */
+        foreach ($processings as $processing) {
+            list($item, $questions) = $processing->processItemAndQuestions($item, $questions);
+            $this->exceptions = array_merge($this->exceptions, $processing->getExceptions());
         }
         return [$item, $questions, $this->getExceptionMessages()];
-    }
-
-    private function filterItemBody(ItemBody $itemBody)
-    {
-        // TODO: Tidy up, yea remove those mathML stuffs
-        foreach ($itemBody->getIterator() as $component) {
-            if ($component instanceof Math) {
-                $element = $component->getXml()->documentElement;
-                $element->removeAttributeNS($element->namespaceURI, $element->prefix);
-                $component->setXmlString($element->ownerDocument->saveHTML());
-                $component->setTargetNamespace('');
-                $this->hasMathML = true;
-            }
-        }
-
-        // TODO: Yea, we ignore rubric but what happen if the rubric is deep inside nested
-        $newCollection = new BlockCollection();
-        $itemBodyNew = new ItemBody();
-
-        $hasRubric = false;
-        /** @var QtiComponent $component */
-        foreach ($itemBody->getContent() as $key => $component) {
-            if (!($component instanceof RubricBlock)) {
-                $newCollection->attach($component);
-            } else {
-                $hasRubric = true;
-            }
-        }
-        if ($hasRubric) {
-            $this->exceptions[] = new MappingException('Does not support <rubricBlock>. Ignoring <rubricBlock>');
-        }
-        $itemBodyNew->setContent($newCollection);
-        return $itemBodyNew;
     }
 
     private function getExceptionMessages()
