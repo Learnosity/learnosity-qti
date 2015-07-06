@@ -4,6 +4,7 @@ namespace Learnosity\Mappers\QtiV2\Import\Utils;
 
 use DOMDocument;
 use DOMXPath;
+use qtism\common\datatypes\Shape;
 use qtism\data\content\xhtml\Img;
 use qtism\data\content\xhtml\Object;
 use qtism\data\QtiComponent;
@@ -81,5 +82,27 @@ class QtiComponentUtil
             return self::MIME_AUDIO;
         }
         return self::MIME_NOT_SUPPORTED;
+    }
+
+    /**
+     * @param array $areaCoords
+     * @param array $objectCoords
+     * @param $qtiShape
+     * @return array
+     */
+    public static function convertQtiCoordsToPercentage(array $areaCoords, array $objectCoords, $qtiShape)
+    {
+        switch ($qtiShape) {
+            case Shape::RECT:
+                return [
+                    'x' => round($objectCoords[0] / $areaCoords[0] * 100, 4),
+                    'y' => round($objectCoords[1] / $areaCoords[1] * 100, 4),
+                    'width' => $objectCoords[2] - $objectCoords[0],
+                    'height' => $objectCoords[3] - $objectCoords[1]
+                ];
+            default:
+                return null;
+        }
+
     }
 }
