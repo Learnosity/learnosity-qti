@@ -12,7 +12,7 @@ class ExtendedTextInteractionTest extends AbstractInteractionTest
     public function testWithNoValidation()
     {
         $interaction = $this->buildExtendedTextInteraction('identifierOne');
-        $mapper = new \Learnosity\Mappers\QtiV2\Import\Interactions\ExtendedTextInteraction($interaction);
+        $mapper = new \Learnosity\Mappers\QtiV2\Import\Interactions\ExtendedTextInteractionMapper($interaction);
         $question = $mapper->getQuestionType();
 
         $this->assertNotNull($question);
@@ -25,7 +25,7 @@ class ExtendedTextInteractionTest extends AbstractInteractionTest
     {
         $interaction = $this->buildExtendedTextInteraction('identifierOne');
         $interaction->setPlaceholderText('I am awesome!');
-        $mapper = new \Learnosity\Mappers\QtiV2\Import\Interactions\ExtendedTextInteraction($interaction);
+        $mapper = new \Learnosity\Mappers\QtiV2\Import\Interactions\ExtendedTextInteractionMapper($interaction);
         $question = $mapper->getQuestionType();
 
         $this->assertNotNull($question);
@@ -36,7 +36,7 @@ class ExtendedTextInteractionTest extends AbstractInteractionTest
     {
         $interaction = $this->buildExtendedTextInteraction('identifierOne');
         $interaction->setExpectedLength(200);
-        $mapper = new \Learnosity\Mappers\QtiV2\Import\Interactions\ExtendedTextInteraction($interaction);
+        $mapper = new \Learnosity\Mappers\QtiV2\Import\Interactions\ExtendedTextInteractionMapper($interaction);
         $question = $mapper->getQuestionType();
 
         $this->assertNotNull($question);
@@ -49,7 +49,7 @@ class ExtendedTextInteractionTest extends AbstractInteractionTest
         $interaction = $this->buildExtendedTextInteraction('identifierOne');
         $interaction->setMaxStrings(5);
         $interaction->setExpectedLength(10);
-        $mapper = new \Learnosity\Mappers\QtiV2\Import\Interactions\ExtendedTextInteraction($interaction);
+        $mapper = new \Learnosity\Mappers\QtiV2\Import\Interactions\ExtendedTextInteractionMapper($interaction);
         $question = $mapper->getQuestionType();
 
         $this->assertNotNull($question);

@@ -15,7 +15,7 @@ use qtism\data\content\interactions\SimpleAssociableChoice;
 use qtism\data\content\interactions\SimpleMatchSet;
 use qtism\data\state\MapEntry;
 
-class MatchInteraction extends AbstractInteraction
+class MatchInteractionMapper extends AbstractInteractionMapper
 {
     private $stemMapping = [];
     private $optionsMapping = [];

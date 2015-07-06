@@ -33,7 +33,7 @@ abstract class AbstractItemBuilder
 
     protected function getMapperInstance($interactionType, $params)
     {
-        $reflectionClass = new \ReflectionClass(static::MAPPER_CLASS_BASE.  ucfirst($interactionType));
+        $reflectionClass = new \ReflectionClass(static::MAPPER_CLASS_BASE.  ucfirst($interactionType . 'Mapper'));
         return $reflectionClass->newInstanceArgs($params);
     }
 

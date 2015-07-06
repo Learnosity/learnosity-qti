@@ -10,7 +10,7 @@ use qtism\data\content\interactions\InlineChoice;
 use qtism\data\content\interactions\Interaction;
 use qtism\data\content\ItemBody;
 
-class MergedInlineChoiceInteraction extends AbstractMergedInteraction
+class MergedInlineChoiceInteractionMapper extends AbstractMergedInteractionMapper
 {
     public function getQuestionType()
     {

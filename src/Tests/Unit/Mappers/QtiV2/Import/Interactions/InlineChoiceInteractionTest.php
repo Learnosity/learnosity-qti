@@ -2,7 +2,7 @@
 
 namespace Learnosity\Tests\Unit\Mappers\QtiV2\Import\Interactions;
 
-use Learnosity\Mappers\QtiV2\Import\Interactions\InlineChoiceInteraction;
+use Learnosity\Mappers\QtiV2\Import\Interactions\InlineChoiceInteractionMapper;
 use Learnosity\Mappers\QtiV2\Import\ResponseProcessingTemplate;
 use Learnosity\Tests\Unit\Mappers\QtiV2\Import\Fixtures\InlineChoiceInteractionBuilder;
 use Learnosity\Tests\Unit\Mappers\QtiV2\Import\Fixtures\ResponseDeclarationBuilder;
@@ -18,7 +18,7 @@ class InlineChoiceInteractionTest extends AbstractInteractionTest
         ]);
         $interaction->setShuffle(true);
         $interaction->setRequired(true);
-        $mapper = new InlineChoiceInteraction($interaction);
+        $mapper = new InlineChoiceInteractionMapper($interaction);
         $question = $mapper->getQuestionType();
 
         // Should map question correctly with no `validation` object
@@ -36,7 +36,7 @@ class InlineChoiceInteractionTest extends AbstractInteractionTest
         $interaction = InlineChoiceInteractionBuilder::buildSimple('testIdentifier', [
             'doesntmatter' => 'Doesntmatter'
         ]);
-        $mapper = new InlineChoiceInteraction($interaction, null, ResponseProcessingTemplate::mapResponsePoint());
+        $mapper = new InlineChoiceInteractionMapper($interaction, null, ResponseProcessingTemplate::mapResponsePoint());
         $question = $mapper->getQuestionType();
 
         // Should map question correctly with no `validation` object
@@ -59,7 +59,7 @@ class InlineChoiceInteractionTest extends AbstractInteractionTest
             'sydney',
             'melbourne'
         ]);
-        $mapper = new InlineChoiceInteraction($interaction, $responseDeclaration, ResponseProcessingTemplate::matchCorrect());
+        $mapper = new InlineChoiceInteractionMapper($interaction, $responseDeclaration, ResponseProcessingTemplate::matchCorrect());
         $question = $mapper->getQuestionType();
 
         $this->assertNotNull($question);
@@ -106,7 +106,7 @@ class InlineChoiceInteractionTest extends AbstractInteractionTest
             'melbourne' => ['1', true]
         ]);
 
-        $mapper = new InlineChoiceInteraction($interaction, $responseDeclaration, ResponseProcessingTemplate::mapResponse());
+        $mapper = new InlineChoiceInteractionMapper($interaction, $responseDeclaration, ResponseProcessingTemplate::mapResponse());
         $question = $mapper->getQuestionType();
 
         $this->assertNotNull($question);

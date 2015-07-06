@@ -2,7 +2,7 @@
 
 namespace Learnosity\Tests\Unit\Mappers\QtiV2\Import\Interactions;
 
-use Learnosity\Mappers\QtiV2\Import\Interactions\HottextInteraction;
+use Learnosity\Mappers\QtiV2\Import\Interactions\HottextInteractionMapper;
 use Learnosity\Mappers\QtiV2\Import\ResponseProcessingTemplate;
 use Learnosity\Tests\Unit\Mappers\QtiV2\Import\Fixtures\HottextInteractionBuilder;
 use Learnosity\Tests\Unit\Mappers\QtiV2\Import\Fixtures\ResponseDeclarationBuilder;
@@ -15,7 +15,7 @@ class HottextInteractionTest extends AbstractInteractionTest
     public function testWithNoValidation()
     {
         $interaction = $this->buildHottextInteraction('identifierOne');
-        $mapper = new HottextInteraction($interaction);
+        $mapper = new HottextInteractionMapper($interaction);
         $question = $mapper->getQuestionType();
 
         $this->assertNotNull($question);
@@ -28,7 +28,7 @@ class HottextInteractionTest extends AbstractInteractionTest
     {
         $interaction = $this->buildHottextInteraction('identifierOne');
         $responseDeclaration = ResponseDeclarationBuilder::buildWithCorrectResponse('identifierOne', ['A', 'C']);
-        $mapper = new HottextInteraction($interaction, $responseDeclaration, ResponseProcessingTemplate::matchCorrect());
+        $mapper = new HottextInteractionMapper($interaction, $responseDeclaration, ResponseProcessingTemplate::matchCorrect());
         $question = $mapper->getQuestionType();
 
         $this->assertNotNull($question);
@@ -48,7 +48,7 @@ class HottextInteractionTest extends AbstractInteractionTest
             'A' => [4],
             'C' => [1]
         ]);
-        $mapper = new HottextInteraction($interaction, $responseDeclaration, ResponseProcessingTemplate::mapResponse());
+        $mapper = new HottextInteractionMapper($interaction, $responseDeclaration, ResponseProcessingTemplate::mapResponse());
         $question = $mapper->getQuestionType();
 
         $this->assertNotNull($question);

@@ -6,7 +6,7 @@ use Learnosity\Mappers\QtiV2\Import\ResponseProcessingTemplate;
 use qtism\data\content\ItemBody;
 use qtism\data\QtiComponentCollection;
 
-abstract class AbstractMergedInteraction
+abstract class AbstractMergedInteractionMapper
 {
     protected $questionReference;
     protected $itemBody;

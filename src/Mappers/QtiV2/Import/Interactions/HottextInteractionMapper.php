@@ -20,7 +20,7 @@ use qtism\data\state\MapEntry;
 use qtism\data\state\ResponseDeclaration;
 use qtism\data\state\Value;
 
-class HottextInteraction extends AbstractInteraction
+class HottextInteractionMapper extends AbstractInteractionMapper
 {
     public function getQuestionType()
     {

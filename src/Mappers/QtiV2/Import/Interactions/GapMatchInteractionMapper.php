@@ -12,7 +12,7 @@ use qtism\data\content\interactions\GapMatchInteraction as QtiGapMatchInteractio
 use qtism\data\content\interactions\Prompt;
 use qtism\data\QtiComponentCollection;
 
-class GapMatchInteraction extends AbstractInteraction
+class GapMatchInteractionMapper extends AbstractInteractionMapper
 {
     public function getQuestionType()
     {

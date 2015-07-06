@@ -13,7 +13,7 @@ use qtism\data\content\ItemBody;
 use qtism\data\state\MapEntry;
 use qtism\data\state\ResponseDeclaration;
 
-class MergedTextEntryInteraction extends AbstractMergedInteraction
+class MergedTextEntryInteractionMapper extends AbstractMergedInteractionMapper
 {
     private $interactionComponents;
 

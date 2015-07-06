@@ -2,7 +2,7 @@
 
 namespace Learnosity\Tests\Unit\Mappers\QtiV2\Import\Interactions;
 
-use Learnosity\Mappers\QtiV2\Import\Interactions\ChoiceInteraction;
+use Learnosity\Mappers\QtiV2\Import\Interactions\ChoiceInteractionMapper;
 use Learnosity\Mappers\QtiV2\Import\ResponseProcessingTemplate;
 use Learnosity\Tests\Unit\Mappers\QtiV2\Import\Fixtures\ChoiceInteractionBuilder;
 use Learnosity\Tests\Unit\Mappers\QtiV2\Import\Fixtures\ResponseDeclarationBuilder;
@@ -24,7 +24,7 @@ class ChoiceInteractionTest extends AbstractInteractionTest
             'choiceB' => 'Choice B',
             'choiceC' => 'Choice C'
         ];
-        $interactionMapper = new ChoiceInteraction(
+        $interactionMapper = new ChoiceInteractionMapper(
             ChoiceInteractionBuilder::buildSimple('testIdentifier', $optionsMap),
             $responseProcessingDeclaration,
             $responseProcessingTemplate
@@ -49,7 +49,7 @@ class ChoiceInteractionTest extends AbstractInteractionTest
             'three' => 'Label Three'
         ];
         $interaction = ChoiceInteractionBuilder::buildSimple('testIdentifier', $optionsMap);
-        $interactionMapper = new ChoiceInteraction($interaction, $responseDeclaration, $responseProcessingTemplate);
+        $interactionMapper = new ChoiceInteractionMapper($interaction, $responseDeclaration, $responseProcessingTemplate);
         $mcq = $interactionMapper->getQuestionType();
         $this->assertEquals('mcq', $mcq->get_type());
 
@@ -75,7 +75,7 @@ class ChoiceInteractionTest extends AbstractInteractionTest
             'three' => 'Label Three'
         ];
         $interaction = ChoiceInteractionBuilder::buildSimple('testIdentifier', $optionsMap);
-        $interactionMapper = new ChoiceInteraction($interaction, $responseDeclaration, $responseProcessingTemplate);
+        $interactionMapper = new ChoiceInteractionMapper($interaction, $responseDeclaration, $responseProcessingTemplate);
         $mcq = $interactionMapper->getQuestionType();
         $this->assertEquals('mcq', $mcq->get_type());
 
@@ -93,7 +93,7 @@ class ChoiceInteractionTest extends AbstractInteractionTest
             'choiceC' => 'Choice C'
         ]);
         $interaction->setMaxChoices(2);
-        $interactionMapper = new ChoiceInteraction($interaction);
+        $interactionMapper = new ChoiceInteractionMapper($interaction);
         $questionType = $interactionMapper->getQuestionType();
         $this->assertTrue($questionType->get_multiple_responses());
     }
@@ -102,7 +102,7 @@ class ChoiceInteractionTest extends AbstractInteractionTest
     {
         $interaction = ChoiceInteractionBuilder::buildSimple('testIdentifier', ['choiceA' => 'Choice A']);
         $interaction->setShuffle(true);
-        $interactionMapper = new ChoiceInteraction($interaction);
+        $interactionMapper = new ChoiceInteractionMapper($interaction);
         $questionType = $interactionMapper->getQuestionType();
         $this->assertTrue($questionType->get_shuffle_options());
     }
@@ -111,7 +111,7 @@ class ChoiceInteractionTest extends AbstractInteractionTest
     {
         $interaction = ChoiceInteractionBuilder::buildSimple('testIdentifier', ['choiceA' => 'Choice A']);
         $interaction->setOrientation(Orientation::HORIZONTAL);
-        $interactionMapper = new ChoiceInteraction($interaction);
+        $interactionMapper = new ChoiceInteractionMapper($interaction);
         $questionType = $interactionMapper->getQuestionType();
         $this->assertTrue($questionType->get_ui_style()->get_type() === 'horizontal');
         $this->assertTrue($questionType->get_ui_style()->get_columns() === 1);
@@ -132,7 +132,7 @@ class ChoiceInteractionTest extends AbstractInteractionTest
         $prompt->setContent($promptContent);
         $interaction->setPrompt($prompt);
 
-        $interactionMapper = new ChoiceInteraction($interaction);
+        $interactionMapper = new ChoiceInteractionMapper($interaction);
         $questionType = $interactionMapper->getQuestionType();
         $this->assertTrue($questionType->get_stimulus() === 'Test<p>123</p>');
     }
@@ -150,7 +150,7 @@ class ChoiceInteractionTest extends AbstractInteractionTest
         ];
         $interaction = ChoiceInteractionBuilder::buildSimple('testIdentifier', $optionsMap);
         $interaction->setMinChoices(1);
-        $interactionMapper = new ChoiceInteraction($interaction, $responseDeclaration, $responseProcessingTemplate);
+        $interactionMapper = new ChoiceInteractionMapper($interaction, $responseDeclaration, $responseProcessingTemplate);
         $interactionMapper->getQuestionType();
         $this->assertTrue(count($interactionMapper->getExceptions()) === 1);
     }

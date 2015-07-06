@@ -8,7 +8,7 @@ use qtism\data\content\interactions\Interaction;
 use qtism\data\content\interactions\Prompt;
 use qtism\data\state\ResponseDeclaration;
 
-abstract class AbstractInteraction
+abstract class AbstractInteractionMapper
 {
     protected $interaction;
     protected $responseDeclaration;

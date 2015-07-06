@@ -12,7 +12,7 @@ use qtism\data\content\interactions\OrderInteraction as QtiOrderInteraction;
 use qtism\data\content\interactions\SimpleChoice;
 use qtism\data\state\Value;
 
-class OrderInteraction extends AbstractInteraction
+class OrderInteractionMapper extends AbstractInteractionMapper
 {
     private $orderMapping;
 

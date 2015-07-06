@@ -2,7 +2,7 @@
 
 namespace Learnosity\Tests\Unit\Mappers\QtiV2\Import\MergedInteractions;
 
-use Learnosity\Mappers\QtiV2\Import\MergedInteractions\MergedInlineChoiceInteraction;
+use Learnosity\Mappers\QtiV2\Import\MergedInteractions\MergedInlineChoiceInteractionMapper;
 use Learnosity\Mappers\QtiV2\Import\ResponseProcessingTemplate;
 use Learnosity\Tests\Unit\Mappers\QtiV2\Import\Fixtures\InlineChoiceInteractionBuilder;
 use Learnosity\Tests\Unit\Mappers\QtiV2\Import\Fixtures\ResponseDeclarationBuilder;
@@ -19,7 +19,7 @@ class MergedInlineChoiceInteractionTest extends AbstractInteractionTest
     public function testSimpleCaseWithNoValidation()
     {
         $itemBody = $this->buildItemBodyWithTwoInteractions();
-        $mapper = new MergedInlineChoiceInteraction('dummyQuestionReference', $itemBody, null, null);
+        $mapper = new MergedInlineChoiceInteractionMapper('dummyQuestionReference', $itemBody, null, null);
         $question = $mapper->getQuestionType();
 
         // Should map question correctly with no `validation` object
@@ -34,7 +34,7 @@ class MergedInlineChoiceInteractionTest extends AbstractInteractionTest
         $itemBody = $this->buildItemBodyWithSingleInteraction();
         $responseDeclarations = new QtiComponentCollection();
         $responseDeclarations->attach(ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifierOne', ['sydney', 'melbourne']));
-        $mapper = new MergedInlineChoiceInteraction('dummyQuestionReference', $itemBody, $responseDeclarations, ResponseProcessingTemplate::matchCorrect());
+        $mapper = new MergedInlineChoiceInteractionMapper('dummyQuestionReference', $itemBody, $responseDeclarations, ResponseProcessingTemplate::matchCorrect());
         $question = $mapper->getQuestionType();
 
         // Should map question correctly with `validation` object of `exactMatch` scoring type
@@ -65,7 +65,7 @@ class MergedInlineChoiceInteractionTest extends AbstractInteractionTest
         $responseDeclarations = new QtiComponentCollection();
         $responseDeclarations->attach(ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifierOne', ['sydney']));
         $responseDeclarations->attach(ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifierTwo', ['keanu', 'gloria']));
-        $mapper = new MergedInlineChoiceInteraction('dummyQuestionReference', $itemBody, $responseDeclarations, ResponseProcessingTemplate::matchCorrect());
+        $mapper = new MergedInlineChoiceInteractionMapper('dummyQuestionReference', $itemBody, $responseDeclarations, ResponseProcessingTemplate::matchCorrect());
         $question = $mapper->getQuestionType();
 
         // Should map question correctly with `validation` object of `exactMatch` scoring type
@@ -101,7 +101,7 @@ class MergedInlineChoiceInteractionTest extends AbstractInteractionTest
             'gloria' => [0.5, false],
             'keanu' => [2, true]
         ]));
-        $mapper = new MergedInlineChoiceInteraction('dummyQuestionReference', $itemBody, $responseDeclarations, ResponseProcessingTemplate::mapResponse());
+        $mapper = new MergedInlineChoiceInteractionMapper('dummyQuestionReference', $itemBody, $responseDeclarations, ResponseProcessingTemplate::mapResponse());
         $question = $mapper->getQuestionType();
 
         // Should map question correctly with `validation` object of `exactMatch` scoring type
@@ -137,7 +137,7 @@ class MergedInlineChoiceInteractionTest extends AbstractInteractionTest
             'canberra' => [0.5, false],
             'sydney' => [2, false]
         ]));
-        $mapper = new MergedInlineChoiceInteraction('dummyQuestionReference', $itemBody, $responseDeclarations, ResponseProcessingTemplate::mapResponse());
+        $mapper = new MergedInlineChoiceInteractionMapper('dummyQuestionReference', $itemBody, $responseDeclarations, ResponseProcessingTemplate::mapResponse());
         $question = $mapper->getQuestionType();
 
         // Should map question correctly with `validation` object of `exactMatch` scoring type

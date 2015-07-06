@@ -3,7 +3,7 @@
 namespace Learnosity\Tests\Unit\Mappers\QtiV2\Import\Interactions;
 
 use Learnosity\Entities\QuestionTypes\clozeassociation;
-use Learnosity\Mappers\QtiV2\Import\Interactions\GapMatchInteraction;
+use Learnosity\Mappers\QtiV2\Import\Interactions\GapMatchInteractionMapper;
 use Learnosity\Mappers\QtiV2\Import\ResponseProcessingTemplate;
 use Learnosity\Tests\Unit\Mappers\QtiV2\Import\Fixtures\GapMatchInteractionBuilder;
 use Learnosity\Tests\Unit\Mappers\QtiV2\Import\Fixtures\ResponseDeclarationBuilder;
@@ -23,7 +23,7 @@ class GapMatchInteractionTest extends AbstractInteractionTest
                 [],
                 ['G1', 'G2']
             );
-        $mapper = new GapMatchInteraction($testInteraction);
+        $mapper = new GapMatchInteractionMapper($testInteraction);
         $question = $mapper->getQuestionType();
 
         $this->assertNotNull($question);
@@ -56,7 +56,7 @@ class GapMatchInteractionTest extends AbstractInteractionTest
             $validResponseIdentifier,
             'DirectedPair'
         );
-        $mapper = new GapMatchInteraction($testInteraction, $responseDeclaration, $responseProcessingTemplate);
+        $mapper = new GapMatchInteractionMapper($testInteraction, $responseDeclaration, $responseProcessingTemplate);
         /** @var clozeassociation $q */
         $q = $mapper->getQuestionType();
         $this->assertEquals('clozeassociation', $q->get_type());
@@ -88,7 +88,7 @@ class GapMatchInteractionTest extends AbstractInteractionTest
         ];
         $responseDeclaration =
             ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifier', $validResponseIdentifier);
-        $mapper = new GapMatchInteraction($testInteraction, $responseDeclaration, $responseProcessingTemplate);
+        $mapper = new GapMatchInteractionMapper($testInteraction, $responseDeclaration, $responseProcessingTemplate);
         /** @var clozeassociation $q */
         $q = $mapper->getQuestionType();
         $this->assertEquals('clozeassociation', $q->get_type());
@@ -125,7 +125,7 @@ class GapMatchInteractionTest extends AbstractInteractionTest
             $validResponseIdentifier,
             'DirectedPair'
         );
-        $mapper = new GapMatchInteraction($testInteraction, $responseDeclaration, $responseProcessingTemplate);
+        $mapper = new GapMatchInteractionMapper($testInteraction, $responseDeclaration, $responseProcessingTemplate);
         /** @var clozeassociation $q */
         $q = $mapper->getQuestionType();
         $this->assertEquals('clozeassociation', $q->get_type());
@@ -182,7 +182,7 @@ class GapMatchInteractionTest extends AbstractInteractionTest
         ];
         $responseDeclaration =
             ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifier', $validResponseIdentifier);
-        $mapper = new GapMatchInteraction($testInteraction, $responseDeclaration, $responseProcessingTemplate);
+        $mapper = new GapMatchInteractionMapper($testInteraction, $responseDeclaration, $responseProcessingTemplate);
         /** @var clozeassociation $q */
         $q = $mapper->getQuestionType();
         $this->assertEquals('clozeassociation', $q->get_type());
@@ -246,7 +246,7 @@ class GapMatchInteractionTest extends AbstractInteractionTest
             $validResponseIdentifier,
             'DirectedPair'
         );
-        $mapper = new GapMatchInteraction($testInteraction, $responseDeclaration, $responseProcessingTemplate);
+        $mapper = new GapMatchInteractionMapper($testInteraction, $responseDeclaration, $responseProcessingTemplate);
         /** @var clozeassociation $q */
         $q = $mapper->getQuestionType();
         $this->assertEquals('clozeassociation', $q->get_type());

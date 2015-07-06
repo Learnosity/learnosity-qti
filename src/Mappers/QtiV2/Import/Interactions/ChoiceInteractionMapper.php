@@ -16,7 +16,7 @@ use qtism\data\content\interactions\SimpleChoiceCollection;
 use qtism\data\content\interactions\ChoiceInteraction as QtiChoiceInteraction;
 use qtism\data\state\Value;
 
-class ChoiceInteraction extends AbstractInteraction
+class ChoiceInteractionMapper extends AbstractInteractionMapper
 {
     public function getQuestionType()
     {

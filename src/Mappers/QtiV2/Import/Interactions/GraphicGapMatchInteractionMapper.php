@@ -11,7 +11,7 @@ use qtism\data\content\interactions\GapChoice;
 use qtism\data\content\interactions\GraphicGapMatchInteraction as QtiGraphicGapMatchInteraction;
 use qtism\data\content\xhtml\Object;
 
-class GraphicGapMatchInteraction extends AbstractInteraction
+class GraphicGapMatchInteractionMapper extends AbstractInteractionMapper
 {
     public function getQuestionType()
     {

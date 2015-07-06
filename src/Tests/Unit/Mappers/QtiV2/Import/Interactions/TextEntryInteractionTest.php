@@ -2,7 +2,7 @@
 
 namespace Learnosity\Tests\Unit\Mappers\QtiV2\Import\Interactions;
 
-use Learnosity\Mappers\QtiV2\Import\Interactions\TextEntryInteraction;
+use Learnosity\Mappers\QtiV2\Import\Interactions\TextEntryInteractionMapper;
 use Learnosity\Mappers\QtiV2\Import\ResponseProcessingTemplate;
 use Learnosity\Tests\Unit\Mappers\QtiV2\Import\Fixtures\ResponseDeclarationBuilder;
 
@@ -12,7 +12,7 @@ class TextEntryInteractionTest extends AbstractInteractionTest
     {
         $interaction = new \qtism\data\content\interactions\TextEntryInteraction('testIdentifier');
 
-        $mapper = new TextEntryInteraction($interaction);
+        $mapper = new TextEntryInteractionMapper($interaction);
         $question = $mapper->getQuestionType();
 
         $this->assertNotNull($question);
@@ -24,7 +24,7 @@ class TextEntryInteractionTest extends AbstractInteractionTest
     {
         $interaction = new \qtism\data\content\interactions\TextEntryInteraction('testIdentifier');
         $interaction->setExpectedLength(50);
-        $mapper = new TextEntryInteraction($interaction);
+        $mapper = new TextEntryInteractionMapper($interaction);
         $question = $mapper->getQuestionType();
 
         $this->assertNotNull($question);
@@ -35,7 +35,7 @@ class TextEntryInteractionTest extends AbstractInteractionTest
     {
         $interaction = new \qtism\data\content\interactions\TextEntryInteraction('testIdentifier');
         $interaction->setExpectedLength(500);
-        $mapper = new TextEntryInteraction($interaction);
+        $mapper = new TextEntryInteractionMapper($interaction);
         $question = $mapper->getQuestionType();
 
         $this->assertNotNull($question);
@@ -47,7 +47,7 @@ class TextEntryInteractionTest extends AbstractInteractionTest
     {
         $interaction = new \qtism\data\content\interactions\TextEntryInteraction('testIdentifier');
         $responseDeclaration = ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifier', ['hello', 'Hello']);
-        $mapper = new TextEntryInteraction($interaction, $responseDeclaration, ResponseProcessingTemplate::matchCorrect());
+        $mapper = new TextEntryInteractionMapper($interaction, $responseDeclaration, ResponseProcessingTemplate::matchCorrect());
         $question = $mapper->getQuestionType();
         $this->assertNotNull($question);
         $validation = $question->get_validation();
@@ -78,7 +78,7 @@ class TextEntryInteractionTest extends AbstractInteractionTest
             'Junior' => [1.5, true],
 
         ]);
-        $mapper = new TextEntryInteraction($interaction, $responseDeclaration, ResponseProcessingTemplate::mapResponse());
+        $mapper = new TextEntryInteractionMapper($interaction, $responseDeclaration, ResponseProcessingTemplate::mapResponse());
         $question = $mapper->getQuestionType();
 
         $this->assertNotNull($question);
@@ -118,7 +118,7 @@ class TextEntryInteractionTest extends AbstractInteractionTest
 
     public function testInvalidResponseProcessingTemplate() {
         $interaction = new \qtism\data\content\interactions\TextEntryInteraction('testIdentifier');
-        $mapper = new TextEntryInteraction($interaction, null, ResponseProcessingTemplate::getFromTemplateUrl(''));
+        $mapper = new TextEntryInteractionMapper($interaction, null, ResponseProcessingTemplate::getFromTemplateUrl(''));
         $question = $mapper->getQuestionType();
         $this->assertCount(1, $mapper->getExceptions());
     }

@@ -7,7 +7,7 @@ use Learnosity\Exceptions\MappingException;
 use Learnosity\Mappers\QtiV2\Import\Utils\QtiComponentUtil;
 use qtism\data\content\interactions\ExtendedTextInteraction as QtiExtendedTextInteraction;
 
-class ExtendedTextInteraction extends AbstractInteraction
+class ExtendedTextInteractionMapper extends AbstractInteractionMapper
 {
     public function getQuestionType()
     {

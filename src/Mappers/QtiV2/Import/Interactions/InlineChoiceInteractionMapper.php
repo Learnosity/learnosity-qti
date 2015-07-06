@@ -9,7 +9,7 @@ use Learnosity\Exceptions\MappingException;
 use Learnosity\Mappers\QtiV2\Import\Utils\QtiComponentUtil;
 use Learnosity\Mappers\QtiV2\Import\Validation\InlineChoiceInteractionValidationBuilder;
 
-class InlineChoiceInteraction extends AbstractInteraction
+class InlineChoiceInteractionMapper extends AbstractInteractionMapper
 {
     private $choicesMapping = [];
 

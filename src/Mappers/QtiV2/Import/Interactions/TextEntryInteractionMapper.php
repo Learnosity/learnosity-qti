@@ -9,7 +9,7 @@ use Learnosity\Mappers\QtiV2\Import\Validation\TextEntryInteractionValidationBui
 use qtism\data\state\MapEntry;
 use qtism\data\state\Value;
 
-class TextEntryInteraction extends AbstractInteraction
+class TextEntryInteractionMapper extends AbstractInteractionMapper
 {
     public function getQuestionType()
     {

@@ -4,7 +4,7 @@ namespace Learnosity\Tests\Unit\Mappers\QtiV2\Import\Interactions;
 
 use Learnosity\Entities\QuestionTypes\orderlist;
 use Learnosity\Entities\QuestionTypes\orderlist_validation_valid_response;
-use Learnosity\Mappers\QtiV2\Import\Interactions\OrderInteraction;
+use Learnosity\Mappers\QtiV2\Import\Interactions\OrderInteractionMapper;
 use Learnosity\Mappers\QtiV2\Import\ResponseProcessingTemplate;
 use Learnosity\Tests\Unit\Mappers\QtiV2\Import\Fixtures\OrderInteractionBuilder;
 use Learnosity\Tests\Unit\Mappers\QtiV2\Import\Fixtures\ResponseDeclarationBuilder;
@@ -26,7 +26,7 @@ class OrderInteractionTest extends \PHPUnit_Framework_TestCase
             'testIdentifier',
             ['C', 'B', 'A']
         );
-        $mapper = new OrderInteraction($testOrderInteraction, $responseDeclaration, $responseProcessingTemplate);
+        $mapper = new OrderInteractionMapper($testOrderInteraction, $responseDeclaration, $responseProcessingTemplate);
         $mapper->getQuestionType();
         $this->assertCount(3, $mapper->getExceptions());
     }
@@ -46,7 +46,7 @@ class OrderInteractionTest extends \PHPUnit_Framework_TestCase
             'testIdentifier',
             ['C', 'B', 'A']
         );
-        $mapper = new OrderInteraction($testOrderInteraction, $responseDeclaration, $responseProcessingTemplate);
+        $mapper = new OrderInteractionMapper($testOrderInteraction, $responseDeclaration, $responseProcessingTemplate);
         $mapper->getQuestionType();
         $this->assertCount(1, $mapper->getExceptions());
     }
@@ -70,7 +70,7 @@ class OrderInteractionTest extends \PHPUnit_Framework_TestCase
         ];
         $responseDeclaration = ResponseDeclarationBuilder::buildWithMapping('testIdentifier',
             $validResponseIdentifier);
-        $mapper = new OrderInteraction($testOrderInteraction, $responseDeclaration, $responseProcessingTemplate);
+        $mapper = new OrderInteractionMapper($testOrderInteraction, $responseDeclaration, $responseProcessingTemplate);
         $mapper->getQuestionType();
         $this->assertCount(1, $mapper->getExceptions());
     }
@@ -90,7 +90,7 @@ class OrderInteractionTest extends \PHPUnit_Framework_TestCase
             'testIdentifier',
             ['C', 'B', 'A']
         );
-        $mapper = new OrderInteraction($testOrderInteraction, $responseDeclaration, $responseProcessingTemplate);
+        $mapper = new OrderInteractionMapper($testOrderInteraction, $responseDeclaration, $responseProcessingTemplate);
 
 
         /** @var orderlist $q */

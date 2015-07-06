@@ -4,7 +4,7 @@ namespace Learnosity\Tests\Unit\Mappers\QtiV2\Import\Interactions;
 
 
 use Learnosity\Entities\QuestionTypes\choicematrix;
-use Learnosity\Mappers\QtiV2\Import\Interactions\MatchInteraction;
+use Learnosity\Mappers\QtiV2\Import\Interactions\MatchInteractionMapper;
 use Learnosity\Mappers\QtiV2\Import\ResponseProcessingTemplate;
 use Learnosity\Tests\Unit\Mappers\QtiV2\Import\Fixtures\MatchInteractionBuilder;
 use Learnosity\Tests\Unit\Mappers\QtiV2\Import\Fixtures\ResponseDeclarationBuilder;
@@ -40,7 +40,7 @@ class MatchInteractionTest extends AbstractInteractionTest
         $responseDeclaration = ResponseDeclarationBuilder::buildWithMapping('testIdentifier',
             $validResponseIdentifier, 'DirectedPair');
 
-        $mapper = new MatchInteraction($testMatchInteraction, $responseDeclaration, $responseProcessingTemplate);
+        $mapper = new MatchInteractionMapper($testMatchInteraction, $responseDeclaration, $responseProcessingTemplate);
 
         /** @var choicematrix $q */
         $q = $mapper->getQuestionType();
@@ -97,7 +97,7 @@ class MatchInteractionTest extends AbstractInteractionTest
         $responseDeclaration = ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifier',
             $validResponseIdentifier);
 
-        $mapper = new MatchInteraction($testMatchInteraction, $responseDeclaration, $responseProcessingTemplate);
+        $mapper = new MatchInteractionMapper($testMatchInteraction, $responseDeclaration, $responseProcessingTemplate);
 
         /** @var choicematrix $q */
         $q = $mapper->getQuestionType();
@@ -153,7 +153,7 @@ class MatchInteractionTest extends AbstractInteractionTest
         $responseDeclaration = ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifier',
             $validResponseIdentifier);
 
-        $mapper = new MatchInteraction($testMatchInteraction, $responseDeclaration, $responseProcessingTemplate);
+        $mapper = new MatchInteractionMapper($testMatchInteraction, $responseDeclaration, $responseProcessingTemplate);
 
         /** @var choicematrix $q */
         $q = $mapper->getQuestionType();

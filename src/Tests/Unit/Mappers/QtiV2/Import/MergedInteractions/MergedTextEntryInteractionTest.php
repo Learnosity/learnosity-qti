@@ -2,7 +2,7 @@
 
 namespace Learnosity\Tests\Unit\Mappers\QtiV2\Import\MergedInteractions;
 
-use Learnosity\Mappers\QtiV2\Import\MergedInteractions\MergedTextEntryInteraction;
+use Learnosity\Mappers\QtiV2\Import\MergedInteractions\MergedTextEntryInteractionMapper;
 use Learnosity\Mappers\QtiV2\Import\ResponseProcessingTemplate;
 use Learnosity\Tests\Unit\Mappers\QtiV2\Import\Fixtures\ResponseDeclarationBuilder;
 use Learnosity\Tests\Unit\Mappers\QtiV2\Import\Interactions\AbstractInteractionTest;
@@ -19,7 +19,7 @@ class MergedTextEntryInteractionTest extends AbstractInteractionTest
     public function testSimpleCaseWithNoValidation()
     {
         $itemBody = $this->buildItemBodyWithTwoInteraction();
-        $mapper = new MergedTextEntryInteraction('dummyReference', $itemBody, null, null);
+        $mapper = new MergedTextEntryInteractionMapper('dummyReference', $itemBody, null, null);
         $question = $mapper->getQuestionType();
 
         $this->assertNotNull($question);
@@ -34,7 +34,7 @@ class MergedTextEntryInteractionTest extends AbstractInteractionTest
         $interactionTwo->setExpectedLength(100);
         $itemBody = $this->buildItemBodyWithTwoInteraction($interactionOne, $interactionTwo);
 
-        $mapper = new MergedTextEntryInteraction('dummyReference', $itemBody);
+        $mapper = new MergedTextEntryInteractionMapper('dummyReference', $itemBody);
         $question = $mapper->getQuestionType();
 
         $this->assertNotNull($question);
@@ -49,7 +49,7 @@ class MergedTextEntryInteractionTest extends AbstractInteractionTest
         $interactionTwo->setExpectedLength(500);
         $itemBody = $this->buildItemBodyWithTwoInteraction($interactionOne, $interactionTwo);
 
-        $mapper = new MergedTextEntryInteraction('dummyReference', $itemBody);
+        $mapper = new MergedTextEntryInteractionMapper('dummyReference', $itemBody);
         $question = $mapper->getQuestionType();
 
         $this->assertNotNull($question);
@@ -63,7 +63,7 @@ class MergedTextEntryInteractionTest extends AbstractInteractionTest
         $responseDeclarations = new QtiComponentCollection();
         $responseDeclarations->attach(ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifierOne',
             ['Gloria Foster', 'Keanu Reeves', 'Laurence Fishburne']));
-        $mapper = new MergedTextEntryInteraction('dummyReference', $itemBody, $responseDeclarations, ResponseProcessingTemplate::matchCorrect());
+        $mapper = new MergedTextEntryInteractionMapper('dummyReference', $itemBody, $responseDeclarations, ResponseProcessingTemplate::matchCorrect());
         $question = $mapper->getQuestionType();
 
         // Should map question correctly with `validation` object of `exactMatch` scoring type
@@ -103,7 +103,7 @@ class MergedTextEntryInteractionTest extends AbstractInteractionTest
         $responseDeclarations = new QtiComponentCollection();
         $responseDeclarations->attach(ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifierOne', ['Sydney']));
         $responseDeclarations->attach(ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifierTwo', ['Gloria Foster', 'Keanu Reeves', 'Laurence Fishburne']));
-        $mapper = new MergedTextEntryInteraction('dummyReference', $itemBody, $responseDeclarations, ResponseProcessingTemplate::matchCorrect());
+        $mapper = new MergedTextEntryInteractionMapper('dummyReference', $itemBody, $responseDeclarations, ResponseProcessingTemplate::matchCorrect());
         $question = $mapper->getQuestionType();
 
         // Should map question correctly with `validation` object of `exactMatch` scoring type
@@ -147,7 +147,7 @@ class MergedTextEntryInteractionTest extends AbstractInteractionTest
             'Gloria Foster' => [2, false],
             'Stella Lie' => [5, false]
         ]));
-        $mapper = new MergedTextEntryInteraction('dummyReference', $itemBody, $responseDeclarations, ResponseProcessingTemplate::mapResponse());
+        $mapper = new MergedTextEntryInteractionMapper('dummyReference', $itemBody, $responseDeclarations, ResponseProcessingTemplate::mapResponse());
         $question = $mapper->getQuestionType();
 
         $this->assertNotNull($question);
@@ -177,7 +177,7 @@ class MergedTextEntryInteractionTest extends AbstractInteractionTest
             'Keanu Reeves' => [1, true],
             'Gloria Foster' => [0.5, false],
         ]));
-        $mapper = new MergedTextEntryInteraction('dummyReference', $itemBody, $responseDeclarations, ResponseProcessingTemplate::mapResponse());
+        $mapper = new MergedTextEntryInteractionMapper('dummyReference', $itemBody, $responseDeclarations, ResponseProcessingTemplate::mapResponse());
         $question = $mapper->getQuestionType();
 
         $this->assertNotNull($question);
@@ -222,7 +222,7 @@ class MergedTextEntryInteractionTest extends AbstractInteractionTest
             'Sydney' => [2, false],
             'sydney' => [1, false],
         ]));
-        $mapper = new MergedTextEntryInteraction('dummyReference', $itemBody, $responseDeclarations, ResponseProcessingTemplate::getFromTemplateUrl(''));
+        $mapper = new MergedTextEntryInteractionMapper('dummyReference', $itemBody, $responseDeclarations, ResponseProcessingTemplate::getFromTemplateUrl(''));
         $question = $mapper->getQuestionType();
 
         $this->assertNotNull($question);
