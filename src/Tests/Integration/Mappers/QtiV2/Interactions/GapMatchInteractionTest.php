@@ -94,15 +94,15 @@ class GapMatchInteractionTest extends \PHPUnit_Framework_TestCase
         $altResponses = $validation->get_alt_responses();
         $this->assertCount(5, $altResponses);
         $this->assertEquals(7, $altResponses[0]->get_score());
-        $this->assertEquals(['spring', '<img src="images/664892_p01_gi02.gif">'], $altResponses[0]->get_value());
+        $this->assertEquals(['spring', '<img src="images/664892_p01_gi02.gif"/>'], $altResponses[0]->get_value());
         $this->assertEquals(7, $altResponses[1]->get_score());
         $this->assertEquals(['autumn', 'spring'], $altResponses[1]->get_value());
         $this->assertEquals(6, $altResponses[2]->get_score());
-        $this->assertEquals(['autumn', '<img src="images/664892_p01_gi02.gif">'], $altResponses[2]->get_value());
+        $this->assertEquals(['autumn', '<img src="images/664892_p01_gi02.gif"/>'], $altResponses[2]->get_value());
         $this->assertEquals(4, $altResponses[3]->get_score());
-        $this->assertEquals(['<img src="images/664892_p01_gi01.gif">', 'spring'], $altResponses[3]->get_value());
+        $this->assertEquals(['<img src="images/664892_p01_gi01.gif"/>', 'spring'], $altResponses[3]->get_value());
         $this->assertEquals(3, $altResponses[4]->get_score());
-        $this->assertEquals(['<img src="images/664892_p01_gi01.gif">', '<img src="images/664892_p01_gi02.gif">'], $altResponses[4]->get_value());
+        $this->assertEquals(['<img src="images/664892_p01_gi01.gif"/>', '<img src="images/664892_p01_gi02.gif"/>'], $altResponses[4]->get_value());
         $this->assertCount(1, $exceptions);
     }
 }
