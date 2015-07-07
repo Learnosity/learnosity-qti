@@ -6,6 +6,7 @@ use Learnosity\Entities\QuestionTypes\clozedropdown_validation;
 use Learnosity\Entities\QuestionTypes\clozedropdown_validation_alt_responses_item;
 use Learnosity\Entities\QuestionTypes\clozedropdown_validation_valid_response;
 use Learnosity\Exceptions\MappingException;
+use Learnosity\Processors\Learnosity\In\ValidationBuilder;
 use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
 use Learnosity\Utils\ArrayUtil;
 use qtism\data\state\MapEntry;
@@ -125,29 +126,15 @@ class InlineChoiceInteractionValidationBuilder
             return $a['score'] < $b['score'];
         });
 
-        $validation = new clozedropdown_validation();
-        $validation->set_scoring_type('exactMatch');
-
-        foreach ($correctResponses as $key => $response) {
-            // First response pair shall be mapped to `valid_response`
-            if ($key === 0) {
-                $validResponse = new clozedropdown_validation_valid_response();
-                $validResponse->set_value($response['values']);
-                $validResponse->set_score($response['score']);
-                $validation->set_valid_response($validResponse);
-            } else {
-                // Others go in `alt_responses`
-                $altResponseItem = new clozedropdown_validation_alt_responses_item();
-                $altResponseItem->set_value($response['values']);
-                $altResponseItem->set_score($response['score']);
-                $altResponses[] = $altResponseItem;
-            }
+        $responseList = [];
+        foreach ($correctResponses as $resp) {
+            $responseList[] = [
+                'score' => $resp['score'],
+                'value' => $resp['values']
+            ];
         }
-
-        if (!empty($altResponses)) {
-            $validation->set_alt_responses($altResponses);
-        }
-        return $validation;
+        $validationBuilder = new ValidationBuilder('exactMatch', $responseList);
+        return $validationBuilder->buildValidation('clozedropdown');
     }
 
     public function getExceptions()
