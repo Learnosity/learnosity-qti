@@ -20,7 +20,7 @@ class TextEntryInteractionValidationBuilder extends BaseQtiValidationBuilder
 
     protected function handleMatchCorrectTemplate()
     {
-        assert(count($this->responseDeclarations)===1);
+        assert(count($this->responseDeclarations) === 1);
         /** @var ResponseDeclaration $responseDeclaration */
         $responseDeclaration = $this->responseDeclarations[0];
         //we set all scores to 1 by default
@@ -33,7 +33,7 @@ class TextEntryInteractionValidationBuilder extends BaseQtiValidationBuilder
 
     protected function handleMapResponseTemplate()
     {
-        assert(count($this->responseDeclarations)===1);
+        assert(count($this->responseDeclarations) === 1);
         /** @var ResponseDeclaration $responseDeclaration */
         $responseDeclaration = $this->responseDeclarations[0];
         /* @var $mapEntry MapEntry */
@@ -76,7 +76,8 @@ class TextEntryInteractionValidationBuilder extends BaseQtiValidationBuilder
         $this->originalResponseData = $responseList;
     }
 
-    public function isCaseSensitive() {
+    public function isCaseSensitive()
+    {
         return $this->isCaseSensitive;
     }
 }

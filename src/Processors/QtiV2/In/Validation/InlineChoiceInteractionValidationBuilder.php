@@ -2,97 +2,56 @@
 
 namespace Learnosity\Processors\QtiV2\In\Validation;
 
-use Learnosity\Entities\QuestionTypes\clozedropdown_validation;
-use Learnosity\Entities\QuestionTypes\clozedropdown_validation_alt_responses_item;
-use Learnosity\Entities\QuestionTypes\clozedropdown_validation_valid_response;
-use Learnosity\Exceptions\MappingException;
-use Learnosity\Processors\Learnosity\In\ValidationBuilder;
-use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
 use Learnosity\Utils\ArrayUtil;
 use qtism\data\state\MapEntry;
 use qtism\data\state\ResponseDeclaration;
 
-class InlineChoiceInteractionValidationBuilder
+class InlineChoiceInteractionValidationBuilder extends BaseQtiValidationBuilder
 {
-    private $exceptions = [];
-    private $validation = null;
-    private $isCaseSensitive = false;
 
-    public function __construct(
-        array $possibleResponses,
-        array $responseDeclarations = null,
-        ResponseProcessingTemplate $responseProcessingTemplate = null
-    ) {
-        if (!empty($responseProcessingTemplate) && ! empty($responseDeclarations)) {
-            $template = $responseProcessingTemplate->getTemplate();
-            if ($template === ResponseProcessingTemplate::MATCH_CORRECT) {
-                $this->validation = $this->buildMatchCorrectValidation($possibleResponses, $responseDeclarations);
-            } elseif ($template === ResponseProcessingTemplate::MAP_RESPONSE) {
-                $this->validation = $this->buildMapResponseValidation($possibleResponses, $responseDeclarations);
-            } else {
-                $this->exceptions[] = new MappingException(
-                    'Does not support template ' . $template .
-                    ' on <responseProcessing>'
-                );
-            }
-        }
+    private $isCaseSensitive = false;
+    private $possibleResponses;
+
+    public function init(array $possibleResponses)
+    {
+        $this->possibleResponses = $possibleResponses;
+        $this->scoringType = 'exactMatch';
     }
 
-    private function buildMatchCorrectValidation(array $possibleResponses, array $responseDeclarations)
+    public function isCaseSensitive()
     {
-        /** @var ResponseDeclaration $responseDeclaration */
+        return $this->isCaseSensitive;
+    }
+
+    protected function handleMatchCorrectTemplate()
+    {
         $validResponsesValues = [];
-        foreach ($responseDeclarations as $responseIdentifier => $responseDeclaration) {
+        foreach ($this->responseDeclarations as $responseIdentifier => $responseDeclaration) {
+            /** @var ResponseDeclaration $responseDeclaration */
             $values = [];
             foreach ($responseDeclaration->getCorrectResponse()->getValues() as $value) {
-                $values[] = $possibleResponses[$responseIdentifier][$value->getValue()];
+                $data = new \stdClass();
+                $data->values = [$this->possibleResponses[$responseIdentifier][$value->getValue()]];
+                $data->score = 1;
+                $values[] =
+                    [
+                        $data
+                    ];
             }
             $validResponsesValues[] = $values;
         }
-        $combinationsValidResponseValues = ArrayUtil::mutateResponses($validResponsesValues);
-
-        // Interaction count
-        $interactionCount = count($responseDeclarations);
-
-        // First response pair shall be mapped to `valid_response`
-        $firstValidResponseValue = array_shift($combinationsValidResponseValues);
-        $validResponse = new clozedropdown_validation_valid_response();
-        $validResponse->set_score($interactionCount);
-        $validResponse->set_value(is_array($firstValidResponseValue) ? $firstValidResponseValue : [$firstValidResponseValue]);
-
-        // Others go in `alt_responses`
-        $altResponses = [];
-        foreach ($combinationsValidResponseValues as $otherResponseValues) {
-            $item = new clozedropdown_validation_alt_responses_item();
-            $item->set_score($interactionCount);
-            $item->set_value(is_array($otherResponseValues) ? $otherResponseValues : [$otherResponseValues]);
-            $altResponses[] = $item;
-        }
-
-        $validation = new clozedropdown_validation();
-        $validation->set_scoring_type('exactMatch');
-        $validation->set_valid_response($validResponse);
-
-        if (!empty($altResponses)) {
-            $validation->set_alt_responses($altResponses);
-        }
-
-        return $validation;
+        $this->originalResponseData = ArrayUtil::mutateResponses($validResponsesValues);
     }
 
-    private function buildMapResponseValidation($possibleResponses, array $responseDeclarations)
+    protected function handleMapResponseTemplate()
     {
-        /** Build key score mapping ie.
-         *  [   'identifierOne' => ['mapKey' => 'mappedValue'],
-         *      'identifierTwo' => ['mapKey' => 'mappedValue']  ] */
-
         $keyScoreMapping = [];
         /** @var ResponseDeclaration $responseDeclaration */
-        foreach ($responseDeclarations as $responseIdentifier => $responseDeclaration) {
+        foreach ($this->responseDeclarations as $responseIdentifier => $responseDeclaration) {
             $mapping = [];
             foreach ($responseDeclaration->getMapping()->getMapEntries()->getArrayCopy(true) as $mapEntry) {
                 /** @var MapEntry $mapEntry */
-                $responseValue = $possibleResponses[$responseIdentifier][$mapEntry->getMapKey()];
+                $responseValue = $this->possibleResponses[$responseIdentifier][$mapEntry->getMapKey()];
                 $mapping[$mapEntry->getMapKey()] = [
                     'score' => $mapEntry->getMappedValue(),
                     'value' => $responseValue
@@ -115,40 +74,46 @@ class InlineChoiceInteractionValidationBuilder
                 $responseValues[] = $keyScoreMapping[$index][$mapKey]['value'];
                 $score += $keyScoreMapping[$index][$mapKey]['score'];
             }
-            $correctResponses[] = [
-                'values' => $responseValues,
-                'score' => $score
-            ];
+            $data = new \stdClass();
+            $data->values = $responseValues;
+            $data->score = $score;
+            $correctResponses[] = $data;
         }
 
         // Sort by score value, as the first/biggest would be used for `valid_response` object
         usort($correctResponses, function ($a, $b) {
-            return $a['score'] < $b['score'];
+            return $a->score < $b->score;
         });
 
+        $this->originalResponseData = $correctResponses;
+    }
+
+    protected function handleCC2MapResponseTemplate()
+    {
+        $this->handleMapResponseTemplate();
+    }
+
+    protected function prepareOriginalResponseData()
+    {
         $responseList = [];
-        foreach ($correctResponses as $resp) {
+        foreach ($this->originalResponseData as $resp) {
+            $scores = 0;
+            $values = [];
+            if (is_array($resp)) {
+                foreach ($resp as $r) {
+                    $scores += $r->score;
+                    $values = array_merge($values, $r->values);
+                }
+            } else {
+                $scores = $resp->score;
+                $values = $resp->values;
+            }
+
             $responseList[] = [
-                'score' => $resp['score'],
-                'value' => $resp['values']
+                'score' => $scores,
+                'value' => $values
             ];
         }
-        $validationBuilder = new ValidationBuilder('exactMatch', $responseList);
-        return $validationBuilder->buildValidation('clozedropdown');
-    }
-
-    public function getExceptions()
-    {
-        return $this->exceptions;
-    }
-
-    public function getValidation()
-    {
-        return $this->validation;
-    }
-
-    public function isCaseSensitive()
-    {
-        return $this->isCaseSensitive;
+        $this->originalResponseData = $responseList;
     }
 }
