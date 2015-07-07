@@ -52,6 +52,7 @@ class GraphicGapMatchInteractionMapper extends AbstractInteractionMapper
         );
 
         $question->set_stimulus($this->getPrompt());
+        $question->set_duplicate_responses($validationBuilder->isDuplicatedResponse());
 
         if ($validation) {
             $question->set_validation($validation);
