@@ -30,6 +30,7 @@ class GraphicGapMatchInteractionMapper extends AbstractInteractionMapper
         );
 
         $validation = $validationBuilder->getValidation();
+        $this->exceptions = array_merge($this->exceptions, $validationBuilder->getExceptions());
 
         $image = new imageclozeassociation_image();
         $image->set_src($imageObject->getData());
