@@ -2,7 +2,7 @@
 
 namespace Learnosity\Tests\Mappers\Learnosity;
 
-use Learnosity\Mappers\Learnosity\Import\QuestionMapper;
+use Learnosity\Processors\Learnosity\In\QuestionMapper;
 use Learnosity\Utils\FileSystemUtil;
 
 class QuestionMapperTest extends \PHPUnit_Framework_TestCase

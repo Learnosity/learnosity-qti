@@ -2,7 +2,7 @@ services:
     schemas_service:
         class:     Learnosity\Services\SchemasService
     item_builder_factory:
-        class:     Learnosity\Mappers\QtiV2\Import\ItemBuilderFactory
+        class:     Learnosity\Processors\QtiV2\In\ItemBuilderFactory
     learnosity_documentation_generator:
         class:     Learnosity\QtiImportDocumentationGenerator
         arguments: ["@schemas_service"]
@@ -10,18 +10,18 @@ services:
         class:     Learnosity\EntityGenerator
         arguments: ["@schemas_service"]
     qtiv2_item_mapper:
-        class:      Learnosity\Mappers\QtiV2\Import\ItemMapper
+        class:      Learnosity\Processors\QtiV2\In\ItemMapper
         arguments: ["@item_builder_factory"]
         scope: prototype
     qtiv2_test_mapper:
-        class:      Learnosity\Mappers\QtiV2\Import\TestMapper
+        class:      Learnosity\Processors\QtiV2\In\TestMapper
         scope: prototype
     learnosity_item_writer:
-        class:      Learnosity\Mappers\Learnosity\Export\ItemWriter
+        class:      Learnosity\Processors\Learnosity\Out\ItemWriter
         scope: prototype
     imscp_manifest_mapper:
-        class:      Learnosity\Mappers\IMSCP\Import\ManifestMapper
+        class:      Learnosity\Processors\IMSCP\In\ManifestMapper
         scope: prototype
     assets_processing:
-        class:      Learnosity\Mappers\QtiV2\Import\Processings\AssetsProcessing
+        class:      Learnosity\Processors\QtiV2\In\Processings\AssetsProcessing
 

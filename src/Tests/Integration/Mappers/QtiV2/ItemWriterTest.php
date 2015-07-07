@@ -2,9 +2,9 @@
 
 namespace Learnosity\Tests\Mappers\QtiV2;
 
-use Learnosity\Mappers\Learnosity\Import\ItemMapper;
-use Learnosity\Mappers\Learnosity\Import\QuestionMapper;
-use Learnosity\Mappers\QtiV2\Export\ItemWriter;
+use Learnosity\Processors\Learnosity\In\ItemMapper;
+use Learnosity\Processors\Learnosity\In\QuestionMapper;
+use Learnosity\Processors\QtiV2\Export\ItemWriter;
 use Learnosity\Utils\FileSystemUtil;
 
 class ItemWriterTest extends \PHPUnit_Framework_TestCase

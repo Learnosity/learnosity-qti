@@ -9,7 +9,7 @@
 namespace Learnosity\Tests\Integration\Mappers\IMSCP;
 
 
-use Learnosity\Mappers\IMSCP\Import\ManifestMapper;
+use Learnosity\Processors\IMSCP\In\ManifestMapper;
 use Learnosity\Utils\FileSystemUtil;
 
 class ManifestMapperTest extends \PHPUnit_Framework_TestCase

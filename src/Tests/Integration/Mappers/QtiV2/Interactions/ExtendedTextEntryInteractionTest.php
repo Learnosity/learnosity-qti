@@ -6,7 +6,7 @@ use Learnosity\AppContainer;
 use Learnosity\Entities\Item\item;
 use Learnosity\Entities\Question;
 use Learnosity\Entities\QuestionTypes\longtext;
-use Learnosity\Mappers\QtiV2\Import\ItemMapper;
+use Learnosity\Processors\QtiV2\In\ItemMapper;
 use Learnosity\Utils\FileSystemUtil;
 
 class ExtendedTextEntryInteractionTest extends \PHPUnit_Framework_TestCase

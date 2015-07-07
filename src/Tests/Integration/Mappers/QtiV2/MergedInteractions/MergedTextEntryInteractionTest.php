@@ -3,7 +3,7 @@
 namespace Learnosity\Tests\Integration\Mappers\QtiV2\MergedInteractions;
 
 use Learnosity\AppContainer;
-use Learnosity\Mappers\QtiV2\Import\ItemMapper;
+use Learnosity\Processors\QtiV2\In\ItemMapper;
 use Learnosity\Utils\ArrayUtil;
 use Learnosity\Utils\FileSystemUtil;
 

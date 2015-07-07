@@ -2,7 +2,7 @@
 
 namespace Learnosity\Tests\Integration\Mappers\QtiV2;
 
-use Learnosity\Mappers\QtiV2\Import\TestMapper;
+use Learnosity\Processors\QtiV2\In\TestMapper;
 use Learnosity\Utils\FileSystemUtil;
 
 class TestMapperTest extends \PHPUnit_Framework_TestCase

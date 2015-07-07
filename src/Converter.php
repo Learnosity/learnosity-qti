@@ -5,11 +5,11 @@ namespace Learnosity;
 use Learnosity\Entities\Activity\activity;
 use Learnosity\Entities\Item\item;
 use Learnosity\Exceptions\MappingException;
-use Learnosity\Mappers\IMSCP\Entities\Manifest;
-use Learnosity\Mappers\IMSCP\Entities\Resource;
-use Learnosity\Mappers\IMSCP\Import\ManifestMapper;
-use Learnosity\Mappers\Learnosity\Export\QuestionWriter;
-use Learnosity\Mappers\QtiV2\Import\TestMapper;
+use Learnosity\Processors\IMSCP\Entities\Manifest;
+use Learnosity\Processors\IMSCP\Entities\Resource;
+use Learnosity\Processors\IMSCP\In\ManifestMapper;
+use Learnosity\Processors\Learnosity\Out\QuestionWriter;
+use Learnosity\Processors\QtiV2\In\TestMapper;
 use Learnosity\Utils\FileSystemUtil;
 
 class Converter

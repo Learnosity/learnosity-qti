@@ -2,8 +2,8 @@
 
 namespace Learnosity;
 
-use Learnosity\Mappers\QtiV2\Import\Documentation\AssessmentItemDocumentation;
-use Learnosity\Mappers\QtiV2\Import\Documentation\InteractionDocumentationInterface;
+use Learnosity\Processors\QtiV2\In\Documentation\AssessmentItemDocumentation;
+use Learnosity\Processors\QtiV2\In\Documentation\InteractionDocumentationInterface;
 use Learnosity\Services\SchemasService;
 use Learnosity\Utils\FileSystemUtil;
 use Twig_Extension_Debug;
@@ -44,7 +44,7 @@ class QtiImportDocumentationGenerator
         $interactionDocumentation = [];
         foreach ($supportedQtiClassName as $className) {
             /** @var InteractionDocumentationInterface $mapperClass */
-            $mapperClass = 'Learnosity\Mappers\QtiV2\Import\Documentation\Interactions\\' . ucfirst($className) . 'Documentation';
+            $mapperClass = 'Learnosity\Processors\QtiV2\In\Documentation\Interactions\\' . ucfirst($className) . 'Documentation';
             $interactionDocumentation[ucfirst($className)] = [
                 'interactionMapping' => $mapperClass::getInteractionDocumentation()
             ];
