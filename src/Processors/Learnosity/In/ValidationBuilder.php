@@ -5,10 +5,11 @@ namespace Learnosity\Processors\Learnosity\In;
 
 class ValidationBuilder
 {
-    private $scoringType, $responses;
+    private $scoringType;
+    private $responses;
     const BASE_NS = '\\Learnosity\\Entities\\QuestionTypes\\';
 
-    public function __construct($scoringType, $responses)
+    public function __construct($scoringType, array $responses)
     {
         $this->scoringType = $scoringType;
         $this->responses = $responses;
@@ -19,8 +20,10 @@ class ValidationBuilder
         $validationRef = new \ReflectionClass(self::BASE_NS . $className . '_validation');
         $validation = $validationRef->newInstance();
         $validation->set_scoring_type($this->scoringType);
+
         $validResponse = null;
         $altResponses = [];
+
         foreach ($this->responses as $response) {
             if (!$validResponse) {
                 $validResponseRef = new \ReflectionClass(self::BASE_NS . $className . '_validation_valid_response');

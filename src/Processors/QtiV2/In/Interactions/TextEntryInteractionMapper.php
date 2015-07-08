@@ -4,10 +4,7 @@ namespace Learnosity\Processors\QtiV2\In\Interactions;
 
 use Learnosity\Entities\QuestionTypes\clozetext;
 use Learnosity\Exceptions\MappingException;
-use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
 use Learnosity\Processors\QtiV2\In\Validation\TextEntryInteractionValidationBuilder;
-use qtism\data\state\MapEntry;
-use qtism\data\state\Value;
 
 class TextEntryInteractionMapper extends AbstractInteractionMapper
 {
@@ -30,46 +27,25 @@ class TextEntryInteractionMapper extends AbstractInteractionMapper
 
     private function buildValidation(&$isCaseSensitive)
     {
-        $isCaseSensitive = true;
-        $answers = [];
         if (!$this->responseProcessingTemplate) {
             $this->exceptions[] =
-                new MappingException('Response Processing Template is not defined so validation is not available.',
-                    MappingException::WARNING);
+                new MappingException(
+                    'Response Processing Template is not defined so validation is not available.',
+                    MappingException::WARNING
+                );
             return null;
-        } else {
-            switch ($this->responseProcessingTemplate->getTemplate()) {
-                case ResponseProcessingTemplate::MATCH_CORRECT:
-                    //we set all scores to 1 by default
-                    $score = 1;
-                    /* @var $value Value */
-                    foreach ($this->responseDeclaration->getCorrectResponse()->getValues() as $value) {
-                        $answers[] = [$value->getValue() => $score];
-                    }
-                    break;
-                case ResponseProcessingTemplate::CC2_MAP_RESPONSE:
-                case ResponseProcessingTemplate::MAP_RESPONSE:
-                    /* @var $mapEntry MapEntry */
-                    $highestScore = -1;
-                    foreach ($this->responseDeclaration->getMapping()->getMapEntries() as $mapEntry) {
-                        if ($isCaseSensitive) {
-                            $mapEntry->isCaseSensitive();
-                        }
-                        if ($mapEntry->getMappedValue() > $highestScore) {
-                            $highestScore = $mapEntry->getMappedValue();
-                            array_unshift($answers, [$mapEntry->getMapKey() => $mapEntry->getMappedValue()]);
-                        } else {
-                            $answers[] = [$mapEntry->getMapKey() => $mapEntry->getMappedValue()];
-                        }
-                    }
-                    break;
-                default:
-                    $this->exceptions[] =
-                        new MappingException('Unrecognised response processing template. Validation is not available');
-                    return null;
-            }
         }
-        $validationBuilder = new TextEntryInteractionValidationBuilder();
-        return $validationBuilder->buildValidation($answers);
+
+        $validationBuilder = new TextEntryInteractionValidationBuilder(
+            $this->responseProcessingTemplate,
+            [$this->responseDeclaration],
+            'clozetext'
+        );
+
+        $validationBuilder->init();
+        $validation = $validationBuilder->buildValidation();
+        $isCaseSensitive = $validationBuilder->isCaseSensitive();
+        $this->exceptions = array_merge($this->exceptions, $validationBuilder->getExceptions());
+        return $validation;
     }
 }

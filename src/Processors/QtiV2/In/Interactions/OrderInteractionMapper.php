@@ -8,6 +8,7 @@ use Learnosity\Entities\QuestionTypes\orderlist_validation_valid_response;
 use Learnosity\Exceptions\MappingException;
 use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
 use Learnosity\Processors\QtiV2\In\Utils\QtiComponentUtil;
+use Learnosity\Processors\QtiV2\In\Validation\OrderInteractionValidationBuilder;
 use qtism\data\content\interactions\OrderInteraction as QtiOrderInteraction;
 use qtism\data\content\interactions\SimpleChoice;
 use qtism\data\state\Value;
@@ -63,52 +64,14 @@ class OrderInteractionMapper extends AbstractInteractionMapper
 
     private function buildValidation()
     {
-        $answers = [];
-        $totalScore = 1;
-
-        if (!$this->responseProcessingTemplate) {
-            $this->exceptions[] =
-                new MappingException('Response Processing Template is not defined so validation is not available.');
-            return null;
-        } else {
-            switch ($this->responseProcessingTemplate->getTemplate()) {
-                case ResponseProcessingTemplate::MATCH_CORRECT:
-                    foreach ($this->responseDeclaration->getCorrectResponse()->getValues() as $value) {
-                        if ($value instanceof Value) {
-                            $answers[$value->getValue()] = count($answers);
-                        }
-                    }
-                    break;
-                case ResponseProcessingTemplate::MAP_RESPONSE:
-                default:
-                    $this->exceptions[] =
-                        new MappingException('Unrecognised response processing template. Validation is not available');
-                    return null;
-            }
-        }
-
-        $responseValue = [];
-
-        foreach ($this->orderMapping as $mappingIdentifier => $index) {
-
-            if (!isset($answers[$mappingIdentifier])) {
-                $this->exceptions [] = new MappingException(
-                    'Cannot locate ' . $mappingIdentifier . ' in responseDeclaration');
-                continue;
-            }
-            $answerIndex = $answers[$mappingIdentifier];
-            $responseValue[$answerIndex] = $index;
-        }
-        ksort($responseValue);
-
-        $validResponse = new orderlist_validation_valid_response();
-        $validResponse->set_value($responseValue);
-        $validResponse->set_score($totalScore);
-
-        $validation = new orderlist_validation();
-        $validation->set_valid_response($validResponse);
-        $validation->set_scoring_type('exactMatch');
-
+        $validationBuilder = new OrderInteractionValidationBuilder(
+            $this->responseProcessingTemplate,
+            [$this->responseDeclaration],
+            'orderlist'
+        );
+        $validationBuilder->init($this->orderMapping);
+        $validation = $validationBuilder->buildValidation();
+        $this->exceptions = array_merge($this->exceptions, $validationBuilder->getExceptions());
         return $validation;
     }
 }

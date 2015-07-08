@@ -11,33 +11,19 @@ use qtism\data\state\MapEntry;
 use qtism\data\state\Mapping;
 use qtism\data\state\ResponseDeclaration;
 
-abstract class BaseGapMatchInteractionValidationBuilder
+abstract class BaseGapMatchInteractionValidationBuilder extends BaseQtiValidationBuilder
 {
-    private $exceptions = [];
-    private $validation = null;
     private $isDuplicatedResponse = false;
+    private $gapIdentifiers;
+    private $possibleResponses;
 
     abstract public function getValidationClassName();
 
-    public function __construct(
-        array $gapIdentifiers,
-        array $possibleResponses,
-        ResponseDeclaration $responseDeclaration = null,
-        ResponseProcessingTemplate $responseProcessingTemplate = null
-    ) {
-        if (!empty($responseProcessingTemplate) && !empty($responseDeclaration)) {
-            $template = $responseProcessingTemplate->getTemplate();
-            if ($template === ResponseProcessingTemplate::MATCH_CORRECT) {
-                $this->validation = $this->buildMatchCorrectValidation($gapIdentifiers, $possibleResponses, $responseDeclaration);
-            } elseif ($template === ResponseProcessingTemplate::MAP_RESPONSE) {
-                $this->validation = $this->buildMapResponseValidation($gapIdentifiers, $possibleResponses, $responseDeclaration);
-            } else {
-                $this->exceptions[] = new MappingException(
-                    'Does not support template ' . $template .
-                    ' on <responseProcessing>'
-                );
-            }
-        }
+    public function init(array $gapIdentifiers, array $possibleResponses)
+    {
+        $this->gapIdentifiers = $gapIdentifiers;
+        $this->possibleResponses = $possibleResponses;
+        $this->scoringType = 'exactMatch';
     }
 
     public function isDuplicatedResponse()
@@ -45,15 +31,18 @@ abstract class BaseGapMatchInteractionValidationBuilder
         return $this->isDuplicatedResponse;
     }
 
-    private function buildMatchCorrectValidation(array $gapIdentifiers, array $possibleResponses, ResponseDeclaration $responseDeclaration)
+    protected function handleMatchCorrectTemplate()
     {
-        $gapIdentifiersIndexMap = array_flip($gapIdentifiers);
+        assert(count($this->responseDeclarations)===1);
+        /** @var ResponseDeclaration $responseDeclaration */
+        $responseDeclaration = $this->responseDeclarations[0];
+        $gapIdentifiersIndexMap = array_flip($this->gapIdentifiers);
         $validResponses = [];
         $responseIndexSet = [];
         foreach ($responseDeclaration->getCorrectResponse()->getValues() as $value) {
             /** @var DirectedPair $valuePair */
             $valuePair = $value->getValue();
-            $responseValue = $possibleResponses[$valuePair->getFirst()];
+            $responseValue = $this->possibleResponses[$valuePair->getFirst()];
             $responseIndex = $gapIdentifiersIndexMap[$valuePair->getSecond()];
             if (!$this->isDuplicatedResponse) {
                 if (!isset($responseIndexSet[$responseIndex])) {
@@ -65,14 +54,14 @@ abstract class BaseGapMatchInteractionValidationBuilder
             // Build valid response array in the correct order matching the `gap` elements
             $validResponses[$responseIndex][] = $responseValue;
         }
-        if (count($gapIdentifiers) !== count($validResponses)) {
+        if (count($this->gapIdentifiers) !== count($validResponses)) {
             $this->exceptions[] =
                 new MappingException(
-                    'Amount of Gap Identifiers ' . count($gapIdentifiers) . ' does not match the amount ' .
+                    'Amount of Gap Identifiers ' . count($this->gapIdentifiers) . ' does not match the amount ' .
                     count($validResponses) . ' for responseDeclaration',
                     MappingException::CRITICAL
                 );
-            return null;
+            return;
         }
 
         ksort($validResponses);
@@ -85,24 +74,23 @@ abstract class BaseGapMatchInteractionValidationBuilder
                 'value' => $resp
             ];
         }
-        $validationBuilder = new ValidationBuilder('exactMatch', $responseList);
-        return $validationBuilder->buildValidation($this->getValidationClassName());
+        $this->originalResponseData = $responseList;
     }
 
-    private function buildMapResponseValidation(array $gapIdentifiers, array $possibleResponses, ResponseDeclaration $responseDeclaration)
+    protected function handleMapResponseTemplate()
     {
+        assert(count($this->responseDeclarations)===1);
+        /** @var ResponseDeclaration $responseDeclaration */
+        $responseDeclaration = $this->responseDeclarations[0];
         $this->isDuplicatedResponse = false;
         $responseIndexSet = [];
-        if (!($responseDeclaration->getMapping() instanceof Mapping)) {
-            return null;
-        }
         $mapEntries = $responseDeclaration->getMapping()->getMapEntries();
         $gapMapping = [];
         /** @var MapEntry $mapEntry */
         foreach ($mapEntries as $mapEntry) {
             $mapKey = $mapEntry->getMapKey();
             if ($mapKey instanceof DirectedPair) {
-                if (isset($possibleResponses[$mapKey->getFirst()])) {
+                if (isset($this->possibleResponses[$mapKey->getFirst()])) {
                     $responseIndex = $mapKey->getFirst();
                     $gapIndex = $mapKey->getSecond();
                 } else {
@@ -124,18 +112,18 @@ abstract class BaseGapMatchInteractionValidationBuilder
             }
         }
         $responseValue = [];
-        foreach ($gapIdentifiers as $key => $value) {
+        foreach ($this->gapIdentifiers as $key => $value) {
             if (!isset($gapMapping[$value])) {
                 $this->exceptions[] = new MappingException(
                     'Gap Identifier ' . $value . ' does not exist',
                     MappingException::CRITICAL
                 );
-                return null;
+                return;
             }
             $responseValue[$key] = $gapMapping[$value];
         }
         if (count($responseValue) === 0) {
-            return null;
+            return;
         }
         $responseValue = ArrayUtil::mutateResponses($responseValue);
         // we make sure the first item is having the highest score
@@ -148,22 +136,20 @@ abstract class BaseGapMatchInteractionValidationBuilder
             $responseIDList = ArrayUtil::arrayKeysMulti($resp);
             $responseList[] = [
                 'score' => array_sum(ArrayUtil::arrayValsMulti($resp)),
-                'value' => $this->getGapValueList($responseIDList, $possibleResponses)
+                'value' => $this->getGapValueList($responseIDList, $this->possibleResponses)
             ];
         }
-
-        $validationBuilder = new ValidationBuilder('exactMatch', $responseList);
-        return $validationBuilder->buildValidation($this->getValidationClassName());
+        $this->originalResponseData = $responseList;
     }
 
-    public function getExceptions()
+    protected function handleCC2MapResponseTemplate()
     {
-        return $this->exceptions;
+        $this->handleMapResponseTemplate();
     }
 
-    public function getValidation()
+    protected function prepareOriginalResponseData()
     {
-        return $this->validation;
+        // no operation required as originalResponseData has been processed separately
     }
 
     private function getGapValueList(array $gapKeys, array $possibleResponses)

@@ -11,27 +11,6 @@ use qtism\common\datatypes\DirectedPair;
 
 class GapMatchInteractionTest extends AbstractInteractionTest
 {
-    public function testWithNoValidation()
-    {
-        $testInteraction =
-            GapMatchInteractionBuilder::buildGapMatchInteraction(
-                'testGapMatchInteraction',
-                [
-                    'A' => 'Gap A',
-                    'B' => 'Gap B'
-                ],
-                [],
-                ['G1', 'G2']
-            );
-        $mapper = new GapMatchInteractionMapper($testInteraction);
-        $question = $mapper->getQuestionType();
-
-        $this->assertNotNull($question);
-        $this->assertEquals('clozeassociation', $question->get_type());
-        $this->assertEquals('<p>{{response}}{{response}}</p>', $question->get_template());
-        $this->assertEquals(['Gap A', 'Gap B'], $question->get_possible_responses());
-        $this->assertNull($question->get_validation());
-    }
 
     public function testWithMapResponseValidationMissingGapIdentifier()
     {

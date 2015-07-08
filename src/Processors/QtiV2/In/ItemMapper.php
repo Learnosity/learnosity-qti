@@ -137,21 +137,18 @@ class ItemMapper
 
     private function getResponseProcessingTemplate(ResponseProcessing $responseProcessing = null)
     {
-        if (!empty($responseProcessing)) {
-            if ($responseProcessing->getResponseRules()->count()) {
-                $this->exceptions[] = new MappingException('Does not support custom response processing on <responseProcessing>. Ignoring <responseProcessing>');
-            }
-            if (!empty($responseProcessing->getTemplateLocation())) {
-                $this->exceptions[] = new MappingException('Does not support \'templateLocation\' on <responseProcessing>. Ignoring <responseProcessing>');
-            }
-            if (!empty($responseProcessing->getTemplate())) {
-                $responseProcessingTemplate = ResponseProcessingTemplate::getFromTemplateUrl($responseProcessing->getTemplate());
-                if (empty($responseProcessingTemplate)) {
-                    $this->exceptions[] = new MappingException('Does not support custom response processing templates. Ignoring <responseProcessing>');
-                }
-                return $responseProcessingTemplate;
-            }
+        if ($responseProcessing === null) {
+            return ResponseProcessingTemplate::none();
         }
-        return null;
+        if ($responseProcessing->getResponseRules()->count()) {
+            $this->exceptions[] = new MappingException('Does not support custom response processing on <responseProcessing>. Ignoring <responseProcessing>');
+        }
+        if (!empty($responseProcessing->getTemplateLocation())) {
+            $this->exceptions[] = new MappingException('Does not support \'templateLocation\' on <responseProcessing>. Ignoring <responseProcessing>');
+        }
+        if (!empty($responseProcessing->getTemplate())) {
+            return ResponseProcessingTemplate::getFromTemplateUrl($responseProcessing->getTemplate());
+        }
+        return ResponseProcessingTemplate::unsupported();
     }
 }

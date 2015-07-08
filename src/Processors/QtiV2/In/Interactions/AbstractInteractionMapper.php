@@ -19,7 +19,7 @@ abstract class AbstractInteractionMapper
     {
         $this->interaction = $interaction;
         $this->responseDeclaration = $responseDeclaration;
-        $this->responseProcessingTemplate = $responseProcessingTemplate;
+        $this->responseProcessingTemplate = empty($responseProcessingTemplate) ? ResponseProcessingTemplate::none() : $responseProcessingTemplate;
         $this->exceptions = [];
     }
 

@@ -24,24 +24,24 @@ class InlineChoiceInteractionMapper extends AbstractInteractionMapper
                 QtiComponentUtil::marshallCollection($inlineChoice->getContent());
         }
 
-        $validationBuilder = new InlineChoiceInteractionValidationBuilder(
-            [$interaction->getResponseIdentifier() => $this->choicesMapping],
-            [$interaction->getResponseIdentifier() => $this->responseDeclaration],
-            $this->responseProcessingTemplate
-        );
-        $validation = $validationBuilder->getValidation();
+//        $validationBuilder = new InlineChoiceInteractionValidationBuilder(
+//            [$interaction->getResponseIdentifier() => $this->choicesMapping],
+//            [$interaction->getResponseIdentifier() => $this->responseDeclaration],
+//            $this->responseProcessingTemplate
+//        );
+//        $validation = $validationBuilder->getValidation();
+        $isCaseSensitive = false;
         $question = new clozedropdown('clozedropdown', $template, [array_values($this->choicesMapping)]);
-        if ($validation instanceof clozedropdown_validation) {
+        $validation = $this->buildValidation($isCaseSensitive);
+        if ($validation) {
             $question->set_validation($validation);
         }
-        $isCaseSensitive = $validationBuilder->isCaseSensitive();
         $question->set_case_sensitive($isCaseSensitive);
         if ($isCaseSensitive) {
             $this->exceptions[] = new MappingException('Partial `caseSensitive` per response is not supported.
                 Thus setting all validation as case sensitive');
         }
 
-        $this->exceptions = array_merge($this->exceptions, $validationBuilder->getExceptions());
         return $question;
     }
 
@@ -54,5 +54,28 @@ class InlineChoiceInteractionMapper extends AbstractInteractionMapper
             $this->exceptions[] = new MappingException('The attribute `required` is not supported, thus is ignored');
         }
         return $interaction;
+    }
+
+    private function buildValidation(&$isCaseSensitive)
+    {
+        if (!$this->responseProcessingTemplate) {
+            $this->exceptions[] =
+                new MappingException(
+                    'Response Processing Template is not defined so validation is not available.',
+                    MappingException::WARNING
+                );
+            return null;
+        }
+
+        $validationBuilder = new InlineChoiceInteractionValidationBuilder(
+            $this->responseProcessingTemplate,
+            [$this->interaction->getResponseIdentifier() => $this->responseDeclaration],
+            'clozedropdown'
+        );
+        $validationBuilder->init([$this->interaction->getResponseIdentifier() => $this->choicesMapping]);
+        $validation = $validationBuilder->buildValidation();
+        $isCaseSensitive = $validationBuilder->isCaseSensitive();
+        $this->exceptions = array_merge($this->exceptions, $validationBuilder->getExceptions());
+        return $validation;
     }
 }

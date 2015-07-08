@@ -6,6 +6,7 @@ use Learnosity\Entities\QuestionTypes\clozetext;
 use Learnosity\Exceptions\MappingException;
 use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
 use Learnosity\Processors\QtiV2\In\Utils\QtiComponentUtil;
+use Learnosity\Processors\QtiV2\In\Validation\MergedTextEntryInteractionValidationBuilder;
 use Learnosity\Processors\QtiV2\In\Validation\TextEntryInteractionValidationBuilder;
 use Learnosity\Utils\ArrayUtil;
 use qtism\data\content\interactions\TextEntryInteraction;
@@ -74,8 +75,6 @@ class MergedTextEntryInteractionMapper extends AbstractMergedInteractionMapper
 
     public function buildValidation(array $interactionIdentifiers, &$isCaseSensitive)
     {
-        $isCaseSensitive = false;
-        $originalResponseData = [];
         if (!($this->responseProcessingTemplate instanceof ResponseProcessingTemplate)) {
             $this->exceptions[] =
                 new MappingException(
@@ -84,61 +83,16 @@ class MergedTextEntryInteractionMapper extends AbstractMergedInteractionMapper
                 );
             return null;
         }
-        foreach ($interactionIdentifiers as $interactionIdentifier) {
-            if (!isset($this->responseDeclarations[$interactionIdentifier])) {
-                $this->exceptions[] =
-                    new MappingException(
-                        "Unable to locate {$interactionIdentifier}" . ' in response declarations',
-                        MappingException::CRITICAL
-                    );
-                continue;
-            }
-            switch ($this->responseProcessingTemplate->getTemplate()) {
-                case ResponseProcessingTemplate::MATCH_CORRECT:
-                    $score = 1;
-                    $answers = [];
-                    /* @var $responseElement ResponseDeclaration */
-                    $responseElement = $this->responseDeclarations[$interactionIdentifier];
-                    foreach ($responseElement->getCorrectResponse()->getValues() as $value) {
-                        $answers[] = [$value->getValue() => $score];
-                    }
-                    $originalResponseData[] = $answers;
-                    break;
-                case ResponseProcessingTemplate::CC2_MAP_RESPONSE:
-                case ResponseProcessingTemplate::MAP_RESPONSE:
-                    /* @var $responseElement ResponseDeclaration */
-                    $responseElement = $this->responseDeclarations[$interactionIdentifier];
-                    $mapEntryElements = $responseElement->getMapping()->getMapEntries();
-                    $interactionResponse = [];
-                    /* @var $mapEntryElement MapEntry */
-                    foreach ($mapEntryElements as $mapEntryElement) {
-                        $interactionResponse[] = [$mapEntryElement->getMapKey() => $mapEntryElement->getMappedValue()];
-                        if (!$isCaseSensitive && $mapEntryElement->isCaseSensitive()) {
-                            $isCaseSensitive = $mapEntryElement->isCaseSensitive();
-                        }
-                    }
-                    $originalResponseData[] = $interactionResponse;
-                    break;
-                default:
-                    $this->exceptions[] =
-                        new MappingException('Unrecognised response processing template. Validation is not available');
-                    return null;
 
-            }
-        }
-
-        if (!$originalResponseData) {
-            return null;
-        }
-
-        $mutatedOriginalResponses = ArrayUtil::mutateResponses($originalResponseData);
-
-        // Order score from highest to lowest
-        usort($mutatedOriginalResponses, function ($a, $b) {
-            return array_sum(array_values($a)) < array_sum(array_values($b));
-        });
-
-        $validationBuilder = new TextEntryInteractionValidationBuilder();
-        return $validationBuilder->buildValidation($mutatedOriginalResponses);
+        $validationBuilder = new MergedTextEntryInteractionValidationBuilder(
+            $this->responseProcessingTemplate,
+            $this->responseDeclarations,
+            'clozetext'
+        );
+        $validationBuilder->init($interactionIdentifiers);
+        $validation = $validationBuilder->buildValidation();
+        $this->exceptions = array_merge($this->exceptions, $validationBuilder->getExceptions());
+        $isCaseSensitive = $validationBuilder->isCaseSensitive();
+        return $validation;
     }
 }

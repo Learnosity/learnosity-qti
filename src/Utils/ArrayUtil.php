@@ -48,11 +48,12 @@ class ArrayUtil
      * @param array $target
      * @return array
      */
-    public static function arrayKeysMulti(array $target) {
+    public static function arrayKeysMulti(array $target)
+    {
         $keys = [];
-        foreach($target as $value) {
-            $keyList= array_keys($value);
-            foreach($keyList as $v) {
+        foreach ($target as $value) {
+            $keyList = array_keys($value);
+            foreach ($keyList as $v) {
                 $keys[] = $v;
             }
         }
@@ -68,11 +69,12 @@ class ArrayUtil
      * @param array $target
      * @return array
      */
-    public static function arrayValsMulti(array $target) {
+    public static function arrayValsMulti(array $target)
+    {
         $keys = [];
-        foreach($target as $value) {
-            $keyList= array_values($value);
-            foreach($keyList as $v) {
+        foreach ($target as $value) {
+            $keyList = array_values($value);
+            foreach ($keyList as $v) {
                 $keys[] = $v;
             }
         }

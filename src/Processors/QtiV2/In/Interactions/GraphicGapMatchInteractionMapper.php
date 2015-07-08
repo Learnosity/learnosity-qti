@@ -23,13 +23,12 @@ class GraphicGapMatchInteractionMapper extends AbstractInteractionMapper
         $associableHotspots = $this->buildTemplate($interaction, $imageObject);
 
         $validationBuilder = new GraphicGapMatchInteractionValidationBuilder(
-            array_keys($associableHotspots),
-            $possibleResponseMapping,
-            $this->responseDeclaration,
-            $this->responseProcessingTemplate
+            $this->responseProcessingTemplate,
+            [$this->responseDeclaration],
+            'imageclozeassociation'
         );
-
-        $validation = $validationBuilder->getValidation();
+        $validationBuilder->init(array_keys($associableHotspots), $possibleResponseMapping);
+        $validation = $validationBuilder->buildValidation();
         $this->exceptions = array_merge($this->exceptions, $validationBuilder->getExceptions());
 
         $image = new imageclozeassociation_image();
@@ -90,6 +89,4 @@ class GraphicGapMatchInteractionMapper extends AbstractInteractionMapper
         }
         return $associableHotspots;
     }
-
-
 }

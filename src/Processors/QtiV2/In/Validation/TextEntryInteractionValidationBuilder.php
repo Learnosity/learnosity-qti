@@ -4,47 +4,80 @@ namespace Learnosity\Processors\QtiV2\In\Validation;
 use Learnosity\Entities\QuestionTypes\clozetext_validation;
 use Learnosity\Entities\QuestionTypes\clozetext_validation_alt_responses_item;
 use Learnosity\Entities\QuestionTypes\clozetext_validation_valid_response;
+use qtism\data\state\MapEntry;
+use qtism\data\state\ResponseDeclaration;
+use qtism\data\state\Value;
 
-class TextEntryInteractionValidationBuilder
+class TextEntryInteractionValidationBuilder extends BaseQtiValidationBuilder
 {
-    public function buildValidation(array $originalResponses)
+    private $isCaseSensitive;
+
+    public function init()
     {
-        $validResponse = new clozetext_validation_valid_response();
+        $this->isCaseSensitive = true;
+        $this->scoringType = 'exactMatch';
+    }
 
-        $altResponses = [];
-        $validation = null;
+    protected function handleMatchCorrectTemplate()
+    {
+        assert(count($this->responseDeclarations) === 1);
+        /** @var ResponseDeclaration $responseDeclaration */
+        $responseDeclaration = $this->responseDeclarations[0];
+        //we set all scores to 1 by default
+        $score = 1;
+        /* @var $value Value */
+        foreach ($responseDeclaration->getCorrectResponse()->getValues() as $value) {
+            $this->originalResponseData[] = [$value->getValue() => $score];
+        }
+    }
 
-        if (count($originalResponses) > 0) {
-            for ($i = 0; $i < count($originalResponses); $i++) {
-                $scoreGlobal = 0;
-                $value = [];
-                foreach ($originalResponses[$i] as $answer => $score) {
-                    $value[] = $answer;
-                    $scoreGlobal += $score;
-                }
-                if ($i === 0) {
-                    $validResponse = new clozetext_validation_valid_response();
-                    $validResponse->set_value($value);
-                    $validResponse->set_score($scoreGlobal);
-                } else {
-                    $altResponse = new clozetext_validation_alt_responses_item();
-                    $altResponse->set_value($value);
-                    $altResponse->set_score($scoreGlobal);
-                    $altResponses[] = $altResponse;
-                }
+    protected function handleMapResponseTemplate()
+    {
+        assert(count($this->responseDeclarations) === 1);
+        /** @var ResponseDeclaration $responseDeclaration */
+        $responseDeclaration = $this->responseDeclarations[0];
+        /* @var $mapEntry MapEntry */
+        $highestScore = -1;
+        foreach ($responseDeclaration->getMapping()->getMapEntries() as $mapEntry) {
+            if ($this->isCaseSensitive) {
+                $mapEntry->isCaseSensitive();
             }
+            if ($mapEntry->getMappedValue() > $highestScore) {
+                $highestScore = $mapEntry->getMappedValue();
+                array_unshift($this->originalResponseData, [$mapEntry->getMapKey() => $mapEntry->getMappedValue()]);
+            } else {
+                $this->originalResponseData[] = [$mapEntry->getMapKey() => $mapEntry->getMappedValue()];
+            }
+        }
+    }
 
+    protected function handleCC2MapResponseTemplate()
+    {
+        $this->handleMapResponseTemplate();
+    }
+
+    protected function prepareOriginalResponseData()
+    {
+        $responseList = [];
+
+        for ($i = 0; $i < count($this->originalResponseData); $i++) {
+            $scoreGlobal = 0;
+            $value = [];
+            foreach ($this->originalResponseData[$i] as $answer => $score) {
+                $value[] = $answer;
+                $scoreGlobal += $score;
+            }
+            $responseList[] = [
+                'score' => $scoreGlobal,
+                'value' => $value
+            ];
         }
 
-        if ($validResponse) {
-            $validation = new clozetext_validation();
-            $validation->set_scoring_type('exactMatch');
-            $validation->set_valid_response($validResponse);
-        }
+        $this->originalResponseData = $responseList;
+    }
 
-        if ($altResponses && $validation) {
-            $validation->set_alt_responses($altResponses);
-        }
-        return $validation;
+    public function isCaseSensitive()
+    {
+        return $this->isCaseSensitive;
     }
 }
