@@ -15,30 +15,19 @@ abstract class BaseQtiValidationBuilder
     protected $scoringType;
 
     abstract protected function handleMatchCorrectTemplate();
-
     abstract protected function handleMapResponseTemplate();
-
-    abstract protected function handleCC2MapResponseTemplate();
-
     abstract protected function prepareOriginalResponseData();
 
     public function __construct(
         ResponseProcessingTemplate $responseProcessingTemplate,
         array $responseDeclarations,
         $validationClassName
-    )
-    {
+    ) {
         $this->responseProcessingTemplate = $responseProcessingTemplate;
         $this->responseDeclarations = $responseDeclarations;
         $this->validationClassName = $validationClassName;
         $this->originalResponseData = [];
         $this->exceptions = [];
-    }
-
-    protected function handleUnknownTemplate()
-    {
-        $this->exceptions[] =
-            new MappingException('Unrecognised response processing template. Validation is not available');
     }
 
     public function buildValidation()
@@ -53,8 +42,11 @@ abstract class BaseQtiValidationBuilder
             case ResponseProcessingTemplate::MAP_RESPONSE:
                 $this->handleMapResponseTemplate();
                 break;
+            case ResponseProcessingTemplate::NONE:
+                break;
             default:
-                $this->handleUnknownTemplate();
+                $this->exceptions[] =
+                    new MappingException('Unrecognised response processing template. Validation is not available');
         }
 
         if (empty($this->originalResponseData)) {
@@ -62,9 +54,7 @@ abstract class BaseQtiValidationBuilder
         }
 
         $this->prepareOriginalResponseData();
-
         $validationBuilder = new ValidationBuilder($this->scoringType, $this->originalResponseData);
-
         return $validationBuilder->buildValidation($this->validationClassName);
     }
 

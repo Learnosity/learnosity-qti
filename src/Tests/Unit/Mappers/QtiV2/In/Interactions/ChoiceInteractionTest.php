@@ -18,7 +18,7 @@ class ChoiceInteractionTest extends AbstractInteractionTest
     public function testShouldHandleNoValidation()
     {
         $responseProcessingDeclaration = null;
-        $responseProcessingTemplate = null;
+        $responseProcessingTemplate = ResponseProcessingTemplate::none();
         $optionsMap = [
             'choiceA' => 'Choice A',
             'choiceB' => 'Choice B',
@@ -40,8 +40,10 @@ class ChoiceInteractionTest extends AbstractInteractionTest
     public function testShouldHandleMatchCorrectValidation()
     {
         $validResponseIdentifier = ['one', 'two'];
-        $responseDeclaration = ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifier',
-            $validResponseIdentifier);
+        $responseDeclaration = ResponseDeclarationBuilder::buildWithCorrectResponse(
+            'testIdentifier',
+            $validResponseIdentifier
+        );
         $responseProcessingTemplate = ResponseProcessingTemplate::matchCorrect();
         $optionsMap = [
             'one' => 'Label One',
@@ -66,8 +68,10 @@ class ChoiceInteractionTest extends AbstractInteractionTest
     public function testShouldHandleInvalidValidation()
     {
         $validResponseIdentifier = ['one', 'two'];
-        $responseDeclaration = ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifier',
-            $validResponseIdentifier);
+        $responseDeclaration = ResponseDeclarationBuilder::buildWithCorrectResponse(
+            'testIdentifier',
+            $validResponseIdentifier
+        );
         $responseProcessingTemplate = ResponseProcessingTemplate::mapResponse();
         $optionsMap = [
             'one' => 'Label One',

@@ -8,6 +8,8 @@ class ResponseProcessingTemplate
     const MAP_RESPONSE = 'map_response';
     const CC2_MAP_RESPONSE = 'cc2_map_response';
     const MAP_RESPONSE_POINT = 'map_response_point';
+    const NONE = 'none';
+    const UNSUPPORTED = 'unsupported';
 
     private $template;
 
@@ -28,7 +30,17 @@ class ResponseProcessingTemplate
         } elseif ($template === self::MAP_RESPONSE_POINT) {
             return self::mapResponsePoint();
         }
-        return null;
+        return self::unsupported();
+    }
+
+    public static function none()
+    {
+        return new self(self::NONE);
+    }
+
+    public static function unsupported()
+    {
+        return new self(self::UNSUPPORTED);
     }
 
     public static function matchCorrect()
