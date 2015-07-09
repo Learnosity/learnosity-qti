@@ -5,7 +5,7 @@ namespace Learnosity\Tests\Integration\Mappers\QtiV2\Interactions;
 use Learnosity\AppContainer;
 use Learnosity\Utils\FileSystemUtil;
 
-class GraphicOrderInteractionMapperTest extends \PHPUnit_Framework_TestCase
+class HotspotInteractionTest extends \PHPUnit_Framework_TestCase
 {
     private function getFixtureFile($filepath)
     {
@@ -15,6 +15,6 @@ class GraphicOrderInteractionMapperTest extends \PHPUnit_Framework_TestCase
     public function testMatchCorrectSimpleCase()
     {
         $mapper = AppContainer::getApplicationContainer()->get('qtiv2_item_mapper');
-        list($item, $questions, $exceptions) = $mapper->parse($this->getFixtureFile('interactions/graphic_order.xml'));
+        list($item, $questions, $exceptions) = $mapper->parse($this->getFixtureFile('interactions/hotspot.xml'));
     }
 }

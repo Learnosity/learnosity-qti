@@ -66,12 +66,13 @@ class ValidationBuilder
      * A stable usort function
      * @link https://github.com/vanderlee/PHP-stable-sort-functions/blob/master/functions/susort.php
      */
-    private static function susort(array &$array, callable $value_compare_func) {
+    private static function susort(array &$array, callable $value_compare_func)
+    {
         $index = 0;
         foreach ($array as &$item) {
             $item = [$index++, $item];
         }
-        $result = usort($array, function($a, $b) use($value_compare_func) {
+        $result = usort($array, function ($a, $b) use ($value_compare_func) {
             $result = $value_compare_func($a[1], $b[1]);
             return $result == 0 ? $a[0] - $b[0] : $result;
         });

@@ -20,6 +20,7 @@ class OrderInteractionValidationBuilder extends BaseInteractionValidationBuilder
 
     protected function getMatchCorrectTemplateValidation()
     {
+        // TODO: Validate against mismatch possible responses and correct response
         // Build the `value` object on `valid_response`
         $values = [];
         foreach ($this->responseDeclaration->getCorrectResponse()->getValues() as $v) {

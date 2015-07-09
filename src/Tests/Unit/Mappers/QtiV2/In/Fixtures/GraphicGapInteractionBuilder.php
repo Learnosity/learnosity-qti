@@ -1,4 +1,5 @@
 <?php
+
 namespace Learnosity\Tests\Unit\Mappers\QtiV2\In\Fixtures;
 
 use qtism\common\datatypes\Coords;
@@ -14,7 +15,6 @@ class GraphicGapInteractionBuilder
 {
     public static function build($identifier, $bgObject, $gapImgs, $hotspots)
     {
-
         $gapImgCollection = new GapImgCollection();
 
         foreach ($gapImgs as $id => $data) {
@@ -24,21 +24,17 @@ class GraphicGapInteractionBuilder
         }
 
         $associableHotspotCollection = new AssociableHotspotCollection();
-
         foreach ($hotspots as $id => $data) {
             $coords = new Coords(Shape::RECT, $data);
             $associableHotspot = new AssociableHotspot($id, 1, Shape::RECT, $coords);
             $associableHotspotCollection->attach($associableHotspot);
         }
 
-        $interaction =
-            new GraphicGapMatchInteraction(
-                $identifier,
-                $bgObject,
-                $gapImgCollection,
-                $associableHotspotCollection
-            );
-
-        return $interaction;
+        return new GraphicGapMatchInteraction(
+            $identifier,
+            $bgObject,
+            $gapImgCollection,
+            $associableHotspotCollection
+        );
     }
 }

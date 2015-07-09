@@ -79,10 +79,7 @@ class GraphicGapMatchInteractionMapper extends AbstractInteractionMapper
             /** @var AssociableHotspot $associableHotspot */
             $associableHotspots[$associableHotspot->getIdentifier()] =
                 QtiComponentUtil::convertQtiCoordsToPercentage(
-                    [
-                        $object->getWidth(),
-                        $object->getHeight()
-                    ],
+                    [$object->getWidth(), $object->getHeight()],
                     explode(',', $associableHotspot->getCoords()),
                     $associableHotspot->getShape()
                 );

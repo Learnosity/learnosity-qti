@@ -51,9 +51,9 @@ class GraphicGapMatchInteractionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('images/ukairtags.png', $img->get_src());
         $this->assertEquals(
             [
-                ['x' => 5.8252, 'y' => 38.5714],
-                ['x' => 62.1359, 'y' => 36.7857],
-                ['x' => 32.0388, 'y' => 58.9286],
+                ['x' => 5.83, 'y' => 38.57],
+                ['x' => 62.14, 'y' => 36.79],
+                ['x' => 32.04, 'y' => 58.93],
             ],
             $question->get_response_positions()
         );

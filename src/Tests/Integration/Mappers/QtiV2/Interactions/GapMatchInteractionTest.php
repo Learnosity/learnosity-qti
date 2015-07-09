@@ -4,7 +4,6 @@ namespace Learnosity\Tests\Integration\Mappers\QtiV2\Interactions;
 
 use Learnosity\AppContainer;
 use Learnosity\Entities\QuestionTypes\clozeassociation;
-use Learnosity\Entities\QuestionTypes\clozetext_validation_alt_responses_item;
 use Learnosity\Utils\FileSystemUtil;
 
 class GapMatchInteractionTest extends \PHPUnit_Framework_TestCase

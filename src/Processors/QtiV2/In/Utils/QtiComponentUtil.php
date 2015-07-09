@@ -5,6 +5,8 @@ namespace Learnosity\Processors\QtiV2\In\Utils;
 use DOMDocument;
 use Learnosity\Processors\QtiV2\In\Marshallers\LearnosityMarshallerFactory;
 use qtism\common\datatypes\Shape;
+use qtism\data\content\interactions\HotspotChoice;
+use qtism\data\content\interactions\HotspotChoiceCollection;
 use qtism\data\QtiComponent;
 use qtism\data\QtiComponentCollection;
 
@@ -33,32 +35,38 @@ class QtiComponentUtil
         return $dom->saveXML($node);
     }
 
-    /**
-     * @param array $areaCoords
-     * @param array $objectCoords
-     * @param $qtiShape
-     * @return array
-     */
+    public static function convertHotspotChoiceCollectionToResponsePositionMapping($imageWidth, $imageHeight, HotspotChoiceCollection $hotspotChoices)
+    {
+        $responsePositionsMapping = [];
+        /** @var HotspotChoice $hotspotChoice */
+        foreach ($hotspotChoices as $hotspotChoice) {
+            $percentage = QtiComponentUtil::convertQtiCoordsToPercentage(
+                [$imageWidth, $imageHeight],
+                explode(',', $hotspotChoice->getCoords()),
+                $hotspotChoice->getShape()
+            );
+            $responsePositionsMapping[$hotspotChoice->getIdentifier()] = $percentage;
+        }
+        return $responsePositionsMapping;
+    }
+
     public static function convertQtiCoordsToPercentage(array $areaCoords, array $objectCoords, $qtiShape)
     {
         switch ($qtiShape) {
             case Shape::RECT:
                 return [
-                    'x' => round($objectCoords[0] / $areaCoords[0] * 100, 4),
-                    'y' => round($objectCoords[1] / $areaCoords[1] * 100, 4),
+                    'x' => round($objectCoords[0] / $areaCoords[0] * 100, 2),
+                    'y' => round($objectCoords[1] / $areaCoords[1] * 100, 2),
                     'width' => $objectCoords[2] - $objectCoords[0],
                     'height' => $objectCoords[3] - $objectCoords[1]
                 ];
             case Shape::CIRCLE:
                 return [
-                    'x' => round($objectCoords[0] / $areaCoords[0] * 100, 4),
-                    'y' => round($objectCoords[1] / $areaCoords[1] * 100, 4),
-                    'width' => $objectCoords[2],
-                    'height' => $objectCoords[2]
+                    'x' => round($objectCoords[0] / $areaCoords[0] * 100, 2),
+                    'y' => round($objectCoords[1] / $areaCoords[1] * 100, 2)
                 ];
             default:
                 return null;
         }
-
     }
 }

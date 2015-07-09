@@ -144,8 +144,10 @@ class ChoiceInteractionTest extends AbstractInteractionTest
     public function testHasMinChoice()
     {
         $validResponseIdentifier = ['one', 'two'];
-        $responseDeclaration = ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifier',
-            $validResponseIdentifier);
+        $responseDeclaration = ResponseDeclarationBuilder::buildWithCorrectResponse(
+            'testIdentifier',
+            $validResponseIdentifier
+        );
         $responseProcessingTemplate = ResponseProcessingTemplate::matchCorrect();
         $optionsMap = [
             'one' => 'Label One',

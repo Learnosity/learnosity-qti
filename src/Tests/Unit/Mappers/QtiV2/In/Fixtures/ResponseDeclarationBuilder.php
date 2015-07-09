@@ -51,4 +51,4 @@ class ResponseDeclarationBuilder
         $responseDeclaration->setMapping(new Mapping($mapEntryCollection));
         return $responseDeclaration;
     }
-} 
+}

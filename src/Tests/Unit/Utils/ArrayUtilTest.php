@@ -10,7 +10,7 @@ class ArrayUtilTest extends PHPUnit_Framework_TestCase
 {
     public function testCartesianEmptyArray()
     {
-        $res = ArrayUtil::mutateResponses([]);
+        $res = ArrayUtil::cartesianProduct([]);
         $this->assertEquals($res, []);
     }
 

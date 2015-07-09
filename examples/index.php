@@ -3,7 +3,7 @@
 require_once 'config.php';
 
 if (!isset($sampleFileFolder)) {
-    $sampleFileFolder = 'SampleAssessmentItem';
+    $sampleFileFolder = 'samples';
 }
 
 if (!isset($binaryPath)) {

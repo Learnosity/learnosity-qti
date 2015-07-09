@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: frankan
- * Date: 9/07/2015
- * Time: 3:07 PM
- */
 
 namespace Learnosity\Tests\Unit\Mappers\QtiV2\In\Fixtures;
-
 
 use qtism\common\datatypes\Coords;
 use qtism\common\datatypes\Shape;
@@ -17,7 +10,6 @@ use qtism\data\content\interactions\HotspotChoiceCollection;
 
 class GraphicOrderInteractionBuilder
 {
-
     public static function build($identifier, $bgObject, $hotspotChoices)
     {
         $hotSpotChoiceCollection = new HotspotChoiceCollection();
