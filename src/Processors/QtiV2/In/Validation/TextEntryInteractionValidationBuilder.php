@@ -1,79 +1,65 @@
 <?php
 namespace Learnosity\Processors\QtiV2\In\Validation;
 
-use Learnosity\Entities\QuestionTypes\clozetext_validation;
-use Learnosity\Entities\QuestionTypes\clozetext_validation_alt_responses_item;
-use Learnosity\Entities\QuestionTypes\clozetext_validation_valid_response;
+use Learnosity\Processors\Learnosity\In\ValidationBuilder\ValidationBuilder;
+use Learnosity\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
+use Learnosity\Utils\ArrayUtil;
 use qtism\data\state\MapEntry;
 use qtism\data\state\ResponseDeclaration;
 use qtism\data\state\Value;
 
-class TextEntryInteractionValidationBuilder extends BaseQtiValidationBuilder
+class TextEntryInteractionValidationBuilder extends BaseInteractionValidationBuilder
 {
-    private $isCaseSensitive;
+    private $isCaseSensitive = false;
+    private $responseDeclarations = [];
 
-    public function init()
+    public function __construct(array $interactionIdentifiers = [], array $unsortedResponseDeclarations = [])
     {
-        $this->isCaseSensitive = true;
-        $this->scoringType = 'exactMatch';
+        // Need to sort based on interaction identifiers first
+        foreach ($interactionIdentifiers as $interactionIdentifier) {
+            if (isset($unsortedResponseDeclarations[$interactionIdentifier])) {
+                $this->responseDeclarations[$interactionIdentifier] = $unsortedResponseDeclarations[$interactionIdentifier];
+            }
+        }
     }
 
-    protected function handleMatchCorrectTemplate()
+    protected function getMatchCorrectTemplateValidation()
     {
-        assert(count($this->responseDeclarations) === 1);
+        $interactionResponses = [];
+        foreach ($this->responseDeclarations as $responseIdentifier => $responseDeclaration) {
+            /** @var ResponseDeclaration $responseDeclaration */
+            $correctResponses = $responseDeclaration->getCorrectResponse()->getValues()->getArrayCopy(true);
+            $interactionResponses[] = array_map(function ($value) {
+                /** @var Value $value */
+                return new ValidResponse(1, [$value->getValue()]);
+            }, $correctResponses);
+        }
+        $responses = ArrayUtil::cartesianProductForResponses($interactionResponses);
+        return ValidationBuilder::build('clozetext', 'exactMatch', $responses);
+    }
+
+    protected function getMapResponseTemplateValidation()
+    {
+        $interactionResponses = [];
         /** @var ResponseDeclaration $responseDeclaration */
-        $responseDeclaration = $this->responseDeclarations[0];
-        //we set all scores to 1 by default
-        $score = 1;
-        /* @var $value Value */
-        foreach ($responseDeclaration->getCorrectResponse()->getValues() as $value) {
-            $this->originalResponseData[] = [$value->getValue() => $score];
-        }
-    }
-
-    protected function handleMapResponseTemplate()
-    {
-        assert(count($this->responseDeclarations) === 1);
-        /** @var ResponseDeclaration $responseDeclaration */
-        $responseDeclaration = $this->responseDeclarations[0];
-        /* @var $mapEntry MapEntry */
-        $highestScore = -1;
-        foreach ($responseDeclaration->getMapping()->getMapEntries() as $mapEntry) {
-            if ($this->isCaseSensitive) {
-                $mapEntry->isCaseSensitive();
+        foreach ($this->responseDeclarations as $responseIdentifier => $responseDeclaration) {
+            $responses = [];
+            foreach ($responseDeclaration->getMapping()->getMapEntries()->getArrayCopy(true) as $mapEntry) {
+                /** @var MapEntry $mapEntry */
+                $responses[] = new ValidResponse(
+                    $mapEntry->getMappedValue(),
+                    [$mapEntry->getMapKey()]
+                );
+                // Find out if one of them is case sensitive
+                if ($mapEntry->isCaseSensitive()) {
+                    $this->isCaseSensitive = true;
+                }
             }
-            if ($mapEntry->getMappedValue() > $highestScore) {
-                $highestScore = $mapEntry->getMappedValue();
-                array_unshift($this->originalResponseData, [$mapEntry->getMapKey() => $mapEntry->getMappedValue()]);
-            } else {
-                $this->originalResponseData[] = [$mapEntry->getMapKey() => $mapEntry->getMappedValue()];
-            }
-        }
-    }
-
-    protected function handleCC2MapResponseTemplate()
-    {
-        $this->handleMapResponseTemplate();
-    }
-
-    protected function prepareOriginalResponseData()
-    {
-        $responseList = [];
-
-        for ($i = 0; $i < count($this->originalResponseData); $i++) {
-            $scoreGlobal = 0;
-            $value = [];
-            foreach ($this->originalResponseData[$i] as $answer => $score) {
-                $value[] = $answer;
-                $scoreGlobal += $score;
-            }
-            $responseList[] = [
-                'score' => $scoreGlobal,
-                'value' => $value
-            ];
+            $interactionResponses[] = $responses;
         }
 
-        $this->originalResponseData = $responseList;
+        $responses = ArrayUtil::cartesianProductForResponses($interactionResponses);
+        return ValidationBuilder::build('clozetext', 'exactMatch', $responses);
     }
 
     public function isCaseSensitive()

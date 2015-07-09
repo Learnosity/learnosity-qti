@@ -59,7 +59,7 @@ class ChoiceInteractionTest extends \PHPUnit_Framework_TestCase
 
         /* @var $validResponse \Learnosity\Entities\QuestionTypes\mcq_validation_valid_response */
         $validResponse = $validation->get_valid_response();
-        $this->assertTrue($validResponse->get_score() === 1);
+        $this->assertEquals(1, $validResponse->get_score());
         $this->assertTrue($validResponse->get_value()[0] === 'ChoiceA');
     }
 }

@@ -53,23 +53,22 @@ class ChoiceInteractionMapper extends AbstractInteractionMapper
             $mcq->set_multiple_responses(true);
         }
 
+        // Ignoring @minChoices
         if (!empty($interaction->getMinChoices())) {
             $this->exceptions[] = new MappingException('Attribute minChoices is not support. Thus, ignored');
         }
 
         // Build validation
         $validationBuilder = new ChoiceInteractionValidationBuilder(
-            $this->responseProcessingTemplate,
-            [$this->responseDeclaration],
-            'mcq'
+            $this->responseDeclaration,
+            $optionsMap = array_column($options, 'label', 'value')
         );
-        $validation = $validationBuilder->buildValidation();
+        $validation = $validationBuilder->buildValidation($this->responseProcessingTemplate);
         $this->exceptions = array_merge($this->exceptions, $validationBuilder->getExceptions());
 
         if (!empty($validation)) {
             $mcq->set_validation($validation);
         }
-
         return $mcq;
     }
 
@@ -79,8 +78,6 @@ class ChoiceInteractionMapper extends AbstractInteractionMapper
         $options = [];
         foreach ($simpleChoices as $key => $choice) {
             // Store 'SimpleChoice' identifier to key for validation purposes
-            // TODO: Filter $choice->getContent() because we ignore <printedVariable>, <feedbackBlock>,
-            // TODO: <feedbackInline>, <templateInline>, <templateBlock>, and <include>
             $options[] = [
                 'label' => QtiComponentUtil::marshallCollection($choice->getContent()),
                 'value' => $choice->getIdentifier()

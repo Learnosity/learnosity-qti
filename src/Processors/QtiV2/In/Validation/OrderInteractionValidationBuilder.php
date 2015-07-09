@@ -2,64 +2,35 @@
 namespace Learnosity\Processors\QtiV2\In\Validation;
 
 use Learnosity\Exceptions\MappingException;
+use Learnosity\Processors\Learnosity\In\ValidationBuilder\ValidationBuilder;
+use Learnosity\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
 use qtism\data\state\ResponseDeclaration;
 use qtism\data\state\Value;
 
-class OrderInteractionValidationBuilder extends BaseQtiValidationBuilder
+class OrderInteractionValidationBuilder extends BaseInteractionValidationBuilder
 {
     private $orderMapping;
+    private $responseDeclaration;
 
-    public function init(array $orderMapping)
+    public function __construct(array $orderMapping, ResponseDeclaration $responseDeclaration = null)
     {
         $this->orderMapping = $orderMapping;
-        $this->scoringType = 'exactMatch';
+        $this->responseDeclaration = $responseDeclaration;
     }
 
-    protected function handleMatchCorrectTemplate()
+    protected function getMatchCorrectTemplateValidation()
     {
-        assert(count($this->responseDeclarations) === 1);
-        /** @var ResponseDeclaration $responseDeclaration */
-        $responseDeclaration = $this->responseDeclarations[0];
-        foreach ($responseDeclaration->getCorrectResponse()->getValues() as $value) {
-            if ($value instanceof Value) {
-                $this->originalResponseData[$value->getValue()] = count($this->originalResponseData);
-            }
-        }
-    }
-
-    protected function handleMapResponseTemplate()
-    {
-        $this->exceptions[] =
-            new MappingException('Unrecognised response processing template. Validation is not available');
-    }
-
-    protected function handleCC2MapResponseTemplate()
-    {
-        $this->handleMapResponseTemplate();
-    }
-
-    protected function prepareOriginalResponseData()
-    {
-        $responseValue = [];
-
-        foreach ($this->orderMapping as $mappingIdentifier => $index) {
-            if (!isset($this->originalResponseData[$mappingIdentifier])) {
-                $this->exceptions [] = new MappingException(
-                    'Cannot locate ' . $mappingIdentifier . ' in responseDeclaration'
-                );
+        // Build the `value` object on `valid_response`
+        $values = [];
+        foreach ($this->responseDeclaration->getCorrectResponse()->getValues() as $v) {
+            /** @var Value $v */
+            $value = $v->getValue();
+            if (!isset($this->orderMapping[$value])) {
+                $this->exceptions[] = new MappingException('Cannot locate ' . $value . ' in responseDeclaration');
                 continue;
             }
-            $answerIndex = $this->originalResponseData[$mappingIdentifier];
-            $responseValue[$answerIndex] = $index;
+            $values[] = $this->orderMapping[$value];
         }
-        ksort($responseValue);
-
-        $responseList = [];
-        $responseList[] = [
-            'score' => 1,
-            'value' => $responseValue
-        ];
-
-        $this->originalResponseData = $responseList;
+        return ValidationBuilder::build('orderlist', 'exactMatch', [new ValidResponse(1, $values)]);
     }
 }

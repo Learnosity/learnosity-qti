@@ -9,15 +9,16 @@ use Learnosity\Utils\FileSystemUtil;
 
 class MergedTextEntryInteractionTest extends \PHPUnit_Framework_TestCase
 {
-
     private $file;
     /* @var $mapper ItemMapper*/
     private $mapper;
 
     public function setup()
     {
-        $this->file = FileSystemUtil::readFile(FileSystemUtil::getRootPath() .
-            '/src/Tests/Fixtures/interactions/textentryinteraction.xml');
+        $this->file = FileSystemUtil::readFile(
+            FileSystemUtil::getRootPath() .
+            '/src/Tests/Fixtures/interactions/textentryinteraction.xml'
+        );
         $this->mapper = AppContainer::getApplicationContainer()->get('qtiv2_item_mapper');
     }
 
@@ -54,8 +55,10 @@ class MergedTextEntryInteractionTest extends \PHPUnit_Framework_TestCase
 
         /* @var $validResponse \Learnosity\Entities\QuestionTypes\clozetext_validation_valid_response */
         $validResponse = $validation->get_valid_response();
-        $this->assertInstanceOf('\Learnosity\Entities\QuestionTypes\clozetext_validation_valid_response',
-            $validResponse);
+        $this->assertInstanceOf(
+            '\Learnosity\Entities\QuestionTypes\clozetext_validation_valid_response',
+            $validResponse
+        );
         $this->assertEquals(6, $validResponse->get_score());
 
         $options = [];
@@ -65,8 +68,10 @@ class MergedTextEntryInteractionTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(count($altResponses) === 3);
         /* @var $altResponse \Learnosity\Entities\QuestionTypes\clozetext_validation_alt_responses_item */
         foreach ($altResponses as $altResponse) {
-            $this->assertInstanceOf('\Learnosity\Entities\QuestionTypes\clozetext_validation_alt_responses_item',
-                $altResponse);
+            $this->assertInstanceOf(
+                '\Learnosity\Entities\QuestionTypes\clozetext_validation_alt_responses_item',
+                $altResponse
+            );
             $options[] = $altResponse->get_value();
         }
 
@@ -76,10 +81,10 @@ class MergedTextEntryInteractionTest extends \PHPUnit_Framework_TestCase
 
         $expectedOptions = ArrayUtil::mutateResponses([['a', 'b'], ['OHMYGOD', 'x7']]);
         $matchCount = 0;
-        foreach($expectedOptions as $expectedKey=>$expectedValue) {
-            foreach($options as $optionKey=>$optionValue) {
+        foreach ($expectedOptions as $expectedKey => $expectedValue) {
+            foreach ($options as $optionKey => $optionValue) {
                 $diff = array_diff($expectedValue, $optionValue);
-                if(!$diff) {
+                if (!$diff) {
                     $matchCount++;
                 }
             }

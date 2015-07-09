@@ -66,12 +66,11 @@ class MatchInteractionMapper extends AbstractInteractionMapper
     private function buildValidation(&$isMultipleResponse)
     {
         $validationBuilder = new MatchInteractionValidationBuilder(
-            $this->responseProcessingTemplate,
-            [$this->responseDeclaration],
-            'choicematrix'
+            $this->stemMapping,
+            $this->optionsMapping,
+            $this->responseDeclaration
         );
-        $validationBuilder->init($this->stemMapping, $this->optionsMapping);
-        $validation = $validationBuilder->buildValidation();
+        $validation = $validationBuilder->buildValidation($this->responseProcessingTemplate);
         $isMultipleResponse = $validationBuilder->isMultipleResponse();
         $this->exceptions = array_merge($this->exceptions, $validationBuilder->getExceptions());
         return $validation;

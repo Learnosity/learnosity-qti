@@ -63,8 +63,8 @@ class MergedInlineChoiceInteractionTest extends AbstractInteractionTest
     {
         $itemBody = $this->buildItemBodyWithTwoInteractions();
         $responseDeclarations = new QtiComponentCollection();
-        $responseDeclarations->attach(ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifierOne', ['sydney']));
         $responseDeclarations->attach(ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifierTwo', ['keanu', 'gloria']));
+        $responseDeclarations->attach(ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifierOne', ['sydney']));
         $mapper = new MergedInlineChoiceInteractionMapper('dummyQuestionReference', $itemBody, $responseDeclarations, ResponseProcessingTemplate::matchCorrect());
         $question = $mapper->getQuestionType();
 

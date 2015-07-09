@@ -31,12 +31,12 @@ class GapMatchInteractionMapper extends AbstractInteractionMapper
         }
 
         $validationBuilder = new GapMatchInteractionValidationBuilder(
-            $this->responseProcessingTemplate,
-            [$this->responseDeclaration],
-            'clozeassociation'
+            'clozeassociation',
+            $gapIdentifiers,
+            $possibleResponseMapping,
+            $this->responseDeclaration
         );
-        $validationBuilder->init($gapIdentifiers, $possibleResponseMapping);
-        $validation = $validationBuilder->buildValidation();
+        $validation = $validationBuilder->buildValidation($this->responseProcessingTemplate);
 
         if ($validation) {
             $question->set_validation($validation);

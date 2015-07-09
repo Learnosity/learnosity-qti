@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Learnosity\Tests\Unit\Mappers\QtiV2\In\Fixtures;
 
 use qtism\data\content\FlowStaticCollection;
@@ -23,4 +22,4 @@ class ChoiceInteractionBuilder
         }
         return new ChoiceInteraction($responseIdentifier, $collection);
     }
-} 
+}

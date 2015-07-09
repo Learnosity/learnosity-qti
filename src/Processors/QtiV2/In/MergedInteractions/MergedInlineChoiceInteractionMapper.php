@@ -16,7 +16,6 @@ class MergedInlineChoiceInteractionMapper extends AbstractMergedInteractionMappe
     {
         $interactionComponents = $this->itemBody->getComponentsByClassName('inlineChoiceInteraction', true);
 
-        //TODO: Throw all the warnings to an array
         $interactionXmls = [];
         $possibleResponsesMap = [];
         foreach ($interactionComponents as $component) {
@@ -32,25 +31,26 @@ class MergedInlineChoiceInteractionMapper extends AbstractMergedInteractionMappe
         $template = $this->buildTemplate($this->itemBody, $interactionXmls);
         $clozedropdown = new clozedropdown('clozedropdown', $template, array_values(array_map('array_values', $possibleResponsesMap)));
 
-//        $validationBuilder = new InlineChoiceInteractionValidationBuilder(
-//            $possibleResponsesMap,
-//            $this->responseDeclarations,
-//            $this->responseProcessingTemplate
-//        );
-//        $validation = $validationBuilder->getValidation();
-        $isCaseSensitive = false;
-        $validation = $this->buildValidation($possibleResponsesMap, $isCaseSensitive);
+
+        $validationBuilder = new InlineChoiceInteractionValidationBuilder(
+            $this->responseDeclarations,
+            $possibleResponsesMap
+        );
+
+        // Build `validation`
+        $validation = $validationBuilder->buildValidation($this->responseProcessingTemplate);
         if (!empty($validation)) {
             $clozedropdown->set_validation($validation);
         }
 
-        $clozedropdown->set_case_sensitive($isCaseSensitive);
-        if ($isCaseSensitive) {
+        // Set `case_sensitivive`
+        $clozedropdown->set_case_sensitive($validationBuilder->isCaseSensitive());
+        if ($validationBuilder->isCaseSensitive()) {
             $this->exceptions[] = new MappingException('Partial `caseSensitive` per response is not supported.
                 Thus setting all validation as case sensitive');
         }
 
-//        $this->exceptions = array_merge($this->exceptions, $validationBuilder->getExceptions());
+        $this->exceptions = array_merge($this->exceptions, $validationBuilder->getExceptions());
         return $clozedropdown;
     }
 
@@ -67,28 +67,5 @@ class MergedInlineChoiceInteractionMapper extends AbstractMergedInteractionMappe
     public function getItemContent()
     {
         return '<span class="learnosity-response question-' . $this->questionReference . '"></span>';
-    }
-
-    private function buildValidation(array $possibleResponses, &$isCaseSensitive)
-    {
-        if (!$this->responseProcessingTemplate) {
-            $this->exceptions[] =
-                new MappingException(
-                    'Response Processing Template is not defined so validation is not available.',
-                    MappingException::WARNING
-                );
-            return null;
-        }
-
-        $validationBuilder = new InlineChoiceInteractionValidationBuilder(
-            $this->responseProcessingTemplate,
-            $this->responseDeclarations,
-            'clozedropdown'
-        );
-        $validationBuilder->init($possibleResponses);
-        $validation = $validationBuilder->buildValidation();
-        $isCaseSensitive = $validationBuilder->isCaseSensitive();
-        $this->exceptions = array_merge($this->exceptions, $validationBuilder->getExceptions());
-        return $validation;
     }
 }

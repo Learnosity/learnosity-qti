@@ -101,8 +101,8 @@ class MergedTextEntryInteractionTest extends AbstractInteractionTest
     {
         $itemBody = $this->buildItemBodyWithTwoInteraction();
         $responseDeclarations = new QtiComponentCollection();
-        $responseDeclarations->attach(ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifierOne', ['Sydney']));
         $responseDeclarations->attach(ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifierTwo', ['Gloria Foster', 'Keanu Reeves', 'Laurence Fishburne']));
+        $responseDeclarations->attach(ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifierOne', ['Sydney']));
         $mapper = new MergedTextEntryInteractionMapper('dummyReference', $itemBody, $responseDeclarations, ResponseProcessingTemplate::matchCorrect());
         $question = $mapper->getQuestionType();
 

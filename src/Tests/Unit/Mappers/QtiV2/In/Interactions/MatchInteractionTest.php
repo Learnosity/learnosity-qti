@@ -27,7 +27,8 @@ class MatchInteractionTest extends AbstractInteractionTest
                         'D' => 'Item D',
                         'E' => 'Item E'
                     ]
-                ]);
+                ]
+            );
 
         $testMatchInteraction->setMaxAssociations(3);
         $responseProcessingTemplate = ResponseProcessingTemplate::mapResponse();
@@ -37,8 +38,11 @@ class MatchInteractionTest extends AbstractInteractionTest
             'A E' => [3, false]
 
         ];
-        $responseDeclaration = ResponseDeclarationBuilder::buildWithMapping('testIdentifier',
-            $validResponseIdentifier, 'DirectedPair');
+        $responseDeclaration = ResponseDeclarationBuilder::buildWithMapping(
+            'testIdentifier',
+            $validResponseIdentifier,
+            'DirectedPair'
+        );
 
         $mapper = new MatchInteractionMapper($testMatchInteraction, $responseDeclaration, $responseProcessingTemplate);
 
@@ -58,13 +62,15 @@ class MatchInteractionTest extends AbstractInteractionTest
         $validation = $q->get_validation();
         $this->assertInstanceOf(
             'Learnosity\Entities\QuestionTypes\choicematrix_validation',
-            $validation);
+            $validation
+        );
         $this->assertEquals('exactMatch', $validation->get_scoring_type());
 
         $validResponse = $validation->get_valid_response();
         $this->assertInstanceOf(
             'Learnosity\Entities\QuestionTypes\choicematrix_validation_valid_response',
-            $validResponse);
+            $validResponse
+        );
         $this->assertEquals(6, $validResponse->get_score());
         $this->assertEquals([[1, 2], [0]], $validResponse->get_value());
         $this->assertTrue($q->get_multiple_responses());
@@ -85,7 +91,8 @@ class MatchInteractionTest extends AbstractInteractionTest
                         'D' => 'Item D',
                         'E' => 'Item E'
                     ]
-                ]);
+                ]
+            );
 
         $testMatchInteraction->setMaxAssociations(3);
         $responseProcessingTemplate = ResponseProcessingTemplate::matchCorrect();
@@ -94,8 +101,10 @@ class MatchInteractionTest extends AbstractInteractionTest
             new DirectedPair('B', 'C'),
             new DirectedPair('A', 'E')
         ];
-        $responseDeclaration = ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifier',
-            $validResponseIdentifier);
+        $responseDeclaration = ResponseDeclarationBuilder::buildWithCorrectResponse(
+            'testIdentifier',
+            $validResponseIdentifier
+        );
 
         $mapper = new MatchInteractionMapper($testMatchInteraction, $responseDeclaration, $responseProcessingTemplate);
 
@@ -115,13 +124,15 @@ class MatchInteractionTest extends AbstractInteractionTest
         $validation = $q->get_validation();
         $this->assertInstanceOf(
             'Learnosity\Entities\QuestionTypes\choicematrix_validation',
-            $validation);
+            $validation
+        );
         $this->assertEquals('exactMatch', $validation->get_scoring_type());
 
         $validResponse = $validation->get_valid_response();
         $this->assertInstanceOf(
             'Learnosity\Entities\QuestionTypes\choicematrix_validation_valid_response',
-            $validResponse);
+            $validResponse
+        );
         $this->assertEquals(1, $validResponse->get_score());
         $this->assertEquals([[1, 2], [0]], $validResponse->get_value());
         $this->assertTrue($q->get_multiple_responses());
@@ -142,7 +153,8 @@ class MatchInteractionTest extends AbstractInteractionTest
                         'C' => 'Item C',
                         'D' => 'Item D'
                     ]
-                ]);
+                ]
+            );
 
         $testMatchInteraction->setMaxAssociations(2);
         $responseProcessingTemplate = ResponseProcessingTemplate::matchCorrect();
@@ -150,8 +162,10 @@ class MatchInteractionTest extends AbstractInteractionTest
             new DirectedPair('A', 'D'),
             new DirectedPair('B', 'C')
         ];
-        $responseDeclaration = ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifier',
-            $validResponseIdentifier);
+        $responseDeclaration = ResponseDeclarationBuilder::buildWithCorrectResponse(
+            'testIdentifier',
+            $validResponseIdentifier
+        );
 
         $mapper = new MatchInteractionMapper($testMatchInteraction, $responseDeclaration, $responseProcessingTemplate);
 
@@ -170,13 +184,15 @@ class MatchInteractionTest extends AbstractInteractionTest
         $validation = $q->get_validation();
         $this->assertInstanceOf(
             'Learnosity\Entities\QuestionTypes\choicematrix_validation',
-            $validation);
+            $validation
+        );
         $this->assertEquals('exactMatch', $validation->get_scoring_type());
 
         $validResponse = $validation->get_valid_response();
         $this->assertInstanceOf(
             'Learnosity\Entities\QuestionTypes\choicematrix_validation_valid_response',
-            $validResponse);
+            $validResponse
+        );
         $this->assertEquals(1, $validResponse->get_score());
         $this->assertEquals([[1], [0]], $validResponse->get_value());
         $this->assertFalse($q->get_multiple_responses());

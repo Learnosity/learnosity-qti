@@ -71,8 +71,10 @@ class TextEntryInlineChoiceInteractionTest extends \PHPUnit_Framework_TestCase
 
         /** @var clozedropdown_validation_valid_response $validResponse */
         $validResponse = $validation->get_valid_response();
-        $this->assertInstanceOf('Learnosity\Entities\QuestionTypes\clozedropdown_validation_valid_response',
-            $validResponse);
+        $this->assertInstanceOf(
+            'Learnosity\Entities\QuestionTypes\clozedropdown_validation_valid_response',
+            $validResponse
+        );
         $this->assertEquals(1, $validResponse->get_score());
         $this->assertEquals(['York'], $validResponse->get_value());
     }
@@ -100,8 +102,10 @@ class TextEntryInlineChoiceInteractionTest extends \PHPUnit_Framework_TestCase
 
         /** @var clozetext_validation_valid_response $validResponse */
         $validResponse = $validation->get_valid_response();
-        $this->assertInstanceOf('Learnosity\Entities\QuestionTypes\clozetext_validation_valid_response',
-            $validResponse);
+        $this->assertInstanceOf(
+            'Learnosity\Entities\QuestionTypes\clozetext_validation_valid_response',
+            $validResponse
+        );
         $this->assertEquals(1, $validResponse->get_score());
         $this->assertEquals(['York'], $validResponse->get_value());
     }

@@ -51,7 +51,7 @@ class GraphicGapMatchInteractionTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($q->get_validation());
 
         $this->assertCount(1, $mapper->getExceptions());
-        $this->assertEquals('Gap Identifier G2 does not exist', $mapper->getExceptions()[0]->getMessage());
+        $this->assertEquals('Amount of Gap Identifiers 2 does not match the amount 1 for responseDeclaration', $mapper->getExceptions()[0]->getMessage());
     }
 
     public function testMapResponseValidation()
@@ -72,7 +72,6 @@ class GraphicGapMatchInteractionTest extends \PHPUnit_Framework_TestCase
                 'G2' => [30, 40, 50, 60]
             ]
         );
-
         $responseProcessingTemplate = ResponseProcessingTemplate::mapResponse();
         $validResponseIdentifier = [
             'A G1' => [1, false],

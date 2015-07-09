@@ -5,7 +5,7 @@ namespace Learnosity\Processors\QtiV2\In\Interactions;
 use Learnosity\Entities\QuestionTypes\imageclozeassociation;
 use Learnosity\Entities\QuestionTypes\imageclozeassociation_image;
 use Learnosity\Processors\QtiV2\In\Utils\QtiComponentUtil;
-use Learnosity\Processors\QtiV2\In\Validation\GraphicGapMatchInteractionValidationBuilder;
+use Learnosity\Processors\QtiV2\In\Validation\GapMatchInteractionValidationBuilder;
 use qtism\data\content\interactions\AssociableHotspot;
 use qtism\data\content\interactions\GapChoice;
 use qtism\data\content\interactions\GraphicGapMatchInteraction as QtiGraphicGapMatchInteraction;
@@ -22,20 +22,10 @@ class GraphicGapMatchInteractionMapper extends AbstractInteractionMapper
         $possibleResponseMapping = $this->buildPossibleResponseMapping($interaction);
         $associableHotspots = $this->buildTemplate($interaction, $imageObject);
 
-        $validationBuilder = new GraphicGapMatchInteractionValidationBuilder(
-            $this->responseProcessingTemplate,
-            [$this->responseDeclaration],
-            'imageclozeassociation'
-        );
-        $validationBuilder->init(array_keys($associableHotspots), $possibleResponseMapping);
-        $validation = $validationBuilder->buildValidation();
-        $this->exceptions = array_merge($this->exceptions, $validationBuilder->getExceptions());
-
         $image = new imageclozeassociation_image();
         $image->set_src($imageObject->getData());
 
         $responsePosition = [];
-
         foreach ($associableHotspots as $associableHotspot) {
             $responsePosition [] = [
                 'x' => $associableHotspot['x'],
@@ -51,11 +41,21 @@ class GraphicGapMatchInteractionMapper extends AbstractInteractionMapper
         );
 
         $question->set_stimulus($this->getPrompt());
-        $question->set_duplicate_responses($validationBuilder->isDuplicatedResponse());
 
+        // Build dah` validation
+        $hotspotIdentifiers = array_keys($associableHotspots);
+        $validationBuilder = new GapMatchInteractionValidationBuilder(
+            'imageclozeassociation',
+            $hotspotIdentifiers,
+            $possibleResponseMapping,
+            $this->responseDeclaration
+        );
+        $validation = $validationBuilder->buildValidation($this->responseProcessingTemplate);
         if ($validation) {
             $question->set_validation($validation);
         }
+        $question->set_duplicate_responses($validationBuilder->isDuplicatedResponse());
+        $this->exceptions = array_merge($this->exceptions, $validationBuilder->getExceptions());
 
         return $question;
     }

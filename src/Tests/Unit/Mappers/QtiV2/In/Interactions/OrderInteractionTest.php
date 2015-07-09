@@ -11,8 +11,8 @@ use Learnosity\Tests\Unit\Mappers\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
 
 class OrderInteractionTest extends \PHPUnit_Framework_TestCase
 {
-
-    public function testMismatchSimpleChoiceException() {
+    public function testMismatchSimpleChoiceException()
+    {
         $testOrderInteraction = OrderInteractionBuilder::buildOrderInteraction(
             'testOrderInteraction',
             [
@@ -20,7 +20,8 @@ class OrderInteractionTest extends \PHPUnit_Framework_TestCase
                 'J' => 'Order J',
                 'K' => 'Order K'
             ],
-            'testPrompt');
+            'testPrompt'
+        );
         $responseProcessingTemplate = ResponseProcessingTemplate::matchCorrect();
         $responseDeclaration = ResponseDeclarationBuilder::buildWithCorrectResponse(
             'testIdentifier',
@@ -31,7 +32,8 @@ class OrderInteractionTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(3, $mapper->getExceptions());
     }
 
-    public function testShuffleNotSupportedException() {
+    public function testShuffleNotSupportedException()
+    {
         $testOrderInteraction = OrderInteractionBuilder::buildOrderInteraction(
             'testOrderInteraction',
             [
@@ -39,7 +41,8 @@ class OrderInteractionTest extends \PHPUnit_Framework_TestCase
                 'B' => 'Order B',
                 'C' => 'Order C'
             ],
-            'testPrompt');
+            'testPrompt'
+        );
         $testOrderInteraction->setShuffle(true);
         $responseProcessingTemplate = ResponseProcessingTemplate::matchCorrect();
         $responseDeclaration = ResponseDeclarationBuilder::buildWithCorrectResponse(
@@ -60,7 +63,8 @@ class OrderInteractionTest extends \PHPUnit_Framework_TestCase
                 'B' => 'Order B',
                 'C' => 'Order C'
             ],
-            'testPrompt');
+            'testPrompt'
+        );
         $responseProcessingTemplate = ResponseProcessingTemplate::mapResponse();
         $validResponseIdentifier = [
             'A' => [1, false],
@@ -68,8 +72,10 @@ class OrderInteractionTest extends \PHPUnit_Framework_TestCase
             'C' => [3, false]
 
         ];
-        $responseDeclaration = ResponseDeclarationBuilder::buildWithMapping('testIdentifier',
-            $validResponseIdentifier);
+        $responseDeclaration = ResponseDeclarationBuilder::buildWithMapping(
+            'testIdentifier',
+            $validResponseIdentifier
+        );
         $mapper = new OrderInteractionMapper($testOrderInteraction, $responseDeclaration, $responseProcessingTemplate);
         $mapper->getQuestionType();
         $this->assertCount(1, $mapper->getExceptions());
@@ -84,7 +90,8 @@ class OrderInteractionTest extends \PHPUnit_Framework_TestCase
                 'B' => 'Order B',
                 'C' => 'Order C'
             ],
-            'testPrompt');
+            'testPrompt'
+        );
         $responseProcessingTemplate = ResponseProcessingTemplate::matchCorrect();
         $responseDeclaration = ResponseDeclarationBuilder::buildWithCorrectResponse(
             'testIdentifier',
@@ -103,14 +110,16 @@ class OrderInteractionTest extends \PHPUnit_Framework_TestCase
         $validation = $q->get_validation();
         $this->assertInstanceOf(
             'Learnosity\Entities\QuestionTypes\orderlist_validation',
-            $validation);
+            $validation
+        );
         $this->assertEquals('exactMatch', $validation->get_scoring_type());
 
         /** @var orderlist_validation_valid_response $validResponse */
         $validResponse = $validation->get_valid_response();
         $this->assertInstanceOf(
             'Learnosity\Entities\QuestionTypes\orderlist_validation_valid_response',
-            $validResponse);
+            $validResponse
+        );
         $this->assertEquals(1, $validResponse->get_score());
         $this->assertEquals([2, 1, 0], $validResponse->get_value());
 

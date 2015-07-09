@@ -3,16 +3,10 @@
 namespace Learnosity\Processors\QtiV2\In\MergedInteractions;
 
 use Learnosity\Entities\QuestionTypes\clozetext;
-use Learnosity\Exceptions\MappingException;
-use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
 use Learnosity\Processors\QtiV2\In\Utils\QtiComponentUtil;
-use Learnosity\Processors\QtiV2\In\Validation\MergedTextEntryInteractionValidationBuilder;
 use Learnosity\Processors\QtiV2\In\Validation\TextEntryInteractionValidationBuilder;
-use Learnosity\Utils\ArrayUtil;
 use qtism\data\content\interactions\TextEntryInteraction;
 use qtism\data\content\ItemBody;
-use qtism\data\state\MapEntry;
-use qtism\data\state\ResponseDeclaration;
 
 class MergedTextEntryInteractionMapper extends AbstractMergedInteractionMapper
 {
@@ -75,22 +69,8 @@ class MergedTextEntryInteractionMapper extends AbstractMergedInteractionMapper
 
     public function buildValidation(array $interactionIdentifiers, &$isCaseSensitive)
     {
-        if (!($this->responseProcessingTemplate instanceof ResponseProcessingTemplate)) {
-            $this->exceptions[] =
-                new MappingException(
-                    'Response declaration is not defined',
-                    MappingException::CRITICAL
-                );
-            return null;
-        }
-
-        $validationBuilder = new MergedTextEntryInteractionValidationBuilder(
-            $this->responseProcessingTemplate,
-            $this->responseDeclarations,
-            'clozetext'
-        );
-        $validationBuilder->init($interactionIdentifiers);
-        $validation = $validationBuilder->buildValidation();
+        $validationBuilder = new TextEntryInteractionValidationBuilder($interactionIdentifiers, $this->responseDeclarations);
+        $validation = $validationBuilder->buildValidation($this->responseProcessingTemplate);
         $this->exceptions = array_merge($this->exceptions, $validationBuilder->getExceptions());
         $isCaseSensitive = $validationBuilder->isCaseSensitive();
         return $validation;

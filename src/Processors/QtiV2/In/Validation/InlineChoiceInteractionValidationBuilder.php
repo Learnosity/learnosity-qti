@@ -2,20 +2,29 @@
 
 namespace Learnosity\Processors\QtiV2\In\Validation;
 
+use Learnosity\Processors\Learnosity\In\ValidationBuilder\ValidationBuilder;
+use Learnosity\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
 use Learnosity\Utils\ArrayUtil;
 use qtism\data\state\MapEntry;
 use qtism\data\state\ResponseDeclaration;
+use qtism\data\state\Value;
 
-class InlineChoiceInteractionValidationBuilder extends BaseQtiValidationBuilder
+class InlineChoiceInteractionValidationBuilder extends BaseInteractionValidationBuilder
 {
-
     private $isCaseSensitive = false;
     private $possibleResponses;
+    private $responseDeclarations = [];
 
-    public function init(array $possibleResponses)
+    public function __construct(array $unsortedResponseDeclarations = [], array $possibleResponses = [])
     {
         $this->possibleResponses = $possibleResponses;
-        $this->scoringType = 'exactMatch';
+
+        // Need to sort based on interaction identifiers first, which assumed to be listed
+        foreach ($possibleResponses as $interactionIdentifier => $interactionPossibleResponses) {
+            if (isset($unsortedResponseDeclarations[$interactionIdentifier])) {
+                $this->responseDeclarations[$interactionIdentifier] = $unsortedResponseDeclarations[$interactionIdentifier];
+            }
+        }
     }
 
     public function isCaseSensitive()
@@ -23,97 +32,43 @@ class InlineChoiceInteractionValidationBuilder extends BaseQtiValidationBuilder
         return $this->isCaseSensitive;
     }
 
-    protected function handleMatchCorrectTemplate()
+    protected function getMatchCorrectTemplateValidation()
     {
-        $validResponsesValues = [];
+        $interactionResponses = [];
         foreach ($this->responseDeclarations as $responseIdentifier => $responseDeclaration) {
             /** @var ResponseDeclaration $responseDeclaration */
-            $values = [];
-            foreach ($responseDeclaration->getCorrectResponse()->getValues() as $value) {
-                $data = new \stdClass();
-                $data->values = [$this->possibleResponses[$responseIdentifier][$value->getValue()]];
-                $data->score = 1;
-                $values[] =
-                    [
-                        $data
-                    ];
-            }
-            $validResponsesValues[] = $values;
+            $correctResponses = $responseDeclaration->getCorrectResponse()->getValues()->getArrayCopy(true);
+            $possibleResponses = $this->possibleResponses[$responseIdentifier];
+            $interactionResponses[] = array_map(function ($value) use ($possibleResponses) {
+                /** @var Value $value */
+                return new ValidResponse(1, [$possibleResponses[$value->getValue()]]);
+            }, $correctResponses);
         }
-        $this->originalResponseData = ArrayUtil::mutateResponses($validResponsesValues);
+        $responses = ArrayUtil::cartesianProductForResponses($interactionResponses);
+        return ValidationBuilder::build('clozedropdown', 'exactMatch', $responses);
     }
 
-    protected function handleMapResponseTemplate()
+    protected function getMapResponseTemplateValidation()
     {
-        $keyScoreMapping = [];
+        $interactionResponses = [];
         /** @var ResponseDeclaration $responseDeclaration */
         foreach ($this->responseDeclarations as $responseIdentifier => $responseDeclaration) {
-            $mapping = [];
+            $responses = [];
             foreach ($responseDeclaration->getMapping()->getMapEntries()->getArrayCopy(true) as $mapEntry) {
                 /** @var MapEntry $mapEntry */
-                $responseValue = $this->possibleResponses[$responseIdentifier][$mapEntry->getMapKey()];
-                $mapping[$mapEntry->getMapKey()] = [
-                    'score' => $mapEntry->getMappedValue(),
-                    'value' => $responseValue
-                ];
+                $responses[] = new ValidResponse(
+                    $mapEntry->getMappedValue(),
+                    [$this->possibleResponses[$responseIdentifier][$mapEntry->getMapKey()]]
+                );
                 // Find out if one of them is case sensitive
                 if ($mapEntry->isCaseSensitive()) {
                     $this->isCaseSensitive = true;
                 }
             }
-            $keyScoreMapping[] = $mapping;
+            $interactionResponses[] = $responses;
         }
 
-        // Get an array of correct responses for Learnosity object
-        $correctResponses = [];
-        foreach (ArrayUtil::mutateResponses(array_map('array_keys', array_values($keyScoreMapping))) as $combination) {
-            $responseValues = [];
-            $score = 0;
-            $combination = is_array($combination) ? $combination : [$combination];
-            foreach ($combination as $index => $mapKey) {
-                $responseValues[] = $keyScoreMapping[$index][$mapKey]['value'];
-                $score += $keyScoreMapping[$index][$mapKey]['score'];
-            }
-            $data = new \stdClass();
-            $data->values = $responseValues;
-            $data->score = $score;
-            $correctResponses[] = $data;
-        }
-
-        // Sort by score value, as the first/biggest would be used for `valid_response` object
-        usort($correctResponses, function ($a, $b) {
-            return $a->score < $b->score;
-        });
-
-        $this->originalResponseData = $correctResponses;
-    }
-
-    protected function handleCC2MapResponseTemplate()
-    {
-        $this->handleMapResponseTemplate();
-    }
-
-    protected function prepareOriginalResponseData()
-    {
-        $responseList = [];
-        foreach ($this->originalResponseData as $resp) {
-            $scores = 0;
-            $values = [];
-            if (is_array($resp)) {
-                foreach ($resp as $r) {
-                    $scores += $r->score;
-                    $values = array_merge($values, $r->values);
-                }
-            } else {
-                $scores = $resp->score;
-                $values = $resp->values;
-            }
-
-            $responseList[] = [
-                'score' => $scores,
-                'value' => $values
-            ];
-        }
-        $this->originalResponseData = $responseList;
+        $responses = ArrayUtil::cartesianProductForResponses($interactionResponses);
+        return ValidationBuilder::build('clozedropdown', 'exactMatch', $responses);
     }
 }

@@ -23,7 +23,6 @@ abstract class AbstractInteractionMapper
         $this->exceptions = [];
     }
 
-    // TODO: Need to verify for <math> tags to see whether we need to enable 'is_math'
     abstract public function getQuestionType();
 
     public function getExceptions()

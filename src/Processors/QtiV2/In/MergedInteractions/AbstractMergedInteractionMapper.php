@@ -10,7 +10,7 @@ abstract class AbstractMergedInteractionMapper
 {
     protected $questionReference;
     protected $itemBody;
-    protected $responseDeclarations;
+    protected $responseDeclarations = [];
     protected $responseProcessingTemplate;
 
     protected $exceptions = [];
@@ -23,7 +23,7 @@ abstract class AbstractMergedInteractionMapper
     ) {
         $this->questionReference = $questionReference;
         $this->itemBody = $itemBody;
-        $this->responseProcessingTemplate = $responseProcessingTemplate;
+        $this->responseProcessingTemplate = empty($responseProcessingTemplate) ? ResponseProcessingTemplate::none() : $responseProcessingTemplate;
         $this->exceptions = [];
 
         if (!empty($responseDeclarations)) {

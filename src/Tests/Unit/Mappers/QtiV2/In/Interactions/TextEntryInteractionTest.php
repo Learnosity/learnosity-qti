@@ -17,7 +17,7 @@ class TextEntryInteractionTest extends AbstractInteractionTest
 
         $this->assertNotNull($question);
         $this->assertNull($question->get_validation());
-        $this->assertCount(1,$mapper->getExceptions());
+        $this->assertCount(1, $mapper->getExceptions());
     }
 
     public function testShouldConsiderMaxLengthLessThan250()
@@ -97,7 +97,7 @@ class TextEntryInteractionTest extends AbstractInteractionTest
         $this->assertNotNull($altResponses);
         $this->assertCount(3, $altResponses);
 
-        foreach($altResponses as $altResponse) {
+        foreach ($altResponses as $altResponse) {
             switch($altResponse->get_value()) {
                 case 'york':
                     $this->assertEquals(0.5, $altResponse->get_score());
@@ -116,7 +116,8 @@ class TextEntryInteractionTest extends AbstractInteractionTest
         $this->assertTrue($question->get_case_sensitive());
     }
 
-    public function testInvalidResponseProcessingTemplate() {
+    public function testInvalidResponseProcessingTemplate()
+    {
         $interaction = new \qtism\data\content\interactions\TextEntryInteraction('testIdentifier');
         $mapper = new TextEntryInteractionMapper($interaction, null, ResponseProcessingTemplate::getFromTemplateUrl(''));
         $question = $mapper->getQuestionType();
