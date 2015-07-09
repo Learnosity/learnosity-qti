@@ -25,7 +25,8 @@ class ItemMapper
         'hottextInteraction',
         'gapMatchInteraction',
         'orderInteraction',
-        'graphicGapMatchInteraction'
+        'graphicGapMatchInteraction',
+        'graphicOrderInteraction'
     ];
     private $itemBuilderFactory;
 

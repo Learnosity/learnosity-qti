@@ -49,6 +49,13 @@ class QtiComponentUtil
                     'width' => $objectCoords[2] - $objectCoords[0],
                     'height' => $objectCoords[3] - $objectCoords[1]
                 ];
+            case Shape::CIRCLE:
+                return [
+                    'x' => round($objectCoords[0] / $areaCoords[0] * 100, 4),
+                    'y' => round($objectCoords[1] / $areaCoords[1] * 100, 4),
+                    'width' => $objectCoords[2],
+                    'height' => $objectCoords[2]
+                ];
             default:
                 return null;
         }
