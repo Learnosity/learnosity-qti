@@ -39,7 +39,8 @@ class QtiImportDocumentationGenerator
             'hottextInteraction',
             'matchInteraction',
             'gapMatchInteraction',
-            'OrderInteraction'
+            'OrderInteraction',
+            'graphicGapMatchInteraction'
         ];
         $interactionDocumentation = [];
         foreach ($supportedQtiClassName as $className) {

@@ -421,6 +421,7 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                             <li><a href="#MatchInteraction">MatchInteraction</a></li>
                             <li><a href="#GapMatchInteraction">GapMatchInteraction</a></li>
                             <li><a href="#OrderInteraction">OrderInteraction</a></li>
+                            <li><a href="#GraphicGapMatchInteraction">GraphicGapMatchInteraction</a></li>
                     </ul>
         <hr/>
                     <h4 id="ChoiceInteraction">ChoiceInteraction</h4>
@@ -1526,6 +1527,238 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                     <td class="name">@templateIdentifier</td>
                     <td class="support-status support-status-no">NO</td>
                     <td class="description"></td>
+                </tr>
+                                                            </table>
+    
+                                </div>
+                            </td>
+                        </tr>
+                                                                                                            <tr>
+                            <td class="name">feedbackBlock</td>
+                            <td class="support-status support-status-no">NO</td>
+                            <td class="description"></td>
+                        </tr>
+                                                                                                            <tr>
+                            <td class="name">templateBlock</td>
+                            <td class="support-status support-status-no">NO</td>
+                            <td class="description"></td>
+                        </tr>
+                                                                                                            <tr>
+                            <td class="name">m:math</td>
+                            <td class="support-status support-status-yes">YES</td>
+                            <td class="description">Having <math> element in content will set `is_math` on the corresponding
+                                                questions to be set to true, thus allowed it to be rendered correctly</td>
+                        </tr>
+                                                                                                            <tr>
+                            <td class="name">x:include</td>
+                            <td class="support-status support-status-no">NO</td>
+                            <td class="description"></td>
+                        </tr>
+                                                                                                            <tr>
+                            <td class="name">(xhtml)*</td>
+                            <td class="support-status support-status-yes">YES</td>
+                            <td class="description">Other common XHTML elements as defined
+                <a href="http://www.imsglobal.org/question/qtiv2p1/imsqti_infov2p1.html#element10123">http://www.imsglobal.org/question/qtiv2p1/imsqti_infov2p1.html#element10123</a></td>
+                        </tr>
+                                                        </table>
+    
+            <hr/>
+                    <h4 id="GraphicGapMatchInteraction">GraphicGapMatchInteraction</h4>
+                        <div class="panel">
+                The element 'graphicGapMatchInteraction' map to our 'imageclozeassociation' question.
+                Read the documentation: <a href='http://docs.learnosity.com/assessment/questions/questiontypes#imageclozeassociation'>
+                http://docs.learnosity.com/assessment/questions/questiontypes#imageclozeassociation</a>
+                <br /><br />
+                Currently support `exactMatch` and `map_response` validation.
+            </div>
+    
+            <table class="doc-table">
+            <tr>
+                <th></th>
+                <th>Support</th>
+                <th>Description</th>
+            </tr>
+                            <tr>
+                    <td class="name">@xmlbase</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@id</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@class</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@xmllang</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@label</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@responseIdentifier</td>
+                    <td class="support-status support-status-yes">YES</td>
+                    <td class="description"></td>
+                </tr>
+                                                                                                                                            <tr>
+                            <td class="name">prompt</td>
+                            <td class="support-status support-status-yes">YES</td>
+                            <td class="description">We map this to our question `stimulus`.</td>
+                        </tr>
+                                                                                                            <tr>
+                            <td class="name">object</td>
+                            <td class="support-status support-status-yes">YES</td>
+                            <td class="description">We map this to the background image. MIME type should be set correctly. Say "image/png"</td>
+                        </tr>
+                                                                                                            <tr>
+                            <td colspan="3">
+                                <div class="expandable-name"><a href="#">gapImg</a></div>
+                                <div class="expandable-content">
+                                        
+            <table class="doc-table">
+            <tr>
+                <th></th>
+                <th>Support</th>
+                <th>Description</th>
+            </tr>
+                            <tr>
+                    <td class="name">@id</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@class</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@xmllang</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@label</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@identifier</td>
+                    <td class="support-status support-status-yes">YES</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@fixed</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@templateIdentifier</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@showHide</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@matchGroup</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@matchMax</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description">This is ignored, `clozeassociation` can only match to a maximum of 0 response</td>
+                </tr>
+                            <tr>
+                    <td class="name">@matchMin</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description">This is ignored, `clozeassociation` allow zero responses</td>
+                </tr>
+                            <tr>
+                    <td class="name">@objectLabel</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                                                                                                                <tr>
+                            <td class="name">object</td>
+                            <td class="support-status support-status-yes">YES</td>
+                            <td class="description"></td>
+                        </tr>
+                                                        </table>
+    
+                                </div>
+                            </td>
+                        </tr>
+                                                                                                            <tr>
+                            <td colspan="3">
+                                <div class="expandable-name"><a href="#">associableHotspot</a></div>
+                                <div class="expandable-content">
+                                        
+            <table class="doc-table">
+            <tr>
+                <th></th>
+                <th>Support</th>
+                <th>Description</th>
+            </tr>
+                            <tr>
+                    <td class="name">@identifier</td>
+                    <td class="support-status support-status-yes">YES</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@fixed</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@templateIdentifier</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@showHide</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@matchGroup</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@shape</td>
+                    <td class="support-status support-status-partial">PARTIAL</td>
+                    <td class="description">Rectangle shape support only</td>
+                </tr>
+                            <tr>
+                    <td class="name">@coords</td>
+                    <td class="support-status support-status-partial">PARTIAL</td>
+                    <td class="description">See attribute shape</td>
+                </tr>
+                            <tr>
+                    <td class="name">@hotspotLabel</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">@matchMax</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description">We calculate this value based on responseDeclaration data</td>
+                </tr>
+                            <tr>
+                    <td class="name">@matchMin</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description">We calculate this value based on responseDeclaration data</td>
                 </tr>
                                                             </table>
     
