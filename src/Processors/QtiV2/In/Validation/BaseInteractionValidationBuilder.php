@@ -4,31 +4,31 @@ namespace Learnosity\Processors\QtiV2\In\Validation;
 
 use Learnosity\Exceptions\MappingException;
 use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
+use Learnosity\Services\LogService;
 
 abstract class BaseInteractionValidationBuilder
 {
-    protected $exceptions = [];
-
     protected function getMatchCorrectTemplateValidation()
     {
-        $this->exceptions[] =
-            new MappingException('Does not support `match_correct` response processing template for this interaction.
-                Fail mapping validation object');
+        LogService::log(
+            'Does not support `match_correct` response processing template for this interaction. ' .
+            'Fail mapping validation object'
+        );
         return null;
     }
 
     protected function getMapResponseTemplateValidation()
     {
-        $this->exceptions[] =
-            new MappingException('Does not support `map_response` response processing template for this interaction.
-                Fail mapping validation object');
+        LogService::log(
+            'Does not support `map_response` response processing template for this interaction. ' .
+            'Fail mapping validation object'
+        );
         return null;
     }
 
     protected function getNoTemplateResponsesValidation()
     {
-        $this->exceptions[] =
-            new MappingException('No response processing detected');
+        LogService::log('No response processing detected');
         return null;
     }
 
@@ -44,17 +44,11 @@ abstract class BaseInteractionValidationBuilder
                 case ResponseProcessingTemplate::NONE:
                     return $this->getNoTemplateResponsesValidation();
                 default:
-                    $this->exceptions[] = new MappingException('Unrecognised response processing template.
-                    Validation is not available');
+                    LogService::log('Unrecognised response processing template. Validation is not available');
             }
         } catch (MappingException $e) {
-            $this->exceptions[] = $e;
+            LogService::log('Validation is not available. Critical error: ' . $e->getMessage());
         }
         return null;
-    }
-
-    public function getExceptions()
-    {
-        return $this->exceptions;
     }
 }

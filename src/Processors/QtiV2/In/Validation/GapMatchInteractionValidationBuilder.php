@@ -109,12 +109,10 @@ class GapMatchInteractionValidationBuilder extends BaseInteractionValidationBuil
 
     private function assertEachGapHasCorrespondingValidResponses(array $responses)
     {
-        // TODO: Previously this was hiding `critical` exception in an array?? What`s the purpose~
-        // TODO: Need to fix up exceptions vs. error messages things
         if (count($this->gapIdentifiers) !== count($responses)) {
             throw new MappingException(
-                'Amount of Gap Identifiers ' . count($this->gapIdentifiers) . ' does not match the amount ' .
-                count($responses) . ' for responseDeclaration',
+                'Amount of gap identifiers ' . count($this->gapIdentifiers) . ' does not match the amount ' .
+                count($responses) . ' for <responseDeclaration>',
                 MappingException::CRITICAL
             );
         }

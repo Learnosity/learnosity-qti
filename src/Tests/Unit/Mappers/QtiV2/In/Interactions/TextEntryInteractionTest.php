@@ -4,6 +4,7 @@ namespace Learnosity\Tests\Unit\Mappers\QtiV2\In\Interactions;
 
 use Learnosity\Processors\QtiV2\In\Interactions\TextEntryInteractionMapper;
 use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
+use Learnosity\Services\LogService;
 use Learnosity\Tests\Unit\Mappers\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
 
 class TextEntryInteractionTest extends AbstractInteractionTest
@@ -17,7 +18,7 @@ class TextEntryInteractionTest extends AbstractInteractionTest
 
         $this->assertNotNull($question);
         $this->assertNull($question->get_validation());
-        $this->assertCount(1, $mapper->getExceptions());
+        $this->assertCount(1, LogService::read());
     }
 
     public function testShouldConsiderMaxLengthLessThan250()
@@ -121,6 +122,6 @@ class TextEntryInteractionTest extends AbstractInteractionTest
         $interaction = new \qtism\data\content\interactions\TextEntryInteraction('testIdentifier');
         $mapper = new TextEntryInteractionMapper($interaction, null, ResponseProcessingTemplate::getFromTemplateUrl(''));
         $question = $mapper->getQuestionType();
-        $this->assertCount(1, $mapper->getExceptions());
+        $this->assertCount(1, LogService::read());
     }
 }

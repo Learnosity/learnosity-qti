@@ -8,6 +8,7 @@ use Learnosity\Exceptions\MappingException;
 use Learnosity\Processors\QtiV2\In\Processings\MathsProcessing;
 use Learnosity\Processors\QtiV2\In\Processings\ProcessingInterface;
 use Learnosity\Processors\QtiV2\In\Processings\RubricsProcessing;
+use Learnosity\Services\LogService;
 use qtism\data\AssessmentItem;
 use qtism\data\content\ItemBody;
 use qtism\data\processing\ResponseProcessing;
@@ -25,9 +26,7 @@ class ItemMapper
         'hottextInteraction',
         'gapMatchInteraction',
         'orderInteraction',
-        'graphicGapMatchInteraction',
-        'graphicOrderInteraction',
-        'hotspotInteraction'
+        'graphicGapMatchInteraction'
     ];
     private $itemBuilderFactory;
 
@@ -56,11 +55,15 @@ class ItemMapper
 
     public function parseWithAssessmentItemComponent(AssessmentItem $assessmentItem)
     {
+        // Make sure we clean up the log
+        LogService::flush();
+
         $processings = [
             new RubricsProcessing(),
             new MathsProcessing(),
             AppContainer::getApplicationContainer()->get('assets_processing')
         ];
+
         // Pre-processing works
         /** @var ProcessingInterface $processing */
         foreach ($processings as $processing) {
@@ -76,12 +79,9 @@ class ItemMapper
         // Mapping interactions
         $interactionComponents = $itemBody->getComponentsByClassName($this->supportedInteractions, true);
         if (!$interactionComponents || count($interactionComponents) === 0) {
-            $this->exceptions[] =
-                new MappingException('No supported interactions could be found', MappingException::CRITICAL);
-            return [[], [], $this->getExceptionMessages()];
+            throw new MappingException('No supported interaction mapper could be found');
         }
         $responseDeclarations = $assessmentItem->getComponentsByClassName('responseDeclaration', true);
-
         $itemBuilder = $this->itemBuilderFactory->getItemBuilder($interactionComponents);
         $itemBuilder->map(
             $assessmentItem->getIdentifier(),
@@ -96,15 +96,13 @@ class ItemMapper
             $item->set_description($assessmentItem->getTitle());
         }
         $questions = $itemBuilder->getQuestions();
-        $this->exceptions = array_merge($this->exceptions, $itemBuilder->getExceptions());
 
         // Post-processing works
         /** @var ProcessingInterface $processing */
         foreach ($processings as $processing) {
             list($item, $questions) = $processing->processItemAndQuestions($item, $questions);
-            $this->exceptions = array_merge($this->exceptions, $processing->getExceptions());
         }
-        return [$item, $questions, $this->getExceptionMessages()];
+        return [$item, $questions, LogService::flush()];
     }
 
     private function getExceptionMessages()
@@ -120,19 +118,19 @@ class ItemMapper
     private function validateAssessmentItem(AssessmentItem $assessmentItem)
     {
         if ($assessmentItem->getOutcomeDeclarations()->count()) {
-            $this->exceptions[] = new MappingException('Ignoring <outcomeDeclaration> on <assessmentItem>. Generally we mapped <defaultValue> to 0');
+            LogService::log('Ignoring <outcomeDeclaration> on <assessmentItem>. Generally we mapped <defaultValue> to 0');
         }
         if ($assessmentItem->getTemplateDeclarations()->count()) {
-            throw new MappingException('Does not support <templateDeclaration> on <assessmentItem>. Ignoring <templateDeclaration>', MappingException::CRITICAL);
+            throw new MappingException('Does not support <templateDeclaration> on <assessmentItem>. Ignoring <templateDeclaration>');
         }
         if (!empty($assessmentItem->getTemplateProcessing())) {
-            throw new MappingException('Does not support <templateProcessing> on <assessmentItem>. Ignoring <templateProcessing>', MappingException::CRITICAL);
+            throw new MappingException('Does not support <templateProcessing> on <assessmentItem>. Ignoring <templateProcessing>');
         }
         if ($assessmentItem->getModalFeedbacks()->count()) {
-            $this->exceptions[] = new MappingException('Ignoring <modalFeedback> on <assessmentItem>');
+            LogService::log('Ignoring <modalFeedback> on <assessmentItem>');
         }
         if ($assessmentItem->getStylesheets()->count()) {
-            $this->exceptions[] = new MappingException('Ignoring <stylesheet> on <assessmentItem>');
+            LogService::log('Ignoring <stylesheet> on <assessmentItem>');
         }
         return $assessmentItem;
     }
@@ -143,10 +141,10 @@ class ItemMapper
             return ResponseProcessingTemplate::none();
         }
         if ($responseProcessing->getResponseRules()->count()) {
-            $this->exceptions[] = new MappingException('Does not support custom response processing on <responseProcessing>. Ignoring <responseProcessing>');
+            LogService::log('Does not support custom response processing on <responseProcessing>. Ignoring <responseProcessing>');
         }
         if (!empty($responseProcessing->getTemplateLocation())) {
-            $this->exceptions[] = new MappingException('Does not support \'templateLocation\' on <responseProcessing>. Ignoring <responseProcessing>');
+            LogService::log('Does not support \'templateLocation\' on <responseProcessing>. Ignoring <responseProcessing>');
         }
         if (!empty($responseProcessing->getTemplate())) {
             return ResponseProcessingTemplate::getFromTemplateUrl($responseProcessing->getTemplate());

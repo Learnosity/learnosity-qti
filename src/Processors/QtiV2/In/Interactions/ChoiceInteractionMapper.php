@@ -7,6 +7,7 @@ use Learnosity\Entities\QuestionTypes\mcq_ui_style;
 use Learnosity\Exceptions\MappingException;
 use Learnosity\Processors\QtiV2\In\Utils\QtiComponentUtil;
 use Learnosity\Processors\QtiV2\In\Validation\ChoiceInteractionValidationBuilder;
+use Learnosity\Services\LogService;
 use qtism\data\content\interactions\Orientation;
 use qtism\data\content\interactions\Prompt;
 use qtism\data\content\interactions\SimpleChoice;
@@ -45,7 +46,7 @@ class ChoiceInteractionMapper extends AbstractInteractionMapper
         if ($maxChoiceNum > 1) {
             if ($maxChoiceNum !== count($options)) {
                 // We do not support specifying amount of choices
-                $this->exceptions[] = new MappingException(
+                LogService::log(
                     "Allowing multiple responses of max " . count($options) . " options, however " .
                     "maxChoices of $maxChoiceNum would be ignored since we can't support exact number"
                 );
@@ -55,7 +56,7 @@ class ChoiceInteractionMapper extends AbstractInteractionMapper
 
         // Ignoring @minChoices
         if (!empty($interaction->getMinChoices())) {
-            $this->exceptions[] = new MappingException('Attribute minChoices is not support. Thus, ignored');
+            LogService::log('Attribute minChoices is not support. Thus, ignored');
         }
 
         // Build validation
@@ -64,8 +65,6 @@ class ChoiceInteractionMapper extends AbstractInteractionMapper
             $optionsMap = array_column($options, 'label', 'value')
         );
         $validation = $validationBuilder->buildValidation($this->responseProcessingTemplate);
-        $this->exceptions = array_merge($this->exceptions, $validationBuilder->getExceptions());
-
         if (!empty($validation)) {
             $mcq->set_validation($validation);
         }

@@ -1,15 +1,15 @@
 <?php
 namespace Learnosity\Tests\Unit\Mappers\QtiV2\In\Interactions;
 
-
 use Learnosity\Entities\QuestionTypes\orderlist;
 use Learnosity\Entities\QuestionTypes\orderlist_validation_valid_response;
 use Learnosity\Processors\QtiV2\In\Interactions\OrderInteractionMapper;
 use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
+use Learnosity\Services\LogService;
 use Learnosity\Tests\Unit\Mappers\QtiV2\In\Fixtures\OrderInteractionBuilder;
 use Learnosity\Tests\Unit\Mappers\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
 
-class OrderInteractionTest extends \PHPUnit_Framework_TestCase
+class OrderInteractionTest extends AbstractInteractionTest
 {
     public function testMismatchSimpleChoiceException()
     {
@@ -28,8 +28,8 @@ class OrderInteractionTest extends \PHPUnit_Framework_TestCase
             ['C', 'B', 'A']
         );
         $mapper = new OrderInteractionMapper($testOrderInteraction, $responseDeclaration, $responseProcessingTemplate);
-        $mapper->getQuestionType();
-        $this->assertCount(3, $mapper->getExceptions());
+        $questionType = $mapper->getQuestionType();
+        $this->assertCount(3, LogService::read());
     }
 
     public function testShuffleNotSupportedException()
@@ -51,7 +51,7 @@ class OrderInteractionTest extends \PHPUnit_Framework_TestCase
         );
         $mapper = new OrderInteractionMapper($testOrderInteraction, $responseDeclaration, $responseProcessingTemplate);
         $mapper->getQuestionType();
-        $this->assertCount(1, $mapper->getExceptions());
+        $this->assertCount(1, LogService::read());
     }
 
     public function testShouldNotHandleMapResponseValidation()
@@ -78,7 +78,7 @@ class OrderInteractionTest extends \PHPUnit_Framework_TestCase
         );
         $mapper = new OrderInteractionMapper($testOrderInteraction, $responseDeclaration, $responseProcessingTemplate);
         $mapper->getQuestionType();
-        $this->assertCount(1, $mapper->getExceptions());
+        $this->assertCount(1, LogService::read());
     }
 
     public function testShouldHandleMatchCorrectValidation()

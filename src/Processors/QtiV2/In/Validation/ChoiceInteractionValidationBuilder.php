@@ -2,9 +2,9 @@
 
 namespace Learnosity\Processors\QtiV2\In\Validation;
 
-use Learnosity\Exceptions\MappingException;
 use Learnosity\Processors\Learnosity\In\ValidationBuilder\ValidationBuilder;
 use Learnosity\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
+use Learnosity\Services\LogService;
 use qtism\data\state\ResponseDeclaration;
 use qtism\data\state\Value;
 
@@ -26,7 +26,7 @@ class ChoiceInteractionValidationBuilder extends BaseInteractionValidationBuilde
         /** @var Value $value */
         foreach ($this->responseDeclaration->getCorrectResponse()->getValues() as $value) {
             if (!isset($this->options[$value->getValue()])) {
-                $this->exceptions[] = new MappingException('Invalid choice `' . $value->getValue() .  '`');
+                LogService::log('Invalid choice `' . $value->getValue() .  '`');
                 continue;
             }
             $values[] = $value->getValue();

@@ -6,6 +6,7 @@ use Learnosity\Entities\QuestionTypes\orderlist;
 use Learnosity\Exceptions\MappingException;
 use Learnosity\Processors\QtiV2\In\Utils\QtiComponentUtil;
 use Learnosity\Processors\QtiV2\In\Validation\OrderInteractionValidationBuilder;
+use Learnosity\Services\LogService;
 use qtism\data\content\interactions\OrderInteraction as QtiOrderInteraction;
 use qtism\data\content\interactions\SimpleChoice;
 
@@ -43,14 +44,12 @@ class OrderInteractionMapper extends AbstractInteractionMapper
     private function validate(QtiOrderInteraction $interaction)
     {
         if ($interaction->mustShuffle()) {
-            $this->exceptions[] = new MappingException('Attribute shuffle is not supported');
+            LogService::log('Attribute `shuffle` is not supported');
         }
         foreach ($interaction->getSimpleChoices() as $simpleChoice) {
             /** @var SimpleChoice $simpleChoice */
             if ($simpleChoice->isFixed()) {
-                $this->exceptions[] = new MappingException(
-                    'Attribute `fixed` for ' . $simpleChoice->getIdentifier() . 'is not supported'
-                );
+                LogService::log('Attribute `fixed` for ' . $simpleChoice->getIdentifier() . 'is not supported');
             }
         }
         return true;
@@ -62,8 +61,6 @@ class OrderInteractionMapper extends AbstractInteractionMapper
             $this->orderMapping,
             $this->responseDeclaration
         );
-        $validation = $validationBuilder->buildValidation($this->responseProcessingTemplate);
-        $this->exceptions = array_merge($this->exceptions, $validationBuilder->getExceptions());
-        return $validation;
+        return $validationBuilder->buildValidation($this->responseProcessingTemplate);
     }
 }

@@ -11,4 +11,4 @@ class QtiImportDocumentationGeneratorTest extends \PHPUnit_Framework_TestCase
         $generator = AppContainer::getApplicationContainer()->get('learnosity_documentation_generator');
         $generator->generateDocumentation();
     }
-} 
+}

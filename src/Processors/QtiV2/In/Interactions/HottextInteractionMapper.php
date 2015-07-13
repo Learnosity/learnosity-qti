@@ -71,9 +71,6 @@ class HottextInteractionMapper extends AbstractInteractionMapper
             $interaction->getMaxChoices(),
             $this->responseDeclaration
         );
-        $validation =  $validationBuilder->buildValidation($this->responseProcessingTemplate);
-        $this->exceptions = array_merge($this->exceptions, $validationBuilder->getExceptions());
-
-        return $validation;
+        return $validationBuilder->buildValidation($this->responseProcessingTemplate);
     }
 }

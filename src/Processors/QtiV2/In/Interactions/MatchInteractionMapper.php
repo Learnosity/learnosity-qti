@@ -7,6 +7,7 @@ use Learnosity\Entities\QuestionTypes\choicematrix_ui_style;
 use Learnosity\Exceptions\MappingException;
 use Learnosity\Processors\QtiV2\In\Utils\QtiComponentUtil;
 use Learnosity\Processors\QtiV2\In\Validation\MatchInteractionValidationBuilder;
+use Learnosity\Services\LogService;
 use qtism\data\content\interactions\MatchInteraction as QtiMatchInteraction;
 use qtism\data\content\interactions\SimpleAssociableChoice;
 use qtism\data\content\interactions\SimpleMatchSet;
@@ -22,7 +23,7 @@ class MatchInteractionMapper extends AbstractInteractionMapper
         $interaction = $this->interaction;
 
         if ($interaction->mustShuffle()) {
-            $this->exceptions[] = new MappingException('Shuffle attribute is not supported', MappingException::WARNING);
+            LogService::log('Shuffle attribute is not supported');
         }
         $simpleMatchSetCollection = $interaction->getSimpleMatchSets();
 
@@ -33,8 +34,7 @@ class MatchInteractionMapper extends AbstractInteractionMapper
         $validation = $this->buildValidation($isMultipleResponse);
 
         if ($interaction->getMaxAssociations() !== count($stems)) {
-            $this->exceptions[] =
-                new MappingException('Max Association number not equals to number of stems is not supported');
+            LogService::log('Max Association number not equals to number of stems is not supported');
         }
 
         $uiStyle = new choicematrix_ui_style();
@@ -72,7 +72,6 @@ class MatchInteractionMapper extends AbstractInteractionMapper
         );
         $validation = $validationBuilder->buildValidation($this->responseProcessingTemplate);
         $isMultipleResponse = $validationBuilder->isMultipleResponse();
-        $this->exceptions = array_merge($this->exceptions, $validationBuilder->getExceptions());
         return $validation;
     }
 }

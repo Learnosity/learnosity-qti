@@ -10,9 +10,8 @@ use Learnosity\Tests\Unit\Mappers\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
 use qtism\data\content\interactions\TextEntryInteraction;
 use qtism\data\QtiComponentCollection;
 
-class RegularItemBuilderTest extends \PHPUnit_Framework_TestCase
+class RegularItemBuilderTest
 {
-
     /* @var RegularItemBuilder $regularItemBuilder */
     private $regularItemBuilder;
 
@@ -23,7 +22,6 @@ class RegularItemBuilderTest extends \PHPUnit_Framework_TestCase
 
     public function testMapWithRegularInteractionType()
     {
-
         $componentCollection = $this->buildComponentCollectionWithRegularInteractionTypes();
         $result = $this->regularItemBuilder->map(
             'testAssessmentItemIdentifier',
@@ -32,7 +30,6 @@ class RegularItemBuilderTest extends \PHPUnit_Framework_TestCase
             $this->buildResponseDeclaration()
         );
         $this->assertTrue($result);
-        $this->assertCount(2, $this->regularItemBuilder->getExceptions());
         $questions = $this->regularItemBuilder->getQuestions();
         $this->assertCount(2, $questions);
         $this->assertEquals(
@@ -75,7 +72,4 @@ class RegularItemBuilderTest extends \PHPUnit_Framework_TestCase
         $collection->attach($responseDeclartation);
         return $collection;
     }
-
-
-
 }

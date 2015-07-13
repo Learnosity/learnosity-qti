@@ -43,9 +43,4 @@ class MathsProcessing implements ProcessingInterface
         }
         return [$item, $questions];
     }
-
-    public function getExceptions()
-    {
-        return [];
-    }
 }

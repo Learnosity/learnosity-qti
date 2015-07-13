@@ -33,7 +33,6 @@ class TextEntryInteractionMapper extends AbstractInteractionMapper
         );
         $validation = $validationBuilder->buildValidation($this->responseProcessingTemplate);
         $isCaseSensitive = $validationBuilder->isCaseSensitive();
-        $this->exceptions = array_merge($this->exceptions, $validationBuilder->getExceptions());
         return $validation;
     }
 }

@@ -3,8 +3,8 @@
 namespace Learnosity\Processors\QtiV2\In\Interactions;
 
 use Learnosity\Entities\QuestionTypes\longtext;
-use Learnosity\Exceptions\MappingException;
 use Learnosity\Processors\QtiV2\In\Utils\QtiComponentUtil;
+use Learnosity\Services\LogService;
 use qtism\data\content\interactions\ExtendedTextInteraction as QtiExtendedTextInteraction;
 
 class ExtendedTextInteractionMapper extends AbstractInteractionMapper
@@ -15,7 +15,7 @@ class ExtendedTextInteractionMapper extends AbstractInteractionMapper
         $interaction = $this->interaction;
         $longtext = new longtext('longtext');
 
-        $this->exceptions[] = new MappingException('No validation mapping supported for this interaction. Ignoring any
+        LogService::log('No validation mapping supported for this interaction. Ignoring any
                 <responseProcessing> and <responseDeclaration> if any');
 
         if (!empty($interaction->getPrompt())) {

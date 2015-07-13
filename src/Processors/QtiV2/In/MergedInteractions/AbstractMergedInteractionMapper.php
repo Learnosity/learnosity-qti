@@ -13,8 +13,6 @@ abstract class AbstractMergedInteractionMapper
     protected $responseDeclarations = [];
     protected $responseProcessingTemplate;
 
-    protected $exceptions = [];
-
     public function __construct(
         $questionReference,
         ItemBody $itemBody,
@@ -24,8 +22,6 @@ abstract class AbstractMergedInteractionMapper
         $this->questionReference = $questionReference;
         $this->itemBody = $itemBody;
         $this->responseProcessingTemplate = empty($responseProcessingTemplate) ? ResponseProcessingTemplate::none() : $responseProcessingTemplate;
-        $this->exceptions = [];
-
         if (!empty($responseDeclarations)) {
             foreach ($responseDeclarations as $responseDeclaration) {
                 $this->responseDeclarations[$responseDeclaration->getIdentifier()] = $responseDeclaration;
@@ -36,9 +32,4 @@ abstract class AbstractMergedInteractionMapper
     abstract public function getQuestionType();
 
     abstract public function getItemContent();
-
-    public function getExceptions()
-    {
-        return $this->exceptions;
-    }
 }

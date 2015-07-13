@@ -4,7 +4,7 @@ namespace Learnosity\Processors\QtiV2\In\ItemBuilders;
 
 use Learnosity\Entities\BaseQuestionType;
 use Learnosity\Entities\Question;
-use Learnosity\Processors\QtiV2\In\MergedInteractions\AbstractMergedInteraction;
+use Learnosity\Processors\QtiV2\In\MergedInteractions\AbstractMergedInteractionMapper;
 use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
 use qtism\data\content\interactions\Interaction;
 use qtism\data\content\ItemBody;
@@ -30,7 +30,7 @@ class MergedItemBuilder extends AbstractItemBuilder
         $this->assessmentItemIdentifier = $assessmentItemIdentifier;
 
         $questionReference = $this->buildMergedQuestionReference($interactionComponents);
-        /** @var AbstractMergedInteraction $mapper */
+        /** @var AbstractMergedInteractionMapper $mapper */
         $mapper = $this->getMapperInstance(
             $mergedInteractionType,
             [$questionReference, $itemBody, $responseDeclarations, $responseProcessingTemplate]
@@ -41,7 +41,6 @@ class MergedItemBuilder extends AbstractItemBuilder
         $this->questions[$questionReference] =
             new Question($question->get_type(), $questionReference, $question);
         $this->content = $mapper->getItemContent();
-        $this->exceptions = array_merge($this->exceptions, $mapper->getExceptions());
         return true;
     }
 

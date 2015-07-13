@@ -4,6 +4,7 @@ namespace Learnosity\Tests\Unit\Mappers\QtiV2\In\Interactions;
 
 use Learnosity\Processors\QtiV2\In\Interactions\InlineChoiceInteractionMapper;
 use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
+use Learnosity\Services\LogService;
 use Learnosity\Tests\Unit\Mappers\QtiV2\In\Fixtures\InlineChoiceInteractionBuilder;
 use Learnosity\Tests\Unit\Mappers\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
 
@@ -45,7 +46,7 @@ class InlineChoiceInteractionTest extends AbstractInteractionTest
         $validation = $question->get_validation();
         $this->assertNull($validation);
 
-        $this->assertTrue(count($mapper->getExceptions()) === 1);
+        $this->assertTrue(count(LogService::read()) === 1);
     }
 
     public function testSimpleCaseWithMatchCorrectValidation()

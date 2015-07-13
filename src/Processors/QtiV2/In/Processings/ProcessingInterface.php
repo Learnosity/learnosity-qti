@@ -9,5 +9,4 @@ interface ProcessingInterface
 {
     public function processAssessmentItem(AssessmentItem $assessmentItem);
     public function processItemAndQuestions(item $item, array $questions);
-    public function getExceptions();
 }

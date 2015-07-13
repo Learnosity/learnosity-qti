@@ -11,7 +11,6 @@ abstract class AbstractItemBuilder
 {
     protected $assessmentItemIdentifier;
     protected $questions = [];
-    protected $exceptions = [];
     protected $content = '';
 
     public function getItem()
@@ -24,11 +23,6 @@ abstract class AbstractItemBuilder
     public function getQuestions()
     {
         return array_values($this->questions);
-    }
-
-    public function getExceptions()
-    {
-        return $this->exceptions;
     }
 
     protected function getMapperInstance($interactionType, $params)

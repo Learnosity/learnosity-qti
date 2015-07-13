@@ -5,6 +5,7 @@ namespace Learnosity\Tests\Unit\Mappers\QtiV2\In\Interactions;
 use Learnosity\Entities\QuestionTypes\clozeassociation;
 use Learnosity\Processors\QtiV2\In\Interactions\GapMatchInteractionMapper;
 use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
+use Learnosity\Services\LogService;
 use Learnosity\Tests\Unit\Mappers\QtiV2\In\Fixtures\GapMatchInteractionBuilder;
 use Learnosity\Tests\Unit\Mappers\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
 use qtism\common\datatypes\DirectedPair;
@@ -43,8 +44,9 @@ class GapMatchInteractionTest extends AbstractInteractionTest
         $this->assertFalse($q->get_duplicate_responses());
         $this->assertNull($q->get_validation());
 
-        $this->assertCount(1, $mapper->getExceptions());
-        $this->assertEquals('Amount of Gap Identifiers 2 does not match the amount 1 for responseDeclaration', $mapper->getExceptions()[0]->getMessage());
+        $errorMessages = LogService::read();
+        $this->assertCount(1, $errorMessages);
+        $this->assertStringEndsWith('Amount of gap identifiers 2 does not match the amount 1 for <responseDeclaration>', $errorMessages[0]);
     }
 
     public function testWithMatchCorrectValidationMissingGapIdentifier()
@@ -74,8 +76,10 @@ class GapMatchInteractionTest extends AbstractInteractionTest
         $this->assertEquals(['Gap A', 'Gap B', 'Gap C'], $q->get_possible_responses());
         $this->assertFalse($q->get_duplicate_responses());
         $this->assertNull($q->get_validation());
-        $this->assertCount(1, $mapper->getExceptions());
-        $this->assertEquals('Amount of Gap Identifiers 2 does not match the amount 1 for responseDeclaration', $mapper->getExceptions()[0]->getMessage());
+
+        $errorMessages = LogService::read();
+        $this->assertCount(1, $errorMessages);
+        $this->assertStringEndsWith('Amount of gap identifiers 2 does not match the amount 1 for <responseDeclaration>', $errorMessages[0]);
     }
 
     public function testWithMapResponseValidationDuplicatedResponses()
@@ -135,7 +139,8 @@ class GapMatchInteractionTest extends AbstractInteractionTest
         $this->assertEquals(4, $altResponses[2]->get_score());
         $this->assertEquals(['Gap A', 'Gap C'], $altResponses[2]->get_value());
 
-        $this->assertEmpty($mapper->getExceptions());
+        $errorMessages = LogService::read();
+        $this->assertEmpty($errorMessages);
     }
 
     public function testWithMatchCorrectResponseValidationDuplicatedResponses()
@@ -192,7 +197,8 @@ class GapMatchInteractionTest extends AbstractInteractionTest
         $this->assertEquals(1, $altResponses[2]->get_score());
         $this->assertEquals(['Gap B', 'Gap B'], $altResponses[2]->get_value());
 
-        $this->assertEmpty($mapper->getExceptions());
+        $errorMessages = LogService::read();
+        $this->assertEmpty($errorMessages);
     }
 
     public function testWithMapResponseValidationMixedResponses()
@@ -259,6 +265,7 @@ class GapMatchInteractionTest extends AbstractInteractionTest
         $this->assertEquals(4, $altResponses[4]->get_score());
         $this->assertEquals(['Gap A', '<img src="http://img_C"/>'], $altResponses[4]->get_value());
 
-        $this->assertEmpty($mapper->getExceptions());
+        $errorMessages = LogService::read();
+        $this->assertEmpty($errorMessages);
     }
 }

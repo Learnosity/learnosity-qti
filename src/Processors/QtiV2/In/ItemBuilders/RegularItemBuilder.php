@@ -49,7 +49,6 @@ class RegularItemBuilder extends AbstractItemBuilder
             $question = $mapper->getQuestionType();
 
             $this->questions[$questionReference] = new Question($question->get_type(), $questionReference, $question);
-            $this->exceptions = array_merge($this->exceptions, $mapper->getExceptions());
             $questionsSpan[$questionReference] = QtiComponentUtil::marshall($component);
         }
 

@@ -3,7 +3,7 @@
 namespace Learnosity\Processors\QtiV2\In\Processings;
 
 use Learnosity\Entities\Item\item;
-use Learnosity\Exceptions\MappingException;
+use Learnosity\Services\LogService;
 use qtism\data\AssessmentItem;
 use qtism\data\content\BlockCollection;
 use qtism\data\content\ItemBody;
@@ -12,8 +12,6 @@ use qtism\data\QtiComponent;
 
 class RubricsProcessing implements ProcessingInterface
 {
-    private $hasRubric = false;
-
     public function processAssessmentItem(AssessmentItem $assessmentItem)
     {
         // TODO: Yea, we ignore rubric but what happen if the rubric is deep inside nested
@@ -25,7 +23,7 @@ class RubricsProcessing implements ProcessingInterface
             if (!($component instanceof RubricBlock)) {
                 $newCollection->attach($component);
             } else {
-                $this->hasRubric = true;
+                LogService::log('Does not support <rubricBlock>. Ignoring <rubricBlock>');
             }
         }
         $itemBodyNew->setContent($newCollection);
@@ -36,10 +34,5 @@ class RubricsProcessing implements ProcessingInterface
     public function processItemAndQuestions(item $item, array $questions)
     {
         return [$item, $questions];
-    }
-
-    public function getExceptions()
-    {
-        return $this->hasRubric ? [new MappingException('Does not support <rubricBlock>. Ignoring <rubricBlock>')] : [];
     }
 }

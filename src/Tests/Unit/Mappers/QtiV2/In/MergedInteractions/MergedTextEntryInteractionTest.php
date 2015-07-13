@@ -4,6 +4,7 @@ namespace Learnosity\Tests\Unit\Mappers\QtiV2\In\MergedInteractions;
 
 use Learnosity\Processors\QtiV2\In\MergedInteractions\MergedTextEntryInteractionMapper;
 use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
+use Learnosity\Services\LogService;
 use Learnosity\Tests\Unit\Mappers\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
 use Learnosity\Tests\Unit\Mappers\QtiV2\In\Interactions\AbstractInteractionTest;
 use qtism\data\content\BlockCollection;
@@ -227,7 +228,7 @@ class MergedTextEntryInteractionTest extends AbstractInteractionTest
 
         $this->assertNotNull($question);
         $this->assertNull($question->get_validation());
-        $this->assertCount(1, $mapper->getExceptions());
+        $this->assertCount(1, LogService::read());
     }
 
     private function buildItemBodyWithTwoInteraction(TextEntryInteraction $interactionOne = null, TextEntryInteraction $interactionTwo = null)

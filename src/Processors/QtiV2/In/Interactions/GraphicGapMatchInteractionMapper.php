@@ -17,7 +17,6 @@ class GraphicGapMatchInteractionMapper extends AbstractInteractionMapper
     {
         /** @var QtiGraphicGapMatchInteraction $interaction */
         $interaction = $this->interaction;
-        /** @var Object $imageObject */
         $imageObject = $interaction->getObject();
         $possibleResponseMapping = $this->buildPossibleResponseMapping($interaction);
         $associableHotspots = $this->buildTemplate($interaction, $imageObject);
@@ -55,8 +54,6 @@ class GraphicGapMatchInteractionMapper extends AbstractInteractionMapper
             $question->set_validation($validation);
         }
         $question->set_duplicate_responses($validationBuilder->isDuplicatedResponse());
-        $this->exceptions = array_merge($this->exceptions, $validationBuilder->getExceptions());
-
         return $question;
     }
 

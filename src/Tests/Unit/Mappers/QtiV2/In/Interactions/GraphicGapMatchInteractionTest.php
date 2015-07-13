@@ -7,6 +7,7 @@ use Learnosity\Entities\QuestionTypes\imageclozeassociation_validation;
 use Learnosity\Entities\QuestionTypes\imageclozeassociation_validation_valid_response;
 use Learnosity\Processors\QtiV2\In\Interactions\GraphicGapMatchInteractionMapper;
 use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
+use Learnosity\Services\LogService;
 use Learnosity\Tests\Unit\Mappers\QtiV2\In\Fixtures\GraphicGapInteractionBuilder;
 use Learnosity\Tests\Unit\Mappers\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
 use qtism\common\datatypes\DirectedPair;
@@ -50,8 +51,9 @@ class GraphicGapMatchInteractionTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($q->get_duplicate_responses());
         $this->assertNull($q->get_validation());
 
-        $this->assertCount(1, $mapper->getExceptions());
-        $this->assertEquals('Amount of Gap Identifiers 2 does not match the amount 1 for responseDeclaration', $mapper->getExceptions()[0]->getMessage());
+        $errorMessages = LogService::read();
+        $this->assertCount(1, $errorMessages);
+        $this->assertStringEndsWith('Amount of gap identifiers 2 does not match the amount 1 for <responseDeclaration>', $errorMessages[0]);
     }
 
     public function testMapResponseValidation()

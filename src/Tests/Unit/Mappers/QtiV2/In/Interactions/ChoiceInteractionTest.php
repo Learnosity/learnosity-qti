@@ -4,6 +4,7 @@ namespace Learnosity\Tests\Unit\Mappers\QtiV2\In\Interactions;
 
 use Learnosity\Processors\QtiV2\In\Interactions\ChoiceInteractionMapper;
 use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
+use Learnosity\Services\LogService;
 use Learnosity\Tests\Unit\Mappers\QtiV2\In\Fixtures\ChoiceInteractionBuilder;
 use Learnosity\Tests\Unit\Mappers\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
 use qtism\data\content\FlowStaticCollection;
@@ -86,7 +87,8 @@ class ChoiceInteractionTest extends AbstractInteractionTest
         $validation = $mcq->get_validation();
         $this->assertNull($validation);
 
-        $this->assertTrue(count($interactionMapper->getExceptions()) === 1);
+        $messages = LogService::flush();
+        $this->assertContains('Does not support `map_response` response processing template for this interaction. Fail mapping validation object', $messages);
     }
 
     public function testShouldHandleMultipleResponseIfMaxChoiceMoreThanOne()
@@ -158,6 +160,6 @@ class ChoiceInteractionTest extends AbstractInteractionTest
         $interaction->setMinChoices(1);
         $interactionMapper = new ChoiceInteractionMapper($interaction, $responseDeclaration, $responseProcessingTemplate);
         $interactionMapper->getQuestionType();
-        $this->assertTrue(count($interactionMapper->getExceptions()) === 1);
+        $this->assertTrue(count(LogService::read()) === 1);
     }
 }

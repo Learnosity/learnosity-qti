@@ -7,6 +7,7 @@ use Learnosity\Entities\QuestionTypes\clozedropdown;
 use Learnosity\Exceptions\MappingException;
 use Learnosity\Processors\QtiV2\In\Utils\QtiComponentUtil;
 use Learnosity\Processors\QtiV2\In\Validation\InlineChoiceInteractionValidationBuilder;
+use Learnosity\Services\LogService;
 use qtism\data\content\interactions\InlineChoiceInteraction;
 
 class InlineChoiceInteractionMapper extends AbstractInteractionMapper
@@ -42,10 +43,10 @@ class InlineChoiceInteractionMapper extends AbstractInteractionMapper
     private function validateInteraction(InlineChoiceInteraction $interaction)
     {
         if (!empty($interaction->mustShuffle())) {
-            $this->exceptions[] = new MappingException('The attribute `shuffle` is not supported, thus is ignored');
+            LogService::log('The attribute `shuffle` is not supported, thus is ignored');
         }
         if (!empty($interaction->isRequired())) {
-            $this->exceptions[] = new MappingException('The attribute `required` is not supported, thus is ignored');
+            LogService::log('The attribute `required` is not supported, thus is ignored');
         }
         return $interaction;
     }
@@ -58,7 +59,6 @@ class InlineChoiceInteractionMapper extends AbstractInteractionMapper
         );
         $validation = $validationBuilder->buildValidation($this->responseProcessingTemplate);
         $isCaseSensitive = $validationBuilder->isCaseSensitive();
-        $this->exceptions = array_merge($this->exceptions, $validationBuilder->getExceptions());
         return $validation;
     }
 }

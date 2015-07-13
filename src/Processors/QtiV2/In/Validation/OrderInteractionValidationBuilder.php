@@ -1,9 +1,9 @@
 <?php
 namespace Learnosity\Processors\QtiV2\In\Validation;
 
-use Learnosity\Exceptions\MappingException;
 use Learnosity\Processors\Learnosity\In\ValidationBuilder\ValidationBuilder;
 use Learnosity\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
+use Learnosity\Services\LogService;
 use qtism\data\state\ResponseDeclaration;
 use qtism\data\state\Value;
 
@@ -27,7 +27,7 @@ class OrderInteractionValidationBuilder extends BaseInteractionValidationBuilder
             /** @var Value $v */
             $value = $v->getValue();
             if (!isset($this->orderMapping[$value])) {
-                $this->exceptions[] = new MappingException('Cannot locate ' . $value . ' in responseDeclaration');
+                LogService::log('Cannot locate ' . $value . ' in responseDeclaration');
                 continue;
             }
             $values[] = $this->orderMapping[$value];

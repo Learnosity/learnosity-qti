@@ -4,6 +4,7 @@ namespace Learnosity\Tests\Unit\Mappers\QtiV2\In;
 
 
 use Learnosity\Processors\QtiV2\In\ItemBuilders\MergedItemBuilder;
+use Learnosity\Services\LogService;
 use Learnosity\Tests\Unit\Mappers\QtiV2\In\Fixtures\ChoiceInteractionBuilder;
 use Learnosity\Tests\Unit\Mappers\QtiV2\In\Fixtures\ItemBodyBuilder;
 use qtism\data\content\interactions\TextEntryInteraction;
@@ -39,7 +40,7 @@ class MergedItemBuilderTest extends \PHPUnit_Framework_TestCase
             $componentCollection
         );
         $this->assertTrue($result);
-        $this->assertCount(1, $this->mergedItemBuilder->getExceptions());
+        $this->assertCount(1, LogService::read());
         $questions = $this->mergedItemBuilder->getQuestions();
         $this->assertCount(1, $questions);
         $this->assertInstanceOf('Learnosity\Entities\Question', $questions[0]);
