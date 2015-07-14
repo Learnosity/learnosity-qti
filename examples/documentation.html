@@ -122,10 +122,19 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
     <li>Item `reference` is taken from &lt;assessmentItem&gt; identifier</li>
     <li>Question `reference` would be mapped from the combination of &lt;assessmentItem&gt; and interaction identifier separated by underscore</li>
     <li>Status is mapped as `published`</li>
-    <li>Generally &lt;itemBody&gt; content would have its &lt;rubricBlock&gt; stripped and be mapped to Item's `content` with interaction elements replaced with
-        Question placeholder. Special case for an assessment item with only either `inlineChoiceInteraction` or
-    `textEntryInteraction` types, the entire &lt;itemBody&gt; content would be mapped to Question `template`. See example on `inlineChoiceInteraction` below.</li>
+    <li>Generally &lt;itemBody&gt; content would have its &lt;rubricBlock&gt; stripped and be mapped to <strong>first</strong> Question's `stimulus` with interaction elements replaced with
+        Question `span` placeholder.</li>
+    <li>Special case for an assessment item with only either `inlineChoiceInteraction` or
+        `textEntryInteraction` types, the entire &lt;itemBody&gt; content would be mapped to Question `template`. See example on `inlineChoiceInteraction` below.</li>
+    <li>Learnosity generally doesn't accept &lt;object&gt; elements, therefore some conversion will take place:
+        <ul>
+            <li>Object with mime type of `image/...` will be converted to a regular &lt;img&gt; tag</li>
+            <li>Object with mime type of `audio/...` will be converted to an inline Learnosity `audioplayer` feature (<a href="https://docs.learnosity.com/assessment/questions/featuretypes?renderWidgets=true#audioplayer">https://docs.learnosity.com/assessment/questions/featuretypes?renderWidgets=true#audioplayer</a>)</li>
+            <li>Object with mime type of `video/...` will be converted to an inline Learnosity `videoplayer` feature (<a href="https://docs.learnosity.com/assessment/questions/featuretypes?renderWidgets=true#videoplayer">https://docs.learnosity.com/assessment/questions/featuretypes?renderWidgets=true#videoplayer</a>)</li>
+        </ul>
+    </li>
 </ul>
+
 <p>Easily import these items and questions JSON to Learnosity Itembank using Data API. See documentation at
     <a href="http://docs.learnosity.com/reporting/data/initialisation" target="_blank">http://docs.learnosity.com/reporting/data/initialisation</a>
 </p>
@@ -139,12 +148,12 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
 <div class="panel" style="word-wrap: break-word">
     <pre>{
     "reference": "choice",
-    "status": "published",
     "questionReferences": [
         "choice_RESPONSE"
     ],
-    "description": "Unattended Luggage",
-    "content": "&lt;p&gt;Look at the text in the picture.&lt;/p&gt;&lt;p&gt;&lt;img src=\&quot;images/sign.png\&quot; alt=\&quot;NEVER LEAVE LUGGAGE UNATTENDED\&quot;/&gt;&lt;/p&gt;&lt;span class=\&quot;learnosity-response question-choice_RESPONSE\&quot;&gt;&lt;/span&gt;"
+    "content": "&lt;span class=\&quot;learnosity-response question-choice_RESPONSE\&quot;&gt;&lt;/span&gt;",
+    "status": "published",
+    "description": "Unattended Luggage"
 }</pre>
 </div>
 <div class="panel" style="word-wrap: break-word">
@@ -153,17 +162,8 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
         "reference": "choice_RESPONSE",
         "type": "mcq",
         "data": {
-            "stimulus": "What does it say?",
+            "stimulus": "&lt;p&gt;Look at the text in the picture.&lt;/p&gt;&lt;p&gt;&lt;img src=\&quot;images/sign.png\&quot; alt=\&quot;NEVER LEAVE LUGGAGE UNATTENDED\&quot;/&gt;&lt;/p&gt;What does it say?",
             "type": "mcq",
-            "validation": {
-                "scoring_type": "exactMatch",
-                "valid_response": {
-                    "score": 1,
-                    "value": [
-                        "ChoiceA"
-                    ]
-                }
-            },
             "options": [
                 {
                     "label": "You must stay with your luggage at all times.",
@@ -179,7 +179,8 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                 }
             ],
             "shuffle_options": false
-        }
+        },
+        "widget_type": "response"
     }
 ]</pre>
 </div>

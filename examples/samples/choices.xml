@@ -25,6 +25,5 @@
             <simpleChoice identifier="ChoiceB">Do not let someone else look after your luggage.</simpleChoice>
             <simpleChoice identifier="ChoiceC">Remember your luggage when you leave.</simpleChoice>
         </choiceInteraction>
-        <p>sdadas</p>
     </itemBody>
 </assessmentItem>
