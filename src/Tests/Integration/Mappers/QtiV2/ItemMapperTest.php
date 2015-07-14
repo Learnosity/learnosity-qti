@@ -32,8 +32,8 @@ class ItemMapperTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($question instanceof mcq);
 
         // Has feature on HTML
-        $this->assertContains('<span class="learnosity-feature"', $item->get_content());
-        $this->assertContains('data-type="audioplayer"', $item->get_content());
+        $this->assertContains('<span class="learnosity-feature"', $question->get_stimulus());
+        $this->assertContains('data-type="audioplayer"', $question->get_stimulus());
     }
 
     public function testParsingWithVideoObject()
@@ -51,8 +51,8 @@ class ItemMapperTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($question instanceof mcq);
 
         // Has feature on HTML
-        $this->assertContains('<span class="learnosity-feature"', $item->get_content());
-        $this->assertContains('data-type="videoplayer"', $item->get_content());
+        $this->assertContains('<span class="learnosity-feature"', $question->get_stimulus());
+        $this->assertContains('data-type="videoplayer"', $question->get_stimulus());
     }
 
     public function testParsingWithMathML()

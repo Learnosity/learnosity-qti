@@ -10,6 +10,7 @@ use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
 use Learnosity\Services\LogService;
 use Learnosity\Tests\Unit\Mappers\QtiV2\In\Fixtures\GraphicGapInteractionBuilder;
 use Learnosity\Tests\Unit\Mappers\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
+use Learnosity\Utils\StringUtil;
 use qtism\common\datatypes\DirectedPair;
 use qtism\data\content\xhtml\Object;
 
@@ -51,9 +52,13 @@ class GraphicGapMatchInteractionTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($q->get_duplicate_responses());
         $this->assertNull($q->get_validation());
 
-        $errorMessages = LogService::read();
-        $this->assertCount(1, $errorMessages);
-        $this->assertStringEndsWith('Amount of gap identifiers 2 does not match the amount 1 for <responseDeclaration>', $errorMessages[0]);
+        $containsWarning = false;
+        foreach (LogService::read() as $message) {
+            if (StringUtil::contains($message, 'Amount of gap identifiers 2 does not match the amount 1 for <responseDeclaration>')) {
+                return true;
+            }
+        }
+        $this->assertTrue($containsWarning);
     }
 
     public function testMapResponseValidation()

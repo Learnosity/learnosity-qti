@@ -95,7 +95,10 @@ class ItemMapper
         foreach ($processings as $processing) {
             list($item, $questions) = $processing->processItemAndQuestions($item, $questions);
         }
-        return [$item, $questions, LogService::flush()];
+
+        // Flush out all the error messages stored in this static class, also ensure they are unique
+        $messages = array_values(array_unique(LogService::flush()));
+        return [$item, $questions, $messages];
     }
 
     private function validateAssessmentItem(AssessmentItem $assessmentItem)

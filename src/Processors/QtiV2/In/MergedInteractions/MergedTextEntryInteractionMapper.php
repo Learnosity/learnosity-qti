@@ -55,6 +55,7 @@ class MergedTextEntryInteractionMapper extends AbstractMergedInteractionMapper
 
     private function buildTemplate(ItemBody $itemBody, array $interactionXmls)
     {
+        // Build item's HTML content
         $content = QtiComponentUtil::marshallCollection($itemBody->getComponents());
         foreach ($interactionXmls as $interactionXml) {
             $content = str_replace($interactionXml, '{{response}}', $content);

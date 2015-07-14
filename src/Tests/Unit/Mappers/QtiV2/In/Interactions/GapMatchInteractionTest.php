@@ -264,8 +264,5 @@ class GapMatchInteractionTest extends AbstractInteractionTest
         $this->assertEquals(['Gap B', '<img src="http://img_C"/>'], $altResponses[3]->get_value());
         $this->assertEquals(4, $altResponses[4]->get_score());
         $this->assertEquals(['Gap A', '<img src="http://img_C"/>'], $altResponses[4]->get_value());
-
-        $errorMessages = LogService::read();
-        $this->assertEmpty($errorMessages);
     }
 }

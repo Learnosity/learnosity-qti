@@ -34,8 +34,10 @@ class ExtendedTextEntryInteractionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('published', $item->get_status());
         $this->assertEquals('Writing a Postcard', $item->get_description());
         $this->assertCount(1, $item->get_questionReferences());
-        $this->assertContains('<span class="learnosity-response question-extendedText_RESPONSE"></span>',
-            $item->get_content());
+        $this->assertContains(
+            '<span class="learnosity-response question-extendedText_RESPONSE"></span>',
+            $item->get_content()
+        );
         $this->assertContains('extendedText_RESPONSE', $item->get_questionReferences());
 
         /** @var Question $question */
@@ -48,12 +50,9 @@ class ExtendedTextEntryInteractionTest extends \PHPUnit_Framework_TestCase
         $q = $question->get_data();
         $this->assertInstanceOf('Learnosity\Entities\QuestionTypes\longtext', $q);
         $this->assertEquals('longtext', $q->get_type());
-        $this->assertEquals('Write Sam a postcard. Answer the questions. Write 25-35 words.', $q->get_stimulus());
+        $this->assertEquals('<p>Read this postcard from your English pen-friend, Sam.</p>' . 'Write Sam a postcard. Answer the questions. Write 25-35 words.', $q->get_stimulus());
         $this->assertEquals(40, $q->get_max_length());
         $this->assertTrue($q->get_submit_over_limit());
-
         $this->assertNull($q->get_validation());
-
-        $this->assertCount(2, $data[2]);
     }
 }

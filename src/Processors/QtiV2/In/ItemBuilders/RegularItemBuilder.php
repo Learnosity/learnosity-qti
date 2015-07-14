@@ -6,6 +6,7 @@ namespace Learnosity\Processors\QtiV2\In\ItemBuilders;
 use Learnosity\Entities\Question;
 use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
 use Learnosity\Processors\QtiV2\In\Utils\QtiComponentUtil;
+use Learnosity\Services\LogService;
 use qtism\data\content\interactions\Interaction;
 use qtism\data\content\ItemBody;
 use qtism\data\QtiComponentCollection;
@@ -24,7 +25,7 @@ class RegularItemBuilder extends AbstractItemBuilder
     ) {
         $this->assessmentItemIdentifier = $assessmentItemIdentifier;
 
-        $questionsSpan = [];
+        $questionsXmls = [];
         $responseDeclarationsMap = [];
 
         if ($responseDeclarations) {
@@ -49,14 +50,26 @@ class RegularItemBuilder extends AbstractItemBuilder
             $question = $mapper->getQuestionType();
 
             $this->questions[$questionReference] = new Question($question->get_type(), $questionReference, $question);
-            $questionsSpan[$questionReference] = QtiComponentUtil::marshall($component);
+            $questionsXmls[$questionReference] = QtiComponentUtil::marshall($component);
         }
 
         // Build item's HTML content
-        $this->content = QtiComponentUtil::marshallCollection($itemBody->getComponents());
-        foreach ($questionsSpan as $questionReference => $interactionXml) {
-            $questionSpan = '<span class="learnosity-response question-' . $questionReference . '"></span>';
-            $this->content = str_replace($interactionXml, $questionSpan, $this->content);
+        $extraContent = QtiComponentUtil::marshallCollection($itemBody->getComponents());
+        foreach ($questionsXmls as $questionReference => $interactionXml) {
+            // Append this question span to our `item` content as it is
+            $this->content .= '<span class="learnosity-response question-' . $questionReference . '"></span>';
+            // Store extra html content since we now has to slug it in into question stimulus
+            $extraContent = str_replace($interactionXml, '', $extraContent);
+        }
+
+        // Making assumption question always has stimulus `right`?
+        // So, prepend the extra content on the stimulus on the first question
+        if (!empty(trim($extraContent))) {
+            $firstQuestionReference = key($this->questions);
+            $newStimulus = $extraContent . $this->questions[$firstQuestionReference]->get_data()->get_stimulus();
+            $this->questions[$firstQuestionReference]->get_data()->set_stimulus($newStimulus);
+
+            LogService::log('Extra <itemBody> content is prepended to question stimulus and please verify as this `might` break item content structure');
         }
         return true;
     }

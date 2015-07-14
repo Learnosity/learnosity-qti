@@ -23,8 +23,10 @@ class TextEntryInlineChoiceInteractionTest extends \PHPUnit_Framework_TestCase
 
     public function setup()
     {
-        $this->file = FileSystemUtil::readFile(FileSystemUtil::getRootPath() .
-            '/src/Tests/Fixtures/interactions/textEntryInteraction-inlineChoiceInteraction.xml');
+        $this->file = FileSystemUtil::readFile(
+            FileSystemUtil::getRootPath() .
+            '/src/Tests/Fixtures/interactions/textEntryInteraction-inlineChoiceInteraction.xml'
+        );
         $this->mapper = AppContainer::getApplicationContainer()->get('qtiv2_item_mapper');
     }
 
@@ -36,17 +38,17 @@ class TextEntryInlineChoiceInteractionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('res_AA-FIB_B13_CH1_geoc_f1f1', $item->get_reference());
         $this->assertContains(
             '<span class="learnosity-response question-res_AA-FIB_B13_CH1_geoc_f1f1_RESPONSE"></span>',
-            $item->get_content());
+            $item->get_content()
+        );
         $this->assertContains(
             '<span class="learnosity-response question-res_AA-FIB_B13_CH1_geoc_f1f1_RESPONSE2"></span>',
-            $item->get_content());
+            $item->get_content()
+        );
         $this->assertEquals('published', $item->get_status());
         $this->assertEquals('AA-FIB_B13_CH1_geoc_f1f1', $item->get_description());
         $this->assertCount(2, $item->get_questionReferences());
         $this->assertContains('res_AA-FIB_B13_CH1_geoc_f1f1_RESPONSE', $item->get_questionReferences());
         $this->assertContains('res_AA-FIB_B13_CH1_geoc_f1f1_RESPONSE2', $item->get_questionReferences());
-
-        $this->assertCount(1, $data[2]);
     }
 
     public function validateInlineChoiceInteraction($data)

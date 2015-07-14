@@ -102,6 +102,5 @@ class GapMatchInteractionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['<img src="images/664892_p01_gi01.gif"/>', 'spring'], $altResponses[3]->get_value());
         $this->assertEquals(3, $altResponses[4]->get_score());
         $this->assertEquals(['<img src="images/664892_p01_gi01.gif"/>', '<img src="images/664892_p01_gi02.gif"/>'], $altResponses[4]->get_value());
-        $this->assertCount(1, $exceptions);
     }
 }

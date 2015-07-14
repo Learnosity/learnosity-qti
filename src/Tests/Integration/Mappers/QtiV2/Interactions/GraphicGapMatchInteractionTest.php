@@ -26,12 +26,13 @@ class GraphicGapMatchInteractionTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($item);
         $this->assertInstanceOf('Learnosity\Entities\Item\item', $item);
         $this->assertEquals('graphicGapfill', $item->get_reference());
-        $this->assertEquals('<p>Test intro</p><span class="learnosity-response question-graphicGapfill_RESPONSE"></span>', $item->get_content());
+        $this->assertEquals('<span class="learnosity-response question-graphicGapfill_RESPONSE"></span>', $item->get_content());
         $this->assertEquals('published', $item->get_status());
         $this->assertEquals('Airport Tags', $item->get_description());
         $this->assertEquals(['graphicGapfill_RESPONSE'], $item->get_questionReferences());
 
         $this->assertCount(1, $questions);
+        $this->assertContains('<p>Test intro</p>', $questions[0]->get_data()->get_stimulus());
         $this->assertEquals('graphicGapfill_RESPONSE', $questions[0]->get_reference());
         $this->assertEquals('imageclozeassociation', $questions[0]->get_type());
         /** @var imageclozeassociation $question */
@@ -65,7 +66,5 @@ class GraphicGapMatchInteractionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['<img src="images/GLA.png"/>', '<img src="images/EDI.png"/>', '<img src="images/MAN.png"/>'], $validation->get_valid_response()->get_value());
 
         $this->assertNull($validation->get_alt_responses());
-
-        $this->assertCount(1, $exceptions);
     }
 }

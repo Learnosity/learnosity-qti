@@ -2,6 +2,8 @@
 
 namespace Learnosity\Processors\QtiV2\In\Marshallers;
 
+use Learnosity\Services\LogService;
+use qtism\data\content\xhtml\Object;
 use qtism\data\QtiComponent;
 use qtism\data\storage\xml\marshalling\ObjectMarshaller;
 
@@ -17,11 +19,13 @@ class LearnosityObjectMarshaller extends ObjectMarshaller
     {
         switch ($this->getMIMEType($component->getType())) {
             case self::MIME_IMAGE:
+                $this->checkObjectComponents($component, '<img> tag');
                 $element = self::getDOMCradle()->createElement('img');
                 $element->setAttribute('src', $component->getData());
                 return $element;
                 break;
             case self::MIME_AUDIO:
+                $this->checkObjectComponents($component, '`audioplayer` feature');
                 $element = self::getDOMCradle()->createElement('span');
                 $element->setAttribute('class', 'learnosity-feature');
                 $element->setAttribute('data-type', 'audioplayer');
@@ -29,6 +33,7 @@ class LearnosityObjectMarshaller extends ObjectMarshaller
                 return $element;
                 break;
             case self::MIME_VIDEO:
+                $this->checkObjectComponents($component, '`videoplayer` feature');
                 $element = self::getDOMCradle()->createElement('span');
                 $element->setAttribute('class', 'learnosity-feature');
                 $element->setAttribute('data-type', 'videoplayer');
@@ -36,8 +41,16 @@ class LearnosityObjectMarshaller extends ObjectMarshaller
                 return $element;
                 break;
             default:
+                // TODO: Need to think external HTML object file, what we are going to do with them?
                 // Just parse <object> as default
                 return parent::marshallChildrenKnown($component, $elements);
+        }
+    }
+
+    private function checkObjectComponents(Object $object, $conversionTo)
+    {
+        if (!empty($object->getComponents())) {
+            LogService::log('Converting <object> element to ' . $conversionTo . '. Any `components` within the tag are removed');
         }
     }
 
