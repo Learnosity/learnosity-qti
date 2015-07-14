@@ -2,7 +2,6 @@
 
 namespace Learnosity\Processors\QtiV2\In;
 
-use Exception;
 use Learnosity\AppContainer;
 use Learnosity\Exceptions\MappingException;
 use Learnosity\Processors\QtiV2\In\Processings\MathsProcessing;
@@ -16,7 +15,6 @@ use qtism\data\storage\xml\XmlCompactDocument;
 
 class ItemMapper
 {
-    private $exceptions = [];
     private $supportedInteractions = [
         'inlineChoiceInteraction',
         'choiceInteraction',
@@ -33,11 +31,6 @@ class ItemMapper
     public function __construct(ItemBuilderFactory $itemBuilderFactory)
     {
         $this->itemBuilderFactory = $itemBuilderFactory;
-    }
-
-    public function getExceptions()
-    {
-        return $this->exceptions;
     }
 
     public function parse($xmlString)
@@ -103,16 +96,6 @@ class ItemMapper
             list($item, $questions) = $processing->processItemAndQuestions($item, $questions);
         }
         return [$item, $questions, LogService::flush()];
-    }
-
-    private function getExceptionMessages()
-    {
-        $result = [];
-        /** @var Exception $exception */
-        foreach ($this->exceptions as $exception) {
-            $result[] = $exception->getMessage();
-        }
-        return $result;
     }
 
     private function validateAssessmentItem(AssessmentItem $assessmentItem)

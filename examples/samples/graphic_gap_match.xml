@@ -22,7 +22,7 @@
 		<graphicGapMatchInteraction responseIdentifier="RESPONSE">
 			<prompt>Some of the labels on the following diagram are missing: can you identify the
 				correct three-letter codes for the unlabelled airports?</prompt>
-			<object type="image/png" data="images/ukairtags.png" width="206" height="280"/>
+			<object type="image/png" data="http://i.imgur.com/gswTyJF.png" width="206" height="280"/>
 			<gapImg identifier="CBG" matchMax="1">
 				<object type="image/png" data="images/CBG.png" width="20" height="9"/>
 			</gapImg>
