@@ -15,8 +15,10 @@ class ExtendedTextInteractionMapper extends AbstractInteractionMapper
         $interaction = $this->interaction;
         $longtext = new longtext('longtext');
 
-        LogService::log('No validation mapping supported for this interaction. Ignoring any
-                <responseProcessing> and <responseDeclaration> if any');
+        LogService::log(
+            'No validation mapping supported for this interaction. Ignoring any ' .
+            '<responseProcessing> and <responseDeclaration> if any'
+        );
 
         if (!empty($interaction->getPrompt())) {
             $promptContent = $interaction->getPrompt()->getContent();
@@ -31,7 +33,7 @@ class ExtendedTextInteractionMapper extends AbstractInteractionMapper
          *  When multiple strings are accepted, expectedLength applies to each string.
          *  `expectedLength` works as a only as a 'hint' to student so we do not want to force a hard limit
          */
-        if ($interaction->getExpectedLength()) {
+        if ($interaction->getExpectedLength() > 0) {
             $maxStrings = $interaction->getMaxStrings() > 0 ? $interaction->getMaxStrings() : 1;
             $expectedLength = $interaction->getExpectedLength() / 5;
             $longtext->set_max_length($maxStrings * $expectedLength);

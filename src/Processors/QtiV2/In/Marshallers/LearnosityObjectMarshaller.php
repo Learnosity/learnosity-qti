@@ -43,6 +43,7 @@ class LearnosityObjectMarshaller extends ObjectMarshaller
             default:
                 // TODO: Need to think external HTML object file, what we are going to do with them?
                 // Just parse <object> as default
+                LogService::log('Unknown <object> MIME type, outputting <object> as it is');
                 return parent::marshallChildrenKnown($component, $elements);
         }
     }
@@ -50,7 +51,7 @@ class LearnosityObjectMarshaller extends ObjectMarshaller
     private function checkObjectComponents(Object $object, $conversionTo)
     {
         if (!empty($object->getComponents())) {
-            LogService::log('Converting <object> element to ' . $conversionTo . '. Any `components` within the tag are removed');
+            LogService::log('Converting <object> element to ' . $conversionTo . '. Any contents within it are removed');
         }
     }
 
