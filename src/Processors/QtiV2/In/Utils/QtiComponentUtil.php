@@ -9,9 +9,25 @@ use qtism\data\content\interactions\HotspotChoice;
 use qtism\data\content\interactions\HotspotChoiceCollection;
 use qtism\data\QtiComponent;
 use qtism\data\QtiComponentCollection;
+use qtism\data\storage\xml\marshalling\MarshallerFactory;
 
 class QtiComponentUtil
 {
+    public static function unmarshallElement($string)
+    {
+        $dom = new DOMDocument('1.0', 'UTF-8');
+        $dom->formatOutput = true;
+        $dom->loadHTML($string);
+
+        $marshallerFactory = new MarshallerFactory();
+        $components = new QtiComponentCollection();
+        foreach ($dom->documentElement->getElementsByTagName('body')->item(0)->childNodes as $element) {
+            $marshaller = $marshallerFactory->createMarshaller($element);
+            $components->attach($marshaller->unmarshall($element));
+        }
+        return $components;
+    }
+
     public static function marshallCollection(QtiComponentCollection $collection)
     {
         $results = [];

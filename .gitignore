@@ -5,3 +5,4 @@ src/Tests/junit.xml
 src/Entities/QuestionTypes
 src/Entities/Activity
 src/Entities/Item
+build

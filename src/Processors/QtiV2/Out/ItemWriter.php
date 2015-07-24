@@ -1,6 +1,6 @@
 <?php
 
-namespace Learnosity\Processors\Learnosity\Out;
+namespace Learnosity\Processors\QtiV2\Out;
 
 use Learnosity\Entities\Item\item;
 
@@ -8,6 +8,6 @@ class ItemWriter
 {
     public function convert(item $item)
     {
-        return $item->to_array();
+
     }
 }

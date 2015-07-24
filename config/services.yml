@@ -11,17 +11,20 @@ services:
         arguments: ["@schemas_service"]
     qtiv2_item_mapper:
         class:      Learnosity\Processors\QtiV2\In\ItemMapper
-        arguments: ["@item_builder_factory"]
+        arguments:  ["@item_builder_factory"]
         scope: prototype
     qtiv2_test_mapper:
         class:      Learnosity\Processors\QtiV2\In\TestMapper
-        scope: prototype
+        scope:      prototype
     learnosity_item_writer:
         class:      Learnosity\Processors\Learnosity\Out\ItemWriter
-        scope: prototype
+        scope:      prototype
+    learnosity_question_writer:
+        class:      Learnosity\Processors\Learnosity\Out\QuestionWriter
+        scope:      prototype
     imscp_manifest_mapper:
         class:      Learnosity\Processors\IMSCP\In\ManifestMapper
-        scope: prototype
+        scope:      prototype
     assets_processing:
         class:      Learnosity\Processors\QtiV2\In\Processings\AssetsProcessing
 
