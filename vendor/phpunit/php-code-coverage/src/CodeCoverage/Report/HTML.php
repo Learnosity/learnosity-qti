@@ -11,13 +11,7 @@
 /**
  * Generates an HTML report from an PHP_CodeCoverage object.
  *
- * @category   PHP
- * @package    CodeCoverage
- * @author     Sebastian Bergmann <sebastian@phpunit.de>
- * @copyright  Sebastian Bergmann <sebastian@phpunit.de>
- * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
- * @link       http://github.com/sebastianbergmann/php-code-coverage
- * @since      Class available since Release 1.0.0
+ * @since Class available since Release 1.0.0
  */
 class PHP_CodeCoverage_Report_HTML
 {
@@ -32,21 +26,21 @@ class PHP_CodeCoverage_Report_HTML
     private $generator;
 
     /**
-     * @var integer
+     * @var int
      */
     private $lowUpperBound;
 
     /**
-     * @var integer
+     * @var int
      */
     private $highLowerBound;
 
     /**
      * Constructor.
      *
-     * @param integer $lowUpperBound
-     * @param integer $highLowerBound
-     * @param string  $generator
+     * @param int    $lowUpperBound
+     * @param int    $highLowerBound
+     * @param string $generator
      */
     public function __construct($lowUpperBound = 50, $highLowerBound = 90, $generator = '')
     {

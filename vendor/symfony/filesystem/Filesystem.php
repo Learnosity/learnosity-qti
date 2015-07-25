@@ -244,7 +244,7 @@ class Filesystem
                 $this->chgrp(new \FilesystemIterator($file), $group, true);
             }
             if (is_link($file) && function_exists('lchgrp')) {
-                if (true !== @lchgrp($file, $group)) {
+                if (true !== @lchgrp($file, $group) || (defined('HHVM_VERSION') && !posix_getgrnam($group))) {
                     throw new IOException(sprintf('Failed to chgrp file "%s".', $file), 0, null, $file);
                 }
             } else {
@@ -477,7 +477,7 @@ class Filesystem
         $this->rename($tmpFile, $filename, true);
         if (null !== $mode) {
             if (func_num_args() > 2) {
-                trigger_error('Support for modifying file permissions is deprecated since version 2.3.12 and will be removed in 3.0.', E_USER_DEPRECATED);
+                @trigger_error('Support for modifying file permissions is deprecated since version 2.3.12 and will be removed in 3.0.', E_USER_DEPRECATED);
             }
 
             $this->chmod($filename, $mode);
