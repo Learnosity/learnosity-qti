@@ -8,6 +8,7 @@
         }
     },
     "require": {
+        "symfony/console": "v2.7.2",
         "symfony/config": "v2.6.8",
         "symfony/finder": "v2.7.0",
         "symfony/yaml": "v2.6.8",
