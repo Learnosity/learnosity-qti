@@ -5,11 +5,9 @@ namespace Learnosity\Processors\QtiV2\In\Utils;
 use DOMDocument;
 use Learnosity\Processors\QtiV2\In\Marshallers\LearnosityMarshallerFactory;
 use qtism\common\datatypes\Shape;
-use qtism\data\content\interactions\HotspotChoice;
-use qtism\data\content\interactions\HotspotChoiceCollection;
+use qtism\data\content\TextRun;
 use qtism\data\QtiComponent;
 use qtism\data\QtiComponentCollection;
-use qtism\data\storage\xml\marshalling\MarshallerFactory;
 
 class QtiComponentUtil
 {
@@ -19,11 +17,17 @@ class QtiComponentUtil
         $dom->formatOutput = true;
         $dom->loadHTML($string);
 
-        $marshallerFactory = new MarshallerFactory();
+        // TODO: Can only unmarshall nice stuff, doesnt work with dodgy or invalid HTML
+        $marshallerFactory = new LearnosityMarshallerFactory();
         $components = new QtiComponentCollection();
         foreach ($dom->documentElement->getElementsByTagName('body')->item(0)->childNodes as $element) {
-            $marshaller = $marshallerFactory->createMarshaller($element);
-            $components->attach($marshaller->unmarshall($element));
+            if ($element instanceof \DOMText) {
+                $component = new TextRun($element->nodeValue);
+            } else {
+                $marshaller = $marshallerFactory->createMarshaller($element);
+                $component = $marshaller->unmarshall($element);
+            }
+            $components->attach($component);
         }
         return $components;
     }
@@ -49,21 +53,6 @@ class QtiComponentUtil
         $node = $dom->importNode($element, true);
 
         return $dom->saveXML($node);
-    }
-
-    public static function convertHotspotChoiceCollectionToResponsePositionMapping($imageWidth, $imageHeight, HotspotChoiceCollection $hotspotChoices)
-    {
-        $responsePositionsMapping = [];
-        /** @var HotspotChoice $hotspotChoice */
-        foreach ($hotspotChoices as $hotspotChoice) {
-            $percentage = QtiComponentUtil::convertQtiCoordsToPercentage(
-                [$imageWidth, $imageHeight],
-                explode(',', $hotspotChoice->getCoords()),
-                $hotspotChoice->getShape()
-            );
-            $responsePositionsMapping[$hotspotChoice->getIdentifier()] = $percentage;
-        }
-        return $responsePositionsMapping;
     }
 
     public static function convertQtiCoordsToPercentage(array $areaCoords, array $objectCoords, $qtiShape)

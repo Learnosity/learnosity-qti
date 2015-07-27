@@ -18,9 +18,12 @@ class {{ className }} {% if baseClass %}extends {{ baseClass }} {% endif %}
     {% endfor %}
 
     public function __construct(
-        {% for fieldName in requiredFields|keys %}
-            {% if loop.last %}${{ fieldName }}{% else %}${{ fieldName }},{% endif %}
-        {% endfor %})
+        {% for fieldName, field in requiredFields %}
+            {% if loop.last %}{% if field.fieldType %}{{ field.fieldType }} {% endif %}${{ fieldName }}
+            {% else %}{% if field.fieldType %}{{ field.fieldType }} {% endif %}${{ fieldName }},
+            {% endif %}
+        {% endfor %}
+    )
     {
         {% for fieldName, field in requiredFields %}
         $this->{{ fieldName }} = ${{ fieldName }};

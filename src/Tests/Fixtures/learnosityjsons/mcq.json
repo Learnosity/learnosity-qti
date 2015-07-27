@@ -1,40 +1,33 @@
 {
+    "reference": "choice_RESPONSE",
     "type": "mcq",
-    "widget_type": "response",
-    "reference": "6b29c4b7-5352-444c-bca1-b328181ec2cc_3",
     "data": {
-        "options": [
-            {
-                "label": "[Choice A]",
-                "value": "0"
-            },
-            {
-                "label": "[Choice B]",
-                "value": "1"
-            },
-            {
-                "label": "[Choice C]",
-                "value": "2"
-            },
-            {
-                "label": "[Choice D]",
-                "value": "3"
-            }
-        ],
-        "stimulus": "<p>[This is the stem.]</p><p>[This is the stem.]</p><br />",
+        "stimulus": "<p>Listen.</p><div><span class=\"learnosity-feature\" data-type=\"audioplayer\" data-src=\"http://www.kozco.com/tech/LRMonoPhase4.wav\"/></div>What does it say?",
         "type": "mcq",
-        "ui_style": {
-            "choice_label": "upper-alpha",
-            "type": "block"
-        },
         "validation": {
             "scoring_type": "exactMatch",
             "valid_response": {
                 "score": 1,
                 "value": [
-                    ""
+                    "ChoiceA"
                 ]
             }
-        }
-    }
+        },
+        "options": [
+            {
+                "label": "You must stay with your luggage at all times.",
+                "value": "ChoiceA"
+            },
+            {
+                "label": "Do not let someone else look after your luggage.",
+                "value": "ChoiceB"
+            },
+            {
+                "label": "Remember your luggage when you leave.",
+                "value": "ChoiceC"
+            }
+        ],
+        "shuffle_options": false
+    },
+    "widget_type": "response"
 }

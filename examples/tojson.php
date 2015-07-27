@@ -44,7 +44,7 @@
     </div>
 </div>
 
-<div class="row output-json-row">
+<div class="row output-json-row" style="display: none">
     <div class="col-md-12">
         <p><span class="label label-default">Questions API Initialisation Options Data</span></p>
         <pre class="clipboard"><code id="outputJson" class="html"></code></pre>

@@ -10,7 +10,7 @@ class QuestionMapperTest extends \PHPUnit_Framework_TestCase
 {
     public function testMappingMcqQuestion()
     {
-        $questionJson = FileSystemUtil::readJsonContent(FileSystemUtil::getRootPath() . '/src/Tests/Fixtures/learnosityjsons/mcqquestion.json');
+        $questionJson = FileSystemUtil::readJsonContent(FileSystemUtil::getRootPath() . '/src/Tests/Fixtures/learnosityjsons/mcq.json');
         $questionMapper = new QuestionMapper();
         $question = $questionMapper->parse($questionJson);
         $this->assertInstanceOf('Learnosity\Entities\Question', $question);

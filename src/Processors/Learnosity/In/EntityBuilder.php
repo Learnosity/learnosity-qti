@@ -3,6 +3,7 @@
 namespace Learnosity\Processors\Learnosity\In;
 
 use Learnosity\Exceptions\MappingException;
+use Learnosity\Services\LogService;
 
 class EntityBuilder
 {
@@ -13,13 +14,10 @@ class EntityBuilder
         foreach ($clazz->getConstructor()->getParameters() as $parameter) {
             $parameterName = $parameter->getName();
             if (isset($json[$parameterName])) {
-                $parameters[$parameterName] = ($parameter->getClass()) ? self::build(
-                    $parameter->getClass()->getName(),
-                    $json[$parameterName]
-                ) : $json[$parameterName];
+                $parameters[$parameterName] = self::buildField($parameter, $json[$parameterName]);
             } else {
                 throw new MappingException(
-                    'Invalid JSON. Required key ' . $parameter->getName() . ' does not exists',
+                    'Invalid JSON. Required key ' . $parameterName . ' does not exists',
                     MappingException::CRITICAL
                 );
             }
@@ -27,6 +25,27 @@ class EntityBuilder
         $class = $clazz->newInstanceArgs($parameters);
         self::populateClassFields($class, array_diff_key($json, $parameters));
         return $class;
+    }
+
+    private static function buildField(\ReflectionParameter $parameter, $data)
+    {
+        // If parameter turns out to be an Object then recurse
+        if (!empty($parameter->getClass())) {
+            return self::build(
+                $parameter->getClass()->getName(),
+                $data
+            );
+        }
+        // If parameter is type of array, then check whether it is an array of Object
+        if ($parameter->isArray()) {
+            $possibleObjectClassName = $parameter->getDeclaringClass()->getName() . '_' . $parameter->getName() . '_item';
+            if (class_exists($possibleObjectClassName)) {
+                return array_map(function ($values) use ($possibleObjectClassName) {
+                    return self::build($possibleObjectClassName, $values);
+                }, $data);
+            }
+        }
+        return $data;
     }
 
     private static function populateClassFields($class, $values)
@@ -38,13 +57,11 @@ class EntityBuilder
                 $parameters = [];
                 foreach ($setter->getParameters() as $parameter) {
                     $parameterName = $parameter->getName();
-                    $parameters[$parameterName] = ($parameter->getClass()) ? self::build($parameter->getClass()->getName(), $values[$parameterName]) :
-                        $values[$parameterName];
+                    $parameters[$parameterName] = self::buildField($parameter, $values[$parameterName]);
                 }
                 $setter->invokeArgs($class, $parameters);
             } else {
-                // TODO: Store this somewhere to be returned
-                echo "Ignoring attribute '$key'. Unable to map to Learnosity entity" . PHP_EOL;
+                LogService::log("Ignoring attribute '$key'. Invalid key");
             }
         }
         return $class;

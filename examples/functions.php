@@ -17,7 +17,11 @@ function convertToQti($input)
     require_once "../vendor/autoload.php";
     $postdata = $input;
     $converter = new \Learnosity\Converter();
-    return $converter->convertLearnosityToQtiItem($postdata);
+    $result = $converter->convertLearnosityToQtiItem($postdata);
+    return json_encode([
+        'xmlString' => $result[0],
+        'messages' => $result[1]
+    ]);
 }
 
 function convertToJson($input, $binaryPath)

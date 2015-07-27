@@ -79,7 +79,7 @@ class MergedTextEntryInteractionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(5, $altResponses[1]->get_score());
         $this->assertEquals(4, $altResponses[2]->get_score());
 
-        $expectedOptions = ArrayUtil::mutateResponses([['a', 'b'], ['OHMYGOD', 'x7']]);
+        $expectedOptions = ArrayUtil::cartesianProduct([['a', 'b'], ['OHMYGOD', 'x7']]);
         $matchCount = 0;
         foreach ($expectedOptions as $expectedKey => $expectedValue) {
             foreach ($options as $optionKey => $optionValue) {

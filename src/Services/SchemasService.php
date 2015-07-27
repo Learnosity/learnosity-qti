@@ -9,6 +9,7 @@ class SchemasService
     private $questionsSchemas;
     private $activitySchemas;
     private $itemSchemas;
+    private $htmlSchemas;
 
     public function __construct()
     {
@@ -16,6 +17,7 @@ class SchemasService
         $this->questionsSchemas = FileSystemUtil::readJsonContent($schemasDirectory . '/questions.json');
         $this->itemSchemas = FileSystemUtil::readJsonContent($schemasDirectory . '/item.json');
         $this->activitySchemas = FileSystemUtil::readJsonContent($schemasDirectory . '/activity.json');
+        $this->htmlSchemas = FileSystemUtil::readJsonContent($schemasDirectory . '/html.json');
     }
 
     public function getResponsesSchemas()
@@ -48,5 +50,10 @@ class SchemasService
     public function getItemSchemas()
     {
         return $this->itemSchemas['data'];
+    }
+
+    public function getHtmlSchemas()
+    {
+        return $this->htmlSchemas['data'];
     }
 }

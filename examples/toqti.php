@@ -24,6 +24,7 @@
 <div class="row output-json-row">
     <div class="col-md-12">
         <p><span class="label label-default">Exceptions and All Things Ignored</span></p>
+        <pre class="clipboard"><code id="to-qti-errors" class="html"></code></pre>
     </div>
 </div>
 
@@ -49,11 +50,9 @@
                 cache: false,
                 data: requestJson,
                 success: function (data) {
-                    try {
-                        xmlEditor.setValue(data);
-                    } catch (err) {
-                        $('#errorMsg').html(data);
-                    }
+                    var result = JSON.parse(data);
+                    xmlEditor.setValue(result.xmlString);
+                    $('#to-qti-errors').html(JSON.stringify(result.messages, null, 4));
                 },
                 error: function (data) {
                     console.log(data);

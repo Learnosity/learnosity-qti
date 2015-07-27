@@ -4,7 +4,9 @@ namespace Learnosity\Processors\QtiV2\Out;
 
 use Learnosity\Entities\Question;
 use Learnosity\Exceptions\MappingException;
-use Learnosity\Processors\QtiV2\Out\QuestionTypes\McqTypeMapper;
+use Learnosity\Services\LogService;
+use Learnosity\Utils\StringUtil;
+use qtism\common\utils\Format;
 use qtism\data\AssessmentItem;
 use qtism\data\state\DefaultValue;
 use qtism\data\state\OutcomeDeclaration;
@@ -16,27 +18,30 @@ use qtism\data\storage\xml\XmlDocument;
 
 class QuestionWriter
 {
+    const MAPPER_CLASS_BASE = 'Learnosity\Processors\QtiV2\Out\QuestionTypes\\';
+
+    private $supportedQuestionTypes = [
+        'mcq',
+    ];
+
     public function convert(Question $question)
     {
-        $assessmentItem = new AssessmentItem($question->get_reference(), $question->get_reference(), false);
+        // Make sure we clean up the log
+        LogService::flush();
 
-        // Set <outcomeDeclaration> with assumption default value is always 0
-        $outcomeDeclaration = new OutcomeDeclaration('SCORE');
-        $valueCollection = new ValueCollection();
-        $valueCollection->attach(new Value(0));
-        $outcomeDeclaration->setDefaultValue(new DefaultValue($valueCollection));
-        $outcomeDeclarationCollection = new OutcomeDeclarationCollection();
-        $outcomeDeclarationCollection->attach($outcomeDeclaration);
-        $assessmentItem->setOutcomeDeclarations($outcomeDeclarationCollection);
+        // Try to build the identifier using question `reference`
+        $assessmentItem = $this->buildAssessmentItemWithIdentifier($question->get_reference(), $question->get_type());
+        $assessmentItem->setOutcomeDeclarations($this->buildOutcomeDeclarations());
+        $assessmentItem->setToolName('Learnosity');
 
         // Mapper
-        if ($question->get_type() === 'mcq') {
-            $questionTypeMapper = new McqTypeMapper();
-        } else {
+        $type = $question->get_type();
+        if (!in_array($type, $this->supportedQuestionTypes)) {
             throw new MappingException('Question type not yet supported to be mapped to QTI');
         }
-        $questionType = $question->get_data();
-        list($itemBody, $responseProcessing, $responseDeclaration) = $questionTypeMapper->convert($questionType);
+        $clazz = new \ReflectionClass(self::MAPPER_CLASS_BASE . ucfirst($type . 'Mapper'));
+        $questionTypeMapper = $clazz->newInstance();
+        list($itemBody, $responseProcessing, $responseDeclaration) = $questionTypeMapper->convert($question->get_data());
 
         // Map <itemBody>
         $assessmentItem->setItemBody($itemBody);
@@ -55,6 +60,38 @@ class QuestionWriter
 
         $xml = new XmlDocument();
         $xml->setDocumentComponent($assessmentItem);
-        return $xml->saveToString(true);
+
+        // Flush out all the error messages stored in this static class, also ensure they are unique
+        $messages = array_values(array_unique(LogService::flush()));
+        return [$xml->saveToString(true), $messages];
+    }
+
+    private function buildAssessmentItemWithIdentifier($questionReference, $questionType)
+    {
+        // Use existing question `reference` if it was a valid one
+        if (Format::isIdentifier($questionReference, false)) {
+            return new AssessmentItem($questionReference, '', false);
+        }
+        // Otherwise, generate an alternative identifier and store the original reference as `label`
+        $alternativeIdentifier = $questionType . '_' . StringUtil::generateRandomString(12);
+        LogService::log(
+            "Question `reference` ($questionReference) can is not a valid identifier. " .
+            "Replaced it with randomly generated `$alternativeIdentifier` and stored the original `reference` as `label` attribute"
+        );
+        $assessmentItem = new AssessmentItem($alternativeIdentifier, '', false);
+        $assessmentItem->setLabel($questionReference);
+        return $assessmentItem;
+    }
+
+    private function buildOutcomeDeclarations()
+    {
+        // Set <outcomeDeclaration> with assumption default value is always 0
+        $outcomeDeclaration = new OutcomeDeclaration('SCORE');
+        $valueCollection = new ValueCollection();
+        $valueCollection->attach(new Value(0));
+        $outcomeDeclaration->setDefaultValue(new DefaultValue($valueCollection));
+        $outcomeDeclarationCollection = new OutcomeDeclarationCollection();
+        $outcomeDeclarationCollection->attach($outcomeDeclaration);
+        return $outcomeDeclarationCollection;
     }
 }

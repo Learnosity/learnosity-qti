@@ -46,8 +46,8 @@ class Converter
         $questionMapper = new QuestionMapper();
         $question = $questionMapper->parse(json_decode($jsonString, true));
         $questionWriter = new QuestionWriter();
-        $xmlString = $questionWriter->convert($question);
-        return $xmlString;
+        list($xmlString, $messages) = $questionWriter->convert($question);
+        return [$xmlString, $messages];
     }
 
     public static function parseIMSCPPackage($srcPath, $outputPath = '/tmp')
