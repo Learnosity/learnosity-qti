@@ -4,7 +4,6 @@ namespace Learnosity\Processors\QtiV2\In\Interactions;
 
 use Learnosity\Entities\QuestionTypes\choicematrix;
 use Learnosity\Entities\QuestionTypes\choicematrix_ui_style;
-use Learnosity\Exceptions\MappingException;
 use Learnosity\Processors\QtiV2\In\Utils\QtiComponentUtil;
 use Learnosity\Processors\QtiV2\In\Validation\MatchInteractionValidationBuilder;
 use Learnosity\Services\LogService;
@@ -40,7 +39,7 @@ class MatchInteractionMapper extends AbstractInteractionMapper
         $uiStyle = new choicematrix_ui_style();
         $uiStyle->set_type('table');
 
-        $question = new choicematrix('choicematrix', $isMultipleResponse, $options, $stems);
+        $question = new choicematrix('choicematrix', $options, $isMultipleResponse, $stems);
         $question->set_stimulus($this->getPrompt());
         $question->set_ui_style($uiStyle);
         if ($validation) {

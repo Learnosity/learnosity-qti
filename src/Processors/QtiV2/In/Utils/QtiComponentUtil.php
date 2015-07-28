@@ -3,7 +3,8 @@
 namespace Learnosity\Processors\QtiV2\In\Utils;
 
 use DOMDocument;
-use Learnosity\Processors\QtiV2\In\Marshallers\LearnosityMarshallerFactory;
+use Learnosity\Exceptions\MappingException;
+use Learnosity\Processors\QtiV2\Marshallers\LearnosityMarshallerFactory;
 use qtism\common\datatypes\Shape;
 use qtism\data\content\TextRun;
 use qtism\data\QtiComponent;
@@ -13,23 +14,27 @@ class QtiComponentUtil
 {
     public static function unmarshallElement($string)
     {
-        $dom = new DOMDocument('1.0', 'UTF-8');
-        $dom->formatOutput = true;
-        $dom->loadHTML($string);
+        try {
+            $dom = new DOMDocument('1.0', 'UTF-8');
+            $dom->formatOutput = true;
+            $dom->loadXML("<body>$string</body>", LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
 
-        // TODO: Can only unmarshall nice stuff, doesnt work with dodgy or invalid HTML
-        $marshallerFactory = new LearnosityMarshallerFactory();
-        $components = new QtiComponentCollection();
-        foreach ($dom->documentElement->getElementsByTagName('body')->item(0)->childNodes as $element) {
-            if ($element instanceof \DOMText) {
-                $component = new TextRun($element->nodeValue);
-            } else {
-                $marshaller = $marshallerFactory->createMarshaller($element);
-                $component = $marshaller->unmarshall($element);
+            // TODO: Can only unmarshall nice stuff, doesnt work with dodgy or invalid HTML
+            $marshallerFactory = new LearnosityMarshallerFactory();
+            $components = new QtiComponentCollection();
+            foreach ($dom->documentElement->childNodes as $element) {
+                if ($element instanceof \DOMText) {
+                    $component = new TextRun($element->nodeValue);
+                } else {
+                    $marshaller = $marshallerFactory->createMarshaller($element);
+                    $component = $marshaller->unmarshall($element);
+                }
+                $components->attach($component);
             }
-            $components->attach($component);
+            return $components;
+        } catch (\Exception $e) {
+            throw new MappingException('[Unable to transforming to QTI] ' . $e->getMessage(), MappingException::CRITICAL);
         }
-        return $components;
     }
 
     public static function marshallCollection(QtiComponentCollection $collection)

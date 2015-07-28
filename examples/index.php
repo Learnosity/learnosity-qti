@@ -56,6 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="container">
         <div class="row">
             <h1>Learnosity QTI Demo</h1>
+            <div style="float: right"><a target="_blank" href="documentation.html">View Documentation</a></div>
         </div>
         <div class="row">
             <!-- Nav tabs -->

@@ -1,6 +1,6 @@
 
 <div class="row">
-    <div class="col-md-9">
+    <div class="col-md-12">
         <p>
             <select id="to-json-fileSelect" class="file-select-row">
                 <?php
@@ -13,9 +13,6 @@
             <button id="to-json-loadFile" type="button" class="btn btn-primary">Load</button>
             <button id="to-json-submit" type="button" class="btn btn-primary">Parse</button>
         </p>
-    </div>
-    <div class="col-md-3">
-        <div style="float: right"><a target="_blank" href="?documentation">View Documentation</a></div>
     </div>
 </div>
 

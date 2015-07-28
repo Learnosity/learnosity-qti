@@ -6,6 +6,7 @@ use Learnosity\Entities\Question;
 use Learnosity\Exceptions\MappingException;
 use Learnosity\Services\LogService;
 use Learnosity\Utils\StringUtil;
+use qtism\common\enums\BaseType;
 use qtism\common\utils\Format;
 use qtism\data\AssessmentItem;
 use qtism\data\state\DefaultValue;
@@ -41,21 +42,21 @@ class QuestionWriter
         }
         $clazz = new \ReflectionClass(self::MAPPER_CLASS_BASE . ucfirst($type . 'Mapper'));
         $questionTypeMapper = $clazz->newInstance();
-        list($itemBody, $responseProcessing, $responseDeclaration) = $questionTypeMapper->convert($question->get_data());
+        list($itemBody, $responseDeclaration, $responseProcessing) = $questionTypeMapper->convert($question->get_data());
 
         // Map <itemBody>
         $assessmentItem->setItemBody($itemBody);
-
-        // Map <responseProcessing>
-        if (!empty($responseProcessing)) {
-            $assessmentItem->setResponseProcessing($responseProcessing);
-        }
 
         // Map <responseDeclaration>
         if (!empty($responseDeclaration)) {
             $responseDeclarationCollection = new ResponseDeclarationCollection();
             $responseDeclarationCollection->attach($responseDeclaration);
             $assessmentItem->setResponseDeclarations($responseDeclarationCollection);
+        }
+
+        // Map <responseProcessing>
+        if (!empty($responseProcessing)) {
+            $assessmentItem->setResponseProcessing($responseProcessing);
         }
 
         $xml = new XmlDocument();
@@ -70,7 +71,7 @@ class QuestionWriter
     {
         // Use existing question `reference` if it was a valid one
         if (Format::isIdentifier($questionReference, false)) {
-            return new AssessmentItem($questionReference, '', false);
+            return new AssessmentItem($questionReference, $questionReference, false);
         }
         // Otherwise, generate an alternative identifier and store the original reference as `label`
         $alternativeIdentifier = $questionType . '_' . StringUtil::generateRandomString(12);
@@ -78,7 +79,7 @@ class QuestionWriter
             "Question `reference` ($questionReference) can is not a valid identifier. " .
             "Replaced it with randomly generated `$alternativeIdentifier` and stored the original `reference` as `label` attribute"
         );
-        $assessmentItem = new AssessmentItem($alternativeIdentifier, '', false);
+        $assessmentItem = new AssessmentItem($alternativeIdentifier, $alternativeIdentifier, false);
         $assessmentItem->setLabel($questionReference);
         return $assessmentItem;
     }
@@ -86,7 +87,7 @@ class QuestionWriter
     private function buildOutcomeDeclarations()
     {
         // Set <outcomeDeclaration> with assumption default value is always 0
-        $outcomeDeclaration = new OutcomeDeclaration('SCORE');
+        $outcomeDeclaration = new OutcomeDeclaration('SCORE', BaseType::INTEGER);
         $valueCollection = new ValueCollection();
         $valueCollection->attach(new Value(0));
         $outcomeDeclaration->setDefaultValue(new DefaultValue($valueCollection));

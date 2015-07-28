@@ -1,6 +1,6 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\In\Marshallers;
+namespace Learnosity\Processors\QtiV2\Marshallers;
 
 use Learnosity\Services\LogService;
 use qtism\data\content\xhtml\Object;
