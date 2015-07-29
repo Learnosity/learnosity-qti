@@ -4,6 +4,7 @@ namespace Learnosity\Processors\QtiV2\In\Validation;
 
 use Learnosity\Processors\Learnosity\In\ValidationBuilder\ValidationBuilder;
 use Learnosity\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
+use Learnosity\Services\LogService;
 use Learnosity\Utils\ArrayUtil;
 use qtism\data\state\MapEntry;
 use qtism\data\state\ResponseDeclaration;
@@ -61,8 +62,8 @@ class InlineChoiceInteractionValidationBuilder extends BaseInteractionValidation
                     [$this->possibleResponses[$responseIdentifier][$mapEntry->getMapKey()]]
                 );
                 // Find out if one of them is case sensitive
-                if ($mapEntry->isCaseSensitive()) {
-                    $this->isCaseSensitive = true;
+                if (!$mapEntry->isCaseSensitive()) {
+                    LogService::log('Could not support `caseSensitive` attribute for this interaction type. This question validation is always case sensitive');
                 }
             }
             $interactionResponses[] = $responses;

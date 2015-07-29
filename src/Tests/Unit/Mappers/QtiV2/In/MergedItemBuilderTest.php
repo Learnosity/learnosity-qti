@@ -66,11 +66,11 @@ class MergedItemBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $collection = new QtiComponentCollection();
         $choiceInteraction = ChoiceInteractionBuilder::buildSimple('testChoiceInteractionIdentifier', [
-            'Choice 1' => 'A',
-            'Choice 2' => 'B'
+            'ChoiceOne' => 'A',
+            'ChoiceTwo' => 'B'
         ]);
         $collection->attach($choiceInteraction);
         return $collection;
     }
-
 }
+

@@ -27,9 +27,6 @@ class InlineChoiceInteractionTest extends AbstractInteractionTest
         $this->assertEquals('clozedropdown', $question->get_type());
         $validation = $question->get_validation();
         $this->assertNull($validation);
-
-        // By default case sensitive should be false
-        $this->assertFalse($question->get_case_sensitive());
     }
 
     public function testSimpleCaseWithInvalidValidation()
@@ -90,9 +87,6 @@ class InlineChoiceInteractionTest extends AbstractInteractionTest
         $this->assertCount(1, $altResponses);
         $this->assertEquals(1, $altResponses[0]->get_score());
         $this->assertEquals(["Melbourne"], $altResponses[0]->get_value());
-
-        // By default case sensitive should be false for `match_correct`
-        $this->assertFalse($question->get_case_sensitive());
     }
 
     public function testSimpleCaseWithMapResponseValidation()
@@ -139,8 +133,5 @@ class InlineChoiceInteractionTest extends AbstractInteractionTest
         $this->assertCount(1, $altResponses);
         $this->assertEquals(0.5, $altResponses[0]->get_score());
         $this->assertEquals(["Sydney"], $altResponses[0]->get_value());
-
-        // Since one of them case sensitive, so the question would be case sensitive
-        $this->assertTrue($question->get_case_sensitive());
     }
 }

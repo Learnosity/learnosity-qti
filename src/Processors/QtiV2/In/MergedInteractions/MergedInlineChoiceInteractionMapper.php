@@ -3,7 +3,6 @@
 namespace Learnosity\Processors\QtiV2\In\MergedInteractions;
 
 use Learnosity\Entities\QuestionTypes\clozedropdown;
-use Learnosity\Exceptions\MappingException;
 use Learnosity\Processors\QtiV2\In\Utils\QtiComponentUtil;
 use Learnosity\Processors\QtiV2\In\Validation\InlineChoiceInteractionValidationBuilder;
 use Learnosity\Services\LogService;
@@ -44,12 +43,6 @@ class MergedInlineChoiceInteractionMapper extends AbstractMergedInteractionMappe
             $clozedropdown->set_validation($validation);
         }
 
-        // Set `case_sensitivive`
-        $clozedropdown->set_case_sensitive($validationBuilder->isCaseSensitive());
-        if ($validationBuilder->isCaseSensitive()) {
-            LogService::log('Partial `caseSensitive` per response is not supported.
-                Thus setting all validation as case sensitive');
-        }
         return $clozedropdown;
     }
 

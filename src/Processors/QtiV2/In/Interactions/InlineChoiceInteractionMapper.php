@@ -2,9 +2,7 @@
 
 namespace Learnosity\Processors\QtiV2\In\Interactions;
 
-
 use Learnosity\Entities\QuestionTypes\clozedropdown;
-use Learnosity\Exceptions\MappingException;
 use Learnosity\Processors\QtiV2\In\Utils\QtiComponentUtil;
 use Learnosity\Processors\QtiV2\In\Validation\InlineChoiceInteractionValidationBuilder;
 use Learnosity\Services\LogService;
@@ -25,18 +23,11 @@ class InlineChoiceInteractionMapper extends AbstractInteractionMapper
                 QtiComponentUtil::marshallCollection($inlineChoice->getContent());
         }
 
-        $isCaseSensitive = false;
         $question = new clozedropdown('clozedropdown', $template, [array_values($this->choicesMapping)]);
-        $validation = $this->buildValidation($isCaseSensitive);
+        $validation = $this->buildValidation();
         if ($validation) {
             $question->set_validation($validation);
         }
-        $question->set_case_sensitive($isCaseSensitive);
-        if ($isCaseSensitive) {
-            $this->exceptions[] = new MappingException('Partial `caseSensitive` per response is not supported.
-                Thus setting all validation as case sensitive');
-        }
-
         return $question;
     }
 
@@ -51,14 +42,12 @@ class InlineChoiceInteractionMapper extends AbstractInteractionMapper
         return $interaction;
     }
 
-    private function buildValidation(&$isCaseSensitive)
+    private function buildValidation()
     {
         $validationBuilder = new InlineChoiceInteractionValidationBuilder(
             [$this->interaction->getResponseIdentifier() => $this->responseDeclaration],
             [$this->interaction->getResponseIdentifier() => $this->choicesMapping]
         );
-        $validation = $validationBuilder->buildValidation($this->responseProcessingTemplate);
-        $isCaseSensitive = $validationBuilder->isCaseSensitive();
-        return $validation;
+        return $validationBuilder->buildValidation($this->responseProcessingTemplate);
     }
 }

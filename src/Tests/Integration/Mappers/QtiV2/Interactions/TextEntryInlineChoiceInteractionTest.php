@@ -63,7 +63,6 @@ class TextEntryInlineChoiceInteractionTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Learnosity\Entities\QuestionTypes\clozedropdown', $q);
         $this->assertEquals('clozedropdown', $q->get_type());
         $this->assertEquals('{{response}}', $q->get_template());
-        $this->assertFalse($q->get_case_sensitive());
 
         /** @var clozedropdown_validation $validation */
         $validation = $q->get_validation();
