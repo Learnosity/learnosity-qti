@@ -45,6 +45,7 @@
     $(function () {
         $('#to-qti-submit').click(function () {
             var requestJson = jsonEditor.getValue();
+            $('#to-qti-errors').html('');
             $.ajax({
                 type: "POST",
                 url: '?operation=toqti',

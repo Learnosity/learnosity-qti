@@ -4,7 +4,7 @@ namespace Learnosity\Processors\QtiV2\In\Interactions;
 
 use Learnosity\Entities\QuestionTypes\choicematrix;
 use Learnosity\Entities\QuestionTypes\choicematrix_ui_style;
-use Learnosity\Processors\QtiV2\In\Utils\QtiComponentUtil;
+use Learnosity\Utils\QtiMarshallerUtil;
 use Learnosity\Processors\QtiV2\In\Validation\MatchInteractionValidationBuilder;
 use Learnosity\Services\LogService;
 use qtism\data\content\interactions\MatchInteraction as QtiMatchInteraction;
@@ -54,7 +54,7 @@ class MatchInteractionMapper extends AbstractInteractionMapper
         $choiceCollection = $simpleMatchSet->getSimpleAssociableChoices();
         /** @var SimpleAssociableChoice $choice */
         foreach ($choiceCollection as $choice) {
-            $contentStr = QtiComponentUtil::marshallCollection($choice->getContent());
+            $contentStr = QtiMarshallerUtil::marshallCollection($choice->getContent());
             $options[] = $contentStr;
             $mapping[$choice->getIdentifier()] = count($options) - 1;
         }

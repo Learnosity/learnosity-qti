@@ -3,7 +3,7 @@
 namespace Learnosity\Processors\QtiV2\In\Interactions;
 
 use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
-use Learnosity\Processors\QtiV2\In\Utils\QtiComponentUtil;
+use Learnosity\Utils\QtiMarshallerUtil;
 use qtism\data\content\interactions\Interaction;
 use qtism\data\content\interactions\Prompt;
 use qtism\data\state\ResponseDeclaration;
@@ -27,7 +27,7 @@ abstract class AbstractInteractionMapper
     {
         if ($this->interaction->getPrompt() instanceof Prompt) {
             $promptContent = $this->interaction->getPrompt()->getContent();
-            return QtiComponentUtil::marshallCollection($promptContent);
+            return QtiMarshallerUtil::marshallCollection($promptContent);
         }
         return '';
     }

@@ -5,7 +5,7 @@ namespace Learnosity\Processors\QtiV2\In\ItemBuilders;
 
 use Learnosity\Entities\Question;
 use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
-use Learnosity\Processors\QtiV2\In\Utils\QtiComponentUtil;
+use Learnosity\Utils\QtiMarshallerUtil;
 use Learnosity\Services\LogService;
 use qtism\data\content\interactions\Interaction;
 use qtism\data\content\ItemBody;
@@ -50,11 +50,11 @@ class RegularItemBuilder extends AbstractItemBuilder
             $question = $mapper->getQuestionType();
 
             $this->questions[$questionReference] = new Question($question->get_type(), $questionReference, $question);
-            $questionsXmls[$questionReference] = QtiComponentUtil::marshall($component);
+            $questionsXmls[$questionReference] = QtiMarshallerUtil::marshall($component);
         }
 
         // Build item's HTML content
-        $extraContent = QtiComponentUtil::marshallCollection($itemBody->getComponents());
+        $extraContent = QtiMarshallerUtil::marshallCollection($itemBody->getComponents());
         foreach ($questionsXmls as $questionReference => $interactionXml) {
             // Append this question span to our `item` content as it is
             $this->content .= '<span class="learnosity-response question-' . $questionReference . '"></span>';

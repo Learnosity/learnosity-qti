@@ -3,7 +3,7 @@
 namespace Learnosity\Processors\QtiV2\In\Interactions;
 
 use Learnosity\Entities\QuestionTypes\longtext;
-use Learnosity\Processors\QtiV2\In\Utils\QtiComponentUtil;
+use Learnosity\Utils\QtiMarshallerUtil;
 use Learnosity\Services\LogService;
 use qtism\data\content\interactions\ExtendedTextInteraction as QtiExtendedTextInteraction;
 
@@ -22,7 +22,7 @@ class ExtendedTextInteractionMapper extends AbstractInteractionMapper
 
         if (!empty($interaction->getPrompt())) {
             $promptContent = $interaction->getPrompt()->getContent();
-            $longtext->set_stimulus(QtiComponentUtil::marshallCollection($promptContent));
+            $longtext->set_stimulus(QtiMarshallerUtil::marshallCollection($promptContent));
         }
 
         if ($interaction->getPlaceholderText()) {

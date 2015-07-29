@@ -1,16 +1,15 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\In\Utils;
+namespace Learnosity\Utils;
 
 use DOMDocument;
 use Learnosity\Exceptions\MappingException;
 use Learnosity\Processors\QtiV2\Marshallers\LearnosityMarshallerFactory;
-use qtism\common\datatypes\Shape;
 use qtism\data\content\TextRun;
 use qtism\data\QtiComponent;
 use qtism\data\QtiComponentCollection;
 
-class QtiComponentUtil
+class QtiMarshallerUtil
 {
     public static function unmarshallElement($string)
     {
@@ -58,25 +57,5 @@ class QtiComponentUtil
         $node = $dom->importNode($element, true);
 
         return $dom->saveXML($node);
-    }
-
-    public static function convertQtiCoordsToPercentage(array $areaCoords, array $objectCoords, $qtiShape)
-    {
-        switch ($qtiShape) {
-            case Shape::RECT:
-                return [
-                    'x' => round($objectCoords[0] / $areaCoords[0] * 100, 2),
-                    'y' => round($objectCoords[1] / $areaCoords[1] * 100, 2),
-                    'width' => $objectCoords[2] - $objectCoords[0],
-                    'height' => $objectCoords[3] - $objectCoords[1]
-                ];
-            case Shape::CIRCLE:
-                return [
-                    'x' => round($objectCoords[0] / $areaCoords[0] * 100, 2),
-                    'y' => round($objectCoords[1] / $areaCoords[1] * 100, 2)
-                ];
-            default:
-                return null;
-        }
     }
 }

@@ -113,7 +113,7 @@
         });
 
         $('#validateResponse').click(function () {
-            questionsApp.validateQuestions()
+            questionsApp.validateQuestions();
         });
 
     });

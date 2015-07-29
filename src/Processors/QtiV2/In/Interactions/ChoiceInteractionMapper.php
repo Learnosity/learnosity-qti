@@ -5,7 +5,7 @@ namespace Learnosity\Processors\QtiV2\In\Interactions;
 use Learnosity\Entities\QuestionTypes\mcq;
 use Learnosity\Entities\QuestionTypes\mcq_ui_style;
 use Learnosity\Exceptions\MappingException;
-use Learnosity\Processors\QtiV2\In\Utils\QtiComponentUtil;
+use Learnosity\Utils\QtiMarshallerUtil;
 use Learnosity\Processors\QtiV2\In\Validation\ChoiceInteractionValidationBuilder;
 use Learnosity\Services\LogService;
 use qtism\data\content\interactions\Orientation;
@@ -38,7 +38,7 @@ class ChoiceInteractionMapper extends AbstractInteractionMapper
         // Support mapping for <prompt>
         if ($interaction->getPrompt() instanceof Prompt) {
             $promptContent = $interaction->getPrompt()->getContent();
-            $mcq->set_stimulus(QtiComponentUtil::marshallCollection($promptContent));
+            $mcq->set_stimulus(QtiMarshallerUtil::marshallCollection($promptContent));
         }
 
         // Partial support for @maxChoices
@@ -78,7 +78,7 @@ class ChoiceInteractionMapper extends AbstractInteractionMapper
         foreach ($simpleChoices as $key => $choice) {
             // Store 'SimpleChoice' identifier to key for validation purposes
             $options[] = [
-                'label' => QtiComponentUtil::marshallCollection($choice->getContent()),
+                'label' => QtiMarshallerUtil::marshallCollection($choice->getContent()),
                 'value' => $choice->getIdentifier()
             ];
         }

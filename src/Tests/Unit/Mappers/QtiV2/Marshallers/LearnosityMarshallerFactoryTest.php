@@ -3,7 +3,7 @@
 namespace Learnosity\Tests\Unit\Mappers\QtiV2\Marshallers;
 
 use Learnosity\AppContainer;
-use Learnosity\Processors\QtiV2\In\Utils\QtiComponentUtil;
+use Learnosity\Utils\QtiMarshallerUtil;
 use Learnosity\Processors\QtiV2\Marshallers\LearnosityMarshallerFactory;
 use Learnosity\Services\SchemasService;
 use qtism\data\storage\xml\marshalling\UnmarshallingException;
@@ -24,7 +24,7 @@ class LearnosityMarshallerFactoryTest extends \PHPUnit_Framework_TestCase
                 $element = new \DOMElement($elementName, 'hello');
                 $marshaller = $factory->createMarshaller($element);
                 $component = $marshaller->unmarshall($element);
-                echo QtiComponentUtil::marshall($component) . PHP_EOL;
+                echo QtiMarshallerUtil::marshall($component) . PHP_EOL;
             } catch (RuntimeException $e) {
                 $exceptionMessages[] = $e->getMessage();
             } catch (UnmarshallingException $e) {

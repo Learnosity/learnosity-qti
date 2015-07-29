@@ -4,7 +4,7 @@ namespace Learnosity\Processors\QtiV2\In\Interactions;
 
 use Learnosity\Entities\QuestionTypes\orderlist;
 use Learnosity\Exceptions\MappingException;
-use Learnosity\Processors\QtiV2\In\Utils\QtiComponentUtil;
+use Learnosity\Utils\QtiMarshallerUtil;
 use Learnosity\Processors\QtiV2\In\Validation\OrderInteractionValidationBuilder;
 use Learnosity\Services\LogService;
 use qtism\data\content\interactions\OrderInteraction as QtiOrderInteraction;
@@ -27,7 +27,7 @@ class OrderInteractionMapper extends AbstractInteractionMapper
         /** @var SimpleChoice $simpleChoice */
         foreach ($interaction->getSimpleChoices() as $simpleChoice) {
             $this->orderMapping[$simpleChoice->getIdentifier()] = count($this->orderMapping);
-            $list[] = QtiComponentUtil::marshallCollection($simpleChoice->getContent());
+            $list[] = QtiMarshallerUtil::marshallCollection($simpleChoice->getContent());
         }
 
         $question = new orderlist('orderlist', $list);

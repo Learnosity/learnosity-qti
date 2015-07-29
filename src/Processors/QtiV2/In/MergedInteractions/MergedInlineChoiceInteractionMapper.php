@@ -3,7 +3,7 @@
 namespace Learnosity\Processors\QtiV2\In\MergedInteractions;
 
 use Learnosity\Entities\QuestionTypes\clozedropdown;
-use Learnosity\Processors\QtiV2\In\Utils\QtiComponentUtil;
+use Learnosity\Utils\QtiMarshallerUtil;
 use Learnosity\Processors\QtiV2\In\Validation\InlineChoiceInteractionValidationBuilder;
 use Learnosity\Services\LogService;
 use qtism\data\content\interactions\InlineChoice;
@@ -20,11 +20,11 @@ class MergedInlineChoiceInteractionMapper extends AbstractMergedInteractionMappe
         $possibleResponsesMap = [];
         foreach ($interactionComponents as $component) {
             /** @var Interaction $component */
-            $interactionXmls[] = QtiComponentUtil::marshall($component);
+            $interactionXmls[] = QtiMarshallerUtil::marshall($component);
             /** @var InlineChoice $inlineChoice */
             foreach ($component->getComponents() as $inlineChoice) {
                 $possibleResponsesMap[$component->getResponseIdentifier()][$inlineChoice->getIdentifier()] =
-                    QtiComponentUtil::marshallCollection($inlineChoice->getContent());
+                    QtiMarshallerUtil::marshallCollection($inlineChoice->getContent());
             }
         }
 
@@ -49,7 +49,7 @@ class MergedInlineChoiceInteractionMapper extends AbstractMergedInteractionMappe
     private function buildTemplate(ItemBody $itemBody, array $interactionXmls)
     {
         // Build item's HTML content
-        $content = QtiComponentUtil::marshallCollection($itemBody->getComponents());
+        $content = QtiMarshallerUtil::marshallCollection($itemBody->getComponents());
         foreach ($interactionXmls as $interactionXml) {
             $content = str_replace($interactionXml, '{{response}}', $content);
         }

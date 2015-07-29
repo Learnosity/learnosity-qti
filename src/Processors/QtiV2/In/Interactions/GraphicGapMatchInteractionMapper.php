@@ -4,8 +4,9 @@ namespace Learnosity\Processors\QtiV2\In\Interactions;
 
 use Learnosity\Entities\QuestionTypes\imageclozeassociation;
 use Learnosity\Entities\QuestionTypes\imageclozeassociation_image;
-use Learnosity\Processors\QtiV2\In\Utils\QtiComponentUtil;
 use Learnosity\Processors\QtiV2\In\Validation\GapMatchInteractionValidationBuilder;
+use Learnosity\Utils\QtiCoordinateUtil;
+use Learnosity\Utils\QtiMarshallerUtil;
 use qtism\data\content\interactions\AssociableHotspot;
 use qtism\data\content\interactions\GapChoice;
 use qtism\data\content\interactions\GraphicGapMatchInteraction as QtiGraphicGapMatchInteraction;
@@ -63,7 +64,7 @@ class GraphicGapMatchInteractionMapper extends AbstractInteractionMapper
         $gapChoices = $interaction->getGapImgs();
         /** @var GapChoice $gapChoice */
         foreach ($gapChoices as $gapChoice) {
-            $gapChoiceContent = QtiComponentUtil::marshallCollection($gapChoice->getComponents());
+            $gapChoiceContent = QtiMarshallerUtil::marshallCollection($gapChoice->getComponents());
             $possibleResponseMapping[$gapChoice->getIdentifier()] = $gapChoiceContent;
         }
         return $possibleResponseMapping;
@@ -75,7 +76,7 @@ class GraphicGapMatchInteractionMapper extends AbstractInteractionMapper
         foreach ($interaction->getAssociableHotspots() as $associableHotspot) {
             /** @var AssociableHotspot $associableHotspot */
             $associableHotspots[$associableHotspot->getIdentifier()] =
-                QtiComponentUtil::convertQtiCoordsToPercentage(
+                QtiCoordinateUtil::convertQtiCoordsToPercentage(
                     [$object->getWidth(), $object->getHeight()],
                     explode(',', $associableHotspot->getCoords()),
                     $associableHotspot->getShape()

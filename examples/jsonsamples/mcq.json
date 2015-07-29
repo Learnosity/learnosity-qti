@@ -21,7 +21,7 @@
                 "value": "3"
             }
         ],
-        "stimulus": "<p>[This is the stem.]</p><p>[This is the stem.]</p><br />",
+        "stimulus": "<p>[This is the stem.]</p>",
         "type": "mcq",
         "ui_style": {
             "choice_label": "upper-alpha",
@@ -32,7 +32,7 @@
             "valid_response": {
                 "score": 1,
                 "value": [
-                    ""
+                    "2"
                 ]
             }
         }

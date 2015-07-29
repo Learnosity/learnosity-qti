@@ -4,7 +4,7 @@ namespace Learnosity\Processors\QtiV2\In\Interactions;
 
 use Learnosity\Entities\QuestionTypes\clozeassociation;
 use Learnosity\Entities\QuestionTypes\clozeassociation_response_container;
-use Learnosity\Processors\QtiV2\In\Utils\QtiComponentUtil;
+use Learnosity\Utils\QtiMarshallerUtil;
 use Learnosity\Processors\QtiV2\In\Validation\GapMatchInteractionValidationBuilder;
 use qtism\data\content\interactions\Gap;
 use qtism\data\content\interactions\GapChoice;
@@ -27,7 +27,7 @@ class GapMatchInteractionMapper extends AbstractInteractionMapper
 
         if ($interaction->getPrompt() instanceof Prompt) {
             $promptContent = $interaction->getPrompt()->getContent();
-            $question->set_stimulus(QtiComponentUtil::marshallCollection($promptContent));
+            $question->set_stimulus(QtiMarshallerUtil::marshallCollection($promptContent));
         }
 
         $validationBuilder = new GapMatchInteractionValidationBuilder(
@@ -52,7 +52,7 @@ class GapMatchInteractionMapper extends AbstractInteractionMapper
         $gapChoices->merge($interaction->getComponentsByClassName('gapImg', true));
         /** @var GapChoice $gapChoice */
         foreach ($gapChoices as $gapChoice) {
-            $gapChoiceContent = QtiComponentUtil::marshallCollection($gapChoice->getComponents());
+            $gapChoiceContent = QtiMarshallerUtil::marshallCollection($gapChoice->getComponents());
             $possibleResponseMapping[$gapChoice->getIdentifier()] = $gapChoiceContent;
         }
         return $possibleResponseMapping;
@@ -68,11 +68,11 @@ class GapMatchInteractionMapper extends AbstractInteractionMapper
             }
         }
         $gapIdentifiers = [];
-        $content = QtiComponentUtil::marshallCollection($templateCollection);
+        $content = QtiMarshallerUtil::marshallCollection($templateCollection);
         foreach ($interaction->getComponentsByClassName('gap', true) as $gap) {
             /** @var Gap $gap */
             $gapIdentifiers[] = $gap->getIdentifier();
-            $gapString = QtiComponentUtil::marshall($gap);
+            $gapString = QtiMarshallerUtil::marshall($gap);
             $content = str_replace($gapString, '{{response}}', $content);
         }
         return [$content, $gapIdentifiers];

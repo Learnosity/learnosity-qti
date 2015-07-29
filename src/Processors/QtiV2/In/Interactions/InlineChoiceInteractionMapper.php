@@ -3,7 +3,7 @@
 namespace Learnosity\Processors\QtiV2\In\Interactions;
 
 use Learnosity\Entities\QuestionTypes\clozedropdown;
-use Learnosity\Processors\QtiV2\In\Utils\QtiComponentUtil;
+use Learnosity\Utils\QtiMarshallerUtil;
 use Learnosity\Processors\QtiV2\In\Validation\InlineChoiceInteractionValidationBuilder;
 use Learnosity\Services\LogService;
 use qtism\data\content\interactions\InlineChoiceInteraction;
@@ -20,7 +20,7 @@ class InlineChoiceInteractionMapper extends AbstractInteractionMapper
 
         foreach ($interaction->getContent() as $inlineChoice) {
             $this->choicesMapping[$inlineChoice->getIdentifier()] =
-                QtiComponentUtil::marshallCollection($inlineChoice->getContent());
+                QtiMarshallerUtil::marshallCollection($inlineChoice->getContent());
         }
 
         $question = new clozedropdown('clozedropdown', $template, [array_values($this->choicesMapping)]);

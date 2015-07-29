@@ -70,6 +70,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
         </div>
+        <div class="row" style="margin-bottom: 40px">
+            <hr>
+        </div>
     </div>
 </body>
 </html>

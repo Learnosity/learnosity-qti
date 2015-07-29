@@ -3,7 +3,7 @@
 namespace Learnosity\Processors\QtiV2\In\MergedInteractions;
 
 use Learnosity\Entities\QuestionTypes\clozetext;
-use Learnosity\Processors\QtiV2\In\Utils\QtiComponentUtil;
+use Learnosity\Utils\QtiMarshallerUtil;
 use Learnosity\Processors\QtiV2\In\Validation\TextEntryInteractionValidationBuilder;
 use qtism\data\content\interactions\TextEntryInteraction;
 use qtism\data\content\ItemBody;
@@ -20,7 +20,7 @@ class MergedTextEntryInteractionMapper extends AbstractMergedInteractionMapper
         $interactionIdentifiers = [];
         /** @var TextEntryInteraction $component */
         foreach ($this->interactionComponents as $component) {
-            $interactionXmls[] = QtiComponentUtil::marshall($component);
+            $interactionXmls[] = QtiMarshallerUtil::marshall($component);
             $interactionIdentifiers[] = $component->getResponseIdentifier();
         }
         $validation = $this->buildValidation($interactionIdentifiers, $isCaseSensitive);
@@ -56,7 +56,7 @@ class MergedTextEntryInteractionMapper extends AbstractMergedInteractionMapper
     private function buildTemplate(ItemBody $itemBody, array $interactionXmls)
     {
         // Build item's HTML content
-        $content = QtiComponentUtil::marshallCollection($itemBody->getComponents());
+        $content = QtiMarshallerUtil::marshallCollection($itemBody->getComponents());
         foreach ($interactionXmls as $interactionXml) {
             $content = str_replace($interactionXml, '{{response}}', $content);
         }

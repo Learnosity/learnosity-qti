@@ -3,7 +3,7 @@
 namespace Learnosity\Processors\QtiV2\In\Interactions;
 
 use Learnosity\Entities\QuestionTypes\tokenhighlight;
-use Learnosity\Processors\QtiV2\In\Utils\QtiComponentUtil;
+use Learnosity\Utils\QtiMarshallerUtil;
 use Learnosity\Processors\QtiV2\In\Validation\HottextInteractionValidationBuilder;
 use qtism\data\content\InlineCollection;
 use qtism\data\content\interactions\Hottext;
@@ -22,7 +22,7 @@ class HottextInteractionMapper extends AbstractInteractionMapper
 
         if ($interaction->getPrompt() instanceof Prompt) {
             $promptContent = $interaction->getPrompt()->getContent();
-            $question->set_stimulus(QtiComponentUtil::marshallCollection($promptContent));
+            $question->set_stimulus(QtiMarshallerUtil::marshallCollection($promptContent));
         }
 
         $question->set_max_selection($interaction->getMaxChoices());
@@ -43,10 +43,10 @@ class HottextInteractionMapper extends AbstractInteractionMapper
                 $templateCollection->attach($component);
             }
         }
-        $content = QtiComponentUtil::marshallCollection($templateCollection);
+        $content = QtiMarshallerUtil::marshallCollection($templateCollection);
         foreach ($interaction->getComponentsByClassName('hottext') as $hottext) {
             /** @var Hottext $hottext */
-            $hottextString = QtiComponentUtil::marshall($hottext);
+            $hottextString = QtiMarshallerUtil::marshall($hottext);
 
             $tokenSpan = new span();
             $tokenSpan->setClass('lrn_token');
@@ -55,7 +55,7 @@ class HottextInteractionMapper extends AbstractInteractionMapper
                 $inlineCollection->attach($c);
             }
             $tokenSpan->setContent($inlineCollection);
-            $content = str_replace($hottextString, QtiComponentUtil::marshall($tokenSpan), $content);
+            $content = str_replace($hottextString, QtiMarshallerUtil::marshall($tokenSpan), $content);
         }
         return $content;
     }
