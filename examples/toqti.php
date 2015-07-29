@@ -18,13 +18,14 @@
     </div>
     <div class="col-md-6">
         <p><span class="label label-default">QTI</span></p>
+        <div id="to-qti-errors" class="error-message"></div>
         <div id="to-qti-xml-editor" class="qti-xml" name="xml-editor"></div>
     </div>
 </div>
 <div class="row output-json-row">
     <div class="col-md-12">
         <p><span class="label label-default">Exceptions and All Things Ignored</span></p>
-        <pre class="clipboard"><code id="to-qti-errors" class="html"></code></pre>
+        <pre class="clipboard"><code id="to-qti-messages" class="html"></code></pre>
     </div>
 </div>
 
@@ -50,9 +51,13 @@
                 cache: false,
                 data: requestJson,
                 success: function (data) {
-                    var result = JSON.parse(data);
-                    xmlEditor.setValue(result.xmlString);
-                    $('#to-qti-errors').html(JSON.stringify(result.messages, null, 4));
+                    try {
+                        var result = JSON.parse(data);
+                        xmlEditor.setValue(result.xmlString);
+                        $('#to-qti-messages').html(JSON.stringify(result.messages, null, 4));
+                    } catch (error) {
+                        $('#to-qti-errors').html(data);
+                    }
                 },
                 error: function (data) {
                     console.log(data);
