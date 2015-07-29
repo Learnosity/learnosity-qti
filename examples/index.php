@@ -26,12 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die;
     }
     if ($_GET['operation'] === 'tojson') {
-        // Handle parse json request
-        if (!isset($binaryPath)) {
-            //$binaryPath = 'php ../build/learnosity-qti.phar';
-            $binaryPath = '/usr/local/bin/php ' . dirname(__FILE__) . '/../console.php';
-        }
-        echo convertToJson(file_get_contents("php://input"), $binaryPath);
+        echo convertToJson(file_get_contents("php://input"));
         die;
     }
 }

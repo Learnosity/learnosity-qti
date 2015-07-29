@@ -22,9 +22,6 @@ services:
     learnosity_question_writer:
         class:      Learnosity\Processors\Learnosity\Out\QuestionWriter
         scope:      prototype
-    imscp_manifest_mapper:
-        class:      Learnosity\Processors\IMSCP\In\ManifestMapper
-        scope:      prototype
     assets_processing:
         class:      Learnosity\Processors\QtiV2\In\Processings\AssetsProcessing
 
