@@ -11,12 +11,11 @@ use Learnosity\Services\LogService;
 use qtism\common\enums\BaseType;
 use qtism\common\enums\Cardinality;
 use qtism\common\utils\Format;
-use qtism\data\content\BlockCollection;
 use qtism\data\content\FlowStaticCollection;
 use qtism\data\content\interactions\ChoiceInteraction;
+use qtism\data\content\interactions\Prompt;
 use qtism\data\content\interactions\SimpleChoice;
 use qtism\data\content\interactions\SimpleChoiceCollection;
-use qtism\data\content\ItemBody;
 use qtism\data\processing\ResponseProcessing;
 use qtism\data\state\CorrectResponse;
 use qtism\data\state\ResponseDeclaration;
@@ -25,16 +24,10 @@ use qtism\data\state\ValueCollection;
 
 class McqMapper extends AbstractQuestionTypeMapper
 {
-    public function convert(BaseQuestionType $questionType, $interactionIdentifier = 'RESPONSE')
+    public function convert(BaseQuestionType $questionType, $interactionIdentifier, $interactionLabel)
     {
         /** @var mcq $question */
         $question = $questionType;
-        $contentCollection = new BlockCollection();
-
-        // Build stimulus components
-        foreach ($this->convertStimulus($question->get_stimulus()) as $component) {
-            $contentCollection->attach($component);
-        }
 
         // Build <choiceInteraction>
         $valueIdentifierMap = [];
@@ -57,25 +50,35 @@ class McqMapper extends AbstractQuestionTypeMapper
             $choice->setContent($choiceContent);
             $simpleChoiceCollection->attach($choice);
         }
-        $contentCollection->attach(new ChoiceInteraction($interactionIdentifier, $simpleChoiceCollection));
 
-        // Build final <itemBody>, <responseDeclaration>, and its <responseProcessingTemplate>
-        $itemBody = new ItemBody();
-        $itemBody->setContent($contentCollection);
+        // Build final interaction and its corresponding <responseDeclaration>, and its <responseProcessingTemplate>
+        $interaction = new ChoiceInteraction($interactionIdentifier, $simpleChoiceCollection);
+        $interaction->setLabel($interactionLabel);
+
+        // Build the prompt
+        $prompt = new Prompt();
+        $contentCollection = new FlowStaticCollection();
+        foreach ($this->convertStimulus($question->get_stimulus()) as $component) {
+            $contentCollection->attach($component);
+        }
+        $prompt->setContent($contentCollection);
+        $interaction->setPrompt($prompt);
+
+        if (empty($question->get_validation())) {
+            return [$interaction, null, null];
+        }
+
         list($responseDeclaration, $responseProcessingTemplate) = $this->buildResponseDeclaration(
             $interactionIdentifier,
             $valueIdentifierMap,
             $question->get_validation(),
             $question->get_multiple_responses()
         );
-        return [$itemBody, $responseDeclaration, $responseProcessingTemplate];
+        return [$interaction, $responseDeclaration, $responseProcessingTemplate];
     }
 
     private function buildResponseDeclaration($identifier, array $valueIdentifierMap, mcq_validation $validation, $isMultipleResponse)
     {
-        if (empty($validation)) {
-            return [null, null];
-        }
         $cardinality = ($isMultipleResponse) ? Cardinality::MULTIPLE : Cardinality::SINGLE;
 
         // If question only has `valid_response` with score of `1`, then it would be mapped to <correctResponse>

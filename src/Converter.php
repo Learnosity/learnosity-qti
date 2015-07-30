@@ -3,7 +3,9 @@
 namespace Learnosity;
 
 use Learnosity\Entities\Item\item;
+use Learnosity\Processors\Learnosity\In\ItemMapper;
 use Learnosity\Processors\Learnosity\In\QuestionMapper;
+use Learnosity\Processors\QtiV2\Out\ItemWriter;
 use Learnosity\Processors\QtiV2\Out\QuestionWriter;
 
 class Converter
@@ -40,11 +42,36 @@ class Converter
 
     public static function convertLearnosityToQtiItem($jsonString)
     {
-        // TODO: determine whether this is item or question
+        $data = json_decode($jsonString, true);
+
+        // Guess whether this JSON is an item or a question by whether it has `type` or not
+        $isQuestionJson = isset($data['type']) && is_string($data['type']);
+
+        // Handle if just question
+        if ($isQuestionJson) {
+            $questionMapper = new QuestionMapper();
+            $questionWriter = new QuestionWriter();
+            list($xmlString, $messages) = $questionWriter->convert($questionMapper->parse($data));
+            return [$xmlString, $messages];
+        }
+
+        // Handle if both item and question
+        $questionsJson = $data['questions'];
+        $itemJson = $data;
+        $itemJson['questionReferences'] = array_column($itemJson['questions'], 'reference');
+        unset($itemJson['questions']);
+
+        // Map those bad boys to Learnosity entities
+        $itemMapper = new ItemMapper();
         $questionMapper = new QuestionMapper();
-        $question = $questionMapper->parse(json_decode($jsonString, true));
-        $questionWriter = new QuestionWriter();
-        list($xmlString, $messages) = $questionWriter->convert($question);
+        $item = $itemMapper->parse($itemJson);
+        $questions = array_map(function ($questionJson) use ($questionMapper) {
+            return $questionMapper->parse($questionJson);
+        }, $questionsJson);
+
+        // Write em` to QTI
+        $itemWriter = new ItemWriter();
+        list($xmlString, $messages) = $itemWriter->convert($item, $questions);
         return [$xmlString, $messages];
     }
 }
