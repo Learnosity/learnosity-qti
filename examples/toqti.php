@@ -44,18 +44,29 @@
 <script>
     $(function () {
         $('#to-qti-submit').click(function () {
-            var requestJson = jsonEditor.getValue();
             $('#to-qti-errors').html('');
+            $('#to-qti-messages').html('');
+            xmlEditor.setValue('');
+
+            var request = {
+                'mode': 'to_qti',
+                'data': {
+                    'items': [
+                        jsonEditor.getValue()
+                    ]
+                }
+            };
             $.ajax({
                 type: "POST",
-                url: '?operation=toqti',
+                url: 'http://localhost:7777',
                 cache: false,
-                data: requestJson,
+                data: JSON.stringify(request),
                 success: function (data) {
                     try {
-                        var result = JSON.parse(data);
-                        xmlEditor.setValue(result.xmlString);
-                        $('#to-qti-messages').html(JSON.stringify(result.messages, null, 4));
+                        var result = JSON.parse(data)[0];
+                        $('#to-qti-errors').html(result.errors);
+                        $('#to-qti-messages').html(JSON.stringify(result.manifest, null, 4));
+                        xmlEditor.setValue(result.assessmentItem);
                     } catch (error) {
                         $('#to-qti-errors').html(data);
                     }

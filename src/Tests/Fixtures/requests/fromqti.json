@@ -1,0 +1,9 @@
+{
+    "mode": "from_qti",
+    "data": {
+        "xmls": [
+            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!-- Thie example adapted from the PET Handbook, copyright University of Cambridge ESOL Examinations -->\n<assessmentItem xmlns=\"http://www.imsglobal.org/xsd/imsqti_v2p1\"\n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n    xsi:schemaLocation=\"http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/qti/qtiv2p1/imsqti_v2p1.xsd\"\n    identifier=\"choice\" title=\"Unattended Luggage\" adaptive=\"false\" timeDependent=\"false\">\n    <responseDeclaration identifier=\"RESPONSE\" cardinality=\"single\" baseType=\"identifier\">\n        <correctResponse>\n            <value>ChoiceA</value>\n        </correctResponse>\n    </responseDeclaration>\n    <outcomeDeclaration identifier=\"SCORE\" cardinality=\"single\" baseType=\"float\">\n        <defaultValue>\n            <value>0</value>\n        </defaultValue>\n    </outcomeDeclaration>\n    <itemBody>\n        <p>Look at the text in the picture.</p>\n        <p>\n            <img src=\"images/sign.png\" alt=\"NEVER LEAVE LUGGAGE UNATTENDED\"/>\n        </p>\n        <choiceInteraction responseIdentifier=\"RESPONSE\" shuffle=\"false\" maxChoices=\"1\">\n            <prompt>What does it say?</prompt>\n            <simpleChoice identifier=\"ChoiceA\">You must stay with your luggage at all times.</simpleChoice>\n            <simpleChoice identifier=\"ChoiceB\">Do not let someone else look after your luggage.</simpleChoice>\n            <simpleChoice identifier=\"ChoiceC\">Remember your luggage when you leave.</simpleChoice>\n        </choiceInteraction>\n    </itemBody>\n    <responseProcessing template=\"http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct\"/>\n</assessmentItem>\n"
+        ]
+    },
+    "base_assets_path": "/base"
+}

@@ -53,6 +53,8 @@ class McqMapper extends AbstractQuestionTypeMapper
 
         // Build final interaction and its corresponding <responseDeclaration>, and its <responseProcessingTemplate>
         $interaction = new ChoiceInteraction($interactionIdentifier, $simpleChoiceCollection);
+        $interaction->setMinChoices(1);
+        $interaction->setMaxChoices($question->get_multiple_responses() ? $simpleChoiceCollection->count() : 1);
         $interaction->setLabel($interactionLabel);
 
         // Build the prompt

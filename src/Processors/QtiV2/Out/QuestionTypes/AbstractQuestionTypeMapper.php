@@ -28,6 +28,7 @@ abstract class AbstractQuestionTypeMapper
 
         // Otherwise, build a `div` wrapper around it
         // This is a workaround for QTI spec restriction of <itemBody> which only allows Block objects
+        // TODO: Used to be itembody and now shall be just flow!
         LogService::log("Stimulus content would be wrapped in a `div` to workaround QTI spec restriction of `itemBody` which only allows a collection of Block objects");
         $divCollection = new FlowCollection();
         foreach ($stimulusComponents as $component) {

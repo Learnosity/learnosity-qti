@@ -72,7 +72,14 @@
     var questionsApp;
     $(function () {
         $('#to-json-submit').click(function () {
-            var requestXML = toJsonXmlEditor.getValue();
+            var request = {
+                'mode': 'from_qti',
+                'data': {
+                    'assessmentItems': [
+                        toJsonXmlEditor.getValue()
+                    ]
+                }
+            };
             var baseAssetsUrl = $('#baseAssetsUrl').val();
             $('#errorMsg').html('');
             $('#render-wrapper').html('');
@@ -80,7 +87,7 @@
                 type: "POST",
                 url: '?baseAssetsUrl=' + baseAssetsUrl + '&operation=tojson',
                 cache: false,
-                data: requestXML,
+                data: toJsonXmlEditor.getValue(),
                 success: function (data) {
                     try {
                         var result = JSON.parse(data);
