@@ -22,16 +22,6 @@ class MarshallerFactyoryTest extends QtiSmTestCase {
 		$marshaller = $factory->createMarshaller($element);
 		$this->assertInstanceOf('qtism\\data\\storage\\xml\\marshalling\\AreaMapEntryMarshaller', $marshaller);
 	}
-
-	public function testFromDomText() {
-		$dom = new DOMDocument('1.0', 'UTF-8');
-		$dom->loadXML('<simpleChoice>value</simpleChoice>');
-		$element = $dom->documentElement;
-
-		$factory = new MarshallerFactory();
-		$marshaller = $factory->createMarshaller(new DOMText('value'));
-		$this->assertInstanceOf('qtism\\data\\storage\\xml\\marshalling\\AreaMapEntryMarshaller', $marshaller);
-	}
 	
 	public function testFromQtiComponent() {
 		$shape = Shape::RECT;

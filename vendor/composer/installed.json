@@ -868,64 +868,6 @@
         ]
     },
     {
-        "name": "qtism/qtism",
-        "version": "0.9.8",
-        "version_normalized": "0.9.8.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/oat-sa/qti-sdk.git",
-            "reference": "20a9dbd570da689034404b75d8a78f919ef2051c"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/oat-sa/qti-sdk/zipball/20a9dbd570da689034404b75d8a78f919ef2051c",
-            "reference": "20a9dbd570da689034404b75d8a78f919ef2051c",
-            "shasum": ""
-        },
-        "require": {
-            "php": ">=5.3.0"
-        },
-        "require-dev": {
-            "phpunit/phpunit": ">=3.7.20"
-        },
-        "time": "2015-07-22 13:26:27",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-0": {
-                "qtism\\": "."
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "GPL-2.0"
-        ],
-        "authors": [
-            {
-                "name": "Open Assessment Technologies S.A.",
-                "homepage": "http://www.taotesting.com"
-            },
-            {
-                "name": "Jérôme Bogaerts",
-                "email": "jerome@taotesting.com",
-                "homepage": "http://www.taotesting.com",
-                "role": "Developer"
-            }
-        ],
-        "description": "OAT QTI Software Module Library",
-        "homepage": "http://www.taotesting.com",
-        "keywords": [
-            "CBA",
-            "Computer-Aided Assessment",
-            "Computer-Assisted Assessment",
-            "Computer-Based Assessment",
-            "IMS",
-            "OAT",
-            "QTI",
-            "TAO"
-        ]
-    },
-    {
         "name": "sebastian/version",
         "version": "1.0.6",
         "version_normalized": "1.0.6.0",
@@ -2391,5 +2333,63 @@
         ],
         "description": "Symfony FrameworkBundle",
         "homepage": "https://symfony.com"
+    },
+    {
+        "name": "qtism/qtism",
+        "version": "0.9.10",
+        "version_normalized": "0.9.10.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/oat-sa/qti-sdk.git",
+            "reference": "926cc8b30abe371ceca6a2a9c5509a465fe3c395"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/oat-sa/qti-sdk/zipball/926cc8b30abe371ceca6a2a9c5509a465fe3c395",
+            "reference": "926cc8b30abe371ceca6a2a9c5509a465fe3c395",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": ">=3.7.20"
+        },
+        "time": "2015-07-29 09:04:32",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "qtism\\": "."
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "GPL-2.0"
+        ],
+        "authors": [
+            {
+                "name": "Open Assessment Technologies S.A.",
+                "homepage": "http://www.taotesting.com"
+            },
+            {
+                "name": "Jérôme Bogaerts",
+                "email": "jerome@taotesting.com",
+                "homepage": "http://www.taotesting.com",
+                "role": "Developer"
+            }
+        ],
+        "description": "OAT QTI Software Module Library",
+        "homepage": "http://www.taotesting.com",
+        "keywords": [
+            "CBA",
+            "Computer-Aided Assessment",
+            "Computer-Assisted Assessment",
+            "Computer-Based Assessment",
+            "IMS",
+            "OAT",
+            "QTI",
+            "TAO"
+        ]
     }
 ]

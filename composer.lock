@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "8ac89f78dd837cfd8a31dd0154220a78",
+    "hash": "3dc71c08ddd23b6815ac21509fc68b12",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -375,16 +375,16 @@
         },
         {
             "name": "qtism/qtism",
-            "version": "0.9.8",
+            "version": "0.9.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/oat-sa/qti-sdk.git",
-                "reference": "20a9dbd570da689034404b75d8a78f919ef2051c"
+                "reference": "926cc8b30abe371ceca6a2a9c5509a465fe3c395"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/oat-sa/qti-sdk/zipball/20a9dbd570da689034404b75d8a78f919ef2051c",
-                "reference": "20a9dbd570da689034404b75d8a78f919ef2051c",
+                "url": "https://api.github.com/repos/oat-sa/qti-sdk/zipball/926cc8b30abe371ceca6a2a9c5509a465fe3c395",
+                "reference": "926cc8b30abe371ceca6a2a9c5509a465fe3c395",
                 "shasum": ""
             },
             "require": {
@@ -427,7 +427,7 @@
                 "QTI",
                 "TAO"
             ],
-            "time": "2015-07-22 13:26:27"
+            "time": "2015-07-29 09:04:32"
         },
         {
             "name": "slim/slim",

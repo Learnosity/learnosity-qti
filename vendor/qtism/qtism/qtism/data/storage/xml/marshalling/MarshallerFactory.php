@@ -28,7 +28,6 @@ use qtism\common\utils\Reflection;
 use qtism\data\QtiComponent;
 use qtism\data\storage\xml\Utils;
 use \DOMElement;
-use \DOMText;
 use \InvalidArgumentException;
 use \RuntimeException;
 use \ReflectionClass;
@@ -240,9 +239,6 @@ class MarshallerFactory {
 		}
 		else if ($object instanceof DOMElement) {
 			$qtiClassName = $object->localName;
-		}
-		else if ($object instanceof DOMText) {
-			$qtiClassName = 'textRun';
 		}
 		
 		if (isset($qtiClassName)) {
