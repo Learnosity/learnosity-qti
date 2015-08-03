@@ -16,9 +16,12 @@ class QtiMarshallerUtil
         try {
             $dom = new DOMDocument('1.0', 'UTF-8');
             $dom->formatOutput = true;
-            $dom->loadXML("<body>$string</body>", LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+            // TODO: Try to clean as much as I can blah
+            $string = str_replace('&nbsp;', ' ', $string);
 
             // TODO: Can only unmarshall nice stuff, doesnt work with dodgy or invalid HTML
+            $dom->loadXML("<body>$string</body>", LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
             $marshallerFactory = new LearnosityMarshallerFactory();
             $components = new QtiComponentCollection();
             foreach ($dom->documentElement->childNodes as $element) {
@@ -32,7 +35,7 @@ class QtiMarshallerUtil
             }
             return $components;
         } catch (\Exception $e) {
-            throw new MappingException('[Unable to transforming to QTI] ' . $e->getMessage(), MappingException::CRITICAL);
+            throw new MappingException('[Unable to transform to QTI] ' . $e->getMessage(), MappingException::CRITICAL);
         }
     }
 

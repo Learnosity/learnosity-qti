@@ -58,13 +58,7 @@ class McqMapper extends AbstractQuestionTypeMapper
         $interaction->setLabel($interactionLabel);
 
         // Build the prompt
-        $prompt = new Prompt();
-        $contentCollection = new FlowStaticCollection();
-        foreach ($this->convertStimulus($question->get_stimulus()) as $component) {
-            $contentCollection->attach($component);
-        }
-        $prompt->setContent($contentCollection);
-        $interaction->setPrompt($prompt);
+        $interaction->setPrompt($this->buildPrompt($question->get_stimulus()));
 
         if (empty($question->get_validation())) {
             return [$interaction, null, null];
@@ -79,12 +73,24 @@ class McqMapper extends AbstractQuestionTypeMapper
         return [$interaction, $responseDeclaration, $responseProcessingTemplate];
     }
 
+    private function buildPrompt($stimulusString)
+    {
+        $prompt = new Prompt();
+        $contentCollection = new FlowStaticCollection();
+        foreach ($this->convertStimulus($stimulusString) as $component) {
+            $contentCollection->attach($component);
+        }
+        $prompt->setContent($contentCollection);
+        return $prompt;
+    }
+
     private function buildResponseDeclaration($identifier, array $valueIdentifierMap, mcq_validation $validation, $isMultipleResponse)
     {
         $cardinality = ($isMultipleResponse) ? Cardinality::MULTIPLE : Cardinality::SINGLE;
 
         // If question only has `valid_response` with score of `1`, then it would be mapped to <correctResponse>
         // with `match_correct` template
+        $type = $validation->get_scoring_type();
         if (!empty($validation->get_valid_response()) &&
             empty($validation->get_alt_responses()) &&
             intval($validation->get_valid_response()->get_score()) === 1
@@ -97,7 +103,7 @@ class McqMapper extends AbstractQuestionTypeMapper
                     $choiceIdentifier = $valueIdentifierMap[$value];
                     $values->attach(new Value($choiceIdentifier));
                 } else {
-                    LogService::log('Invalid value in validation object');
+                    LogService::log('Invalid `value` in validation object. Failed mapping it');
                 }
             }
 
@@ -112,9 +118,5 @@ class McqMapper extends AbstractQuestionTypeMapper
             }
             return [$responseDeclaration, $responseProcessing];
         }
-
-        LogService::log('Validation object could not be supported yet ~');
-        // Otherwise, we would need to build the `MapResponse`
-        return [null, null];
     }
 }

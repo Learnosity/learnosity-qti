@@ -3,10 +3,29 @@
 require 'vendor/autoload.php';
 
 $app = new \Slim\Slim();
-$converter = new \Learnosity\Converter();
 
-$app->post('/', function () use ($app, $converter) {
+// TODO: This quick and dirty endpoint is used for regression testing on the demo page upon converting Learnosity JSON to QTI
+// TODO: Should only be used to `sort of` ensure our QTI produced by this library is valid and renderable
+$app->post('/renderQtiWithTao', function () use ($app) {
+
+    $document = new \qtism\data\storage\xml\XmlDocument();
+    $document->loadFromString($app->request()->getBody());
+
+    $engine = new \qtism\runtime\rendering\markup\xhtml\XhtmlRenderingEngine();
+    $renderResult = $engine->render($document->getDocumentComponent());
+    $taoRenderResult = $renderResult->saveXml($renderResult->documentElement);
+
+    $app->response->setStatus(200);
+    echo json_encode([
+        'xhtml' => $taoRenderResult
+    ]);
+    die;
+});
+
+$app->post('/', function () use ($app) {
     try {
+        $converter = new \Learnosity\Converter();
+
         $body = json_decode($app->request()->getBody(), true);
 
         // Validate request object

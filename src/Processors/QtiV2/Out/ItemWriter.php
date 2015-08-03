@@ -3,8 +3,6 @@
 namespace Learnosity\Processors\QtiV2\Out;
 
 use Learnosity\Entities\Item\item;
-use Learnosity\Entities\Question;
-use Learnosity\Processors\QtiV2\Out\Builders\AssessmentItemBuilder;
 use Learnosity\Services\LogService;
 use qtism\common\utils\Format;
 use qtism\data\storage\xml\XmlDocument;

@@ -3,7 +3,6 @@
 namespace Learnosity\Processors\QtiV2\Out;
 
 use Learnosity\Entities\Question;
-use Learnosity\Processors\QtiV2\Out\Builders\AssessmentItemBuilder;
 use Learnosity\Services\LogService;
 use Learnosity\Utils\StringUtil;
 use qtism\common\utils\Format;

@@ -52,17 +52,21 @@ class EntityBuilder
     {
         // And, set values magically using setter methods
         foreach ($values as $key => $value) {
-            if (method_exists($class, "set_$key")) {
-                $setter = new \ReflectionMethod($class, "set_$key");
-                $parameters = [];
-                foreach ($setter->getParameters() as $parameter) {
-                    $parameterName = $parameter->getName();
-                    $parameters[$parameterName] = self::buildField($parameter, $values[$parameterName]);
-                }
-                $setter->invokeArgs($class, $parameters);
-            } else {
+            if (!method_exists($class, "set_$key")) {
                 LogService::log("Ignoring attribute '$key'. Invalid key");
+                continue;
             }
+            if (empty($value)) {
+                LogService::log("Ignoring attribute '$key'. Invalid key");
+                continue;
+            }
+            $setter = new \ReflectionMethod($class, "set_$key");
+            $parameters = [];
+            foreach ($setter->getParameters() as $parameter) {
+                $parameterName = $parameter->getName();
+                $parameters[$parameterName] = self::buildField($parameter, $values[$parameterName]);
+            }
+            $setter->invokeArgs($class, $parameters);
         }
         return $class;
     }

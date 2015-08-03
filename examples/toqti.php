@@ -22,6 +22,12 @@
         <div id="to-qti-xml-editor" class="qti-xml" name="xml-editor"></div>
     </div>
 </div>
+<div class="row">
+    <div class="col-md-12">
+        <p><span class="label label-default">QTI Render Result with TAO Library</span></p>
+        <div id="to-qti-render-result"></div>
+    </div>
+</div>
 <div class="row output-json-row">
     <div class="col-md-12">
         <p><span class="label label-default">Exceptions and All Things Ignored</span></p>
@@ -67,6 +73,21 @@
                         $('#to-qti-errors').html(result.errors);
                         $('#to-qti-messages').html(JSON.stringify(result.manifest, null, 4));
                         xmlEditor.setValue(result.assessmentItem);
+
+                        // Do another AJAX request to try to render the QTI
+                        $.ajax({
+                            type: "POST",
+                            url: 'http://localhost:7777/renderQtiWithTao',
+                            cache: false,
+                            data: result.assessmentItem,
+                            success: function (data) {
+                                var result = JSON.parse(data);
+                                $('#to-qti-render-result').html(result.xhtml);
+                            },
+                            error: function (data) {
+                                console.log(data);
+                            }
+                        });
                     } catch (error) {
                         $('#to-qti-errors').html(data);
                     }

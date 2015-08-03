@@ -1,6 +1,6 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\Out\Builders;
+namespace Learnosity\Processors\QtiV2\Out;
 
 use Learnosity\Entities\Question;
 use Learnosity\Exceptions\MappingException;
@@ -24,13 +24,14 @@ class AssessmentItemBuilder
 
     private $supportedQuestionTypes = [
         'mcq',
+        'shorttext',
+        'orderlist'
     ];
 
     public function build($itemIdentifier, $itemLabel, $questions, $content = '')
     {
         $assessmentItem = new AssessmentItem($itemIdentifier, $itemIdentifier, false);
         $assessmentItem->setLabel($itemLabel);
-
         $assessmentItem->setOutcomeDeclarations($this->buildOutcomeDeclarations());
         $assessmentItem->setToolName('Learnosity');
 
@@ -40,7 +41,9 @@ class AssessmentItemBuilder
         foreach ($questions as $key => $question) {
             /** @var Question $question */
             list($interaction, $responseDeclaration, $responseProcessing) = $this->map($question);
-            $responseDeclarationCollection->attach($responseDeclaration);
+            if (!empty($responseDeclaration)) {
+                $responseDeclarationCollection->attach($responseDeclaration);
+            }
             $itemBodyCollection->attach($interaction);
         }
 
@@ -66,7 +69,7 @@ class AssessmentItemBuilder
     {
         $type = $question->get_type();
         if (!in_array($type, $this->supportedQuestionTypes)) {
-            throw new MappingException('Question type not yet supported to be mapped to QTI');
+            throw new MappingException("Question type `$type` not yet supported to be mapped to QTI");
         }
         $clazz = new \ReflectionClass(self::MAPPER_CLASS_BASE . ucfirst($type . 'Mapper'));
         $questionTypeMapper = $clazz->newInstance();

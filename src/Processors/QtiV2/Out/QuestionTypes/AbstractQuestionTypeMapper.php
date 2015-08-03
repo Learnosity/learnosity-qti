@@ -12,7 +12,7 @@ use qtism\data\QtiComponentCollection;
 
 abstract class AbstractQuestionTypeMapper
 {
-    abstract public function convert(BaseQuestionType $questionType, $identifier, $label);
+    abstract public function convert(BaseQuestionType $questionType, $interactionIdentifier, $interactionLabel);
 
     protected function convertStimulus($stimulusString)
     {
