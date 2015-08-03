@@ -25,7 +25,8 @@ class AssessmentItemBuilder
     private $supportedQuestionTypes = [
         'mcq',
         'shorttext',
-        'orderlist'
+        'orderlist',
+        'longtext'
     ];
 
     public function build($itemIdentifier, $itemLabel, $questions, $content = '')
