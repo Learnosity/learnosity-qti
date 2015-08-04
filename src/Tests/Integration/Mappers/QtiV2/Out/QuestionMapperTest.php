@@ -11,7 +11,7 @@ class QuestionMapperTest extends \PHPUnit_Framework_TestCase
 {
     public function testMappingMcqQuestion()
     {
-        $questionJson = FileSystemUtil::readFile(FileSystemUtil::getRootPath() . '/src/Tests/Fixtures/learnosityjsons/item_shorttext_orderlist.json')->getContents();
+        $questionJson = FileSystemUtil::readFile(FileSystemUtil::getRootPath() . '/src/Tests/Fixtures/learnosityjsons/longtext.json')->getContents();
         list($xmlString, $messages) = Converter::convertLearnosityToQtiItem($questionJson);
         $this->assertNotNull($xmlString);
 

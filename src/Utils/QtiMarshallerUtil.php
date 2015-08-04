@@ -18,7 +18,7 @@ class QtiMarshallerUtil
             $dom->formatOutput = true;
 
             // TODO: Try to clean as much as I can blah
-            $string = str_replace('&nbsp;', ' ', $string);
+            $string = html_entity_decode($string, ENT_XHTML);
 
             // TODO: Can only unmarshall nice stuff, doesnt work with dodgy or invalid HTML
             $dom->loadXML("<body>$string</body>", LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);

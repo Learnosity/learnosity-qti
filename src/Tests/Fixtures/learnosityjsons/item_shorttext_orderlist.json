@@ -1,6 +1,6 @@
 {
     "reference": "XMAS14_1",
-    "content": "<p>&nbsp;</p>\r\n\r\n<p>&nbsp;</p>\r\n\r\n<p><span class=\"learnosity-response question-XMAS14_1_2\"></span></p>\r\n\r\n<p><span class=\"learnosity-response question-XMAS14_1_1\"></span></p>",
+    "content": "<div><span class=\"learnosity-response question-XMAS14_1_2\"></span><span class=\"learnosity-response question-XMAS14_1_1\"></span></div>",
     "workflow": null,
     "metadata": null,
     "questions": [

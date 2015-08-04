@@ -58,7 +58,7 @@ class McqMapper extends AbstractQuestionTypeMapper
         $interaction->setMaxChoices($question->get_multiple_responses() ? $simpleChoiceCollection->count() : 1);
 
         // Build the prompt
-        $interaction->setPrompt($this->buildPrompt($question->get_stimulus()));
+        $interaction->setPrompt($this->convertStimulusForPrompt($question->get_stimulus()));
 
         if (empty($question->get_validation())) {
             return [$interaction, null, null];
@@ -71,17 +71,6 @@ class McqMapper extends AbstractQuestionTypeMapper
             $question->get_multiple_responses()
         );
         return [$interaction, $responseDeclaration, $responseProcessingTemplate];
-    }
-
-    private function buildPrompt($stimulusString)
-    {
-        $prompt = new Prompt();
-        $contentCollection = new FlowStaticCollection();
-        foreach ($this->convertStimulus($stimulusString) as $component) {
-            $contentCollection->attach($component);
-        }
-        $prompt->setContent($contentCollection);
-        return $prompt;
     }
 
     private function buildResponseDeclaration($identifier, array $valueIdentifierMap, mcq_validation $validation, $isMultipleResponse)

@@ -33,7 +33,7 @@ class OrderlistMapper extends AbstractQuestionTypeMapper
 
         $interaction = new OrderInteraction($interactionIdentifier, $simpleChoiceCollection);
         $interaction->setLabel($interactionLabel);
-        $interaction->setPrompt($this->buildPrompt($question->get_stimulus()));
+        $interaction->setPrompt($this->convertStimulusForPrompt($question->get_stimulus()));
 
         $interaction->setShuffle(false);
         $interaction->setMinChoices(1);
@@ -41,16 +41,5 @@ class OrderlistMapper extends AbstractQuestionTypeMapper
         $interaction->setOrientation(Orientation::VERTICAL);
 
         return [$interaction, null, null];
-    }
-
-    private function buildPrompt($stimulusString)
-    {
-        $prompt = new Prompt();
-        $contentCollection = new FlowStaticCollection();
-        foreach ($this->convertStimulus($stimulusString) as $component) {
-            $contentCollection->attach($component);
-        }
-        $prompt->setContent($contentCollection);
-        return $prompt;
     }
 }

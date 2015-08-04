@@ -4,10 +4,7 @@ namespace Learnosity\Processors\QtiV2\Out\QuestionTypes;
 
 use Learnosity\Entities\BaseQuestionType;
 use Learnosity\Entities\QuestionTypes\longtext;
-use Learnosity\Services\LogService;
-use qtism\data\content\FlowStaticCollection;
 use qtism\data\content\interactions\ExtendedTextInteraction;
-use qtism\data\content\interactions\Prompt;
 use qtism\data\content\interactions\TextFormat;
 
 class LongtextMapper extends AbstractQuestionTypeMapper
@@ -19,7 +16,7 @@ class LongtextMapper extends AbstractQuestionTypeMapper
 
         $interaction = new ExtendedTextInteraction($interactionIdentifier);
         $interaction->setLabel($interactionLabel);
-        $interaction->setPrompt($this->buildPrompt($question->get_stimulus()));
+        $interaction->setPrompt($this->convertStimulusForPrompt($question->get_stimulus()));
         $interaction->setFormat(TextFormat::XHTML);
         $interaction->setMinStrings(1);
         $interaction->setMaxStrings(1);
@@ -30,16 +27,5 @@ class LongtextMapper extends AbstractQuestionTypeMapper
         }
 
         return [$interaction, null, null];
-    }
-
-    private function buildPrompt($stimulusString)
-    {
-        $prompt = new Prompt();
-        $contentCollection = new FlowStaticCollection();
-        foreach ($this->convertStimulus($stimulusString) as $component) {
-            $contentCollection->attach($component);
-        }
-        $prompt->setContent($contentCollection);
-        return $prompt;
     }
 }

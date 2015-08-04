@@ -20,7 +20,7 @@ class ShorttextMapper extends AbstractQuestionTypeMapper
         $interaction->setLabel($interactionLabel);
 
         // Build the prompt
-        $interaction->setPrompt($this->buildPrompt($question->get_stimulus()));
+        $interaction->setPrompt($this->convertStimulusForPrompt($question->get_stimulus()));
 
         // Build placeholder
         $placeholderText = $question->get_placeholder();
@@ -33,16 +33,5 @@ class ShorttextMapper extends AbstractQuestionTypeMapper
         $interaction->setFormat(TextFormat::PLAIN);
 
         return [$interaction, null, null];
-    }
-
-    private function buildPrompt($stimulusString)
-    {
-        $prompt = new Prompt();
-        $contentCollection = new FlowStaticCollection();
-        foreach ($this->convertStimulus($stimulusString) as $component) {
-            $contentCollection->attach($component);
-        }
-        $prompt->setContent($contentCollection);
-        return $prompt;
     }
 }
