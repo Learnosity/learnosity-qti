@@ -1,6 +1,6 @@
 <?php
 
-namespace Learnosity\Tests\Mappers\QtiV2\Out;
+namespace Learnosity\Tests\Processors\QtiV2\Out;
 
 use Learnosity\Converter;
 use Learnosity\Utils\FileSystemUtil;
@@ -21,6 +21,5 @@ class QuestionMapperTest extends \PHPUnit_Framework_TestCase
         $engine = new XhtmlRenderingEngine();
         $renderResult = $engine->render($document->getDocumentComponent());
         $body = $renderResult->saveXml($renderResult->documentElement);
-        die;
     }
 }

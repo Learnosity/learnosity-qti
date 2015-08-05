@@ -6,6 +6,7 @@ use Learnosity\Entities\Question;
 use Learnosity\Exceptions\MappingException;
 use Learnosity\Processors\QtiV2\Out\Processings\HtmlCleaningProcessing;
 use Learnosity\Processors\QtiV2\Out\Processings\ProcessingInterface;
+use Learnosity\Services\LogService;
 use Learnosity\Utils\StringUtil;
 use qtism\common\enums\BaseType;
 use qtism\common\utils\Format;

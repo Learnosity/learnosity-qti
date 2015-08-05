@@ -1,6 +1,6 @@
 <?php
 
-namespace Learnosity\Tests\Mappers\Learnosity;
+namespace Learnosity\Tests\Processors\Learnosity;
 
 use Learnosity\Processors\Learnosity\In\ItemMapper;
 use Learnosity\Utils\FileSystemUtil;
@@ -17,4 +17,4 @@ class ItemMapperTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('Learnosity\Entities\Item', $item);
     }
-} 
+}

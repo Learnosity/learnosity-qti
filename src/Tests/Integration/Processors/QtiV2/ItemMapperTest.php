@@ -1,6 +1,6 @@
 <?php
 
-namespace Learnosity\Tests\Mappers\QtiV2;
+namespace Learnosity\Tests\Processors\QtiV2;
 
 use Learnosity\AppContainer;
 use Learnosity\Entities\Item\item;
