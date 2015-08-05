@@ -1,0 +1,43 @@
+<h3 id="mapping-question-types">Mapping Question Types</h3>
+<p>Learnosity questions are mapped to QTI Interaction</p>
+<hr>
+
+<h4>Supported Question Types</h4>
+<ul class="link-list">
+    {% for questionTypeName, data in questionTypes %}
+        <li><a href="#{{ questionTypeName }}">{{ questionTypeName }}</a></li>
+    {% endfor %}
+</ul>
+
+<p>These question types are currently unsupported:</p>
+{% for questionType in unsupportedQuestionTypes %}
+    <span class="secondary label">{{ questionType }}</span>
+{% endfor %}
+<hr>
+
+{% for questionTypeName, data in questionTypes %}
+    <h4 style="display: inline-block" id="{{ questionTypeName }}">{{ questionTypeName }}</h4>
+    <a style="display: inline-block" href="http://docs.learnosity.com/assessment/questions/questiontypes#{{ questionTypeName }}" target="_blank">http://docs.learnosity.com/assessment/questions/questiontypes#{{ questionTypeName }}</a>
+    <a style="display: inline-block; float: right; margin-top: 10px;" href="#mapping-question-types">Back to Top</a>
+    {{ _self.generateTables(questionTypeName, data) }}
+    <hr/>
+{% endfor %}
+
+{% macro generateTables(name, documentation) %}
+    {% if documentation is not empty %}
+        <table class="doc-table">
+            <tr>
+                <th></th>
+                <th>Support</th>
+                <th>Description</th>
+            </tr>
+            {% for attributeName, attribute in documentation %}
+                <tr>
+                    <td class="name">{{ attributeName }}</td>
+                    <td class="support-status support-status-{{ attribute.supportStatus|lower }}">{{ attribute.supportStatus }}</td>
+                    <td class="description">{{ attribute.description|raw }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+{% endmacro %}

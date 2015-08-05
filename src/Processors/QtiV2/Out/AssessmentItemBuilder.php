@@ -22,13 +22,6 @@ class AssessmentItemBuilder
 {
     const MAPPER_CLASS_BASE = 'Learnosity\Processors\QtiV2\Out\QuestionTypes\\';
 
-    private $supportedQuestionTypes = [
-        'mcq',
-        'shorttext',
-        'orderlist',
-        'longtext'
-    ];
-
     /**
      * @var ItemBodyBuilder
      */
@@ -85,7 +78,7 @@ class AssessmentItemBuilder
     private function map(Question $question)
     {
         $type = $question->get_type();
-        if (!in_array($type, $this->supportedQuestionTypes)) {
+        if (!in_array($type, Constants::$supportedQuestionTypes)) {
             throw new MappingException("Question type `$type` not yet supported to be mapped to QTI");
         }
         $clazz = new \ReflectionClass(self::MAPPER_CLASS_BASE . ucfirst($type . 'Mapper'));

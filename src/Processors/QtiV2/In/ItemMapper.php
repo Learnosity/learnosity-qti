@@ -15,17 +15,6 @@ use qtism\data\storage\xml\XmlCompactDocument;
 
 class ItemMapper
 {
-    private $supportedInteractions = [
-        'inlineChoiceInteraction',
-        'choiceInteraction',
-        'extendedTextInteraction',
-        'textEntryInteraction',
-        'matchInteraction',
-        'hottextInteraction',
-        'gapMatchInteraction',
-        'orderInteraction',
-        'graphicGapMatchInteraction'
-    ];
     private $itemBuilderFactory;
 
     public function __construct(ItemBuilderFactory $itemBuilderFactory)
@@ -70,7 +59,7 @@ class ItemMapper
         $itemBody = $assessmentItem->getItemBody();
 
         // Mapping interactions
-        $interactionComponents = $itemBody->getComponentsByClassName($this->supportedInteractions, true);
+        $interactionComponents = $itemBody->getComponentsByClassName(Constants::$supportedInteractions, true);
         if (!$interactionComponents || count($interactionComponents) === 0) {
             throw new MappingException('No supported interaction mapper could be found');
         }

@@ -3,22 +3,24 @@
 
 {% block head %}
     <script type="application/javascript">{% include 'includes/foundation-5.5.2/js/vendor/jquery.js' only %}</script>
+    <script type="application/javascript">{% include 'includes/foundation-5.5.2/js/foundation.min.js' only %}</script>
     <script type="application/javascript">
         $(function () {
+            $(document).foundation();
             $(".expandable-name").on('click', function (e) {
                 e.preventDefault();
                 $(this.nextElementSibling).slideToggle('fast');
             });
         });
     </script>
-        <style>
+    <style>
         table { width: 100%; word-break: break-word; }
         table tr td { vertical-align: top; }
         .doc-table tr td.name { width: 20%; }
         .doc-table tr td.support-status { width: 10%; }
         .doc-table tr td.support-status-yes { background: green; color: white; }
         .doc-table tr td.support-status-partial { background: yellowgreen; color: white; }
-        .doc-table tr td.support-status-no { background: indianred; color: white; }
+        .doc-table tr td.support-status-no { background: grey; color: white; }
         .doc-table tr td.description { width: 70%; }
         .expandable-name { margin-bottom: 15px; }
         .link-list {list-style: none;}
@@ -27,68 +29,17 @@
 
 {% block content %}
     <div style="width: 800px; margin: 40px auto">
-        <h1>QTI - Learnosity Documentation</h1>
-        <hr>
-
-        <h3>Mapping AssessmentItems</h3>
-        {% include 'docs/assessmentitem.html.twig' with itemSchemas %}
-        {{ _self.generateTables('AssessmentItem', assessmentItem) }}
-        <hr/>
-
-        <h4>Supported Interactions</h4>
-        <ul class="link-list">
-            {% for interactionName, interaction in interactions %}
-                <li><a href="#{{ interactionName }}">{{ interactionName }}</a></li>
-            {% endfor %}
+        <ul class="tabs" data-tab>
+            <li class="tab-title active"><a href="#panel1">Learnosity to QTI</a></li>
+            <li class="tab-title"><a href="#panel2">QTI to Learnosity</a></li>
         </ul>
-        <hr/>
-        {% for interactionName, interaction in interactions %}
-            <h4 id="{{ interactionName }}">{{ interactionName }}</h4>
-            {{ _self.generateTables(interactionName, interaction.interactionMapping) }}
-            <hr/>
-        {% endfor %}
+        <div class="tabs-content">
+            <div class="content active" id="panel1">
+                {% include 'docs/learnositytoqti.html.twig' with learnosityToQti only %}
+            </div>
+            <div class="content" id="panel2">
+                {% include 'docs/qtitolearnosity.html.twig' with qtiToLearnosity only %}
+            </div>
+        </div>
     </div>
 {% endblock content %}
-
-{% macro generateTables(name, documentation) %}
-    {% if attribute(documentation, '@notes') is not empty %}
-        <div class="panel">{{ attribute(documentation, '@notes')|raw }}</div>
-    {% endif %}
-
-    {% if documentation is not empty %}
-        <table class="doc-table">
-            <tr>
-                <th></th>
-                <th>Support</th>
-                <th>Description</th>
-            </tr>
-            {% for attributeName, attribute in attribute(documentation, '@attributes') %}
-                <tr>
-                    <td class="name">@{{ attributeName }}</td>
-                    <td class="support-status support-status-{{ attribute.supportStatus|lower }}">{{ attribute.supportStatus }}</td>
-                    <td class="description">{{ attribute.description|raw }}</td>
-                </tr>
-            {% endfor %}
-            {% for elementName, element in documentation %}
-                {% if elementName[:1] != '@'  %}
-                    {% if element.type == 'row' %}
-                        <tr>
-                            <td class="name">{{ elementName }}</td>
-                            <td class="support-status support-status-{{ element.supportStatus|lower }}">{{ element.supportStatus }}</td>
-                            <td class="description">{{ element.description|raw }}</td>
-                        </tr>
-                    {% elseif documentation is not null %}
-                        <tr>
-                            <td colspan="3">
-                                <div class="expandable-name"><a href="#">{{ elementName }}</a></div>
-                                <div class="expandable-content">
-                                    {{ _self.generateTables(elementName, element) }}
-                                </div>
-                            </td>
-                        </tr>
-                    {% endif %}
-                {% endif %}
-            {% endfor %}
-        </table>
-    {% endif %}
-{% endmacro %}

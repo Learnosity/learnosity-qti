@@ -7,7 +7,6 @@ use Learnosity\Processors\QtiV2\In\Documentation\QtiDoc;
 
 class ChoiceInteractionDocumentation implements InteractionDocumentationInterface
 {
-    // TODO: Write more extensive validation on its response processing process
     public static function getInteractionDocumentation()
     {
         $documentation['@attributes'] = QtiDoc::defaultCommonInteractionAttributeRow();

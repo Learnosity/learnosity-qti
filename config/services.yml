@@ -4,7 +4,7 @@ services:
     item_builder_factory:
         class:     Learnosity\Processors\QtiV2\In\ItemBuilderFactory
     learnosity_documentation_generator:
-        class:     Learnosity\QtiImportDocumentationGenerator
+        class:     Learnosity\DocumentationGenerator
         arguments: ["@schemas_service"]
     learnosity_entity_generator:
         class:     Learnosity\EntityGenerator
