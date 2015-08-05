@@ -10,4 +10,9 @@ class ShorttextDocumentation implements QuestionTypeDocumentationInterface
     {
         return [];
     }
+
+    public static function getIntroductionNotes()
+    {
+        return "";
+    }
 }

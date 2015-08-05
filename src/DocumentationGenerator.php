@@ -52,11 +52,15 @@ class DocumentationGenerator
                 $mapperClass = 'Learnosity\Processors\QtiV2\Out\Documentation\QuestionTypes\\' . ucfirst($questionType) . 'Documentation';
                 $documentation = $mapperClass::getDocumentation();
                 foreach (array_keys($this->generateAtributeTable($data['attributes'])) as $flattenedAttributeName) {
+                    // TODO: Need to check new or non-existing attribute name in case our schemas change
                     if (!in_array($flattenedAttributeName, array_keys($documentation))) {
                         $documentation[$flattenedAttributeName] = LearnosityDoc::none();
                     }
                 }
-                $questionTypeDocumentation[$questionType] = $documentation;
+                $questionTypeDocumentation[$questionType] = [
+                    'mapping' => $documentation,
+                    'introduction' => $mapperClass::getIntroductionNotes()
+                ];
             }
         }
         return [

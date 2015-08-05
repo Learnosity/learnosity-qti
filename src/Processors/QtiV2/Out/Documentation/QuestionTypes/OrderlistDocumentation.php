@@ -10,4 +10,9 @@ class OrderlistDocumentation implements QuestionTypeDocumentationInterface
     {
         return [];
     }
+
+    public static function getIntroductionNotes()
+    {
+        return "";
+    }
 }

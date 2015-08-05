@@ -13,4 +13,9 @@ class McqDocumentation implements QuestionTypeDocumentationInterface
             'stimulus' => LearnosityDoc::support('This is mapped to `prompt`')
         ];
     }
+
+    public static function getIntroductionNotes()
+    {
+        return "";
+    }
 }
