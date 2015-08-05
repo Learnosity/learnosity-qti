@@ -7,6 +7,7 @@ use Learnosity\Processors\Learnosity\In\ItemMapper;
 use Learnosity\Processors\Learnosity\In\QuestionMapper;
 use Learnosity\Processors\QtiV2\Out\ItemWriter;
 use Learnosity\Processors\QtiV2\Out\QuestionWriter;
+use Learnosity\Services\LearnosityToQtiPreProcessingService;
 
 class Converter
 {
@@ -43,6 +44,9 @@ class Converter
     public static function convertLearnosityToQtiItem($jsonString)
     {
         $data = json_decode($jsonString, true);
+        if ($data == null) {
+            throw new \Exception('Invalid JSON');
+        }
 
         // Guess whether this JSON is an item or a question by whether it has `type` or not
         $isQuestionJson = isset($data['type']) && is_string($data['type']);
@@ -51,7 +55,12 @@ class Converter
         if ($isQuestionJson) {
             $questionMapper = new QuestionMapper();
             $questionWriter = new QuestionWriter();
-            list($xmlString, $messages) = $questionWriter->convert($questionMapper->parse($data));
+
+            // Pre-process question JSON to strips out common known issues
+            $preprocessingService = new LearnosityToQtiPreProcessingService();
+            $processedQuestionJson = $preprocessingService->processJson($data);
+
+            list($xmlString, $messages) = $questionWriter->convert($questionMapper->parse($processedQuestionJson));
             return [$xmlString, $messages];
         }
 
@@ -60,6 +69,12 @@ class Converter
         $itemJson = $data;
         $itemJson['questionReferences'] = array_column($itemJson['questions'], 'reference');
         unset($itemJson['questions']);
+
+        // Pre-process these JSON
+        // ie. strips out common HTML issues such closing <br> <img> tags, transform scrolling passage, &nbsp; replacement, etc
+        $preprocessingService = new LearnosityToQtiPreProcessingService();
+        $questionsJson = $preprocessingService->processJson($questionsJson);
+        $itemJson = $preprocessingService->processJson($itemJson);
 
         // Map those bad boys to Learnosity entities
         $itemMapper = new ItemMapper();

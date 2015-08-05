@@ -8,7 +8,6 @@ use Learnosity\Utils\QtiMarshallerUtil;
 use qtism\data\content\FlowStaticCollection;
 use qtism\data\content\interactions\OrderInteraction;
 use qtism\data\content\interactions\Orientation;
-use qtism\data\content\interactions\Prompt;
 use qtism\data\content\interactions\SimpleChoice;
 use qtism\data\content\interactions\SimpleChoiceCollection;
 

@@ -13,7 +13,6 @@ use qtism\common\enums\Cardinality;
 use qtism\common\utils\Format;
 use qtism\data\content\FlowStaticCollection;
 use qtism\data\content\interactions\ChoiceInteraction;
-use qtism\data\content\interactions\Prompt;
 use qtism\data\content\interactions\SimpleChoice;
 use qtism\data\content\interactions\SimpleChoiceCollection;
 use qtism\data\processing\ResponseProcessing;

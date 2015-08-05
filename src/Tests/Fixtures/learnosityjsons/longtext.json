@@ -4,7 +4,7 @@
     "reference": "95ee5bd5-8834-4e9a-b16c-ef3a42b9320a_0",
     "data": {
         "character_map": true,
-        "stimulus": "<p>[This is the stem.]</p>",
+        "stimulus": "<p>[This &nbsp; is the stem.]</p>",
         "type": "longtext"
     }
 }

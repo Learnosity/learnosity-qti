@@ -73,6 +73,8 @@
                         $('#to-qti-errors').html(result.errors);
                         $('#to-qti-messages').html(JSON.stringify(result.manifest, null, 4));
                         xmlEditor.setValue(result.assessmentItem);
+                        debugger;
+                        console.log(result.assessmentItem);
 
                         // Do another AJAX request to try to render the QTI
                         $.ajax({

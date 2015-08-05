@@ -3,8 +3,8 @@
 namespace Learnosity\Processors\QtiV2\Out;
 
 use Learnosity\Exceptions\MappingException;
-use Learnosity\Processors\QtiV2\Out\ContentBuilder\BlockCollectionContentBuilder;
-use Learnosity\Processors\QtiV2\Out\ContentBuilder\InlineCollectionContentBuilder;
+use Learnosity\Processors\QtiV2\Out\ContentBuilders\BlockCollectionContentBuilder;
+use Learnosity\Processors\QtiV2\Out\ContentBuilders\InlineCollectionContentBuilder;
 use qtism\data\content\FlowCollection;
 use qtism\data\content\FlowStaticCollection;
 use qtism\data\QtiComponent;

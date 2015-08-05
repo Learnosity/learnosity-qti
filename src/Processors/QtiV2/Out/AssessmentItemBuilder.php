@@ -4,17 +4,12 @@ namespace Learnosity\Processors\QtiV2\Out;
 
 use Learnosity\Entities\Question;
 use Learnosity\Exceptions\MappingException;
-use Learnosity\Services\LogService;
-use Learnosity\Utils\QtiMarshallerUtil;
+use Learnosity\Processors\QtiV2\Out\Processings\HtmlCleaningProcessing;
+use Learnosity\Processors\QtiV2\Out\Processings\ProcessingInterface;
 use Learnosity\Utils\StringUtil;
 use qtism\common\enums\BaseType;
 use qtism\common\utils\Format;
 use qtism\data\AssessmentItem;
-use qtism\data\content\FlowCollection;
-use qtism\data\content\ItemBody;
-use qtism\data\content\xhtml\text\Div;
-use qtism\data\content\xhtml\text\Span;
-use qtism\data\QtiComponentCollection;
 use qtism\data\state\DefaultValue;
 use qtism\data\state\OutcomeDeclaration;
 use qtism\data\state\OutcomeDeclarationCollection;
@@ -33,8 +28,27 @@ class AssessmentItemBuilder
         'longtext'
     ];
 
-    public function build($itemIdentifier, $itemLabel, $questions, $content = '')
+    /**
+     * @var ItemBodyBuilder
+     */
+    private $itemBodyBuilder;
+
+    public function __construct()
     {
+        $this->itemBodyBuilder = new ItemBodyBuilder();
+    }
+
+    public function build($itemIdentifier, $itemLabel, array $questions, $content = '')
+    {
+        // Pre-processing works
+        $processings = [];
+        foreach ($processings as $processing) {
+            /** @var ProcessingInterface $processing */
+            $questions = $processing->processQuestions($questions);
+            $content = empty($content) ? $content : $processing->processItemContent($content);
+        }
+
+        // Initialise our <assessmentItem>
         $assessmentItem = new AssessmentItem($itemIdentifier, $itemIdentifier, false);
         $assessmentItem->setLabel($itemLabel);
         $assessmentItem->setOutcomeDeclarations($this->buildOutcomeDeclarations());
@@ -53,8 +67,8 @@ class AssessmentItemBuilder
             $interactions[$question->get_reference()] = $interaction;
         }
 
-        $itemBody = empty($content) ? $this->buildItemBody($interactions) : $this->buildItemBodyWithItemContent($interactions, $content);
-        $assessmentItem->setItemBody($itemBody);
+        // Build <itemBody>
+        $assessmentItem->setItemBody($this->itemBodyBuilder->buildItemBody($interactions, $content));
 
         // Map <responseDeclaration>
         if (!empty($responseDeclaration)) {
@@ -65,49 +79,6 @@ class AssessmentItemBuilder
             $assessmentItem->setResponseProcessing($responseProcessing);
         }
         return $assessmentItem;
-    }
-
-    private function buildItemBodyWithItemContent(array $interactions, $content)
-    {
-        // Map <itemBody>
-        // TODO: Wrap these `content` stuff in a div
-        // TODO: to avoid QtiComponentIterator bug ignoring 2nd element with empty content
-        $contentCollection = QtiMarshallerUtil::unmarshallElement($content);
-        $wrapperCollection = new FlowCollection();
-        foreach ($contentCollection as $component) {
-            $wrapperCollection->attach($component);
-        }
-        $divWrapper = new Div();
-        $divWrapper->setContent($wrapperCollection);
-
-        // Iterate through these elements and try to replace every single question `span` with its interaction equivalent
-        $iterator = $divWrapper->getIterator();
-        foreach ($iterator as $component) {
-            if ($component instanceof Span && StringUtil::contains($component->getClass(), 'learnosity-response')) {
-                $currentContainer = $iterator->getCurrentContainer();
-                $questionReference = trim(str_replace('learnosity-response', '', $component->getClass()));
-                $questionReference = trim(str_replace('question-', '', $questionReference));
-
-                $replacement = ContentCollectionBuilder::buildContent($currentContainer, $interactions[$questionReference])->current();
-                $currentContainer->getComponents()->replace($component, $replacement);
-            }
-        }
-
-        // Extract the actual content from the div wrapper and add that to our <itemBody>
-        $componentsWithinDiv = $contentCollection->getArrayCopy()[0]->getComponents();
-        $itemBody = new ItemBody();
-        $itemBody->setContent(ContentCollectionBuilder::buildBlockCollectionContent($componentsWithinDiv));
-
-        return $itemBody;
-    }
-
-    private function buildItemBody(array $interactions)
-    {
-        $interactionCollection = new QtiComponentCollection(array_values($interactions));
-        $itemBody = new ItemBody();
-        $itemBody->setContent(ContentCollectionBuilder::buildBlockCollectionContent($interactionCollection));
-
-        return $itemBody;
     }
 
     private function map(Question $question)

@@ -4,9 +4,7 @@ namespace Learnosity\Processors\QtiV2\Out\QuestionTypes;
 
 use Learnosity\Entities\BaseQuestionType;
 use Learnosity\Entities\QuestionTypes\shorttext;
-use qtism\data\content\FlowStaticCollection;
 use qtism\data\content\interactions\ExtendedTextInteraction;
-use qtism\data\content\interactions\Prompt;
 use qtism\data\content\interactions\TextFormat;
 
 class ShorttextMapper extends AbstractQuestionTypeMapper
