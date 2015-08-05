@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Learnosity\Tests\Integration\Mappers\QtiV2\Interactions;
+namespace Learnosity\Tests\Unit\Learnosity\Tests\Integration\Mappers\QtiV2\In\Interactions;
 
 use Learnosity\AppContainer;
 use Learnosity\Entities\Item\item;

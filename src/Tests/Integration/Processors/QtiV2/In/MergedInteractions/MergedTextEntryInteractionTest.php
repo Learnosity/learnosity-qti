@@ -1,6 +1,6 @@
 <?php
 
-namespace Learnosity\Tests\Integration\Mappers\QtiV2\MergedInteractions;
+namespace Learnosity\Tests\Unit\Learnosity\Tests\Integration\Mappers\QtiV2\In\MergedInteractions;
 
 use Learnosity\AppContainer;
 use Learnosity\Processors\QtiV2\In\ItemMapper;
