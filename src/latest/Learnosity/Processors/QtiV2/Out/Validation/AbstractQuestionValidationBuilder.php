@@ -4,7 +4,6 @@ namespace Learnosity\Processors\QtiV2\Out\Validation;
 
 use Learnosity\Services\LogService;
 use qtism\data\processing\ResponseProcessing;
-use qtism\data\state\CorrectResponse;
 
 abstract class AbstractQuestionValidationBuilder
 {
@@ -29,22 +28,22 @@ abstract class AbstractQuestionValidationBuilder
 
         if (!empty($validation->get_alt_responses())) {
             foreach ($validation->get_alt_responses() as $alt) {
-                if (empty($alt->get_valid_response()->get_value()) || empty($alt->get_valid_response()->get_score())) {
+                if (empty($alt->get_value()) || empty($alt->get_score())) {
                     LogService::log('Invalid `alt_responses` object, fail to build `responseDeclaration` and `responseProcessingTemplate');
                     return [null, null];
                 }
             }
         }
-        $coringType = $validation->get_scoring_type();
+        $scoringType = $validation->get_scoring_type();
 
         // If question has `exactMatch` and has `valid_response` and `alt_responses` with score of only `1`s
         // and it is not case sensitive, then it would be mapped to <correctResponse> with `match_correct` template
-        if ($coringType === 'exactMatch' && $this->canBeMappedToCorrectAnswer($validation) && !$isCaseSensitive) {
-            /** @var CorrectResponse $correctAnswer */
+        if ($scoringType === 'exactMatch' && $this->canBeMappedToCorrectAnswer($validation) && $isCaseSensitive) {
+            // TODO: Need to clean up validation `score` value since they can be string, ie '1' instead of 1
             $responseDeclaration = $this->buildResponseDeclarationForMatchCorrect($responseIdentifier, $validation);
             $responseProcessing = new ResponseProcessing();
             $responseProcessing->setTemplate('http://www.imsglobal.org/question/qtiv2p1/rptemplates/match_correct.xml');
-            return [$responseDeclaration, $responseDeclaration];
+            return [$responseDeclaration, $responseProcessing];
         }
 
         // Otherwise, we would need to build the `MapResponse`
@@ -61,7 +60,7 @@ abstract class AbstractQuestionValidationBuilder
         }
         if (!empty($validation->get_alt_responses())) {
             foreach ($validation->get_alt_responses() as $alt) {
-                if ($alt->get_score() !== 1) {
+                if (intval($alt->get_score()) !== 1) {
                     return false;
                 }
             }

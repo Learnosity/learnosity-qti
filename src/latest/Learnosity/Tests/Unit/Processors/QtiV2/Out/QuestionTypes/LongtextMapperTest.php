@@ -36,7 +36,7 @@ class LongtextMapperTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($interaction instanceof ExtendedTextInteraction);
         $this->assertEquals($questionReference, $interaction->getResponseIdentifier());
         $this->assertEquals($questionReference, $interaction->getLabel());
-        $this->assertEquals($stimulus, QtiMarshallerUtil::marshall($interaction->getPrompt()->getComponents()->current()));
+        $this->assertEquals($stimulus, QtiMarshallerUtil::marshallCollection($interaction->getPrompt()->getComponents()));
         $this->assertEquals($placeholder, $interaction->getPlaceholderText());
 
         // Assert question mapped correctly with default values

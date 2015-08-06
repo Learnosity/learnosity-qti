@@ -4,6 +4,7 @@ namespace Learnosity\Processors\QtiV2\Out\QuestionTypes;
 
 use Learnosity\Entities\BaseQuestionType;
 use Learnosity\Entities\QuestionTypes\shorttext;
+use Learnosity\Processors\QtiV2\Out\Validation\ShorttextValidationBuilder;
 use qtism\data\content\interactions\ExtendedTextInteraction;
 use qtism\data\content\interactions\TextFormat;
 
@@ -35,6 +36,14 @@ class ShorttextMapper extends AbstractQuestionTypeMapper
         $interaction->setExpectedLength(250);
         $interaction->setExpectedLines(1);
 
-        return [$interaction, null, null];
+        // Build those validation
+        $validationBuilder = new ShorttextValidationBuilder();
+        list($responseDeclaration, $responseProcessing) = $validationBuilder->buildValidation(
+            $interactionIdentifier,
+            $question->get_validation(),
+            $question->get_case_sensitive()
+        );
+
+        return [$interaction, $responseDeclaration, $responseProcessing];
     }
 }
