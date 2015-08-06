@@ -64,7 +64,7 @@
             };
             $.ajax({
                 type: "POST",
-                url: 'http://localhost:7777',
+                url: 'http://localhost:7777/latest',
                 cache: false,
                 data: JSON.stringify(request),
                 success: function (data) {
@@ -77,7 +77,7 @@
                         // Do another AJAX request to try to render the QTI
                         $.ajax({
                             type: "POST",
-                            url: 'http://localhost:7777/renderQtiWithTao',
+                            url: 'http://localhost:7777/latest/renderQtiWithTao',
                             cache: false,
                             data: result.assessmentItem,
                             success: function (data) {

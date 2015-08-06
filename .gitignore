@@ -1,8 +1,2 @@
 .idea
 .sonar
-src/Tests/coverage.xml
-src/Tests/junit.xml
-src/Entities/QuestionTypes
-src/Entities/Activity
-src/Entities/Item
-build

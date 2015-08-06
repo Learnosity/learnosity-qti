@@ -40,6 +40,7 @@ class ShorttextMapperTest extends AbstractTest
         $this->assertEquals(TextFormat::PLAIN, $interaction->getFormat());
 
         // Test validation
-        die;
+        $this->assertNotNull($responseDeclaration);
+        $this->assertNotNull($responseProcessing);
     }
 }
