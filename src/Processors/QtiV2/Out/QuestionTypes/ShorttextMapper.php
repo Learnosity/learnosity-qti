@@ -30,6 +30,11 @@ class ShorttextMapper extends AbstractQuestionTypeMapper
         $interaction->setMinStrings(1);
         $interaction->setFormat(TextFormat::PLAIN);
 
+        // This is derived since the maximum length of a `shorttext` is 250 characters and the fact that
+        // the shape of a `shorttext` input imply the expected response is a single line
+        $interaction->setExpectedLength(250);
+        $interaction->setExpectedLines(1);
+
         return [$interaction, null, null];
     }
 }
