@@ -1,0 +1,208 @@
+{
+    "data": {
+        "activity": {
+            "attributes": {
+                "reference": {
+                    "required": true,
+                    "type": "string"
+                },
+                "description": {
+                    "required": false,
+                    "type": "string"
+                },
+                "items": {
+                    "required": false,
+                    "type": "array"
+                },
+                "data": {
+                    "attributes": {
+                        "config": {
+                            "attributes": {
+                                "ui_style": {
+                                    "required": false,
+                                    "type": "string"
+                                },
+                                "administration": {
+                                    "required": false,
+                                    "type": "string"
+                                },
+                                "time": {
+                                    "attributes": {
+                                        "max_time": {
+                                            "required": false,
+                                            "type": "string"
+                                        },
+                                        "limit_type": {
+                                            "required": false,
+                                            "type": "string"
+                                        },
+                                        "show_pause": {
+                                            "required": false,
+                                            "type": "string"
+                                        },
+                                        "show_time": {
+                                            "required": false,
+                                            "type": "string"
+                                        },
+                                        "countdown": {
+                                            "required": false,
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": false,
+                                    "type": "object"
+                                },
+                                "navigation": {
+                                    "attributes": {
+                                        "auto_save": {
+                                            "required": false,
+                                            "type": "boolean"
+                                        },
+                                        "show_save": {
+                                            "required": false,
+                                            "type": "boolean"
+                                        },
+                                        "show_submit": {
+                                            "required": false,
+                                            "type": "boolean"
+                                        },
+                                        "skip_submit_confirmation": {
+                                            "required": false,
+                                            "type": "boolean"
+                                        },
+                                        "show_title": {
+                                            "required": false,
+                                            "type": "boolean"
+                                        },
+                                        "show_progress": {
+                                            "required": false,
+                                            "type": "boolean"
+                                        },
+                                        "show_fullscreencontrol": {
+                                            "required": false,
+                                            "type": "boolean"
+                                        },
+                                        "show_intro": {
+                                            "required": false,
+                                            "type": "boolean"
+                                        },
+                                        "show_outro": {
+                                            "required": false,
+                                            "type": "boolean"
+                                        },
+                                        "show_prev": {
+                                            "required": false,
+                                            "type": "boolean"
+                                        },
+                                        "show_next": {
+                                            "required": false,
+                                            "type": "boolean"
+                                        },
+                                        "show_itemcount": {
+                                            "required": false,
+                                            "type": "boolean"
+                                        },
+                                        "warning_on_change": {
+                                            "required": false,
+                                            "type": "boolean"
+                                        },
+                                        "scrolling_indicator": {
+                                            "required": false,
+                                            "type": "boolean"
+                                        },
+                                        "scroll_to_top": {
+                                            "required": false,
+                                            "type": "boolean"
+                                        },
+                                        "scroll_to_test": {
+                                            "required": false,
+                                            "type": "boolean"
+                                        },
+                                        "transition": {
+                                            "required": false,
+                                            "type": "boolean"
+                                        },
+                                        "transition_speed": {
+                                            "required": false,
+                                            "type": "integer"
+                                        },
+                                        "show_calculator": {
+                                            "required": false,
+                                            "type": "boolean"
+                                        },
+                                        "show_answermasking": {
+                                            "required": false,
+                                            "type": "boolean"
+                                        },
+                                        "exit_securebrowser": {
+                                            "required": false,
+                                            "type": "boolean"
+                                        },
+                                        "show_acknowledgements": {
+                                            "required": false,
+                                            "type": "boolean"
+                                        },
+                                        "show_accessibility": {
+                                            "attributes": {
+                                                "show_colourscheme": {
+                                                    "required": false,
+                                                    "type": "boolean"
+                                                },
+                                                "show_fontsize": {
+                                                    "required": false,
+                                                    "type": "boolean"
+                                                },
+                                                "show_zoom": {
+                                                    "required": false,
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": false,
+                                            "type": "object"
+                                        }
+                                    },
+                                    "required": false,
+                                    "type": "object"
+                                },
+                                "configuration": {
+                                    "attributes": {
+                                        "fontsize": {
+                                            "required": false,
+                                            "type": "string"
+                                        },
+                                        "dynamic": {
+                                            "required": false,
+                                            "type": "boolean"
+                                        },
+                                        "idle_timeout": {
+                                            "required": false,
+                                            "type": "boolean"
+                                        },
+                                        "events": {
+                                            "required": false,
+                                            "type": "boolean"
+                                        },
+                                        "preload_audio_player": {
+                                            "required": false,
+                                            "type": "boolean"
+                                        },
+                                        "submit_criteria": {
+                                            "required": false,
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": false,
+                                    "type": "object"
+                                }
+                            },
+                            "required": false,
+                            "type": "object"
+                        }
+                    },
+                    "required": true,
+                    "type": "object"
+                }
+            }
+        }
+    }
+}
