@@ -1,0 +1,27 @@
+services:
+    schemas_service:
+        class:     Learnosity\Services\SchemasService
+    item_builder_factory:
+        class:     Learnosity\Processors\QtiV2\In\ItemBuilderFactory
+    learnosity_documentation_generator:
+        class:     Learnosity\DocumentationGenerator
+        arguments: ["@schemas_service"]
+    learnosity_entity_generator:
+        class:     Learnosity\EntityGenerator
+        arguments: ["@schemas_service"]
+    qtiv2_item_mapper:
+        class:      Learnosity\Processors\QtiV2\In\ItemMapper
+        arguments:  ["@item_builder_factory"]
+        scope: prototype
+    qtiv2_test_mapper:
+        class:      Learnosity\Processors\QtiV2\In\TestMapper
+        scope:      prototype
+    learnosity_item_writer:
+        class:      Learnosity\Processors\Learnosity\Out\ItemWriter
+        scope:      prototype
+    learnosity_question_writer:
+        class:      Learnosity\Processors\Learnosity\Out\QuestionWriter
+        scope:      prototype
+    assets_processing:
+        class:      Learnosity\Processors\QtiV2\In\Processings\AssetsProcessing
+

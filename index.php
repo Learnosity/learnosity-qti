@@ -1,6 +1,6 @@
 <?php
 
-require 'vendor/autoload.php';
+require 'src/latest/vendor/autoload.php';
 
 $app = new \Slim\Slim();
 
