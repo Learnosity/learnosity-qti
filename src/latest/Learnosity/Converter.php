@@ -41,11 +41,10 @@ class Converter
         return [$itemData, $questionsData, $exceptions];
     }
 
-    public static function convertLearnosityToQtiItem($jsonString)
+    public static function convertLearnosityToQtiItem(array $data)
     {
-        $data = json_decode($jsonString, true);
         if ($data == null) {
-            throw new \Exception('Invalid JSON');
+            throw new \MappingException('Invalid JSON');
         }
 
         // Guess whether this JSON is an item or a question by whether it has `type` or not
