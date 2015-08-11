@@ -1,0 +1,52 @@
+<p>An `assessmentItem` element in QTI is generally mapped one to one to a Learnosity Item and its `interactions`
+    are mapped to Learnosity Question(s). To learn more about Item and Question in Learnosity context please read our documentation:
+    <a target="_blank" href="http://docs.learnosity.com/tutorials/tutorial_101#intro">http://docs.learnosity.com/tutorials/tutorial_101#intro</a>
+</p>
+
+<p>An Item can be represented in a JSON format with below attributes.</p>
+<table>
+    <tr>
+        <th style="width: 10%">Attribute</th>
+        <th style="width: 10%">Mandatory</th>
+        <th style="width: 10%">Type</th>
+        <th>Notes</th>
+    </tr>
+    {% for key, value in itemSchemas.item.attributes %}
+        <tr>
+            <td><pre>{{ key }}</pre></td>
+            <td><pre>{{ value.required ? 'Y' : 'N' }}</pre></td>
+            <td><pre>{{ value.type }}</pre></td>
+            <td>{{ value.description }}</td>
+        </tr>
+    {% endfor %}
+</table>
+<hr/>
+
+<p><strong>Mapping Rules 101</strong></p>
+<ul>
+    <li>Item `reference` is taken from &lt;assessmentItem&gt; identifier</li>
+    <li>Question `reference` would be mapped from the combination of &lt;assessmentItem&gt; and interaction identifier separated by underscore</li>
+    <li>Status is mapped as `published`</li>
+    <li>Generally &lt;itemBody&gt; content would have its &lt;rubricBlock&gt; stripped and be mapped to <strong>first</strong> Question's `stimulus` with interaction elements replaced with
+        Question `span` placeholder.</li>
+    <li>Special case for an assessment item with only either `inlineChoiceInteraction` or
+        `textEntryInteraction` types, the entire &lt;itemBody&gt; content would be mapped to Question `template`. See example on `inlineChoiceInteraction` below.</li>
+    <li>Learnosity generally doesn't accept &lt;object&gt; elements, therefore some conversion will take place:
+        <ul>
+            <li>Object with mime type of `image/...` will be converted to a regular &lt;img&gt; tag</li>
+            <li>Object with mime type of `audio/...` will be converted to an inline Learnosity `audioplayer` feature (<a href="https://docs.learnosity.com/assessment/questions/featuretypes?renderWidgets=true#audioplayer">https://docs.learnosity.com/assessment/questions/featuretypes?renderWidgets=true#audioplayer</a>)</li>
+            <li>Object with mime type of `video/...` will be converted to an inline Learnosity `videoplayer` feature (<a href="https://docs.learnosity.com/assessment/questions/featuretypes?renderWidgets=true#videoplayer">https://docs.learnosity.com/assessment/questions/featuretypes?renderWidgets=true#videoplayer</a>)</li>
+        </ul>
+    </li>
+</ul>
+
+<p>Easily import these items and questions JSON to Learnosity Itembank using Data API. See documentation at
+    <a href="http://docs.learnosity.com/reporting/data/initialisation" target="_blank">http://docs.learnosity.com/reporting/data/initialisation</a>
+</p>
+<hr/>
+
+<p><strong>Examples</strong></p>
+{% include 'docs/example_choice.html.twig' %}
+<hr/>
+{% include 'docs/example_inlinechoice.html.twig' %}
+<hr/>

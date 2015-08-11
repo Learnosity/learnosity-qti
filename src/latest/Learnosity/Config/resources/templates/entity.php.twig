@@ -1,0 +1,64 @@
+{% import _self as self %}
+{% autoescape false %}
+<?php
+
+namespace {{ namespace }};
+
+{% if baseClass %}
+use Learnosity\Entities\{{ baseClass }};
+{% endif %}
+
+/**
+* This class is auto-generated based on Schemas API and you should not modify its content
+* Metadata: {{ schemasVersion|json_encode() }}
+*/
+class {{ className }} {% if baseClass %}extends {{ baseClass }} {% endif %}
+{
+    {% for fieldName, field in fields %}protected ${{ fieldName }};
+    {% endfor %}
+
+    public function __construct(
+        {% for fieldName, field in requiredFields %}
+            {% if loop.last %}{% if field.fieldType %}{{ field.fieldType }} {% endif %}${{ fieldName }}
+            {% else %}{% if field.fieldType %}{{ field.fieldType }} {% endif %}${{ fieldName }},
+            {% endif %}
+        {% endfor %}
+    )
+    {
+        {% for fieldName, field in requiredFields %}
+        $this->{{ fieldName }} = ${{ fieldName }};
+        {% endfor %}
+    }
+
+    {% for fieldName, field in fields %}
+/**
+    * Get {% if field.name %}{{ field.name }}{% else %}{{ fieldName }}{% endif %} \
+    * {% if field.description %}{{ field.description|wordwrap(120, "\n\t") }}{% endif %} \
+    * @return {% if field.fieldType %}{{ field.fieldType }} {% else %}{{ field.type }} {% endif %}${{ fieldName }}{% if field.options %} ie. {{ self.printFieldOptions(field.options) }} {% endif %} \
+    */
+    public function get_{{ fieldName }}() {
+        return $this->{{ fieldName }};
+    }
+
+    /**
+    * Set {% if field.name %}{{ field.name }}{% else %}{{ fieldName }}{% endif %} \
+    * {% if field.description %}{{ field.description|wordwrap(120, "\n\t")  }}{% endif %} \
+    * @param {% if field.fieldType %}{{ field.fieldType }} {% else %}{{ field.type }} {% endif %}${{ fieldName }}{% if field.options %} ie. {{ self.printFieldOptions(field.options) }} {% endif %} \
+    */
+    public function set_{{ fieldName }} ({% if field.fieldType %}{{ field.fieldType }} {% endif %}${{ fieldName }}) {
+        $this->{{ fieldName }} = ${{ fieldName}};
+    }
+
+    {% endfor %}
+
+{% if widgetType %}
+    public function get_widget_type() {
+    return '{{ widgetType }}';
+    }
+{% endif %}
+}
+{% endautoescape %}
+
+{% macro printFieldOptions(options) %}
+{% for option in options %}{% if loop.last %}{{ option.value }}{% else %}{{ option.value }}, {% endif %}{% endfor %}
+{% endmacro %}

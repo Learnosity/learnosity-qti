@@ -1,0 +1,45 @@
+{% import _self as self %}
+{% extends 'basedocumentation.html.twig' %}
+
+{% block head %}
+    <script type="application/javascript">{% include 'includes/foundation-5.5.2/js/vendor/jquery.js' only %}</script>
+    <script type="application/javascript">{% include 'includes/foundation-5.5.2/js/foundation.min.js' only %}</script>
+    <script type="application/javascript">
+        $(function () {
+            $(document).foundation();
+            $(".expandable-name").on('click', function (e) {
+                e.preventDefault();
+                $(this.nextElementSibling).slideToggle('fast');
+            });
+        });
+    </script>
+    <style>
+        table { width: 100%; word-break: break-word; }
+        table tr td { vertical-align: top; }
+        .doc-table tr td.name { width: 20%; }
+        .doc-table tr td.support-status { width: 10%; }
+        .doc-table tr td.support-status-yes { background: green; color: white; }
+        .doc-table tr td.support-status-partial { background: yellowgreen; color: white; }
+        .doc-table tr td.support-status-no { background: grey; color: white; }
+        .doc-table tr td.description { width: 70%; }
+        .expandable-name { margin-bottom: 15px; }
+        .link-list {list-style: none;}
+    </style>
+{% endblock head %}
+
+{% block content %}
+    <div style="width: 800px; margin: 40px auto">
+        <ul class="tabs" data-tab>
+            <li class="tab-title active"><a href="#panel1">Learnosity to QTI</a></li>
+            <li class="tab-title"><a href="#panel2">QTI to Learnosity</a></li>
+        </ul>
+        <div class="tabs-content">
+            <div class="content active" id="panel1">
+                {% include 'docs/learnositytoqti.html.twig' with learnosityToQti only %}
+            </div>
+            <div class="content" id="panel2">
+                {% include 'docs/qtitolearnosity.html.twig' with qtiToLearnosity only %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}

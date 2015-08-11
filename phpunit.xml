@@ -1,0 +1,24 @@
+<phpunit bootstrap="vendor/autoload.php">
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./src</directory>
+            <exclude>
+                <directory suffix=".php">./src/Tests</directory>
+                <directory suffix=".php">./src/vendor</directory>
+                <directory suffix=".php">./src/Entities</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+    <logging>
+        <log type="coverage-clover" target="./src/Tests/coverage.xml"/>
+        <log type="junit" target="./src/Tests/junit.xml" logIncompleteSkipped="false"/>
+    </logging>
+    <testsuites>
+        <testsuite name="unit">
+            <directory>src/Tests/Unit</directory>
+        </testsuite>
+        <testsuite name="integration">
+            <directory>src/Tests/Integration</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
