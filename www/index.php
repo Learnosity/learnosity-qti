@@ -29,8 +29,9 @@ if (!empty($requestedVersion)) {
     // Then, do a simple string matching to grab be first one
     rsort($availableVersions, SORT_STRING);
     foreach ($availableVersions as $version) {
-        // Is the available version starts `$version`, route to that file instead
-        if ($requestedVersion === "" || strrpos($version, $requestedVersion, - strlen($version)) !== FALSE) {
+        $containsRc = strpos($version, '-rc.') !== false;
+        $firstPartEqualsToRequestedVersion = explode('-', $version)[0] === $requestedVersion;
+        if ($containsRc && $firstPartEqualsToRequestedVersion) {
             $route = $src . $version . '/route.php';
             if (is_readable($route)) {
                 require_once $route;
