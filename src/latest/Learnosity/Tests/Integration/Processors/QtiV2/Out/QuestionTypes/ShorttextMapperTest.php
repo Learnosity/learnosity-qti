@@ -2,33 +2,28 @@
 
 namespace Integration\Processors\QtiV2\Out\QuestionTypes;
 
-use Learnosity\Processors\Learnosity\In\QuestionMapper;
-use Learnosity\Processors\QtiV2\Out\QuestionTypes\ShorttextMapper;
-use Learnosity\Tests\AbstractTest;
+use Learnosity\Tests\Integration\Processors\QtiV2\Out\QuestionTypes\AbstractQuestionTypeTest;
 use Learnosity\Utils\QtiMarshallerUtil;
 use qtism\data\content\interactions\ExtendedTextInteraction;
 use qtism\data\content\interactions\TextFormat;
 
-class ShorttextMapperTest extends AbstractTest
+class ShorttextMapperTest extends AbstractQuestionTypeTest
 {
-    private function getQuestionDataFromFilepath($filepath)
-    {
-        $questionMapper = new QuestionMapper();
-        $question = $questionMapper->parse(json_decode($this->getFixtureFileContents($filepath), true));
-        return $question->get_data();
-    }
-
     public function testShorttextQuestionWithSimpleValidation()
     {
-        $question = $this->getQuestionDataFromFilepath('learnosityjsons/shorttext.json');
-        $mapper = new ShorttextMapper();
-        list($interaction, $responseDeclaration, $responseProcessing) = $mapper->convert($question, 'testIdentifier', 'testIdentifier');
+        $data = json_decode($this->getFixtureFileContents('learnosityjsons/shorttext.json'), true);
+        $assessmentItem = $this->convertToAssessmentItem($data);
+
+        // Shorttext shall have one simple exactMatch <responseDeclaration> and <responseProcessing>
+        // TODO: might need more extensive test to test these more in depth
+        $this->assertEquals(1, $assessmentItem->getResponseDeclarations()->count());
+
+        // Has <extendedTextInteraction> as the first and only interaction
+        /** @var ExtendedTextInteraction $interaction */
+        $interaction = $assessmentItem->getComponentsByClassName('extendedTextInteraction', true)->getArrayCopy()[0];
 
         // Test basic attributes
-        /** @var ExtendedTextInteraction $interaction */
         $this->assertTrue($interaction instanceof ExtendedTextInteraction);
-        $this->assertEquals('testIdentifier', $interaction->getLabel());
-        $this->assertEquals('testIdentifier', $interaction->getResponseIdentifier());
         $this->assertEquals('placeholdertext', $interaction->getPlaceholderText());
         $this->assertEquals('<p>[This is the stem.]</p>', QtiMarshallerUtil::marshallCollection($interaction->getPrompt()->getComponents()));
 
@@ -38,9 +33,5 @@ class ShorttextMapperTest extends AbstractTest
         $this->assertEquals(1, $interaction->getMaxStrings());
         $this->assertEquals(1, $interaction->getMinStrings());
         $this->assertEquals(TextFormat::PLAIN, $interaction->getFormat());
-
-        // Test validation
-        $this->assertNotNull($responseDeclaration);
-        $this->assertNotNull($responseProcessing);
     }
 }

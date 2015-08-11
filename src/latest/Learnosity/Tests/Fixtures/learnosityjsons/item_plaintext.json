@@ -1,0 +1,53 @@
+{
+    "reference": "Summer Test_05",
+    "content": "<p><span class=\"learnosity-response question-Grade8TheNumberSystem_1_duplicate_duplicate_duplicate_duplicate\"></span></p>",
+    "workflow": null,
+    "metadata": null,
+    "time_updated": "2015-02-10 12:33:26",
+    "last_updated_by": "34",
+    "note": null,
+    "source": null,
+    "description": "",
+    "status": "published",
+    "questions": [
+        {
+            "type": "plaintext",
+            "widget_type": "response",
+            "reference": "Grade8TheNumberSystem_1_duplicate_duplicate_duplicate_duplicate",
+            "data": {
+                "character_map": true,
+                "show_copy": true,
+                "show_cut": true,
+                "show_paste": true,
+                "stimulus": "<p>Write an essay</p>\n",
+                "type": "plaintext",
+                "feedback_attempts": 2
+            }
+        }
+    ],
+    "tags": {
+        "Common Core State Standard": [
+            "CCSS.MATH.CONTENT.8.EE.B.5"
+        ],
+        "Common Core Topic": [
+            "Expressions & Equations"
+        ],
+        "DepthofKnowledge": [
+            "DOK 4: Extended Thinking"
+        ],
+        "Difficulty Level": [
+            "5"
+        ],
+        "Grade": [
+            "Grade 8"
+        ],
+        "subject": [
+            "Math"
+        ]
+    },
+    "adaptive": {
+        "difficulty": null,
+        "operational_exposure": null,
+        "seeding_exposure": null
+    }
+}
