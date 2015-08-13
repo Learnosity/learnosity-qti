@@ -2,12 +2,11 @@
 
 namespace Learnosity\Tests\Processors\QtiV2\Out;
 
-use Learnosity\Converter;
-use Learnosity\Tests\AbstractTest;
+use Learnosity\Tests\Integration\Processors\QtiV2\Out\QuestionTypes\AbstractQuestionTypeTest;
 use qtism\data\storage\xml\XmlDocument;
 use qtism\runtime\rendering\markup\xhtml\XhtmlRenderingEngine;
 
-class QuestionMapperTest extends AbstractTest
+class QuestionMapperTest extends AbstractQuestionTypeTest
 {
     public function testMappingMcqQuestion()
     {

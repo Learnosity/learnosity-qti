@@ -10,6 +10,7 @@ use Learnosity\Utils\StringUtil;
 use qtism\common\enums\BaseType;
 use qtism\common\utils\Format;
 use qtism\data\AssessmentItem;
+use qtism\data\processing\ResponseProcessing;
 use qtism\data\state\DefaultValue;
 use qtism\data\state\OutcomeDeclaration;
 use qtism\data\state\OutcomeDeclarationCollection;
@@ -50,12 +51,17 @@ class AssessmentItemBuilder
         // Store interactions on this array to later be placed on <itemBody>
         $interactions = [];
         $responseDeclarationCollection = new ResponseDeclarationCollection();
+        $resoponseProcessingTemplates = [];
         foreach ($questions as $question) {
             /** @var Question $question */
             // Map the `questions` and its validation objects to be placed at <itemBody>
             list($interaction, $responseDeclaration, $responseProcessing) = $this->map($question);
             if (!empty($responseDeclaration)) {
                 $responseDeclarationCollection->attach($responseDeclaration);
+            }
+            if (!empty($responseProcessing)) {
+                /** @var ResponseProcessing $responseProcessing */
+                $resoponseProcessingTemplates[] = $responseProcessing->getTemplate();
             }
             $interactions[$question->get_reference()] = $interaction;
         }
@@ -64,11 +70,17 @@ class AssessmentItemBuilder
         $assessmentItem->setItemBody($this->itemBodyBuilder->buildItemBody($interactions, $content));
 
         // Map <responseDeclaration>
-        if (!empty($responseDeclaration)) {
+        if (!empty($responseDeclarationCollection)) {
             $assessmentItem->setResponseDeclarations($responseDeclarationCollection);
         }
-        // Map <responseProcessing>
-        if (!empty($responseProcessing)) {
+        // Map <responseProcessing> - combine response processing from questions
+        // TODO: Freaking tidy up this stuff
+        if (!empty($resoponseProcessingTemplates)) {
+            $templates = array_unique($resoponseProcessingTemplates);
+            $isOnlyMatchCorrent = count($templates) === 1 && $templates[0] = Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT;
+
+            $responseProcessing = new ResponseProcessing();
+            $responseProcessing->setTemplate($isOnlyMatchCorrent ? Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT : Constants::RESPONSE_PROCESSING_TEMPLATE_MAP_RESPONSE);
             $assessmentItem->setResponseProcessing($responseProcessing);
         }
         return $assessmentItem;
