@@ -9,7 +9,7 @@ use qtism\data\state\ResponseDeclaration;
 
 class ShorttextValidationBuilder extends AbstractQuestionValidationBuilder
 {
-    function buildResponseDeclaration($responseIdentifier, $validation)
+    protected function buildResponseDeclaration($responseIdentifier, $validation)
     {
         if ($validation->get_scoring_type() !== 'exactMatch') {
             throw new MappingException('Does not support other scoring type mapping other than `exactNatch`');
@@ -19,8 +19,10 @@ class ShorttextValidationBuilder extends AbstractQuestionValidationBuilder
         $responseDeclaration->setCardinality(Cardinality::SINGLE);
         $responseDeclaration->setBaseType(BaseType::STRING);
 
-        $responseDeclaration->setCorrectResponse($this->buildCorrectResponse($validation));
-        $responseDeclaration->setMapping($this->buildMapping($validation));
+        $correctResponseBuilder = new QtiCorrectResponseBuilder();
+        $responseDeclaration->setCorrectResponse($correctResponseBuilder->build($validation));
+        $mappingResponseBuilder = new QtiMappingBuilder();
+        $responseDeclaration->setMapping($mappingResponseBuilder->build($validation));
 
         return $responseDeclaration;
     }

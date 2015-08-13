@@ -8,6 +8,8 @@ use Learnosity\Processors\Learnosity\In\QuestionMapper;
 use Learnosity\Processors\QtiV2\Out\ItemWriter;
 use Learnosity\Processors\QtiV2\Out\QuestionWriter;
 use Learnosity\Services\LearnosityToQtiPreProcessingService;
+use Learnosity\Services\LogService;
+use qtism\data\storage\xml\XmlDocument;
 
 class Converter
 {
@@ -86,6 +88,15 @@ class Converter
         // Write em` to QTI
         $itemWriter = new ItemWriter();
         list($xmlString, $messages) = $itemWriter->convert($item, $questions);
+
+        // Validate them before proceeding by feeding it back
+        try {
+            $document = new XmlDocument();
+            $document->loadFromString($xmlString);
+        } catch (\Exception $e) {
+            LogService::log('Unknown error occurred. The QTI XML produced may not be valid');
+        }
+
         return [$xmlString, $messages];
     }
 }

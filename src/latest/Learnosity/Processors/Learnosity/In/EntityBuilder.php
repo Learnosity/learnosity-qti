@@ -56,7 +56,7 @@ class EntityBuilder
                 LogService::log("Ignoring attribute '$key'. Invalid key");
                 continue;
             }
-            if (empty($value)) {
+            if ($value === null) {
                 LogService::log("Ignoring attribute '$key'. Invalid key");
                 continue;
             }

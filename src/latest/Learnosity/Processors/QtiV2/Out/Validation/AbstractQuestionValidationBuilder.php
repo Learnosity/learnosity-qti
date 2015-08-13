@@ -2,24 +2,17 @@
 
 namespace Learnosity\Processors\QtiV2\Out\Validation;
 
-use Learnosity\Entities\QuestionTypes\shorttext_validation_alt_responses_item;
 use Learnosity\Processors\QtiV2\Out\Constants;
 use Learnosity\Services\LogService;
 use qtism\data\processing\ResponseProcessing;
-use qtism\data\state\CorrectResponse;
-use qtism\data\state\MapEntry;
-use qtism\data\state\MapEntryCollection;
-use qtism\data\state\Mapping;
-use qtism\data\state\Value;
-use qtism\data\state\ValueCollection;
 
 abstract class AbstractQuestionValidationBuilder
 {
     private $supportedScoringType = ['exactMatch', 'partialMatch', 'partialMatchV2'];
 
-    abstract function buildResponseDeclaration($responseIdentifier, $validation);
+    abstract protected function buildResponseDeclaration($responseIdentifier, $validation);
 
-    public function buildValidation($responseIdentifier, $validation, $isCaseSensitive)
+    public function buildValidation($responseIdentifier, $validation, $isCaseSensitive = true)
     {
         // Some basic validation on the `validation` object
         if (empty($validation->get_scoring_type()) || !in_array($validation->get_scoring_type(), $this->supportedScoringType)) {
@@ -40,8 +33,8 @@ abstract class AbstractQuestionValidationBuilder
                 }
             }
         }
-        $scoringType = $validation->get_scoring_type();
 
+        $scoringType = $validation->get_scoring_type();
         $responseProcessing = new ResponseProcessing();
         // If question has `exactMatch` and has `valid_response` and `alt_responses` with score of only `1`s
         // and it is not case sensitive, then it would be mapped to <correctResponse> with `match_correct` template
@@ -72,35 +65,5 @@ abstract class AbstractQuestionValidationBuilder
             }
         }
         return true;
-    }
-
-    protected function buildCorrectResponse($validation)
-    {
-        // Handle `valid_response`
-        $values = new ValueCollection();
-        $values->attach(new Value($validation->get_valid_response()->get_value()));
-        // Handle `alt_responses`
-        /** @var shorttext_validation_alt_responses_item $alt */
-        if (count($validation->get_alt_responses()) >= 1) {
-            foreach ($validation->get_alt_responses() as $alt) {
-                $values->attach(new Value($alt->get_value()));
-            }
-        }
-        return new CorrectResponse($values);
-    }
-
-    protected function buildMapping($validation)
-    {
-        // Handle `valid_response`
-        $mapEntries = new MapEntryCollection();
-        $mapEntries->attach(new MapEntry($validation->get_valid_response()->get_value(), floatval($validation->get_valid_response()->get_score())));
-        // Handle `alt_responses`
-        /** @var shorttext_validation_alt_responses_item $alt */
-        if (count($validation->get_alt_responses()) > 0) {
-            foreach ($validation->get_alt_responses() as $alt) {
-                $mapEntries->attach(new MapEntry($alt->get_value(), floatval($alt->get_score())));
-            }
-        }
-        return new Mapping($mapEntries);
     }
 }
