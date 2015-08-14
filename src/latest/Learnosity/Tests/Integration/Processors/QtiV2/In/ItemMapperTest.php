@@ -6,7 +6,6 @@ use Learnosity\AppContainer;
 use Learnosity\Entities\Item\item;
 use Learnosity\Entities\QuestionTypes\mcq;
 use Learnosity\Tests\AbstractTest;
-use Learnosity\Utils\FileSystemUtil;
 
 class ItemMapperTest extends AbstractTest
 {
