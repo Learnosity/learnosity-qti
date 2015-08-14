@@ -25,7 +25,11 @@ class ChoiceInteractionMapper extends AbstractInteractionMapper
         $mcq = new mcq('mcq', $options);
 
         // Support for @shuffle
-        $mcq->set_shuffle_options($interaction->mustShuffle());
+        $mustShuffle = $interaction->mustShuffle();
+        if ($mustShuffle) {
+            $mcq->set_shuffle_options($mustShuffle);
+            LogService::log('Set shuffle choices as true, however `fixed` attribute would be ignored since we don\'t support partial shuffle');
+        }
 
         // Support for @orientation ('vertical' or 'horizontal')
         $uiStyle = new mcq_ui_style();
@@ -42,13 +46,14 @@ class ChoiceInteractionMapper extends AbstractInteractionMapper
         }
 
         // Partial support for @maxChoices
-        $maxChoiceNum = $interaction->getMaxChoices();
-        if ($maxChoiceNum > 1) {
-            if ($maxChoiceNum !== count($options)) {
+        // @maxChoices of 0 or more than 1 would then map to choicematrix
+        $maxChoices = $interaction->getMaxChoices();
+        if ($maxChoices !== 1) {
+            if ($maxChoices !== 0 && $maxChoices !== count($options)) {
                 // We do not support specifying amount of choices
                 LogService::log(
                     "Allowing multiple responses of max " . count($options) . " options, however " .
-                    "maxChoices of $maxChoiceNum would be ignored since we can't support exact number"
+                    "maxChoices of $maxChoices would be ignored since we can't support exact number"
                 );
             }
             $mcq->set_multiple_responses(true);
@@ -56,13 +61,14 @@ class ChoiceInteractionMapper extends AbstractInteractionMapper
 
         // Ignoring @minChoices
         if (!empty($interaction->getMinChoices())) {
-            LogService::log('Attribute minChoices is not support. Thus, ignored');
+            LogService::log('Attribute minChoices is not supported. Thus, ignored');
         }
 
         // Build validation
         $validationBuilder = new ChoiceInteractionValidationBuilder(
             $this->responseDeclaration,
-            $optionsMap = array_column($options, 'label', 'value')
+            array_column($options, 'label', 'value'),
+            $maxChoices
         );
         $validation = $validationBuilder->buildValidation($this->responseProcessingTemplate);
         if (!empty($validation)) {

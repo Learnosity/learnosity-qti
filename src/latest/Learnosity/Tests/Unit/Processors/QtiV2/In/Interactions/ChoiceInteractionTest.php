@@ -7,6 +7,7 @@ use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
 use Learnosity\Services\LogService;
 use Learnosity\Tests\Unit\Processors\QtiV2\In\Fixtures\ChoiceInteractionBuilder;
 use Learnosity\Tests\Unit\Processors\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
+use qtism\common\enums\Cardinality;
 use qtism\data\content\FlowStaticCollection;
 use qtism\data\content\InlineCollection;
 use qtism\data\content\interactions\Orientation;
@@ -58,7 +59,12 @@ class ChoiceInteractionTest extends AbstractInteractionTest
 
         $validation = $mcq->get_validation();
         $this->assertNotNull($validation);
-        $this->assertEquals(count($validResponseIdentifier), count($validation->get_valid_response()->get_value()));
+
+        $this->assertEquals(['one'], $validation->get_valid_response()->get_value());
+        $this->assertEquals(1, $validation->get_valid_response()->get_score());
+        $this->assertEquals(['two'], $validation->get_alt_responses()[0]->get_value());
+        $this->assertEquals(1, $validation->get_alt_responses()[0]->get_score());
+
         $this->assertEquals(count($optionsMap), count($mcq->get_options()));
         foreach ($mcq->get_options() as $option) {
             $this->assertArrayHasKey($option['value'], $optionsMap);
@@ -66,12 +72,14 @@ class ChoiceInteractionTest extends AbstractInteractionTest
         }
     }
 
-    public function testShouldHandleInvalidValidation()
+    public function testShouldHandleMapResponseValidation()
     {
-        $validResponseIdentifier = ['one', 'two'];
-        $responseDeclaration = ResponseDeclarationBuilder::buildWithCorrectResponse(
+        $responseDeclaration = ResponseDeclarationBuilder::buildWithMapping(
             'testIdentifier',
-            $validResponseIdentifier
+            [
+                'one' => [1, false],
+                'two' => [3, false]
+            ]
         );
         $responseProcessingTemplate = ResponseProcessingTemplate::mapResponse();
         $optionsMap = [
@@ -85,10 +93,18 @@ class ChoiceInteractionTest extends AbstractInteractionTest
         $this->assertEquals('mcq', $mcq->get_type());
 
         $validation = $mcq->get_validation();
-        $this->assertNull($validation);
+        $this->assertNotNull($validation);
+        $this->assertEquals(['two'], $validation->get_valid_response()->get_value());
+        $this->assertEquals(3, $validation->get_valid_response()->get_score());
+        $this->assertEquals(['one'], $validation->get_alt_responses()[0]->get_value());
+        $this->assertEquals(1, $validation->get_alt_responses()[0]->get_score());
 
-        $messages = LogService::flush();
-        $this->assertContains('Does not support `map_response` response processing template for this interaction. Fail mapping validation object', $messages);
+        // Verify options are sort of correct
+        $this->assertEquals(count($optionsMap), count($mcq->get_options()));
+        foreach ($mcq->get_options() as $option) {
+            $this->assertArrayHasKey($option['value'], $optionsMap);
+            $this->assertEquals($option['label'], $optionsMap[$option['value']]);
+        }
     }
 
     public function testShouldHandleMultipleResponseIfMaxChoiceMoreThanOne()
@@ -102,6 +118,87 @@ class ChoiceInteractionTest extends AbstractInteractionTest
         $interactionMapper = new ChoiceInteractionMapper($interaction);
         $questionType = $interactionMapper->getQuestionType();
         $this->assertTrue($questionType->get_multiple_responses());
+    }
+
+    public function testShouldMaxChoiceIsZeroAsMultipleResponsesMcq()
+    {
+        $interaction = ChoiceInteractionBuilder::buildSimple('testIdentifier', [
+            'choiceA' => 'Choice A',
+            'choiceB' => 'Choice B',
+            'choiceC' => 'Choice C'
+        ]);
+        $interaction->setMaxChoices(0);
+        $interactionMapper = new ChoiceInteractionMapper($interaction);
+        $questionType = $interactionMapper->getQuestionType();
+        $this->assertTrue($questionType->get_multiple_responses());
+    }
+
+    public function testShouldHandleMultipleCardinalityWithMatchCorrect()
+    {
+        $responseDeclaration = ResponseDeclarationBuilder::buildWithCorrectResponse(
+            'testIdentifier',
+            ['one', 'two']
+        );
+        $responseDeclaration->setCardinality(Cardinality::MULTIPLE);
+        $responseProcessingTemplate = ResponseProcessingTemplate::matchCorrect();
+        $optionsMap = [
+            'one' => 'Label One',
+            'two' => 'Label Two',
+            'three' => 'Label Three'
+        ];
+        $interaction = ChoiceInteractionBuilder::buildSimple('testIdentifier', $optionsMap);
+        $interaction->setMaxChoices(0);
+        $interactionMapper = new ChoiceInteractionMapper($interaction, $responseDeclaration, $responseProcessingTemplate);
+        $mcq = $interactionMapper->getQuestionType();
+        $this->assertEquals('mcq', $mcq->get_type());
+
+        $validation = $mcq->get_validation();
+        $this->assertNotNull($validation);
+        $this->assertEquals(['one'], $validation->get_valid_response()->get_value());
+        $this->assertEquals(1, $validation->get_valid_response()->get_score());
+        $this->assertEquals(['two'], $validation->get_alt_responses()[0]->get_value());
+        $this->assertEquals(1, $validation->get_alt_responses()[1]->get_score());
+        $this->assertEquals(['two', 'one'], $validation->get_alt_responses()[1]->get_value());
+        $this->assertEquals(1, $validation->get_alt_responses()[0]->get_score());
+    }
+
+    public function testShouldHandleMultipleCardinalityWithMapResponse()
+    {
+        $responseDeclaration = ResponseDeclarationBuilder::buildWithMapping(
+            'testIdentifier',
+            [
+                'one' => [1, false],
+                'two' => [3, false]
+            ]
+        );
+        $responseDeclaration->setCardinality(Cardinality::MULTIPLE);
+        $responseProcessingTemplate = ResponseProcessingTemplate::mapResponse();
+        $optionsMap = [
+            'one' => 'Label One',
+            'two' => 'Label Two',
+            'three' => 'Label Three'
+        ];
+        $interaction = ChoiceInteractionBuilder::buildSimple('testIdentifier', $optionsMap);
+        $interaction->setMaxChoices(0);
+        $interactionMapper = new ChoiceInteractionMapper($interaction, $responseDeclaration, $responseProcessingTemplate);
+        $mcq = $interactionMapper->getQuestionType();
+        $this->assertEquals('mcq', $mcq->get_type());
+
+        $validation = $mcq->get_validation();
+        $this->assertNotNull($validation);
+        $this->assertEquals(['two', 'one'], $validation->get_valid_response()->get_value());
+        $this->assertEquals(4, $validation->get_valid_response()->get_score());
+        $this->assertEquals(['two'], $validation->get_alt_responses()[0]->get_value());
+        $this->assertEquals(3, $validation->get_alt_responses()[0]->get_score());
+        $this->assertEquals(['one'], $validation->get_alt_responses()[1]->get_value());
+        $this->assertEquals(1, $validation->get_alt_responses()[1]->get_score());
+
+        // Verify options are sort of correct
+        $this->assertEquals(count($optionsMap), count($mcq->get_options()));
+        foreach ($mcq->get_options() as $option) {
+            $this->assertArrayHasKey($option['value'], $optionsMap);
+            $this->assertEquals($option['label'], $optionsMap[$option['value']]);
+        }
     }
 
     public function testShouldShuffle()

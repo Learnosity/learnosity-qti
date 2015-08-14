@@ -3,6 +3,7 @@
 namespace Learnosity;
 
 use Learnosity\Entities\Item\item;
+use Learnosity\Exceptions\MappingException;
 use Learnosity\Processors\Learnosity\In\ItemMapper;
 use Learnosity\Processors\Learnosity\In\QuestionMapper;
 use Learnosity\Processors\QtiV2\Out\ItemWriter;
@@ -46,7 +47,7 @@ class Converter
     public static function convertLearnosityToQtiItem(array $data)
     {
         if ($data == null) {
-            throw new \MappingException('Invalid JSON');
+            throw new MappingException('Invalid JSON');
         }
 
         // Guess whether this JSON is an item or a question by whether it has `type` or not

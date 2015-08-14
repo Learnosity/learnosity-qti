@@ -3,6 +3,8 @@
 
 namespace Learnosity\Processors\Learnosity\In\ValidationBuilder;
 
+use Learnosity\Services\LogService;
+
 class ValidationBuilder
 {
     const BASE_NS = '\\Learnosity\\Entities\\QuestionTypes\\';
@@ -15,6 +17,16 @@ class ValidationBuilder
                 throw new \Exception('Invalid `responses` array. Fail to build validation');
             }
         }
+
+        // Filter out negative values
+        $responses = array_filter($responses, function ($response) {
+            /** @var ValidResponse $response */
+            $isPositiveValue = floatval($response->getScore()) >= 0;
+            if (!$isPositiveValue) {
+                LogService::log('Ignored validation mapping with negative score');
+            }
+            return $isPositiveValue;
+        });
 
         // Sort by score value, as the one with highest score would be used for `valid_response` object
         self::susort($responses, function ($a, $b) {

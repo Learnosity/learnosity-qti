@@ -9,7 +9,9 @@ class LearnosityToQtiPreProcessingService
     public function processJson(array $json)
     {
         array_walk_recursive($json, function (&$item, $key) {
-            $item = $this->processHtml($item);
+            if (is_string($item)) {
+                $item = $this->processHtml($item);
+            }
         });
         return $json;
     }
