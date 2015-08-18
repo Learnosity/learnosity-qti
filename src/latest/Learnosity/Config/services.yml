@@ -24,4 +24,7 @@ services:
         scope:      prototype
     assets_processing:
         class:      Learnosity\Processors\QtiV2\In\Processings\AssetsProcessing
+    identifiers_processing:
+        class:      Learnosity\Processors\QtiV2\In\Processings\IdentifiersProcessing
+
 

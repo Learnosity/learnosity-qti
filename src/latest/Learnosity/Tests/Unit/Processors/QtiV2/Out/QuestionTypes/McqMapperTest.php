@@ -7,8 +7,11 @@ use Learnosity\Entities\QuestionTypes\mcq_options_item;
 use Learnosity\Entities\QuestionTypes\mcq_validation;
 use Learnosity\Processors\Learnosity\In\ValidationBuilder\ValidationBuilder;
 use Learnosity\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
+use Learnosity\Processors\QtiV2\Out\Constants;
 use Learnosity\Processors\QtiV2\Out\QuestionTypes\McqMapper;
 use Learnosity\Utils\QtiMarshallerUtil;
+use qtism\common\enums\BaseType;
+use qtism\common\enums\Cardinality;
 use qtism\data\content\interactions\ChoiceInteraction;
 use qtism\data\content\interactions\Orientation;
 use qtism\data\content\interactions\SimpleChoice;
@@ -80,7 +83,16 @@ class McqMapperTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($interaction instanceof ChoiceInteraction);
 
         // Check on the responseDeclaration and responseProcessing objects to be correctly generated
-        $this->markTestIncomplete('Need to complete this');
+        $this->assertEquals(Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT, $responseProcessing->getTemplate());
+        $this->assertEquals(Cardinality::SINGLE, $responseDeclaration->getCardinality());
+        $this->assertEquals(BaseType::IDENTIFIER, $responseDeclaration->getBaseType());
+        $this->assertNotNull($responseDeclaration->getCorrectResponse());
+        $this->assertEquals('ChoiceB', $responseDeclaration->getCorrectResponse()->getValues()->getArrayCopy(true)[0]->getValue());
+
+        // The mapping would still be mapped but would not be used
+        $this->assertNotNull($responseDeclaration->getMapping());
+        $this->assertEquals('ChoiceB', $responseDeclaration->getMapping()->getMapEntries()->getArrayCopy(true)[0]->getMapKey());
+        $this->assertEquals(1, $responseDeclaration->getMapping()->getMapEntries()->getArrayCopy(true)[0]->getMappedValue());
     }
 
     /**

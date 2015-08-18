@@ -54,15 +54,11 @@ $app->post('/:version/', function () use ($app) {
                 throw new RequestException('Invalid request object, QTI to Learnosity transformation required `items` as array with one `item` object');
             }
             foreach ($body['items'] as $item) {
-                try {
-                    list($qti, $manifest) = $converter->convertLearnosityToQtiItem($item);
-                    $result[] = [
-                        'item' => $qti,
-                        'manifest' => $manifest
-                    ];
-                } catch (MappingException $e) {
-                    throw new RequestException($e->getMessage());
-                }
+                list($qti, $manifest) = $converter->convertLearnosityToQtiItem($item);
+                $result[] = [
+                    'item' => $qti,
+                    'manifest' => $manifest
+                ];
             }
             echo json_encode($result);
             die;
@@ -74,9 +70,12 @@ $app->post('/:version/', function () use ($app) {
     } catch (RequestException $e) {
         $app->response->setStatus(400);
         echo json_encode($e->getMessage());
+    } catch (MappingException $e) {
+        $app->response->setStatus(400);
+        echo json_encode($e->getMessage());
     } catch (Exception $e) {
         $app->response->setStatus(500);
-        echo 'Error processing conversion request';
+        echo json_encode('Error processing conversion request');
     }
 });
 

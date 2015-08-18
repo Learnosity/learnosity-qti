@@ -16,7 +16,7 @@ class MergedItemBuilder extends AbstractItemBuilder
     const MAPPER_CLASS_BASE = 'Learnosity\Processors\QtiV2\In\MergedInteractions\\Merged';
 
     public function map(
-        $assessmentItemIdentifier,
+        $itemReference,
         ItemBody $itemBody,
         QtiComponentCollection $interactionComponents,
         QtiComponentCollection $responseDeclarations = null,
@@ -27,7 +27,7 @@ class MergedItemBuilder extends AbstractItemBuilder
         if (!$mergedInteractionType) {
             return false;
         }
-        $this->assessmentItemIdentifier = $assessmentItemIdentifier;
+        $this->itemReference = $itemReference;
 
         $questionReference = $this->buildMergedQuestionReference($interactionComponents);
         /** @var AbstractMergedInteractionMapper $mapper */
@@ -46,7 +46,7 @@ class MergedItemBuilder extends AbstractItemBuilder
 
     protected function buildMergedQuestionReference(QtiComponentCollection $interactionComponents)
     {
-        $questionReference = $this->assessmentItemIdentifier;
+        $questionReference = $this->itemReference;
         foreach ($interactionComponents as $component) {
             /* @var $component Interaction */
             $questionReference .= '_' . $component->getResponseIdentifier();

@@ -20,12 +20,38 @@ class QtiMappingBuilder
                 throw new MappingException('Found `value` without matching `identifier`');
             }
         }
-        return new Mapping($mapEntryCollection);
+        $mapping = new Mapping($mapEntryCollection);
+        $mapping->setLowerBound(0.0);
+        $mapping->setUpperBound($this->getUpperBound($validation));
+        $mapping->setDefaultValue(0.0);
+        return $mapping;
     }
 
     public function build($validation)
     {
-        return new Mapping($this->buildMapEntryCollection($validation));
+        $mapping = new Mapping($this->buildMapEntryCollection($validation));
+        $mapping->setLowerBound(0.0);
+        $mapping->setUpperBound($this->getUpperBound($validation));
+        $mapping->setDefaultValue(0.0);
+        return $mapping;
+    }
+
+    private function getUpperBound($validation)
+    {
+        $scores = [];
+
+        // Grab score from `valid_response`
+        $scores[] = floatval($validation->get_valid_response()->get_score());
+
+        // Also, grab scores `alt_responses`
+        if (count($validation->get_alt_responses()) > 0) {
+            foreach ($validation->get_alt_responses() as $alt) {
+                $scores[] = floatval($alt->get_score());
+             }
+        }
+
+        // Return the max value
+        return floatval(max($scores));
     }
 
     private function buildMapEntryCollection($validation)

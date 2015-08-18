@@ -8,6 +8,7 @@ use Learnosity\Processors\QtiV2\In\Processings\MathsProcessing;
 use Learnosity\Processors\QtiV2\In\Processings\ProcessingInterface;
 use Learnosity\Processors\QtiV2\In\Processings\RubricsProcessing;
 use Learnosity\Services\LogService;
+use Learnosity\Utils\UuidUtil;
 use qtism\data\AssessmentItem;
 use qtism\data\content\ItemBody;
 use qtism\data\processing\ResponseProcessing;
@@ -43,7 +44,8 @@ class ItemMapper
         $processings = [
             new RubricsProcessing(),
             new MathsProcessing(),
-            AppContainer::getApplicationContainer()->get('assets_processing')
+            AppContainer::getApplicationContainer()->get('assets_processing'),
+            AppContainer::getApplicationContainer()->get('identifiers_processing')
         ];
 
         // Pre-processing works
