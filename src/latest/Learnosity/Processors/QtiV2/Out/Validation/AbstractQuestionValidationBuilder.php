@@ -43,7 +43,7 @@ abstract class AbstractQuestionValidationBuilder
         return [$responseDeclaration, $responseProcessing];
     }
 
-    protected function buildResponseProcessing($validation, $isCaseSensitive)
+    protected function buildResponseProcessing($validation, $isCaseSensitive = true)
     {
         $responseProcessing = new ResponseProcessing();
 

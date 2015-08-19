@@ -73,7 +73,18 @@ class ItemBodyBuilder
                 $questionReference = trim(str_replace('learnosity-response', '', $component->getClass()));
                 $questionReference = trim(str_replace('question-', '', $questionReference));
 
-                $replacement = ContentCollectionBuilder::buildContent($currentContainer, $interactions[$questionReference])->current();
+                // Build the actual interaction
+                $interaction = $interactions[$questionReference]['interaction'];
+                $content = null;
+                if (isset($interactions[$questionReference]['extraContent'])) {
+                    $content = new FlowCollection();
+                    $content->attach($interactions[$questionReference]['extraContent']);
+                    $content->attach($interaction);
+                } else {
+                    $content = $interactions[$questionReference]['extraContent'];
+                }
+
+                $replacement = ContentCollectionBuilder::buildContent($currentContainer, $content)->current();
                 $currentContainer->getComponents()->replace($component, $replacement);
             }
         }
@@ -88,10 +99,20 @@ class ItemBodyBuilder
 
     private function buildItemBodySimple(array $interactions)
     {
-        $interactionCollection = new QtiComponentCollection(array_values($interactions));
-        $itemBody = new ItemBody();
-        $itemBody->setContent(ContentCollectionBuilder::buildBlockCollectionContent($interactionCollection));
+        $interactions = array_values($interactions);
+        $contentCollection = new QtiComponentCollection();
 
+        // Append the extra contents belong to an interaction before the interaction itself
+        foreach ($interactions as $data) {
+            if (isset($data['extraContent'])) {
+                $content = QtiMarshallerUtil::unmarshallElement($data['extraContent']);
+                $contentCollection->merge($content);
+            }
+            $contentCollection->attach($data['interaction']);
+        }
+
+        $itemBody = new ItemBody();
+        $itemBody->setContent(ContentCollectionBuilder::buildBlockCollectionContent($contentCollection));
         return $itemBody;
     }
 }

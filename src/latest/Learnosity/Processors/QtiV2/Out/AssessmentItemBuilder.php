@@ -51,19 +51,23 @@ class AssessmentItemBuilder
         // Store interactions on this array to later be placed on <itemBody>
         $interactions = [];
         $responseDeclarationCollection = new ResponseDeclarationCollection();
-        $resoponseProcessingTemplates = [];
+        $responseProcessingTemplates = [];
         foreach ($questions as $question) {
             /** @var Question $question */
             // Map the `questions` and its validation objects to be placed at <itemBody>
-            list($interaction, $responseDeclaration, $responseProcessing) = $this->map($question);
+            // The extraContent usually comes from `stimulus` of item that mapped to inline interaction and has no `prompt`
+            list($interaction, $responseDeclaration, $responseProcessing, $extraContent) = $this->map($question);
             if (!empty($responseDeclaration)) {
                 $responseDeclarationCollection->attach($responseDeclaration);
             }
             if (!empty($responseProcessing)) {
                 /** @var ResponseProcessing $responseProcessing */
-                $resoponseProcessingTemplates[] = $responseProcessing->getTemplate();
+                $responseProcessingTemplates[] = $responseProcessing->getTemplate();
             }
-            $interactions[$question->get_reference()] = $interaction;
+            $interactions[$question->get_reference()]['interaction'] = $interaction;
+            if (!empty($extraContent)) {
+                $interactions[$question->get_reference()]['extraContent'] = $extraContent;
+            }
         }
 
         // Build <itemBody>
@@ -75,12 +79,12 @@ class AssessmentItemBuilder
         }
         // Map <responseProcessing> - combine response processing from questions
         // TODO: Freaking tidy up this stuff
-        if (!empty($resoponseProcessingTemplates)) {
-            $templates = array_unique($resoponseProcessingTemplates);
-            $isOnlyMatchCorrent = count($templates) === 1 && $templates[0] = Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT;
+        if (!empty($responseProcessingTemplates)) {
+            $templates = array_unique($responseProcessingTemplates);
+            $isOnlyMatchCorrect = count($templates) === 1 && $templates[0] === Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT;
 
             $responseProcessing = new ResponseProcessing();
-            $responseProcessing->setTemplate($isOnlyMatchCorrent ? Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT : Constants::RESPONSE_PROCESSING_TEMPLATE_MAP_RESPONSE);
+            $responseProcessing->setTemplate($isOnlyMatchCorrect ? Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT : Constants::RESPONSE_PROCESSING_TEMPLATE_MAP_RESPONSE);
             $assessmentItem->setResponseProcessing($responseProcessing);
         }
         return $assessmentItem;
@@ -105,7 +109,9 @@ class AssessmentItemBuilder
                 "Replaced it with randomly generated `$interactionIdentifier` and stored the original `reference` as `label` attribute"
             );
         }
-        return $questionTypeMapper->convert($question->get_data(), $interactionIdentifier, $questionReference);
+        $result = $questionTypeMapper->convert($question->get_data(), $interactionIdentifier, $questionReference);
+        $result[] = $questionTypeMapper->getExtraContent();
+        return $result;
     }
 
     private function buildOutcomeDeclarations()

@@ -11,6 +11,11 @@ abstract class AbstractQuestionTypeMapper
 {
     abstract public function convert(BaseQuestionType $questionType, $interactionIdentifier, $interactionLabel);
 
+    public function getExtraContent()
+    {
+        return null;
+    }
+
     protected function convertStimulusForPrompt($stimulusString)
     {
         $stimulusComponents = QtiMarshallerUtil::unmarshallElement($stimulusString);
