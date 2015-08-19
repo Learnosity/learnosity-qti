@@ -15,6 +15,10 @@ abstract class AbstractQuestionValidationBuilder
     public function buildValidation($responseIdentifier, $validation, $isCaseSensitive = true)
     {
         // Some basic validation on the `validation` object
+        if (empty($validation)) {
+            return [null, null];
+        }
+
         if (empty($validation->get_scoring_type()) || !in_array($validation->get_scoring_type(), $this->supportedScoringType)) {
             LogService::log('Invalid `scoring_type`, fail to build `responseDeclaration` and `responseProcessingTemplate');
             return [null, null];
@@ -34,8 +38,16 @@ abstract class AbstractQuestionValidationBuilder
             }
         }
 
-        $scoringType = $validation->get_scoring_type();
+        $responseProcessing = $this->buildResponseProcessing($validation, $isCaseSensitive);
+        $responseDeclaration = $this->buildResponseDeclaration($responseIdentifier, $validation);
+        return [$responseDeclaration, $responseProcessing];
+    }
+
+    protected function buildResponseProcessing($validation, $isCaseSensitive)
+    {
         $responseProcessing = new ResponseProcessing();
+
+        $scoringType = $validation->get_scoring_type();
         // If question has `exactMatch` and has `valid_response` and `alt_responses` with score of only `1`s
         // and it is not case sensitive, then it would be mapped to <correctResponse> with `match_correct` template
         if ($scoringType === 'exactMatch' && $this->canBeMappedToCorrectAnswer($validation) && $isCaseSensitive) {
@@ -46,8 +58,7 @@ abstract class AbstractQuestionValidationBuilder
             $responseProcessing->setTemplate(Constants::RESPONSE_PROCESSING_TEMPLATE_MAP_RESPONSE);
         }
 
-        $responseDeclaration = $this->buildResponseDeclaration($responseIdentifier, $validation);
-        return [$responseDeclaration, $responseProcessing];
+        return $responseProcessing;
     }
 
     private function canBeMappedToCorrectAnswer($validation)
