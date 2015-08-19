@@ -22,7 +22,7 @@ class DocumentationGenerator
     public function __construct(SchemasService $schemasService)
     {
         $templateDirectory = FileSystemUtil::getRootPath() . '/Config/resources/templates';
-        $this->documentationPath = FileSystemUtil::getRootPath() . '/../examples/documentation.html';
+        $this->documentationPath = FileSystemUtil::getRootPath() . '/../documentation.html';
         $this->twig = new \Twig_Environment(new \Twig_Loader_Filesystem($templateDirectory), [
             'debug' => true
         ]);
