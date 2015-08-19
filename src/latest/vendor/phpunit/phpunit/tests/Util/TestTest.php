@@ -1,45 +1,11 @@
 <?php
-/**
- * PHPUnit
+/*
+ * This file is part of PHPUnit.
  *
- * Copyright (c) 2001-2014, Sebastian Bergmann <sebastian@phpunit.de>.
- * All rights reserved.
+ * (c) Sebastian Bergmann <sebastian@phpunit.de>
  *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- *   * Redistributions of source code must retain the above copyright
- *     notice, this list of conditions and the following disclaimer.
- *
- *   * Redistributions in binary form must reproduce the above copyright
- *     notice, this list of conditions and the following disclaimer in
- *     the documentation and/or other materials provided with the
- *     distribution.
- *
- *   * Neither the name of Sebastian Bergmann nor the names of his
- *     contributors may be used to endorse or promote products derived
- *     from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
- * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
- * FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
- * COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
- * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
- * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
- * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- *
- * @package    PHPUnit
- * @author     Sebastian Bergmann <sebastian@phpunit.de>
- * @copyright  2001-2014 Sebastian Bergmann <sebastian@phpunit.de>
- * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
- * @link       http://www.phpunit.de/
- * @since      File available since Release 3.3.6
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 if (!defined('TEST_FILES_PATH')) {
@@ -51,13 +17,6 @@ if (!defined('TEST_FILES_PATH')) {
 }
 
 /**
- *
- *
- * @package    PHPUnit
- * @author     Sebastian Bergmann <sebastian@phpunit.de>
- * @copyright  2001-2014 Sebastian Bergmann <sebastian@phpunit.de>
- * @license    http://www.opensource.org/licenses/BSD-3-Clause  The BSD 3-Clause License
- * @link       http://www.phpunit.de/
  * @since      Class available since Release 3.3.6
  */
 class Util_TestTest extends PHPUnit_Framework_TestCase
@@ -68,70 +27,91 @@ class Util_TestTest extends PHPUnit_Framework_TestCase
      */
     public function testGetExpectedException()
     {
-        $this->assertSame(
-            array('class' => 'FooBarBaz', 'code' => null, 'message' => ''),
-            PHPUnit_Util_Test::getExpectedException('ExceptionTest', 'testOne')
+        $this->assertArraySubset(
+          array('class' => 'FooBarBaz', 'code' => null, 'message' => ''),
+          PHPUnit_Util_Test::getExpectedException('ExceptionTest', 'testOne')
         );
 
-        $this->assertSame(
-            array('class' => 'Foo_Bar_Baz', 'code' => null, 'message' => ''),
-            PHPUnit_Util_Test::getExpectedException('ExceptionTest', 'testTwo')
+        $this->assertArraySubset(
+          array('class' => 'Foo_Bar_Baz', 'code' => null, 'message' => ''),
+          PHPUnit_Util_Test::getExpectedException('ExceptionTest', 'testTwo')
         );
 
-        $this->assertSame(
-            array('class' => 'Foo\Bar\Baz', 'code' => null, 'message' => ''),
-            PHPUnit_Util_Test::getExpectedException('ExceptionTest', 'testThree')
+        $this->assertArraySubset(
+          array('class' => 'Foo\Bar\Baz', 'code' => null, 'message' => ''),
+          PHPUnit_Util_Test::getExpectedException('ExceptionTest', 'testThree')
         );
 
-        $this->assertSame(
-            array('class' => 'ほげ', 'code' => null, 'message' => ''),
-            PHPUnit_Util_Test::getExpectedException('ExceptionTest', 'testFour')
+        $this->assertArraySubset(
+          array('class' => 'ほげ', 'code' => null, 'message' => ''),
+          PHPUnit_Util_Test::getExpectedException('ExceptionTest', 'testFour')
         );
 
-        $this->assertSame(
-            array('class' => 'Class', 'code' => 1234, 'message' => 'Message'),
-            PHPUnit_Util_Test::getExpectedException('ExceptionTest', 'testFive')
+        $this->assertArraySubset(
+          array('class' => 'Class', 'code' => 1234, 'message' => 'Message'),
+          PHPUnit_Util_Test::getExpectedException('ExceptionTest', 'testFive')
         );
 
-        $this->assertSame(
-            array('class' => 'Class', 'code' => 1234, 'message' => 'Message'),
-            PHPUnit_Util_Test::getExpectedException('ExceptionTest', 'testSix')
+        $this->assertArraySubset(
+          array('class' => 'Class', 'code' => 1234, 'message' => 'Message'),
+          PHPUnit_Util_Test::getExpectedException('ExceptionTest', 'testSix')
         );
 
-        $this->assertSame(
-            array('class' => 'Class', 'code' => 'ExceptionCode', 'message' => 'Message'),
-            PHPUnit_Util_Test::getExpectedException('ExceptionTest', 'testSeven')
+        $this->assertArraySubset(
+          array('class' => 'Class', 'code' => 'ExceptionCode', 'message' => 'Message'),
+          PHPUnit_Util_Test::getExpectedException('ExceptionTest', 'testSeven')
         );
 
-        $this->assertSame(
-            array('class' => 'Class', 'code' => 0, 'message' => 'Message'),
-            PHPUnit_Util_Test::getExpectedException('ExceptionTest', 'testEight')
+        $this->assertArraySubset(
+          array('class' => 'Class', 'code' => 0, 'message' => 'Message'),
+          PHPUnit_Util_Test::getExpectedException('ExceptionTest', 'testEight')
         );
 
-        $this->assertSame(
-            array('class' => 'Class', 'code' => ExceptionTest::ERROR_CODE, 'message' => ExceptionTest::ERROR_MESSAGE),
-            PHPUnit_Util_Test::getExpectedException('ExceptionTest', 'testNine')
+        $this->assertArraySubset(
+          array('class' => 'Class', 'code' => ExceptionTest::ERROR_CODE, 'message' => ExceptionTest::ERROR_MESSAGE),
+          PHPUnit_Util_Test::getExpectedException('ExceptionTest', 'testNine')
         );
 
-        $this->assertSame(
-            array('class' => 'Class', 'code' => null, 'message' => ''),
-            PHPUnit_Util_Test::getExpectedException('ExceptionTest', 'testSingleLine')
+        $this->assertArraySubset(
+          array('class' => 'Class', 'code' => null, 'message' => ''),
+          PHPUnit_Util_Test::getExpectedException('ExceptionTest', 'testSingleLine')
         );
 
-        $this->assertSame(
-            array('class' => 'Class', 'code' => My\Space\ExceptionNamespaceTest::ERROR_CODE, 'message' => My\Space\ExceptionNamespaceTest::ERROR_MESSAGE),
-            PHPUnit_Util_Test::getExpectedException('My\Space\ExceptionNamespaceTest', 'testConstants')
+        $this->assertArraySubset(
+          array('class' => 'Class', 'code' => My\Space\ExceptionNamespaceTest::ERROR_CODE, 'message' => My\Space\ExceptionNamespaceTest::ERROR_MESSAGE),
+          PHPUnit_Util_Test::getExpectedException('My\Space\ExceptionNamespaceTest', 'testConstants')
         );
 
         // Ensure the Class::CONST expression is only evaluated when the constant really exists
-        $this->assertSame(
-            array('class' => 'Class', 'code' => 'ExceptionTest::UNKNOWN_CODE_CONSTANT', 'message' => 'ExceptionTest::UNKNOWN_MESSAGE_CONSTANT'),
-            PHPUnit_Util_Test::getExpectedException('ExceptionTest', 'testUnknownConstants')
+        $this->assertArraySubset(
+          array('class' => 'Class', 'code' => 'ExceptionTest::UNKNOWN_CODE_CONSTANT', 'message' => 'ExceptionTest::UNKNOWN_MESSAGE_CONSTANT'),
+          PHPUnit_Util_Test::getExpectedException('ExceptionTest', 'testUnknownConstants')
         );
 
-        $this->assertSame(
-            array('class' => 'Class', 'code' => 'My\Space\ExceptionNamespaceTest::UNKNOWN_CODE_CONSTANT', 'message' => 'My\Space\ExceptionNamespaceTest::UNKNOWN_MESSAGE_CONSTANT'),
-            PHPUnit_Util_Test::getExpectedException('My\Space\ExceptionNamespaceTest', 'testUnknownConstants')
+        $this->assertArraySubset(
+          array('class' => 'Class', 'code' => 'My\Space\ExceptionNamespaceTest::UNKNOWN_CODE_CONSTANT', 'message' => 'My\Space\ExceptionNamespaceTest::UNKNOWN_MESSAGE_CONSTANT'),
+          PHPUnit_Util_Test::getExpectedException('My\Space\ExceptionNamespaceTest', 'testUnknownConstants')
+        );
+    }
+
+    /**
+     * @covers PHPUnit_Util_Test::getExpectedException
+     */
+    public function testGetExpectedRegExp()
+    {
+        $this->assertArraySubset(
+          array('message_regex' => '#regex#'),
+          PHPUnit_Util_Test::getExpectedException('ExceptionTest', 'testWithRegexMessage')
+        );
+
+        $this->assertArraySubset(
+          array('message_regex' => '#regex#'),
+          PHPUnit_Util_Test::getExpectedException('ExceptionTest', 'testWithRegexMessageFromClassConstant')
+        );
+
+        $this->assertArraySubset(
+          array('message_regex' => 'ExceptionTest::UNKNOWN_MESSAGE_REGEX_CONSTANT'),
+          PHPUnit_Util_Test::getExpectedException('ExceptionTest', 'testWithUnknowRegexMessageFromClassConstant')
         );
     }
 
@@ -162,27 +142,27 @@ class Util_TestTest extends PHPUnit_Framework_TestCase
             array('testTen',    array('extensions' => array('testExt'))),
             array('testEleven', array('OS' => '/Linux/i')),
             array(
-                'testSpace',
-                array(
-                    'extensions' => array('spl'),
-                    'OS' => '/.*/i'
-                )
+              'testSpace',
+              array(
+                'extensions' => array('spl'),
+                'OS'         => '/.*/i'
+              )
             ),
             array(
-                'testAllPossibleRequirements',
-                array(
-                    'PHP' => '99-dev',
-                    'PHPUnit' => '9-dev',
-                    'OS' => '/DOESNOTEXIST/i',
-                    'functions' => array(
-                        'testFuncOne',
-                        'testFuncTwo',
-                    ),
-                    'extensions' => array(
-                        'testExtOne',
-                        'testExtTwo',
-                    )
+              'testAllPossibleRequirements',
+              array(
+                'PHP'       => '99-dev',
+                'PHPUnit'   => '9-dev',
+                'OS'        => '/DOESNOTEXIST/i',
+                'functions' => array(
+                  'testFuncOne',
+                  'testFuncTwo',
+                ),
+                'extensions' => array(
+                  'testExtOne',
+                  'testExtTwo',
                 )
+              )
             )
         );
     }
@@ -193,22 +173,55 @@ class Util_TestTest extends PHPUnit_Framework_TestCase
     public function testGetRequirementsMergesClassAndMethodDocBlocks()
     {
         $expectedAnnotations = array(
-            'PHP' => '5.4',
-            'PHPUnit' => '3.7',
-            'OS' => '/WINNT/i',
+            'PHP'       => '5.4',
+            'PHPUnit'   => '3.7',
+            'OS'        => '/WINNT/i',
             'functions' => array(
-                'testFuncClass',
-                'testFuncMethod',
+              'testFuncClass',
+              'testFuncMethod',
             ),
             'extensions' => array(
-                'testExtClass',
-                'testExtMethod',
+              'testExtClass',
+              'testExtMethod',
             )
         );
 
         $this->assertEquals(
             $expectedAnnotations,
             PHPUnit_Util_Test::getRequirements('RequirementsClassDocBlockTest', 'testMethod')
+        );
+    }
+
+    /**
+     * @covers       PHPUnit_Util_Test::getMissingRequirements
+     * @dataProvider missingRequirementsProvider
+     */
+    public function testGetMissingRequirements($test, $result)
+    {
+        $this->assertEquals(
+            $result,
+            PHPUnit_Util_Test::getMissingRequirements('RequirementsTest', $test)
+        );
+    }
+
+    public function missingRequirementsProvider()
+    {
+        return array(
+            array('testOne',            array()),
+            array('testNine',           array('Function testFunc is required.')),
+            array('testTen',            array('Extension testExt is required.')),
+            array('testAlwaysSkip',     array('PHPUnit 1111111 (or later) is required.')),
+            array('testAlwaysSkip2',    array('PHP 9999999 (or later) is required.')),
+            array('testAlwaysSkip3',    array('Operating system matching /DOESNOTEXIST/i is required.')),
+            array('testAllPossibleRequirements', array(
+              'PHP 99-dev (or later) is required.',
+              'PHPUnit 9-dev (or later) is required.',
+              'Operating system matching /DOESNOTEXIST/i is required.',
+              'Function testFuncOne is required.',
+              'Function testFuncTwo is required.',
+              'Extension testExtOne is required.',
+              'Extension testExtTwo is required.',
+            )),
         );
     }
 
@@ -237,6 +250,102 @@ class Util_TestTest extends PHPUnit_Framework_TestCase
         $result = preg_match(PHPUnit_Util_Test::REGEX_DATA_PROVIDER, '@dataProvider メソッド', $matches);
         $this->assertEquals(1, $result);
         $this->assertEquals('メソッド', $matches[1]);
+    }
+
+    /**
+     * @covers PHPUnit_Util_Test::getDataFromTestWithAnnotation
+     */
+    public function testTestWithEmptyAnnotation()
+    {
+        $result = PHPUnit_Util_Test::getDataFromTestWithAnnotation("/**\n * @anotherAnnotation\n */");
+        $this->assertNull($result);
+    }
+
+    /**
+     * @covers PHPUnit_Util_Test::getDataFromTestWithAnnotation
+     */
+    public function testTestWithSimpleCase()
+    {
+        $result = PHPUnit_Util_Test::getDataFromTestWithAnnotation('/**
+                                                                     * @testWith [1]
+                                                                     */');
+        $this->assertEquals(array(array(1)), $result);
+    }
+
+    /**
+     * @covers PHPUnit_Util_Test::getDataFromTestWithAnnotation
+     */
+    public function testTestWithMultiLineMultiParameterCase()
+    {
+        $result = PHPUnit_Util_Test::getDataFromTestWithAnnotation('/**
+                                                                     * @testWith [1, 2]
+                                                                     * [3, 4]
+                                                                     */');
+        $this->assertEquals(array(array(1, 2), array(3, 4)), $result);
+    }
+
+    /**
+     * @covers PHPUnit_Util_Test::getDataFromTestWithAnnotation
+     */
+    public function testTestWithVariousTypes()
+    {
+        $result = PHPUnit_Util_Test::getDataFromTestWithAnnotation('/**
+            * @testWith ["ab"]
+            *           [true]
+            *           [null]
+         */');
+        $this->assertEquals(array(array('ab'), array(true), array(null)), $result);
+    }
+
+    /**
+     * @covers PHPUnit_Util_Test::getDataFromTestWithAnnotation
+     */
+    public function testTestWithAnnotationAfter()
+    {
+        $result = PHPUnit_Util_Test::getDataFromTestWithAnnotation('/**
+                                                                     * @testWith [1]
+                                                                     *           [2]
+                                                                     * @annotation
+                                                                     */');
+        $this->assertEquals(array(array(1), array(2)), $result);
+    }
+
+    /**
+     * @covers PHPUnit_Util_Test::getDataFromTestWithAnnotation
+     */
+    public function testTestWithSimpleTextAfter()
+    {
+        $result = PHPUnit_Util_Test::getDataFromTestWithAnnotation('/**
+                                                                     * @testWith [1]
+                                                                     *           [2]
+                                                                     * blah blah
+                                                                     */');
+        $this->assertEquals(array(array(1), array(2)), $result);
+    }
+
+    /**
+     * @covers PHPUnit_Util_Test::getDataFromTestWithAnnotation
+     */
+    public function testTestWithCharacterEscape()
+    {
+        $result = PHPUnit_Util_Test::getDataFromTestWithAnnotation('/**
+                                                                     * @testWith ["\"", "\""]
+                                                                     */');
+        $this->assertEquals(array(array('"', '"')), $result);
+    }
+
+    /**
+     * @covers PHPUnit_Util_Test::getDataFromTestWithAnnotation
+     */
+    public function testTestWithThrowsProperExceptionIfDatasetCannotBeParsed()
+    {
+        $this->setExpectedExceptionRegExp(
+            'PHPUnit_Framework_Exception',
+            '/^The dataset for the @testWith annotation cannot be parsed.$/'
+        );
+        PHPUnit_Util_Test::getDataFromTestWithAnnotation('/**
+                                                           * @testWith [s]
+                                                           */');
     }
 
     /**
@@ -352,7 +461,7 @@ class Util_TestTest extends PHPUnit_Framework_TestCase
      * @covers PHPUnit_Util_Test::getLinesToBeCovered
      * @covers PHPUnit_Util_Test::getLinesToBeCoveredOrUsed
      */
-    public function testGetLinesToBeCoveredSkipsNonExistantMethods()
+    public function testGetLinesToBeCoveredSkipsNonExistentMethods()
     {
         $this->assertSame(
             array(),

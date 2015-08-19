@@ -18,7 +18,6 @@ $app->get('/:version/', function ($version) use ($app) {
 
 $app->post('/:version/', function () use ($app) {
     try {
-        $converter = new Converter();
         $body = json_decode($app->request()->getBody(), true);
 
         // Validate request object
@@ -36,7 +35,7 @@ $app->post('/:version/', function () use ($app) {
             $result = [];
             foreach ($body['items'] as $xmlString) {
                 list($itemData, $questionsData, $manifest) =
-                    $converter->convertQtiItemToLearnosity($xmlString, $baseAssetsUrl);
+                    Converter::convertQtiItemToLearnosity($xmlString, $baseAssetsUrl);
                 $result[] = [
                     'item' => $itemData,
                     'questions' => $questionsData,
@@ -54,7 +53,7 @@ $app->post('/:version/', function () use ($app) {
                 throw new RequestException('Invalid request object, QTI to Learnosity transformation required `items` as array with one `item` object');
             }
             foreach ($body['items'] as $item) {
-                list($qti, $manifest) = $converter->convertLearnosityToQtiItem($item);
+                list($qti, $manifest) = Converter::convertLearnosityToQtiItem($item);
                 $result[] = [
                     'item' => $qti,
                     'manifest' => $manifest

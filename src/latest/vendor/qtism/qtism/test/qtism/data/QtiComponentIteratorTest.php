@@ -44,32 +44,6 @@ class QtiComponentIteratorTest extends QtiSmTestCase {
 		$this->assertFalse($iterator->valid());
 		$this->assertTrue($iterator->current() === null);
 	}
-
-//	public function testEmptyComponents() {
-//		$span = new Span();
-//		$span->setClass('empty-span');
-////		$collection = new \qtism\data\content\InlineCollection();
-////		$collection->attach(new \qtism\data\content\TextRun('OMG'));
-////		$span->setContent($collection);
-//		$collection = new \qtism\data\content\InlineCollection();
-//		$collection->attach($span);
-//
-//		$p = new P();
-//		$p->setContent($collection);
-//
-//		$div = new \qtism\data\content\xhtml\text\Div();
-//		$collection = new \qtism\data\content\FlowCollection();
-//		$collection->attach($p);
-//		$div->setContent($collection);
-//		$iterator = new QtiComponentIterator($div);
-//
-//		$this->assertTrue($iterator->valid());
-//
-//		$iterations = 0;
-//		foreach ($iterator as $k => $i) {
-//			$iterations++;
-//		}
-//	}
 	
 	public function testAvoidRecursions() {
 		$baseValues = new ExpressionCollection();

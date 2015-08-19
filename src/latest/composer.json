@@ -1,25 +1,27 @@
 {
     "name": "learnosity/learnosity-qti",
-    "description": "Learnosity QTI",
+    "description": "Learnosity QTI Conversion Library",
     "autoload": {
         "psr-4": {
             "Learnosity\\": "Learnosity",
             "": ""
         }
     },
+    "keywords": ["QTI", "Learnosity", "TEI"],
     "require": {
+        "php": ">=5.5",
         "symfony/config": "v2.6.8",
         "symfony/finder": "v2.7.0",
         "symfony/yaml": "v2.6.8",
-        "twig/twig": "1.*",
+        "twig/twig": "1.18.2",
         "twig/extensions": "1.2.0",
         "symfony/dependency-injection": "v2.6.8",
         "jms/aop-bundle": "1.0.1",
         "jms/di-extra-bundle": "1.5.0",
-        "qtism/qtism": "0.9.10",
-        "slim/slim": "^2.6"
+        "qtism/qtism": "0.9.11",
+        "slim/slim": "2.6"
     },
     "require-dev": {
-        "phpunit/phpunit": "4.2.*"
+        "phpunit/phpunit": "4.8.4"
     }
 }
