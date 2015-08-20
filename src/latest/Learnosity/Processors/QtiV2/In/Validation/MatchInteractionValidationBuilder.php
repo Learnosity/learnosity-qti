@@ -2,6 +2,7 @@
 
 namespace Learnosity\Processors\QtiV2\In\Validation;
 
+use Learnosity\Exceptions\MappingException;
 use Learnosity\Processors\Learnosity\In\ValidationBuilder\ValidationBuilder;
 use Learnosity\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
 use qtism\common\datatypes\DirectedPair;
@@ -35,8 +36,18 @@ class MatchInteractionValidationBuilder extends BaseInteractionValidationBuilder
         foreach ($this->responseDeclaration->getCorrectResponse()->getValues() as $value) {
             /** @var DirectedPair $valuePair */
             $valuePair = $value->getValue();
-            $responseIndex = $this->stemsMapping[$valuePair->getFirst()];
-            $responseValue = $this->optionsMapping[$valuePair->getSecond()];
+
+            // Map response value and index based from `DirectedPair` Value, try to guess which one is which since they
+            // apparently can swap :(
+            if (isset($this->stemsMapping[$valuePair->getFirst()]) && isset($this->optionsMapping[$valuePair->getSecond()])) {
+                $responseValue = $this->stemsMapping[$valuePair->getFirst()];
+                $responseIndex = $this->optionsMapping[$valuePair->getSecond()];
+            } else if (isset($this->stemsMapping[$valuePair->getSecond()]) && isset($this->optionsMapping[$valuePair->getFirst()])) {
+                $responseValue = $this->stemsMapping[$valuePair->getSecond()];
+                $responseIndex = $this->optionsMapping[$valuePair->getFirst()];
+            } else {
+                throw new MappingException('Fail to match identifiers on Value from `correctResponse`');
+            }
 
             // Build values array in the correct order
             if (!isset($values[$responseIndex])) {
@@ -62,8 +73,19 @@ class MatchInteractionValidationBuilder extends BaseInteractionValidationBuilder
         foreach ($this->responseDeclaration->getMapping()->getMapEntries() as $mapEntry) {
             /** @var MapEntry $mapEntry */
             $score += $mapEntry->getMappedValue();
-            $responseIndex = $this->stemsMapping[$mapEntry->getMapKey()->getFirst()];
-            $responseValue = $this->optionsMapping[$mapEntry->getMapKey()->getSecond()];
+            $mapKey = $mapEntry->getMapKey();
+
+            // Map response value and index based from `DirectedPair` Value, try to guess which one is which since they
+            // apparently can swap :(
+            if (isset($this->stemsMapping[$mapKey->getFirst()]) && isset($this->optionsMapping[$mapKey->getSecond()])) {
+                $responseValue = $this->stemsMapping[$mapKey->getFirst()];
+                $responseIndex = $this->optionsMapping[$mapKey->getSecond()];
+            } else if (isset($this->stemsMapping[$mapKey->getSecond()]) && isset($this->optionsMapping[$mapKey->getFirst()])) {
+                $responseValue = $this->stemsMapping[$mapKey->getSecond()];
+                $responseIndex = $this->optionsMapping[$mapKey->getFirst()];
+            } else {
+                throw new MappingException('Fail to match identifiers on `mapKey` attribute from `mapping`');
+            }
 
             // Build values array in the correct order
             if (!isset($values[$responseIndex])) {

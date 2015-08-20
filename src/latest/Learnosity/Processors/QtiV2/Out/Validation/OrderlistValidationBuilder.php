@@ -36,7 +36,7 @@ class OrderlistValidationBuilder extends AbstractQuestionValidationBuilder
         // Remove `alt_responses` because couldn't support responseDeclaration with multiple valid answers
         if (!empty($validation->get_alt_responses())) {
             $validation->set_alt_responses([]);
-            LogService::log('Fail to map multiple validation responses for <responseDeclaration>, only use `valid_response`, ignoring `alt_responses`');
+            LogService::log('Fail to map multiple validation responses for `responseDeclaration`, only use `valid_response`, ignoring `alt_responses`');
         }
 
         if ($validation->get_valid_response()->get_score() != 1) {

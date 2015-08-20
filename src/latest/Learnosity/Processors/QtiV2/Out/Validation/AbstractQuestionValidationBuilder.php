@@ -54,7 +54,6 @@ abstract class AbstractQuestionValidationBuilder
             $responseProcessing->setTemplate(Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT);
         } else {
             // Otherwise, we would need to build the `MapResponse`
-            LogService::log('Validation object could not be supported yet ~');
             $responseProcessing->setTemplate(Constants::RESPONSE_PROCESSING_TEMPLATE_MAP_RESPONSE);
         }
 
