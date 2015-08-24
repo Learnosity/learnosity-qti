@@ -5,6 +5,7 @@ namespace Learnosity\Processors\QtiV2\Out;
 use Learnosity\Exceptions\MappingException;
 use Learnosity\Processors\QtiV2\Out\ContentBuilders\BlockCollectionContentBuilder;
 use Learnosity\Processors\QtiV2\Out\ContentBuilders\InlineCollectionContentBuilder;
+use qtism\data\content\BlockStaticCollection;
 use qtism\data\content\FlowCollection;
 use qtism\data\content\FlowStaticCollection;
 use qtism\data\QtiComponent;
@@ -27,6 +28,8 @@ class ContentCollectionBuilder
                 return self::buildInlineCollectionContent($content);
             } elseif ($contentType === 'BlockCollection') {
                 return self::buildBlockCollectionContent($content);
+            } elseif ($contentType === 'BlockStaticCollection') {
+                return self::buildBlockStaticCollectionContent($content);
             } elseif ($contentType === 'FlowCollection') {
                 return self::buildFlowCollectionContent($content);
             } elseif ($contentType === 'FlowStaticCollection') {
@@ -42,6 +45,15 @@ class ContentCollectionBuilder
     {
         $builder = new BlockCollectionContentBuilder();
         return $builder->buildContentCollection($content);
+    }
+
+    public static function buildBlockStaticCollectionContent(QtiComponentCollection $content)
+    {
+        $collection = new BlockStaticCollection();
+        foreach ($content as $component) {
+            $collection->attach($component);
+        }
+        return $collection;
     }
 
     public static function buildFlowStaticCollectionContent(QtiComponentCollection $content)

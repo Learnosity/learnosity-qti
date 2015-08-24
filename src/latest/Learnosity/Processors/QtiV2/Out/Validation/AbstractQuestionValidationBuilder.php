@@ -12,6 +12,9 @@ abstract class AbstractQuestionValidationBuilder
 
     abstract protected function buildResponseDeclaration($responseIdentifier, $validation);
 
+    // TODO: Only `single` cardinality is able to be mapped with `alt_responses`
+    // abstract protected function buildResponseDeclarationCardinality();
+
     public function buildValidation($responseIdentifier, $validation, $isCaseSensitive = true)
     {
         // Some basic validation on the `validation` object

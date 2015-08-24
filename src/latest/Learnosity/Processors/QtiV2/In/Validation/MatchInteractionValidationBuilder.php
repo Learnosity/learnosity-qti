@@ -15,18 +15,11 @@ class MatchInteractionValidationBuilder extends BaseInteractionValidationBuilder
     private $optionsMapping;
     private $responseDeclaration;
 
-    private $isMultipleResponse = false;
-
     public function __construct(array $stemsMapping, array $optionsMapping, ResponseDeclaration $responseDeclaration = null)
     {
         $this->responseDeclaration = $responseDeclaration;
         $this->stemsMapping = $stemsMapping;
         $this->optionsMapping = $optionsMapping;
-    }
-
-    public function isMultipleResponse()
-    {
-        return $this->isMultipleResponse;
     }
 
     protected function getMatchCorrectTemplateValidation()
@@ -40,11 +33,11 @@ class MatchInteractionValidationBuilder extends BaseInteractionValidationBuilder
             // Map response value and index based from `DirectedPair` Value, try to guess which one is which since they
             // apparently can swap :(
             if (isset($this->stemsMapping[$valuePair->getFirst()]) && isset($this->optionsMapping[$valuePair->getSecond()])) {
-                $responseValue = $this->stemsMapping[$valuePair->getFirst()];
-                $responseIndex = $this->optionsMapping[$valuePair->getSecond()];
+                $responseIndex = $this->stemsMapping[$valuePair->getFirst()];
+                $responseValue = $this->optionsMapping[$valuePair->getSecond()];
             } else if (isset($this->stemsMapping[$valuePair->getSecond()]) && isset($this->optionsMapping[$valuePair->getFirst()])) {
-                $responseValue = $this->stemsMapping[$valuePair->getSecond()];
-                $responseIndex = $this->optionsMapping[$valuePair->getFirst()];
+                $responseIndex = $this->stemsMapping[$valuePair->getSecond()];
+                $responseValue = $this->optionsMapping[$valuePair->getFirst()];
             } else {
                 throw new MappingException('Fail to match identifiers on Value from `correctResponse`');
             }
@@ -56,9 +49,6 @@ class MatchInteractionValidationBuilder extends BaseInteractionValidationBuilder
                 array_push($values[$responseIndex], $responseValue);
             }
         }
-
-        // Check for multiple responses
-        $this->isMultipleResponse = max(array_map('count', $values)) > 1;
 
         // Just to make sure we don't screw the order
         ksort($values);
@@ -78,11 +68,11 @@ class MatchInteractionValidationBuilder extends BaseInteractionValidationBuilder
             // Map response value and index based from `DirectedPair` Value, try to guess which one is which since they
             // apparently can swap :(
             if (isset($this->stemsMapping[$mapKey->getFirst()]) && isset($this->optionsMapping[$mapKey->getSecond()])) {
-                $responseValue = $this->stemsMapping[$mapKey->getFirst()];
-                $responseIndex = $this->optionsMapping[$mapKey->getSecond()];
+                $responseIndex = $this->stemsMapping[$mapKey->getFirst()];
+                $responseValue = $this->optionsMapping[$mapKey->getSecond()];
             } else if (isset($this->stemsMapping[$mapKey->getSecond()]) && isset($this->optionsMapping[$mapKey->getFirst()])) {
-                $responseValue = $this->stemsMapping[$mapKey->getSecond()];
-                $responseIndex = $this->optionsMapping[$mapKey->getFirst()];
+                $responseIndex = $this->stemsMapping[$mapKey->getSecond()];
+                $responseValue = $this->optionsMapping[$mapKey->getFirst()];
             } else {
                 throw new MappingException('Fail to match identifiers on `mapKey` attribute from `mapping`');
             }
@@ -94,9 +84,6 @@ class MatchInteractionValidationBuilder extends BaseInteractionValidationBuilder
                 array_push($values[$responseIndex], $responseValue);
             }
         }
-
-        // Check for multiple responses
-        $this->isMultipleResponse = max(array_map('count', $values)) > 1;
 
         // Just to make sure we don't screw the order
         ksort($values);

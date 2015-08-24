@@ -34,7 +34,7 @@ class ShorttextMapper extends AbstractQuestionTypeMapper
         $interaction->setExpectedLength($question->get_max_length() ? $question->get_max_length() : 15);
 
         // Build those validation
-        $isCaseSensitive = empty($question->get_case_sensitive()) ? true : $question->get_case_sensitive();
+        $isCaseSensitive = $question->get_case_sensitive() === null ? true : $question->get_case_sensitive();
         $validationBuilder = new ShorttextValidationBuilder($isCaseSensitive);
         list($responseDeclaration, $responseProcessing) = $validationBuilder->buildValidation(
             $interactionIdentifier,

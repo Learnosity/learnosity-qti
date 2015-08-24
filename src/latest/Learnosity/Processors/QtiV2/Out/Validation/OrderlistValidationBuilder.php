@@ -52,7 +52,7 @@ class OrderlistValidationBuilder extends AbstractQuestionValidationBuilder
         return $responseDeclaration;
     }
 
-    protected function buildResponseProcessing($validation, $isCaseSensitive)
+    protected function buildResponseProcessing($validation, $isCaseSensitive = true)
     {
         $responseProcessing = new ResponseProcessing();
         $responseProcessing->setTemplate(Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT);

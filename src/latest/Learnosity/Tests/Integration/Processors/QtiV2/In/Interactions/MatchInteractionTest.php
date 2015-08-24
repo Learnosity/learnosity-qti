@@ -35,19 +35,18 @@ class MatchInteractionTest extends AbstractTest
 
         $this->assertCount(1, $questions);
 
-        /** @var Question $q */
-        $q = $questions[0];
-        $this->assertInstanceOf('Learnosity\Entities\Question', $q);
-        $this->assertEquals('match_RESPONSE', $q->get_reference());
-        $this->assertEquals('choicematrix', $q->get_type());
+        /** @var Question $question */
+        $question = $questions[0];
+        $this->assertInstanceOf('Learnosity\Entities\Question', $question);
+        $this->assertEquals('match_RESPONSE', $question->get_reference());
+        $this->assertEquals('choicematrix', $question->get_type());
 
-
-        /** @var choicematrix $qType */
-        $qType = $q->get_data();
-        $this->assertInstanceOf('Learnosity\Entities\QuestionTypes\choicematrix', $qType);
+        /** @var choicematrix $choicematrix */
+        $choicematrix = $question->get_data();
+        $this->assertInstanceOf('Learnosity\Entities\QuestionTypes\choicematrix', $choicematrix);
         $this->assertEquals('Match the following characters to the Shakespeare play they appeared in:',
-            $qType->get_stimulus());
-        $this->assertEquals('choicematrix', $qType->get_type());
+            $choicematrix->get_stimulus());
+        $this->assertEquals('choicematrix', $choicematrix->get_type());
         $this->assertEquals(
             [
                 'A Midsummer-Night\'s Dream',
@@ -55,7 +54,7 @@ class MatchInteractionTest extends AbstractTest
                 'The
 				Tempest'
             ],
-            $qType->get_options()
+            $choicematrix->get_options()
         );
         $this->assertEquals(
             [
@@ -64,10 +63,10 @@ class MatchInteractionTest extends AbstractTest
                 'Lysander',
                 'Prospero'
             ],
-            $qType->get_stems());
-        $this->assertFalse($qType->get_multiple_responses());
+            $choicematrix->get_stems());
+        $this->assertTrue($choicematrix->get_multiple_responses());
 
-        $validation = $qType->get_validation();
+        $validation = $choicematrix->get_validation();
         $this->assertInstanceOf('Learnosity\Entities\QuestionTypes\choicematrix_validation', $validation);
         $this->assertEquals('exactMatch', $validation->get_scoring_type());
 

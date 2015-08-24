@@ -82,6 +82,7 @@ class QtiMappingBuilder
         $mapEntries = [];
         if (is_array($response->get_value())) {
             foreach ($response->get_value() as $value) {
+                // TODO: the score shall be divided to total score on multiple cardinality
                 $mapEntries[] = new MapEntry($value, floatval($response->get_score()));
             }
         } else {

@@ -29,8 +29,13 @@ class MatchInteractionMapper extends AbstractInteractionMapper
         $stems = $this->buildOptions($simpleMatchSetCollection[0], $this->stemMapping);
         $options = $this->buildOptions($simpleMatchSetCollection[1], $this->optionsMapping);
 
-        $isMultipleResponse = false;
-        $validation = $this->buildValidation($isMultipleResponse);
+        // Build validation
+        $validationBuilder = new MatchInteractionValidationBuilder(
+            $this->stemMapping,
+            $this->optionsMapping,
+            $this->responseDeclaration
+        );
+        $validation = $validationBuilder->buildValidation($this->responseProcessingTemplate);
 
         if ($interaction->getMaxAssociations() !== count($stems)) {
             LogService::log('Max Association number not equals to number of stems is not supported');
@@ -39,6 +44,7 @@ class MatchInteractionMapper extends AbstractInteractionMapper
         $uiStyle = new choicematrix_ui_style();
         $uiStyle->set_type('table');
 
+        $isMultipleResponse = $this->isMultipleResponse($interaction->getTargetChoices());
         $question = new choicematrix('choicematrix', $options, $isMultipleResponse, $stems);
         $question->set_stimulus($this->getPrompt());
         $question->set_ui_style($uiStyle);
@@ -46,6 +52,19 @@ class MatchInteractionMapper extends AbstractInteractionMapper
             $question->set_validation($validation);
         }
         return $question;
+    }
+
+    private function isMultipleResponse(SimpleMatchSet $targetChoices)
+    {
+        // We determine whether the question shall be mapped to `multiple_responses` as true
+        // if any the target choices (options) can be mapped to be more than 1
+        foreach ($targetChoices->getSimpleAssociableChoices() as $choice) {
+            /** @var SimpleAssociableChoice $choice */
+            if ($choice->getMatchMax() !== 1) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private function buildOptions(SimpleMatchSet $simpleMatchSet, &$mapping)
@@ -60,17 +79,5 @@ class MatchInteractionMapper extends AbstractInteractionMapper
         }
 
         return $options;
-    }
-
-    private function buildValidation(&$isMultipleResponse)
-    {
-        $validationBuilder = new MatchInteractionValidationBuilder(
-            $this->stemMapping,
-            $this->optionsMapping,
-            $this->responseDeclaration
-        );
-        $validation = $validationBuilder->buildValidation($this->responseProcessingTemplate);
-        $isMultipleResponse = $validationBuilder->isMultipleResponse();
-        return $validation;
     }
 }
