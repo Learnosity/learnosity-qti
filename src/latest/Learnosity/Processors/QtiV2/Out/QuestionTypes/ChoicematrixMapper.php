@@ -35,6 +35,8 @@ class ChoicematrixMapper extends AbstractQuestionTypeMapper
         $interaction->setPrompt($this->convertStimulusForPrompt($question->get_stimulus()));
         $interaction->setLabel($interactionLabel);
         $interaction->setShuffle(false); // No support for shuffling
+
+        // If multiple response set then student is allowed to put 1 association (tick 1 box) or (optionCount * stemCount) association (tick all the boxes)
         $interaction->setMaxAssociations($isMultipleResponses ? ($optionCount * $stemCount) : $stemCount);
         $interaction->setMinAssociations($isMultipleResponses ? 1 : $stemCount);
 
