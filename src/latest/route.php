@@ -17,7 +17,7 @@ $app->get('/:version/', function ($version) use ($app) {
     die;
 });
 
-$app->post('/:version/from_qti', function () use ($app) {
+$app->post('/:version/fromqti', function () use ($app) {
     echo execute($app, function () use ($app) {
         $body = json_decode($app->request()->getBody(), true);
 
@@ -40,7 +40,7 @@ $app->post('/:version/from_qti', function () use ($app) {
     });
 });
 
-$app->post('/:version/to_qti', function () use ($app) {
+$app->post('/:version/toqti', function () use ($app) {
     echo execute($app, function() use ($app) {
         $body = json_decode($app->request()->getBody(), true);
 
