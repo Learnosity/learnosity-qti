@@ -2,8 +2,9 @@
 
 namespace Learnosity\Tests\Unit\Processors\QtiV2\In\Interactions;
 
-
 use Learnosity\Entities\QuestionTypes\choicematrix;
+use Learnosity\Entities\QuestionTypes\choicematrix_validation;
+use Learnosity\Entities\QuestionTypes\choicematrix_validation_valid_response;
 use Learnosity\Processors\QtiV2\In\Interactions\MatchInteractionMapper;
 use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
 use Learnosity\Tests\Unit\Processors\QtiV2\In\Fixtures\MatchInteractionBuilder;
@@ -14,21 +15,21 @@ class MatchInteractionTest extends AbstractInteractionTest
 {
     public function testShouldHandleMapResponseValidationWithMultipleResponses()
     {
-        $testMatchInteraction =
-            MatchInteractionBuilder::buildMatchInteraction(
-                'testMatchInteraction',
+        $testMatchInteraction = MatchInteractionBuilder::buildMatchInteraction(
+            'testMatchInteraction',
+            [
                 [
-                    [
-                        'A' => 'Item A',
-                        'B' => 'Item B'
-                    ],
-                    [
-                        'C' => 'Item C',
-                        'D' => 'Item D',
-                        'E' => 'Item E'
-                    ]
+                    'A' => 'Item A',
+                    'B' => 'Item B'
+                ],
+                [
+                    'C' => 'Item C',
+                    'D' => 'Item D',
+                    'E' => 'Item E'
                 ]
-            );
+            ],
+            true
+        );
 
         $testMatchInteraction->setMaxAssociations(3);
         $responseProcessingTemplate = ResponseProcessingTemplate::mapResponse();
@@ -36,7 +37,6 @@ class MatchInteractionTest extends AbstractInteractionTest
             'A D' => [1, false],
             'B C' => [2, false],
             'A E' => [3, false]
-
         ];
         $responseDeclaration = ResponseDeclarationBuilder::buildWithMapping(
             'testIdentifier',
@@ -45,54 +45,47 @@ class MatchInteractionTest extends AbstractInteractionTest
         );
 
         $mapper = new MatchInteractionMapper($testMatchInteraction, $responseDeclaration, $responseProcessingTemplate);
+        /** @var choicematrix $choicematrix */
+        $choicematrix = $mapper->getQuestionType();
+        $this->assertTrue($choicematrix instanceof choicematrix);
+        $this->assertEquals('choicematrix', $choicematrix->get_type());
+        $this->assertCount(3, $choicematrix->get_options());
+        $this->assertContains('Item C', $choicematrix->get_options());
+        $this->assertContains('Item D', $choicematrix->get_options());
+        $this->assertContains('Item E', $choicematrix->get_options());
 
-        /** @var choicematrix $q */
-        $q = $mapper->getQuestionType();
-        $this->assertInstanceOf('Learnosity\Entities\QuestionTypes\choicematrix', $q);
-        $this->assertEquals('choicematrix', $q->get_type());
-        $this->assertCount(3, $q->get_options());
-        $this->assertContains('Item C', $q->get_options());
-        $this->assertContains('Item D', $q->get_options());
-        $this->assertContains('Item E', $q->get_options());
+        $this->assertCount(2, $choicematrix->get_stems());
+        $this->assertContains('Item A', $choicematrix->get_stems());
+        $this->assertContains('Item B', $choicematrix->get_stems());
 
-        $this->assertCount(2, $q->get_stems());
-        $this->assertContains('Item A', $q->get_stems());
-        $this->assertContains('Item B', $q->get_stems());
-
-        $validation = $q->get_validation();
-        $this->assertInstanceOf(
-            'Learnosity\Entities\QuestionTypes\choicematrix_validation',
-            $validation
-        );
+        $validation = $choicematrix->get_validation();
+        $this->assertTrue($validation instanceof choicematrix_validation);
         $this->assertEquals('exactMatch', $validation->get_scoring_type());
 
         $validResponse = $validation->get_valid_response();
-        $this->assertInstanceOf(
-            'Learnosity\Entities\QuestionTypes\choicematrix_validation_valid_response',
-            $validResponse
-        );
+        $this->assertTrue($validResponse instanceof choicematrix_validation_valid_response);
         $this->assertEquals(6, $validResponse->get_score());
         $this->assertEquals([[1, 2], [0]], $validResponse->get_value());
-        $this->assertTrue($q->get_multiple_responses());
+        $this->assertTrue($choicematrix->get_multiple_responses());
     }
 
     public function testShouldHandleMatchCorrectValidationWithMultipleResponses()
     {
-        $testMatchInteraction =
-            MatchInteractionBuilder::buildMatchInteraction(
-                'testMatchInteraction',
+        $testMatchInteraction = MatchInteractionBuilder::buildMatchInteraction(
+            'testMatchInteraction',
+            [
                 [
-                    [
-                        'A' => 'Item A',
-                        'B' => 'Item B'
-                    ],
-                    [
-                        'C' => 'Item C',
-                        'D' => 'Item D',
-                        'E' => 'Item E'
-                    ]
+                    'A' => 'Item A',
+                    'B' => 'Item B'
+                ],
+                [
+                    'C' => 'Item C',
+                    'D' => 'Item D',
+                    'E' => 'Item E'
                 ]
-            );
+            ],
+            true
+        );
 
         $testMatchInteraction->setMaxAssociations(3);
         $responseProcessingTemplate = ResponseProcessingTemplate::matchCorrect();
@@ -107,56 +100,47 @@ class MatchInteractionTest extends AbstractInteractionTest
         );
 
         $mapper = new MatchInteractionMapper($testMatchInteraction, $responseDeclaration, $responseProcessingTemplate);
+        /** @var choicematrix $choicematrix */
+        $choicematrix = $mapper->getQuestionType();
+        $this->assertTrue($choicematrix instanceof choicematrix);
+        $this->assertEquals('choicematrix', $choicematrix->get_type());
+        $this->assertCount(3, $choicematrix->get_options());
+        $this->assertContains('Item C', $choicematrix->get_options());
+        $this->assertContains('Item D', $choicematrix->get_options());
+        $this->assertContains('Item E', $choicematrix->get_options());
 
-        /** @var choicematrix $q */
-        $q = $mapper->getQuestionType();
-        $this->assertInstanceOf('Learnosity\Entities\QuestionTypes\choicematrix', $q);
-        $this->assertEquals('choicematrix', $q->get_type());
-        $this->assertCount(3, $q->get_options());
-        $this->assertContains('Item C', $q->get_options());
-        $this->assertContains('Item D', $q->get_options());
-        $this->assertContains('Item E', $q->get_options());
+        $this->assertCount(2, $choicematrix->get_stems());
+        $this->assertContains('Item A', $choicematrix->get_stems());
+        $this->assertContains('Item B', $choicematrix->get_stems());
 
-        $this->assertCount(2, $q->get_stems());
-        $this->assertContains('Item A', $q->get_stems());
-        $this->assertContains('Item B', $q->get_stems());
-
-        $validation = $q->get_validation();
-        $this->assertInstanceOf(
-            'Learnosity\Entities\QuestionTypes\choicematrix_validation',
-            $validation
-        );
+        $validation = $choicematrix->get_validation();
+        $this->assertTrue($validation instanceof choicematrix_validation);
         $this->assertEquals('exactMatch', $validation->get_scoring_type());
 
         $validResponse = $validation->get_valid_response();
-        $this->assertInstanceOf(
-            'Learnosity\Entities\QuestionTypes\choicematrix_validation_valid_response',
-            $validResponse
-        );
+        $this->assertTrue($validResponse instanceof choicematrix_validation_valid_response);
         $this->assertEquals(1, $validResponse->get_score());
         $this->assertEquals([[1, 2], [0]], $validResponse->get_value());
-        $this->assertTrue($q->get_multiple_responses());
+        $this->assertTrue($choicematrix->get_multiple_responses());
     }
 
 
     public function testShouldHandleMatchCorrectValidationWithoutMultipleResponses()
     {
-        $testMatchInteraction =
-            MatchInteractionBuilder::buildMatchInteraction(
-                'testMatchInteraction',
+        $interaction = MatchInteractionBuilder::buildMatchInteraction(
+            'testMatchInteraction',
+            [
                 [
-                    [
-                        'A' => 'Item A',
-                        'B' => 'Item B'
-                    ],
-                    [
-                        'C' => 'Item C',
-                        'D' => 'Item D'
-                    ]
+                    'A' => 'Item A',
+                    'B' => 'Item B'
+                ],
+                [
+                    'C' => 'Item C',
+                    'D' => 'Item D'
                 ]
-            );
-
-        $testMatchInteraction->setMaxAssociations(2);
+            ]
+        );
+        $interaction->setMaxAssociations(2);
         $responseProcessingTemplate = ResponseProcessingTemplate::matchCorrect();
         $validResponseIdentifier = [
             new DirectedPair('A', 'D'),
@@ -167,34 +151,28 @@ class MatchInteractionTest extends AbstractInteractionTest
             $validResponseIdentifier
         );
 
-        $mapper = new MatchInteractionMapper($testMatchInteraction, $responseDeclaration, $responseProcessingTemplate);
+        $mapper = new MatchInteractionMapper($interaction, $responseDeclaration, $responseProcessingTemplate);
 
-        /** @var choicematrix $q */
-        $q = $mapper->getQuestionType();
-        $this->assertInstanceOf('Learnosity\Entities\QuestionTypes\choicematrix', $q);
-        $this->assertEquals('choicematrix', $q->get_type());
-        $this->assertCount(2, $q->get_options());
-        $this->assertContains('Item C', $q->get_options());
-        $this->assertContains('Item D', $q->get_options());
+        /** @var choicematrix $choicematrix */
+        $choicematrix = $mapper->getQuestionType();
+        $this->assertInstanceOf('Learnosity\Entities\QuestionTypes\choicematrix', $choicematrix);
+        $this->assertEquals('choicematrix', $choicematrix->get_type());
+        $this->assertCount(2, $choicematrix->get_options());
+        $this->assertContains('Item C', $choicematrix->get_options());
+        $this->assertContains('Item D', $choicematrix->get_options());
 
-        $this->assertCount(2, $q->get_stems());
-        $this->assertContains('Item A', $q->get_stems());
-        $this->assertContains('Item B', $q->get_stems());
+        $this->assertCount(2, $choicematrix->get_stems());
+        $this->assertContains('Item A', $choicematrix->get_stems());
+        $this->assertContains('Item B', $choicematrix->get_stems());
 
-        $validation = $q->get_validation();
-        $this->assertInstanceOf(
-            'Learnosity\Entities\QuestionTypes\choicematrix_validation',
-            $validation
-        );
+        $validation = $choicematrix->get_validation();
+        $this->assertTrue($validation instanceof choicematrix_validation);
         $this->assertEquals('exactMatch', $validation->get_scoring_type());
 
         $validResponse = $validation->get_valid_response();
-        $this->assertInstanceOf(
-            'Learnosity\Entities\QuestionTypes\choicematrix_validation_valid_response',
-            $validResponse
-        );
+        $this->assertTrue($validResponse instanceof choicematrix_validation_valid_response);
         $this->assertEquals(1, $validResponse->get_score());
         $this->assertEquals([[1], [0]], $validResponse->get_value());
-        $this->assertFalse($q->get_multiple_responses());
+        $this->assertFalse($choicematrix->get_multiple_responses());
     }
 }

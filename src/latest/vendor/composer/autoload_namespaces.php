@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'qtism\\' => array($vendorDir . '/qtism/qtism'),
+    'phpDocumentor' => array($vendorDir . '/phpdocumentor/reflection-docblock/src'),
     'Twig_Extensions_' => array($vendorDir . '/twig/extensions/lib'),
     'Twig_' => array($vendorDir . '/twig/twig/lib'),
     'Symfony\\Component\\Yaml\\' => array($vendorDir . '/symfony/yaml'),
@@ -18,6 +19,7 @@ return array(
     'Symfony\\Bundle\\FrameworkBundle\\' => array($vendorDir . '/symfony/framework-bundle'),
     'Slim' => array($vendorDir . '/slim/slim'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log'),
+    'Prophecy\\' => array($vendorDir . '/phpspec/prophecy/src'),
     'Metadata\\' => array($vendorDir . '/jms/metadata/src'),
     'JMS\\DiExtraBundle' => array($vendorDir . '/jms/di-extra-bundle'),
     'JMS\\AopBundle' => array($vendorDir . '/jms/aop-bundle'),

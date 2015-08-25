@@ -1,0 +1,25 @@
+{
+    "reference": "somereference",
+    "type": "choicematrix",
+    "data": {
+        "math_renderer": "",
+        "multiple_responses": false,
+        "options": ["True", "False"],
+        "stems": ["[Stem 1]", "[Stem 2]", "[Stem 3]", "[Stem 4]"],
+        "stimulus": "<p>[This is the stem.]</p>",
+        "type": "choicematrix",
+        "ui_style": {
+            "horizontal_lines": false,
+            "stem_numeration": "",
+            "type": "table"
+        },
+        "validation": {
+            "scoring_type": "exactMatch",
+            "valid_response": {
+                "score": 1,
+                "value": [0, 1, 1, 0]
+            }
+        }
+    },
+    "widget_type": "response"
+}

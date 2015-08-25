@@ -2,24 +2,19 @@
 
 namespace Learnosity\Processors\QtiV2\Out\QuestionTypes;
 
+use Learnosity\Entities\QuestionTypes\mcq_ui_style;
+use Learnosity\Processors\QtiV2\Out\Validation\McqValidationBuilder;
 use Learnosity\Entities\BaseQuestionType;
 use Learnosity\Entities\QuestionTypes\mcq;
 use Learnosity\Entities\QuestionTypes\mcq_options_item;
-use Learnosity\Entities\QuestionTypes\mcq_validation;
-use Learnosity\Utils\QtiMarshallerUtil;
 use Learnosity\Services\LogService;
-use qtism\common\enums\BaseType;
-use qtism\common\enums\Cardinality;
+use Learnosity\Utils\QtiMarshallerUtil;
 use qtism\common\utils\Format;
 use qtism\data\content\FlowStaticCollection;
 use qtism\data\content\interactions\ChoiceInteraction;
+use qtism\data\content\interactions\Orientation;
 use qtism\data\content\interactions\SimpleChoice;
 use qtism\data\content\interactions\SimpleChoiceCollection;
-use qtism\data\processing\ResponseProcessing;
-use qtism\data\state\CorrectResponse;
-use qtism\data\state\ResponseDeclaration;
-use qtism\data\state\Value;
-use qtism\data\state\ValueCollection;
 
 class McqMapper extends AbstractQuestionTypeMapper
 {
@@ -59,52 +54,26 @@ class McqMapper extends AbstractQuestionTypeMapper
         // Build the prompt
         $interaction->setPrompt($this->convertStimulusForPrompt($question->get_stimulus()));
 
+        // Set shuffle options
+        $interaction->setShuffle($question->get_shuffle_options() ? true : false);
+
+        // Set the layout
+        if ($question->get_ui_style() instanceof mcq_ui_style &&
+            $question->get_ui_style()->get_type() === 'horizontal' &&
+            intval($question->get_ui_style()->get_columns()) === count($question->get_options())) {
+            $interaction->setOrientation(Orientation::HORIZONTAL);
+        } else {
+            $interaction->setOrientation(Orientation::VERTICAL);
+            LogService::log('ui_style` is ignored and `choiceInteraction` is assumed and set as `vertical`');
+        }
+
         if (empty($question->get_validation())) {
             return [$interaction, null, null];
         }
 
-        list($responseDeclaration, $responseProcessingTemplate) = $this->buildResponseDeclaration(
-            $interactionIdentifier,
-            $valueIdentifierMap,
-            $question->get_validation(),
-            $question->get_multiple_responses()
-        );
-        return [$interaction, $responseDeclaration, $responseProcessingTemplate];
-    }
+        $builder = new McqValidationBuilder($question->get_multiple_responses(), $valueIdentifierMap);
+        list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation());
 
-    private function buildResponseDeclaration($identifier, array $valueIdentifierMap, mcq_validation $validation, $isMultipleResponse)
-    {
-        $cardinality = ($isMultipleResponse) ? Cardinality::MULTIPLE : Cardinality::SINGLE;
-
-        // If question only has `valid_response` with score of `1`, then it would be mapped to <correctResponse>
-        // with `match_correct` template
-        $type = $validation->get_scoring_type();
-        if (!empty($validation->get_valid_response()) &&
-            empty($validation->get_alt_responses()) &&
-            intval($validation->get_valid_response()->get_score()) === 1
-        ) {
-            $values = new ValueCollection();
-            // TODO: Would this always be an array?
-            foreach ($validation->get_valid_response()->get_value() as $value) {
-                // TODO: Why do I have to stupidly check like this
-                if (isset($value) && in_array($value, array_keys($valueIdentifierMap))) {
-                    $choiceIdentifier = $valueIdentifierMap[$value];
-                    $values->attach(new Value($choiceIdentifier));
-                } else {
-                    LogService::log('Invalid `value` in validation object. Failed mapping it');
-                }
-            }
-
-            // Build them`
-            $responseDeclaration = null;
-            $responseProcessing = null;
-            if ($values->count() >= 1) {
-                $responseDeclaration = new ResponseDeclaration($identifier, BaseType::IDENTIFIER, $cardinality);
-                $responseProcessing = new ResponseProcessing();
-                $responseDeclaration->setCorrectResponse(new CorrectResponse($values));
-                $responseProcessing->setTemplate('http://www.imsglobal.org/question/qtiv2p1/rptemplates/match_correct.xml');
-            }
-            return [$responseDeclaration, $responseProcessing];
-        }
+        return [$interaction, $responseDeclaration, $responseProcessing];
     }
 }

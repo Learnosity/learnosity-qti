@@ -17,13 +17,13 @@ class RegularItemBuilder extends AbstractItemBuilder
     const MAPPER_CLASS_BASE = 'Learnosity\Processors\QtiV2\In\Interactions\\';
 
     public function map(
-        $assessmentItemIdentifier,
+        $itemReference,
         ItemBody $itemBody,
         QtiComponentCollection $interactionComponents,
         QtiComponentCollection $responseDeclarations = null,
         ResponseProcessingTemplate $responseProcessingTemplate = null
     ) {
-        $this->assessmentItemIdentifier = $assessmentItemIdentifier;
+        $this->itemReference = $itemReference;
 
         $questionsXmls = [];
         $responseDeclarationsMap = [];
@@ -37,7 +37,7 @@ class RegularItemBuilder extends AbstractItemBuilder
 
         foreach ($interactionComponents as $component) {
             /* @var $component Interaction */
-            $questionReference = $assessmentItemIdentifier . '_' . $component->getResponseIdentifier();
+            $questionReference = $this->itemReference . '_' . $component->getResponseIdentifier();
 
             // Process <responseDeclaration>
             $responseDeclaration = isset($responseDeclarationsMap[$component->getResponseIdentifier()]) ?

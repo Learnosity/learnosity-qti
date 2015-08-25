@@ -2,43 +2,42 @@
 
 namespace Learnosity\Processors\QtiV2\Out\Validation;
 
-use Learnosity\Entities\QuestionTypes\shorttext_validation;
-use Learnosity\Entities\QuestionTypes\shorttext_validation_alt_responses_item;
+use Learnosity\Exceptions\MappingException;
+use qtism\common\enums\BaseType;
 use qtism\common\enums\Cardinality;
-use qtism\data\state\CorrectResponse;
+use qtism\data\state\MapEntry;
 use qtism\data\state\ResponseDeclaration;
-use qtism\data\state\Value;
-use qtism\data\state\ValueCollection;
 
 class ShorttextValidationBuilder extends AbstractQuestionValidationBuilder
 {
-    protected function buildResponseDeclarationForMatchCorrect($responseIdentifier, $validation)
+    private $isCaseSensitive;
+
+    public function __construct($isCaseSensitive)
     {
-        /** @var shorttext_validation $validation */
-        $responseDeclaration = new ResponseDeclaration($responseIdentifier);
-        $responseDeclaration->setCardinality(Cardinality::SINGLE);
-
-        // Handle `valid_response`
-        $values = new ValueCollection();
-        $values->attach(new Value($validation->get_valid_response()->get_value()));
-
-        // Handle `alt_responses`
-        /** @var shorttext_validation_alt_responses_item $alt */
-        if (count($validation->get_alt_responses()) >= 1) {
-            foreach ($validation->get_alt_responses() as $alt) {
-                $values->attach(new Value($alt->get_value()));
-            }
-        }
-
-        // Build correct responses based on that
-        $correctResponse = new CorrectResponse($values);
-        $responseDeclaration->setCorrectResponse($correctResponse);
-        return $responseDeclaration;
+        $this->isCaseSensitive = $isCaseSensitive;
     }
 
-    protected function buildResponseDeclarationForMapResponse($responseIdentifier, $validation)
+    protected function buildResponseDeclaration($responseIdentifier, $validation)
     {
-        // TODO: Todo!
-        return null;
+        if ($validation->get_scoring_type() !== 'exactMatch') {
+            throw new MappingException('Does not support other scoring type mapping other than `exactNatch`');
+        }
+
+        $responseDeclaration = new ResponseDeclaration($responseIdentifier);
+        $responseDeclaration->setCardinality(Cardinality::SINGLE);
+        $responseDeclaration->setBaseType(BaseType::STRING);
+
+        $correctResponseBuilder = new QtiCorrectResponseBuilder();
+        $responseDeclaration->setCorrectResponse($correctResponseBuilder->build($validation));
+        $mappingResponseBuilder = new QtiMappingBuilder();
+        $mapping = $mappingResponseBuilder->build($validation);
+        $responseDeclaration->setMapping($mapping);
+
+        foreach ($mapping->getMapEntries() as $mapEntry) {
+            /** @var MapEntry $mapEntry */
+            $mapEntry->setCaseSensitive($this->isCaseSensitive);
+        }
+
+        return $responseDeclaration;
     }
 }

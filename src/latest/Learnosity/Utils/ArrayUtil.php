@@ -6,7 +6,7 @@ use Learnosity\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
 
 class ArrayUtil
 {
-    public static function combinations(array $array)
+    public static function combinations(array $array, $length = null)
     {
         // Initialize by adding the empty set
         $results = [[]];
@@ -14,6 +14,14 @@ class ArrayUtil
             foreach ($results as $combination) {
                 array_push($results, array_merge([$element], $combination));
             }
+        }
+        // Remove the first empty item
+        array_shift($results);
+        // Remote the items with counts larger than `maxCount`
+        if ($length !== null) {
+            $results = array_filter($results, function ($result) use ($length) {
+                return count($result) <= $length;
+            });
         }
         return $results;
     }
@@ -25,7 +33,14 @@ class ArrayUtil
     public static function cartesianProductForResponses(array $collections)
     {
         $result = self::cartesianProduct($collections);
-        $combinations = array_map(function ($combination) {
+        $combinations = self::combineValidResponsesWithSummedScore($result);
+        return $combinations;
+    }
+
+    public static function combineValidResponsesWithSummedScore(array $collection)
+    {
+        // This used to generate valid response objects for `map_response`
+        return array_map(function ($combination) {
             $score = 0;
             $value = [];
             /** @var ValidResponse $response */
@@ -34,8 +49,21 @@ class ArrayUtil
                 $value = array_merge($value, $response->getValue());
             }
             return new ValidResponse($score, $value);
-        }, $result);
-        return $combinations;
+        }, $collection);
+    }
+
+    public static function combineValidResponsesWithFixedScore(array $collection, $fixedScore)
+    {
+        // This used to generate valid response objects for `match_correct`
+        // in which the score is always be 1
+        return array_map(function ($combination) use ($fixedScore) {
+            $value = [];
+            /** @var ValidResponse $response */
+            foreach ($combination as $response) {
+                $value = array_merge($value, $response->getValue());
+            }
+            return new ValidResponse($fixedScore, $value);
+        }, $collection);
     }
 
     public static function cartesianProduct(array $arrays)

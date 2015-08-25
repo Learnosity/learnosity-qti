@@ -2,6 +2,7 @@
 
 namespace Learnosity\Processors\QtiV2\Out\Validation;
 
+use Learnosity\Processors\QtiV2\Out\Constants;
 use Learnosity\Services\LogService;
 use qtism\data\processing\ResponseProcessing;
 
@@ -9,13 +10,18 @@ abstract class AbstractQuestionValidationBuilder
 {
     private $supportedScoringType = ['exactMatch', 'partialMatch', 'partialMatchV2'];
 
-    abstract protected function buildResponseDeclarationForMatchCorrect($responseIdentifier, $validation);
+    abstract protected function buildResponseDeclaration($responseIdentifier, $validation);
 
-    abstract protected function buildResponseDeclarationForMapResponse($responseIdentifier, $validation);
+    // TODO: Only `single` cardinality is able to be mapped with `alt_responses`
+    // abstract protected function buildResponseDeclarationCardinality();
 
-    public function buildValidation($responseIdentifier, $validation, $isCaseSensitive)
+    public function buildValidation($responseIdentifier, $validation, $isCaseSensitive = true)
     {
         // Some basic validation on the `validation` object
+        if (empty($validation)) {
+            return [null, null];
+        }
+
         if (empty($validation->get_scoring_type()) || !in_array($validation->get_scoring_type(), $this->supportedScoringType)) {
             LogService::log('Invalid `scoring_type`, fail to build `responseDeclaration` and `responseProcessingTemplate');
             return [null, null];
@@ -34,21 +40,27 @@ abstract class AbstractQuestionValidationBuilder
                 }
             }
         }
-        $scoringType = $validation->get_scoring_type();
 
+        $responseProcessing = $this->buildResponseProcessing($validation, $isCaseSensitive);
+        $responseDeclaration = $this->buildResponseDeclaration($responseIdentifier, $validation);
+        return [$responseDeclaration, $responseProcessing];
+    }
+
+    protected function buildResponseProcessing($validation, $isCaseSensitive = true)
+    {
+        $responseProcessing = new ResponseProcessing();
+
+        $scoringType = $validation->get_scoring_type();
         // If question has `exactMatch` and has `valid_response` and `alt_responses` with score of only `1`s
         // and it is not case sensitive, then it would be mapped to <correctResponse> with `match_correct` template
         if ($scoringType === 'exactMatch' && $this->canBeMappedToCorrectAnswer($validation) && $isCaseSensitive) {
-            // TODO: Need to clean up validation `score` value since they can be string, ie '1' instead of 1
-            $responseDeclaration = $this->buildResponseDeclarationForMatchCorrect($responseIdentifier, $validation);
-            $responseProcessing = new ResponseProcessing();
-            $responseProcessing->setTemplate('http://www.imsglobal.org/question/qtiv2p1/rptemplates/match_correct.xml');
-            return [$responseDeclaration, $responseProcessing];
+            $responseProcessing->setTemplate(Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT);
+        } else {
+            // Otherwise, we would need to build the `MapResponse`
+            $responseProcessing->setTemplate(Constants::RESPONSE_PROCESSING_TEMPLATE_MAP_RESPONSE);
         }
 
-        // Otherwise, we would need to build the `MapResponse`
-        LogService::log('Validation object could not be supported yet ~');
-        return [null, null];
+        return $responseProcessing;
     }
 
     private function canBeMappedToCorrectAnswer($validation)

@@ -14,6 +14,7 @@
             "data": {
                 "is_math": true,
                 "multiple_responses": true,
+                "shuffle_options": true,
                 "options": [{
                     "value": "0",
                     "label": "\\(5^2+\\sqrt[n]{19}\\)"
@@ -66,12 +67,13 @@
                 "stimulus": "Pick the odd one out",
                 "type": "mcq",
                 "ui_style": {
-                    "type": "block"
+                    "columns": 4,
+                    "type": "horizontal"
                 },
                 "validation": {
                     "scoring_type": "exactMatch",
                     "valid_response": {
-                        "score": 1,
+                        "score": 3,
                         "value": [
                             "2"
                         ]

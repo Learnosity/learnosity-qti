@@ -27,7 +27,7 @@ class AssetsProcessing implements ProcessingInterface
             } elseif ($component instanceof Img) {
                 /** @var Img $component */
                 if ($this->isInternalUrl($component->getSrc())) {
-                    $component->setSrc($this->baseAssetUrl . $component->getSrc());
+                    $component->setSrc($this->baseAssetUrl . basename($component->getSrc()));
                 }
             }
         }

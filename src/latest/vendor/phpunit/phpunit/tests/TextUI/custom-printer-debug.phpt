@@ -12,9 +12,7 @@ require __DIR__ . '/../bootstrap.php';
 PHPUnit_TextUI_Command::main();
 ?>
 --EXPECTF--
-PHPUnit %s by Sebastian Bergmann.
-
-Configuration read from %sconfiguration.custom-printer.xml
+PHPUnit %s by Sebastian Bergmann and contributors.
 
 
 Starting test 'BankAccountTest::testBalanceIsInitiallyZero'.

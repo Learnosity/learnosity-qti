@@ -1,11 +1,12 @@
 <?php
 
-namespace Integration\Processors\QtiV2\Out\QuestionTypes;
+namespace Learnosity\Tests\Integration\Processors\QtiV2\Out\QuestionTypes;
 
-use Learnosity\Tests\Integration\Processors\QtiV2\Out\QuestionTypes\AbstractQuestionTypeTest;
+use Learnosity\Processors\QtiV2\Out\Constants;
 use Learnosity\Utils\QtiMarshallerUtil;
-use qtism\data\content\interactions\ExtendedTextInteraction;
-use qtism\data\content\interactions\TextFormat;
+use qtism\data\content\interactions\TextEntryInteraction;
+use qtism\data\state\ResponseDeclaration;
+use qtism\data\state\Value;
 
 class ShorttextMapperTest extends AbstractQuestionTypeTest
 {
@@ -14,24 +15,28 @@ class ShorttextMapperTest extends AbstractQuestionTypeTest
         $data = json_decode($this->getFixtureFileContents('learnosityjsons/shorttext.json'), true);
         $assessmentItem = $this->convertToAssessmentItem($data);
 
-        // Shorttext shall have one simple exactMatch <responseDeclaration> and <responseProcessing>
-        // TODO: might need more extensive test to test these more in depth
-        $this->assertEquals(1, $assessmentItem->getResponseDeclarations()->count());
-
-        // Has <extendedTextInteraction> as the first and only interaction
-        /** @var ExtendedTextInteraction $interaction */
-        $interaction = $assessmentItem->getComponentsByClassName('extendedTextInteraction', true)->getArrayCopy()[0];
+        // Has <textEntryInteraction> as the first and only interaction
+        /** @var TextEntryInteraction $interaction */
+        $interaction = $assessmentItem->getComponentsByClassName('textEntryInteraction', true)->getArrayCopy()[0];
 
         // Test basic attributes
-        $this->assertTrue($interaction instanceof ExtendedTextInteraction);
+        $this->assertTrue($interaction instanceof TextEntryInteraction);
         $this->assertEquals('placeholdertext', $interaction->getPlaceholderText());
-        $this->assertEquals('<p>[This is the stem.]</p>', QtiMarshallerUtil::marshallCollection($interaction->getPrompt()->getComponents()));
+        $this->assertEquals(15, $interaction->getExpectedLength());
 
-        // Test default values
-        $this->assertEquals(250, $interaction->getExpectedLength());
-        $this->assertEquals(1, $interaction->getExpectedLines());
-        $this->assertEquals(1, $interaction->getMaxStrings());
-        $this->assertEquals(1, $interaction->getMinStrings());
-        $this->assertEquals(TextFormat::PLAIN, $interaction->getFormat());
+        // Shorttext shall have one simple exactMatch <responseDeclaration> and <responseProcessing>
+        /** @var ResponseDeclaration $responseDeclaration */
+        $responseDeclaration = $assessmentItem->getResponseDeclarations()->getArrayCopy()[0];
+        $this->assertEquals(Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT, $assessmentItem->getResponseProcessing()->getTemplate());
+
+        /** @var Value[] $values */
+        $values = $responseDeclaration->getCorrectResponse()->getValues()->getArrayCopy(true);
+        $this->assertEquals('hello', $values[0]->getValue());
+        $this->assertEquals('anotherhello', $values[1]->getValue());
+
+        // Check itembody is correct that the stimulus is appended before
+        $itemBodyContent = QtiMarshallerUtil::marshallCollection($assessmentItem->getItemBody()->getComponents());
+        $expectedString = '<p>[This is the stem.]</p><div><textEntryInteraction responseIdentifier="shorttexttestreference" expectedLength="15" placeholderText="placeholdertext" label="shorttexttestreference"/></div>';
+        $this->assertEquals($expectedString, $itemBodyContent);
     }
 }

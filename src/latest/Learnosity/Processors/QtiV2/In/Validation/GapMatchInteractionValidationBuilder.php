@@ -45,8 +45,18 @@ class GapMatchInteractionValidationBuilder extends BaseInteractionValidationBuil
         foreach ($this->responseDeclaration->getCorrectResponse()->getValues() as $value) {
             /** @var DirectedPair $valuePair */
             $valuePair = $value->getValue();
-            $responseValue = $this->possibleResponses[$valuePair->getFirst()];
-            $responseIndex = $gapIdentifiersIndexMap[$valuePair->getSecond()];
+
+            // Map response value and index based from `DirectedPair` Value, try to guess which one is which since they
+            // apparently can swap :(
+            if (isset($this->possibleResponses[$valuePair->getFirst()]) && isset($gapIdentifiersIndexMap[$valuePair->getSecond()])) {
+                $responseValue = $this->possibleResponses[$valuePair->getFirst()];
+                $responseIndex = $gapIdentifiersIndexMap[$valuePair->getSecond()];
+            } else if (isset($this->possibleResponses[$valuePair->getSecond()]) && isset($gapIdentifiersIndexMap[$valuePair->getFirst()])) {
+                $responseValue = $this->possibleResponses[$valuePair->getSecond()];
+                $responseIndex = $gapIdentifiersIndexMap[$valuePair->getFirst()];
+            } else {
+                throw new MappingException('Fail to match identifiers on Value from `correctResponse`');
+            }
 
             // Check for duplicated response
             if (!$this->isDuplicatedResponse) {
@@ -83,10 +93,20 @@ class GapMatchInteractionValidationBuilder extends BaseInteractionValidationBuil
 
         foreach ($this->responseDeclaration->getMapping()->getMapEntries() as $mapEntry) {
             /** @var MapEntry $mapEntry */
+            /** @var DirectedPair $mapKey */
             $mapKey = $mapEntry->getMapKey();
-            // TODO: Might need to do validation here for invalid identifiers
-            $responseValue = $this->possibleResponses[$mapKey->getFirst()];
-            $responseIndex = $gapIdentifiersIndexMap[$mapKey->getSecond()];
+
+            // Map response value and index based from the `mapKey`, try to guess which one is which since they
+            // apparently can swap :(
+            if (isset($this->possibleResponses[$mapKey->getFirst()]) && isset($gapIdentifiersIndexMap[$mapKey->getSecond()])) {
+                $responseValue = $this->possibleResponses[$mapKey->getFirst()];
+                $responseIndex = $gapIdentifiersIndexMap[$mapKey->getSecond()];
+            } else if (isset($this->possibleResponses[$mapKey->getSecond()]) && isset($gapIdentifiersIndexMap[$mapKey->getFirst()])) {
+                $responseValue = $this->possibleResponses[$mapKey->getSecond()];
+                $responseIndex = $gapIdentifiersIndexMap[$mapKey->getFirst()];
+            } else {
+                throw new MappingException('Fail to match identifiers on `mapKey` attribute from `mapping`');
+            }
 
             // Check for duplicated response
             if (!$this->isDuplicatedResponse) {
@@ -97,7 +117,7 @@ class GapMatchInteractionValidationBuilder extends BaseInteractionValidationBuil
                 }
             }
 
-            // wrap the identifier=>score into an array as the identifier can be duplicated (Duplicated Response)
+            // Wrap the identifier => score into an array as the identifier can be duplicated (Duplicated Response)
             // Build ValidResponse object array in the correct order matching the `gap` elements
             $responses[$responseIndex][] = new ValidResponse($mapEntry->getMappedValue(), [$responseValue]);
         }

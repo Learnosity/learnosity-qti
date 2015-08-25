@@ -3,11 +3,14 @@
 namespace Learnosity;
 
 use Learnosity\Entities\Item\item;
+use Learnosity\Exceptions\MappingException;
 use Learnosity\Processors\Learnosity\In\ItemMapper;
 use Learnosity\Processors\Learnosity\In\QuestionMapper;
 use Learnosity\Processors\QtiV2\Out\ItemWriter;
 use Learnosity\Processors\QtiV2\Out\QuestionWriter;
 use Learnosity\Services\LearnosityToQtiPreProcessingService;
+use Learnosity\Services\LogService;
+use qtism\data\storage\xml\XmlDocument;
 
 class Converter
 {
@@ -44,7 +47,7 @@ class Converter
     public static function convertLearnosityToQtiItem(array $data)
     {
         if ($data == null) {
-            throw new \MappingException('Invalid JSON');
+            throw new MappingException('Invalid JSON');
         }
 
         // Guess whether this JSON is an item or a question by whether it has `type` or not
@@ -86,6 +89,15 @@ class Converter
         // Write em` to QTI
         $itemWriter = new ItemWriter();
         list($xmlString, $messages) = $itemWriter->convert($item, $questions);
+
+        // Validate them before proceeding by feeding it back
+        try {
+            $document = new XmlDocument();
+            $document->loadFromString($xmlString);
+        } catch (\Exception $e) {
+            LogService::log('Unknown error occurred. The QTI XML produced may not be valid');
+        }
+
         return [$xmlString, $messages];
     }
 }

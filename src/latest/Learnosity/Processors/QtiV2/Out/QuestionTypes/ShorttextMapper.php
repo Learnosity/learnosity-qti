@@ -5,21 +5,24 @@ namespace Learnosity\Processors\QtiV2\Out\QuestionTypes;
 use Learnosity\Entities\BaseQuestionType;
 use Learnosity\Entities\QuestionTypes\shorttext;
 use Learnosity\Processors\QtiV2\Out\Validation\ShorttextValidationBuilder;
-use qtism\data\content\interactions\ExtendedTextInteraction;
-use qtism\data\content\interactions\TextFormat;
+use qtism\data\content\FlowCollection;
+use qtism\data\content\interactions\TextEntryInteraction;
+use qtism\data\content\xhtml\text\Div;
 
 class ShorttextMapper extends AbstractQuestionTypeMapper
 {
+    private $extraContent;
+
     public function convert(BaseQuestionType $questionType, $interactionIdentifier, $interactionLabel)
     {
         /** @var shorttext $question */
         $question = $questionType;
 
-        $interaction = new ExtendedTextInteraction($interactionIdentifier);
-        $interaction->setLabel($interactionLabel);
+        // Extra text that can't be mapped since we are in textEntryInteraction which does not have prompt
+        $this->extraContent = $question->get_stimulus();
 
-        // Build the prompt
-        $interaction->setPrompt($this->convertStimulusForPrompt($question->get_stimulus()));
+        $interaction = new TextEntryInteraction($interactionIdentifier);
+        $interaction->setLabel($interactionLabel);
 
         // Build placeholder
         $placeholderText = $question->get_placeholder();
@@ -27,23 +30,29 @@ class ShorttextMapper extends AbstractQuestionTypeMapper
             $interaction->setPlaceholderText($placeholderText);
         }
 
-        $interaction->setMaxStrings(1);
-        $interaction->setMinStrings(1);
-        $interaction->setFormat(TextFormat::PLAIN);
-
-        // This is derived since the maximum length of a `shorttext` is 250 characters and the fact that
-        // the shape of a `shorttext` input imply the expected response is a single line
-        $interaction->setExpectedLength(250);
-        $interaction->setExpectedLines(1);
+        // Use 15 as default
+        $interaction->setExpectedLength($question->get_max_length() ? $question->get_max_length() : 15);
 
         // Build those validation
-        $validationBuilder = new ShorttextValidationBuilder();
+        $isCaseSensitive = $question->get_case_sensitive() === null ? true : $question->get_case_sensitive();
+        $validationBuilder = new ShorttextValidationBuilder($isCaseSensitive);
         list($responseDeclaration, $responseProcessing) = $validationBuilder->buildValidation(
             $interactionIdentifier,
             $question->get_validation(),
-            $question->get_case_sensitive()
+            $isCaseSensitive
         );
 
-        return [$interaction, $responseDeclaration, $responseProcessing];
+        // TODO: This is a freaking hack
+        // Wrap this interaction in a block since our `shorttext` meant to be blocky and not inline
+        $div = new Div();
+        $content = new FlowCollection();
+        $content->attach($interaction);
+        $div->setContent($content);
+        return [$div, $responseDeclaration, $responseProcessing];
+    }
+
+    public function getExtraContent()
+    {
+        return $this->extraContent;
     }
 }

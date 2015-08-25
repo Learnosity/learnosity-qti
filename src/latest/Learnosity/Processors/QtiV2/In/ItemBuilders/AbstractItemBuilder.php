@@ -9,13 +9,13 @@ use qtism\data\QtiComponentCollection;
 
 abstract class AbstractItemBuilder
 {
-    protected $assessmentItemIdentifier;
+    protected $itemReference;
     protected $questions = [];
     protected $content = '';
 
     public function getItem()
     {
-        $item = new item($this->assessmentItemIdentifier, array_keys($this->questions), $this->content);
+        $item = new item($this->itemReference, array_keys($this->questions), $this->content);
         $item->set_status('published');
         return $item;
     }
