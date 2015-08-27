@@ -8,6 +8,7 @@ use Learnosity\Processors\QtiV2\Marshallers\LearnosityMarshallerFactory;
 use qtism\data\content\TextRun;
 use qtism\data\QtiComponent;
 use qtism\data\QtiComponentCollection;
+use qtism\data\storage\xml\marshalling\MarshallerFactory;
 
 class QtiMarshallerUtil
 {
@@ -51,6 +52,20 @@ class QtiMarshallerUtil
     public static function marshall(QtiComponent $component)
     {
         $marshallerFactory = new LearnosityMarshallerFactory();
+        $marshaller = $marshallerFactory->createMarshaller($component);
+        $element = $marshaller->marshall($component);
+
+        $dom = new \DOMDocument();
+        $dom->preserveWhiteSpace = false;
+        $dom->formatOutput = false;
+        $node = $dom->importNode($element, true);
+
+        return $dom->saveXML($node);
+    }
+
+    public static function marshallValidQti(QtiComponent $component)
+    {
+        $marshallerFactory = new MarshallerFactory();
         $marshaller = $marshallerFactory->createMarshaller($component);
         $element = $marshaller->marshall($component);
 

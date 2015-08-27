@@ -60,9 +60,8 @@ class Converter
 
             // Pre-process question JSON to strips out common known issues
             $preprocessingService = new LearnosityToQtiPreProcessingService();
-            $processedQuestionJson = $preprocessingService->processJson($data);
-
-            list($xmlString, $messages) = $questionWriter->convert($questionMapper->parse($processedQuestionJson));
+            list($processedQuestionJson) = $preprocessingService->process([$data]);
+            list($xmlString, $messages) = $questionWriter->convert($questionMapper->parse($processedQuestionJson[0]));
             return [$xmlString, $messages];
         }
 
@@ -75,8 +74,7 @@ class Converter
         // Pre-process these JSON
         // ie. strips out common HTML issues such closing <br> <img> tags, transform scrolling passage, &nbsp; replacement, etc
         $preprocessingService = new LearnosityToQtiPreProcessingService();
-        $questionsJson = $preprocessingService->processJson($questionsJson);
-        $itemJson = $preprocessingService->processJson($itemJson);
+        list($questionsJson, $itemJson) = $preprocessingService->process($questionsJson, $itemJson);
 
         // Map those bad boys to Learnosity entities
         $itemMapper = new ItemMapper();

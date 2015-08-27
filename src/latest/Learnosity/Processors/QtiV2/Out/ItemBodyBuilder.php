@@ -31,10 +31,10 @@ class ItemBodyBuilder
             $itemBodyContent = new BlockCollection();
 
             // Build the div bundle that contains all the item`s content
-            // minus those questions and features`span`
+            // minus those questions and features `span`
             $html = new SimpleHtmlDom();
             $html->load($content);
-            foreach ($html->find('span.learnosity-response, span.learnosity-feature') as &$span) {
+            foreach ($html->find('span.learnosity-response') as &$span) {
                 $span->outertext = '';
             }
             $div = new Div();

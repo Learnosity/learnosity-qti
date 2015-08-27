@@ -1,0 +1,44 @@
+{
+    "reference": "Demo_audiofeature",
+    "content": "<div class=\"row\" contenteditable=\"false\">\r\n<div class=\"col-xs-6\" contenteditable=\"false\">\r\n<p>Listen to the audio and then write a short essay based on your impressions of the story.</p>\r\n\r\n<p><span class=\"learnosity-feature feature-1_DEMO_ORG\"></span></p>\r\n</div>\r\n\r\n<div class=\"col-xs-6\" contenteditable=\"false\">\r\n<p>&nbsp;</p>\r\n\r\n<p><span class=\"learnosity-response question-LEAR_22394_2\"></span></p>\r\n</div>\r\n</div>",
+    "workflow": null,
+    "metadata": null,
+    "time_updated": "2015-08-21 16:36:30",
+    "last_updated_by": "1304",
+    "note": null,
+    "source": null,
+    "description": "<p>2 column item with audio feature and essay text question.</p>",
+    "status": "published",
+    "questions": [
+        {
+            "type": "longtext",
+            "widget_type": "response",
+            "reference": "LEAR_22394_2",
+            "data": {
+                "character_map": true,
+                "type": "longtext",
+                "placeholder": "Enter text here"
+            }
+        },
+        {
+            "type": "audioplayer",
+            "widget_type": "feature",
+            "reference": "1_DEMO_ORG",
+            "data": {
+                "type": "audioplayerzzz",
+                "src": "https://s3.amazonaws.com/assets.learnosity.com/demos/docs/audiofeaturedemo.mp3",
+                "waveform": "http://assets.learnosity.com/demos/docs/waveform.png"
+            }
+        }
+    ],
+    "tags": {
+        "author": [
+            "Demo"
+        ]
+    },
+    "adaptive": {
+        "difficulty": null,
+        "operational_exposure": null,
+        "seeding_exposure": null
+    }
+}

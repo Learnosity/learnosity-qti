@@ -4,7 +4,6 @@ namespace Learnosity\Processors\QtiV2\Out;
 
 use Learnosity\Entities\Question;
 use Learnosity\Exceptions\MappingException;
-use Learnosity\Processors\QtiV2\Out\Processings\ProcessingInterface;
 use Learnosity\Services\LogService;
 use Learnosity\Utils\StringUtil;
 use qtism\common\enums\BaseType;
@@ -34,14 +33,6 @@ class AssessmentItemBuilder
 
     public function build($itemIdentifier, $itemLabel, array $questions, $content = '')
     {
-        // Pre-processing works
-        $processings = [];
-        foreach ($processings as $processing) {
-            /** @var ProcessingInterface $processing */
-            $questions = $processing->processQuestions($questions);
-            $content = empty($content) ? $content : $processing->processItemContent($content);
-        }
-
         // Initialise our <assessmentItem>
         $assessmentItem = new AssessmentItem($itemIdentifier, $itemIdentifier, false);
         $assessmentItem->setLabel($itemLabel);
@@ -82,7 +73,6 @@ class AssessmentItemBuilder
         if (!empty($responseProcessingTemplates)) {
             $templates = array_unique($responseProcessingTemplates);
             $isOnlyMatchCorrect = count($templates) === 1 && $templates[0] === Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT;
-
             $responseProcessing = new ResponseProcessing();
             $responseProcessing->setTemplate($isOnlyMatchCorrect ? Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT : Constants::RESPONSE_PROCESSING_TEMPLATE_MAP_RESPONSE);
             $assessmentItem->setResponseProcessing($responseProcessing);
