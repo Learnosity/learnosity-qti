@@ -10,6 +10,7 @@ use Learnosity\Processors\QtiV2\Out\Documentation\LearnosityDoc;
 use Learnosity\Processors\QtiV2\Out\Documentation\QuestionTypeDocumentationInterface;
 use Learnosity\Services\SchemasService;
 use Learnosity\Utils\FileSystemUtil;
+use Learnosity\Utils\StringUtil;
 use Twig_Extension_Debug;
 use Twig_Extensions_Extension_Text;
 
@@ -57,8 +58,15 @@ class DocumentationGenerator
                         $documentation[$flattenedAttributeName] = LearnosityDoc::none();
                     }
                 }
+                // TODO: Hack here, hide all the `validation` attributes
+                $documentationToDisplay = [];
+                foreach ($documentation as $attributeName => $doc) {
+                    if (!StringUtil::startsWith($attributeName, 'validation')) {
+                        $documentationToDisplay[$attributeName] = $doc;
+                    }
+                }
                 $questionTypeDocumentation[$questionType] = [
-                    'mapping' => $documentation,
+                    'mapping' => $documentationToDisplay,
                     'introduction' => $mapperClass::getIntroductionNotes()
                 ];
             }
@@ -79,6 +87,11 @@ class DocumentationGenerator
             // TODO: Type not set (wtf~)
             // TODO: Broken schemas, fix it goddammit
             if (!isset($attribute['type'])) {
+                continue;
+            }
+            // TODO: Another broken schemas
+            // TODO: array but items is not set
+            if ($attribute['type'] === 'array' && !isset($attribute['items'])) {
                 continue;
             }
             // If array then look for its items then recurse

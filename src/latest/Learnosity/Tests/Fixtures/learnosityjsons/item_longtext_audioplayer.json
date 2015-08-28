@@ -25,7 +25,7 @@
             "widget_type": "feature",
             "reference": "1_DEMO_ORG",
             "data": {
-                "type": "audioplayerzzz",
+                "type": "audioplayer",
                 "src": "https://s3.amazonaws.com/assets.learnosity.com/demos/docs/audiofeaturedemo.mp3",
                 "waveform": "http://assets.learnosity.com/demos/docs/waveform.png"
             }

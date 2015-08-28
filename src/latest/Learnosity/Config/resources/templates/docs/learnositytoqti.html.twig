@@ -1,6 +1,39 @@
-<h3 id="mapping-question-types">Mapping Question Types</h3>
-<p>Learnosity questions are mapped to QTI Interaction</p>
+<h3 id="mapping-question-types">Mapping Items and Questions</h3>
+<p>Both Learnosity item and questions are mapped to Assessment Item</p>
 <hr>
+
+<p><strong>Mapping Rules 101 for Item export</strong></p>
+<ul>
+    <li>Assessment Item identifier is taken from Item `reference`, however if it's QTI invalid then a random one would be
+        generated and previous Learnosity Item `reference` will be stored within `label` attribute.</li>
+    <li>Questions within Item are mapped to QTI Interactions. Their identifiers are taken from Question `reference`,
+        however if QTI invalid, a random identifier would be generated and the original `reference` will be stored within interaction `label` attributes.</li>
+    <li>Some feature and inline features are mapped to QTI `object` element and their `reference`(s) are discarded. Current supported feature types:
+        <ul>
+            <li>audioplayer</li>
+            <li>videoplayer</li>
+        </ul>
+    </li>
+</ul>
+
+<p><strong>Mapping Rules 101 for Question export</strong></p>
+<ul>
+    <li>Assessment Item identifier is taken from Question `reference`, however if it's invalid then a random one would be
+        generated and previous Learnosity Item `reference` will be stored as label.</li>
+    <li>Mapping widget type feature is not supported and it will fail.</li>
+</ul>
+<hr>
+
+<p><strong>Other Mapping Rules 101</strong></p>
+<ul>
+    <li>Div block might be added to wrap around HTML elements when appropriate. For example, QTI itembody only allow Block elements within its content
+        and if original HTML content from Learnosty Item `content` has spans, the transformation library would try its best to wrap it with a div block to make it a valid QTI.</li>
+    <li>QTI response declaration object is vastly different than Learnosity. Thus, `alt_responses` and `penalty` are currently ignored.</li>
+    <li>We only map our validation object to QTI pre-defined response processing templates, its either `map_response` or `match_correct`.
+        If our validation object within Item and its respective questions only contain a score of 1, then it would always be mapped to `match_correct`. Everything else, we would map
+        it to `map_response` response processing template.
+    </li>
+</ul>
 
 <h4>Supported Question Types</h4>
 <ul class="link-list">
