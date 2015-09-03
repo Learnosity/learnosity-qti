@@ -11,28 +11,14 @@ use qtism\data\content\xhtml\Object;
 
 class LearnosityToQtiPreProcessingService
 {
-    private $questions = [];
-    private $features = [];
+    private $widgets = [];
 
-    public function process(array $widgets, array $item = null)
+    public function __construct(array $widgets = [])
     {
-        // Separate question and feature by type
-        foreach ($widgets as $widget) {
-            $reference = $widget['reference'];
-            if ($widget['widget_type'] === 'response') {
-                $this->questions[$reference] = $widget;
-            } else if ($widget['widget_type'] === 'feature') {
-                $this->features[$reference] = $widget;
-            }
-        }
-
-        // We only want to process the questions and return the questions
-        $processedQuestions = $this->processJson(array_values($this->questions));
-        $processItem = empty($item) ? null : $this->processJson($item);
-        return [$processedQuestions, $processItem];
+        $this->widgets = array_column($widgets, null, 'reference');
     }
 
-    private function processJson(array $json)
+    public function processJson(array $json)
     {
         array_walk_recursive($json, function (&$item, $key) {
             if (is_string($item)) {
@@ -78,7 +64,7 @@ class LearnosityToQtiPreProcessingService
         // Process regular question feature
         } else {
             $featureReference = $this->getFeatureReferenceFromClassName($node->attr['class']);
-            $feature = $this->features[$featureReference];
+            $feature = $this->widgets[$featureReference];
             $src = $feature['data']['src'];
             $type = $feature['data']['type'];
         }
