@@ -11,6 +11,7 @@ use Learnosity\Processors\QtiV2\Out\QuestionWriter;
 use Learnosity\Services\LearnosityToQtiPreProcessingService;
 use Learnosity\Services\LogService;
 use qtism\data\storage\xml\XmlDocument;
+use qtism\data\storage\xml\XmlStorageException;
 
 class Converter
 {
@@ -29,8 +30,12 @@ class Converter
         $assetsProcessing = AppContainer::getApplicationContainer()->get('assets_processing');
         $assetsProcessing->setBaseAssetUrl($baseAssetsUrl);
 
-        // Parse `em
-        list($item, $questions, $exceptions) = $itemMapper->parse($xmlString);
+        // Parse `em and try to catch qtism's XmlStorageException regarding possibly invalid XML
+        try {
+            list($item, $questions, $exceptions) = $itemMapper->parse($xmlString);
+        } catch (XmlStorageException $e) {
+            throw new MappingException($e->getMessage());
+        }
 
         // Conversion to JSON
         $itemData = [];

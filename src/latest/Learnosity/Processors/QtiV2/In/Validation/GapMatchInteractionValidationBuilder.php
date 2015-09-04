@@ -132,8 +132,7 @@ class GapMatchInteractionValidationBuilder extends BaseInteractionValidationBuil
         if (count($this->gapIdentifiers) !== count($responses)) {
             throw new MappingException(
                 'Amount of gap identifiers ' . count($this->gapIdentifiers) . ' does not match the amount ' .
-                count($responses) . ' for <responseDeclaration>',
-                MappingException::CRITICAL
+                count($responses) . ' for <responseDeclaration>'
             );
         }
     }

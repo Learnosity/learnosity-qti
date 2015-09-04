@@ -2,6 +2,6 @@
 
 namespace Learnosity\Exceptions;
 
-class RequestException extends \Exception
+class RequestException extends BaseKnownException
 {
 }

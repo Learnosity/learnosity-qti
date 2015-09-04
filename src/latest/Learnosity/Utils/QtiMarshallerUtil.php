@@ -36,7 +36,7 @@ class QtiMarshallerUtil
             }
             return $components;
         } catch (\Exception $e) {
-            throw new MappingException('[Unable to transform to QTI] ' . $e->getMessage(), MappingException::CRITICAL);
+            throw new MappingException('[Unable to transform to QTI] ' . $e->getMessage());
         }
     }
 

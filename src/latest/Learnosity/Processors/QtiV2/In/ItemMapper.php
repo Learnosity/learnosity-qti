@@ -8,11 +8,10 @@ use Learnosity\Processors\QtiV2\In\Processings\MathsProcessing;
 use Learnosity\Processors\QtiV2\In\Processings\ProcessingInterface;
 use Learnosity\Processors\QtiV2\In\Processings\RubricsProcessing;
 use Learnosity\Services\LogService;
-use Learnosity\Utils\UuidUtil;
 use qtism\data\AssessmentItem;
 use qtism\data\content\ItemBody;
 use qtism\data\processing\ResponseProcessing;
-use qtism\data\storage\xml\XmlCompactDocument;
+use qtism\data\storage\xml\XmlDocument;
 
 class ItemMapper
 {
@@ -25,13 +24,13 @@ class ItemMapper
 
     public function parse($xmlString)
     {
-        $xmlDocument = new XmlCompactDocument();
-        $xmlDocument->loadFromString($xmlString);
+        $xmlDocument = new XmlDocument();
+        $xmlDocument->loadFromString($xmlString, true);
 
         /** @var AssessmentItem $assessmentItem */
         $assessmentItem = $xmlDocument->getDocumentComponent();
         if (!($assessmentItem instanceof AssessmentItem)) {
-            throw new MappingException('XML is not a valid <assessmentItem> document', MappingException::CRITICAL);
+            throw new MappingException('XML is not a valid <assessmentItem> document');
         }
         return $this->parseWithAssessmentItemComponent($assessmentItem);
     }

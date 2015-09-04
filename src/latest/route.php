@@ -3,8 +3,7 @@
 require_once 'vendor/autoload.php';
 
 use Learnosity\Converter;
-use Learnosity\Exceptions\MappingException;
-use Learnosity\Exceptions\RequestException;
+use Learnosity\Exceptions\BaseKnownException;
 use Slim\Slim;
 
 $app = new Slim();
@@ -64,10 +63,7 @@ function execute(Slim $app, callable $callback)
 {
     try {
         $response = $callback();
-    } catch (RequestException $e) {
-        $app->response->setStatus(400);
-        $response = $e->getMessage();
-    } catch (MappingException $e) {
+    } catch (BaseKnownException $e) {
         $app->response->setStatus(400);
         $response = $e->getMessage();
     } catch (Exception $e) {

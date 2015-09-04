@@ -16,10 +16,7 @@ class EntityBuilder
             if (isset($json[$parameterName])) {
                 $parameters[$parameterName] = self::buildField($parameter, $json[$parameterName]);
             } else {
-                throw new MappingException(
-                    'Invalid JSON. Required key ' . $parameterName . ' does not exists',
-                    MappingException::CRITICAL
-                );
+                throw new MappingException('Invalid JSON. Required key ' . $parameterName . ' does not exists');
             }
         }
         $class = $clazz->newInstanceArgs($parameters);
