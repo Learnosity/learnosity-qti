@@ -12,9 +12,9 @@ class GapMatchInteractionDocumentation implements InteractionDocumentationInterf
         $documentation['@attributes'] = QtiDoc::defaultCommonInteractionAttributeRow();
         $documentation = array_replace_recursive($documentation, [
             '@notes' => "
-                The element 'hottextInteraction' map to our 'tokenhighlight' question.
-                Read the documentation: <a href='http://docs.learnosity.com/assessment/questions/questiontypes#tokenhighlight'>
-                http://docs.learnosity.com/assessment/questions/questiontypes#tokenhighlight</a>
+                The element 'gapMatchInteraction' map to our 'clozeassociation' question.
+                Read the documentation: <a href='http://docs.learnosity.com/assessment/questions/questiontypes#clozeassociation'>
+                http://docs.learnosity.com/assessment/questions/questiontypes#clozeassociation</a>
                 <br /><br />
                 Currently support `exactMatch` and `map_response` validation.
             ",

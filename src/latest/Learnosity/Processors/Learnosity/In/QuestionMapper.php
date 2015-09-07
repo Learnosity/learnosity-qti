@@ -4,6 +4,7 @@ namespace Learnosity\Processors\Learnosity\In;
 
 use Learnosity\Entities\BaseQuestionType;
 use Learnosity\Entities\Question;
+use Learnosity\Utils\UuidUtil;
 
 class QuestionMapper
 {
@@ -17,5 +18,14 @@ class QuestionMapper
         /** @var BaseQuestionType $questionType */
         $questionType = EntityBuilder::build($questionTypeClassName, $questionJson['data']);
         return new Question($questionJson['data']['type'], $questionJson['reference'], $questionType);
+    }
+
+    public function parseDataOnly(array $questionDataJson)
+    {
+        $questionJson = [
+            'reference' => UuidUtil::generate(),
+            'data' => $questionDataJson
+        ];
+        return $this->parse($questionJson);
     }
 }

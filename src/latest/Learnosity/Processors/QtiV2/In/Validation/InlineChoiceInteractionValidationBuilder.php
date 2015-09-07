@@ -18,6 +18,8 @@ class InlineChoiceInteractionValidationBuilder extends BaseInteractionValidation
 
     public function __construct(array $unsortedResponseDeclarations = [], array $possibleResponses = [])
     {
+        //TODO: Technically incorrect, but this is simply used to auto-detect response processing template so it doesnt matter much
+        parent::__construct(null);
         $this->possibleResponses = $possibleResponses;
 
         // Need to sort based on interaction identifiers first, which assumed to be listed

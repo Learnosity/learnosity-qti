@@ -1,0 +1,32 @@
+{
+    "reference": "choice_RESPONSE",
+    "type": "mcq",
+    "data": {
+        "stimulus": "<p>Listen.</p><div><span class=\"learnosity-feature\" data-type=\"audioplayer\" data-src=\"http://www.kozco.com/tech/LRMonoPhase4.wav\"/></div>What does it say?",
+        "type": "mcq",
+        "validation": {
+            "scoring_type": "exactMatch",
+            "valid_response": {
+                "score": 1,
+                "value": [
+                    "ChoiceA"
+                ]
+            }
+        },
+        "options": [
+            {
+                "label": "You must stay with your luggage at all times.",
+                "value": "ChoiceA"
+            },
+            {
+                "label": "Do not let someone else look after your luggage.",
+                "value": "ChoiceB"
+            },
+            {
+                "label": "Remember your luggage when you leave.",
+                "value": "ChoiceC"
+            }
+        ]
+    },
+    "widget_type": "response"
+}

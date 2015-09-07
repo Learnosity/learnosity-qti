@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<assessmentItem
+        xsi:schemaLocation="http://www.imsglobal.org/xsd/imscp_v1p1 http://www.imsglobal.org/xsd/imscp_v1p1.xsd http://www.imsglobal.org/xsd/imsmd_v1p2 http://www.imsglobal.org/xsd/imsmd_v1p2p2.xsd http://www.imsglobal.org/xsd/imsqti_v2p1 http://www.imsglobal.org/xsd/imsqti_v2p1.xsd"
+        identifier="item263324" title="MultipleChoice" adaptive="false" timeDependent="false" toolName="it's learning"
+        toolVersion="3.3" xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:qti="http://www.imsglobal.org/xsd/imsqti_v2p1">
+    <responseDeclaration cardinality="single" baseType="identifier" identifier="RESPONSE">
+        <correctResponse>
+            <value>A1</value>
+        </correctResponse>
+        <mapping lowerBound="-1" upperBound="1" defaultValue="0">
+            <mapEntry mapKey="A1" mappedValue="1"/>
+            <mapEntry mapKey="A0" mappedValue="-0.5"/>
+            <mapEntry mapKey="A2" mappedValue="-0.5"/>
+        </mapping>
+    </responseDeclaration>
+    <outcomeDeclaration cardinality="single" baseType="identifier" identifier="FEEDBACK" view="" normalMaximum="0"
+                        normalMinimum="0" masteryValue="0"/>
+    <outcomeDeclaration cardinality="single" baseType="identifier" identifier="INTEGRATEDFEEDBACK" view=""
+                        normalMaximum="0" normalMinimum="0" masteryValue="0"/>
+    <itemBody>
+        <p>Hva var The South Sea-boblen?<br/> 
+        </p>
+        <choiceInteraction responseIdentifier="RESPONSE" shuffle="false" maxChoices="1" minChoices="0">
+            <simpleChoice fixed="false" showHide="show" identifier="A0">
+                <p>Selskapet South Sea comapany var verdens første charter selskap som svindlet tusen vis av solhungrige
+                    og reiseglade engelskmenn.
+                </p>
+            </simpleChoice>
+            <simpleChoice fixed="false" showHide="show" identifier="A1">
+                <p>Et tidlig tilfelle av en børsboble i 1720 på bakgrunn av en ukritisk og overdreven spekulasjon i
+                    selskapets aksjer.
+                </p>
+            </simpleChoice>
+            <simpleChoice fixed="false" showHide="show" identifier="A2">
+                <p>John Blunt og Isaac Newton var både eiere og arkitekter bak datidens største aksjesvindel.</p>
+            </simpleChoice>
+        </choiceInteraction>
+    </itemBody>
+    <responseProcessing/>
+</assessmentItem>

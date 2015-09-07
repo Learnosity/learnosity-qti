@@ -15,6 +15,9 @@ class TextEntryInteractionValidationBuilder extends BaseInteractionValidationBui
 
     public function __construct(array $interactionIdentifiers = [], array $unsortedResponseDeclarations = [])
     {
+        //TODO: Technically incorrect, but this is simply used to auto-detect response processing template so it doesnt matter much
+        parent::__construct(null);
+
         // Need to sort based on interaction identifiers first
         foreach ($interactionIdentifiers as $interactionIdentifier) {
             if (isset($unsortedResponseDeclarations[$interactionIdentifier])) {

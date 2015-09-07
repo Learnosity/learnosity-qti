@@ -13,11 +13,10 @@ class MatchInteractionValidationBuilder extends BaseInteractionValidationBuilder
 {
     private $stemsMapping;
     private $optionsMapping;
-    private $responseDeclaration;
 
     public function __construct(array $stemsMapping, array $optionsMapping, ResponseDeclaration $responseDeclaration = null)
     {
-        $this->responseDeclaration = $responseDeclaration;
+        parent::__construct($responseDeclaration);
         $this->stemsMapping = $stemsMapping;
         $this->optionsMapping = $optionsMapping;
     }

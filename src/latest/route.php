@@ -3,7 +3,7 @@
 require_once 'vendor/autoload.php';
 
 use Learnosity\Converter;
-use Learnosity\Exceptions\MappingException;
+use Learnosity\Exceptions\BaseKnownException;
 use Learnosity\Exceptions\RequestException;
 use Slim\Slim;
 
@@ -26,10 +26,12 @@ $app->post('/:version/fromqti', function () use ($app) {
             throw new RequestException('Invalid request object, QTI to Learnosity transformation required `items` as array with one `xml` string');
         }
         $baseAssetsUrl = isset($body['base_asset_path']) ? $body['base_asset_path'] : '';
+        $validate = isset($body['validate']) ? filter_var($body['validate'], FILTER_VALIDATE_BOOLEAN) : true;
+
         $result = [];
         foreach ($body['items'] as $xmlString) {
             list($itemData, $questionsData, $manifest) =
-                Converter::convertQtiItemToLearnosity($xmlString, $baseAssetsUrl);
+                Converter::convertQtiItemToLearnosity($xmlString, $baseAssetsUrl, $validate);
             $result[] = [
                 'item' => $itemData,
                 'questions' => $questionsData,
@@ -64,10 +66,7 @@ function execute(Slim $app, callable $callback)
 {
     try {
         $response = $callback();
-    } catch (RequestException $e) {
-        $app->response->setStatus(400);
-        $response = $e->getMessage();
-    } catch (MappingException $e) {
+    } catch (BaseKnownException $e) {
         $app->response->setStatus(400);
         $response = $e->getMessage();
     } catch (Exception $e) {

@@ -11,14 +11,13 @@ use qtism\data\state\Value;
 
 class HottextInteractionValidationBuilder extends BaseInteractionValidationBuilder
 {
-    private $responseDeclaration;
     private $hottextComponents;
     private $maxChoices;
 
     public function __construct(array $hottextComponents, $maxChoices, ResponseDeclaration $responseDeclaration = null)
     {
+        parent::__construct($responseDeclaration);
         $this->maxChoices = $maxChoices;
-        $this->responseDeclaration = $responseDeclaration;
         $this->hottextComponents = $hottextComponents;
     }
 

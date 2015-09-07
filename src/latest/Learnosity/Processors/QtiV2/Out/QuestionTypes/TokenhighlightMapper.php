@@ -33,7 +33,7 @@ class TokenhighlightMapper extends AbstractQuestionTypeMapper
         $interaction->setLabel($interactionLabel);
         $interaction->setPrompt($this->convertStimulusForPrompt($question->get_stimulus()));
 
-        // Learnosity does not enforce number of choices, thus usin default such the min choice would be 1
+        // Learnosity does not enforce number of choices, thus using default such the min choice would be 1
         // and max would be the `max_selection` if set, otherwise use token count
         $interaction->setMinChoices(1);
         $interaction->setMaxChoices(is_int($question->get_max_selection()) ? $question->get_max_selection() : count($tokens));

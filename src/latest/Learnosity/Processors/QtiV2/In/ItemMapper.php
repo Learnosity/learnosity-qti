@@ -8,11 +8,10 @@ use Learnosity\Processors\QtiV2\In\Processings\MathsProcessing;
 use Learnosity\Processors\QtiV2\In\Processings\ProcessingInterface;
 use Learnosity\Processors\QtiV2\In\Processings\RubricsProcessing;
 use Learnosity\Services\LogService;
-use Learnosity\Utils\UuidUtil;
 use qtism\data\AssessmentItem;
 use qtism\data\content\ItemBody;
 use qtism\data\processing\ResponseProcessing;
-use qtism\data\storage\xml\XmlCompactDocument;
+use qtism\data\storage\xml\XmlDocument;
 
 class ItemMapper
 {
@@ -23,23 +22,30 @@ class ItemMapper
         $this->itemBuilderFactory = $itemBuilderFactory;
     }
 
-    public function parse($xmlString)
+    public function parse($xmlString, $validate = true)
     {
-        $xmlDocument = new XmlCompactDocument();
-        $xmlDocument->loadFromString($xmlString);
+        // TODO: Remove this, and move it higher up
+        LogService::flush();
+
+        $xmlDocument = new XmlDocument();
+        if ($validate === false) {
+            LogService::log('QTI pre-validation is turned off, some invalid attributes might be stripped from XML content upon conversion');
+        }
+        $xmlDocument->loadFromString($xmlString, $validate);
 
         /** @var AssessmentItem $assessmentItem */
         $assessmentItem = $xmlDocument->getDocumentComponent();
         if (!($assessmentItem instanceof AssessmentItem)) {
-            throw new MappingException('XML is not a valid <assessmentItem> document', MappingException::CRITICAL);
+            throw new MappingException('XML is not a valid <assessmentItem> document');
         }
         return $this->parseWithAssessmentItemComponent($assessmentItem);
     }
 
     public function parseWithAssessmentItemComponent(AssessmentItem $assessmentItem)
     {
+        // TODO: Move this logging service upper to converter class level
         // Make sure we clean up the log
-        LogService::flush();
+        // LogService::flush();
 
         $processings = [
             new RubricsProcessing(),
@@ -119,13 +125,15 @@ class ItemMapper
         }
         if ($responseProcessing->getResponseRules()->count()) {
             LogService::log('Does not support custom response processing on <responseProcessing>. Ignoring <responseProcessing>');
+            return ResponseProcessingTemplate::unsupported();
         }
         if (!empty($responseProcessing->getTemplateLocation())) {
             LogService::log('Does not support \'templateLocation\' on <responseProcessing>. Ignoring <responseProcessing>');
+            return ResponseProcessingTemplate::unsupported();
         }
         if (!empty($responseProcessing->getTemplate())) {
             return ResponseProcessingTemplate::getFromTemplateUrl($responseProcessing->getTemplate());
         }
-        return ResponseProcessingTemplate::unsupported();
+        return ResponseProcessingTemplate::none();
     }
 }
