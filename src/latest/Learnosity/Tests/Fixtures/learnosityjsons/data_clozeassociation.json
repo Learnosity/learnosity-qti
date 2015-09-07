@@ -10,7 +10,7 @@
         "scoring_type": "exactMatch",
         "valid_response": {
             "score": 1,
-            "value": [null, null]
+            "value": ["Choice A", "Choice B"]
         }
     }
 }

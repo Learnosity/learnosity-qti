@@ -13,4 +13,10 @@ class ConverterTest extends AbstractTest
         $xmlString = $this->getFixtureFileContents('otherqtis/invalid.xml');
         list($item, $questions, $manifest) = Converter::convertQtiItemToLearnosity($xmlString);
     }
+
+    public function testConvertRegularQtiXmlToLearnosityJson()
+    {
+        $xmlString = $this->getFixtureFileContents('otherqtis/test.xml');
+        list($item, $questions, $manifest) = Converter::convertQtiItemToLearnosity($xmlString);
+    }
 }

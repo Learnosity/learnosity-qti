@@ -69,7 +69,7 @@ class AssessmentItemBuilder
             $assessmentItem->setResponseDeclarations($responseDeclarationCollection);
         }
         // Map <responseProcessing> - combine response processing from questions
-        // TODO: Freaking tidy up this stuff
+        // TODO: Tidy up this stuff
         if (!empty($responseProcessingTemplates)) {
             $templates = array_unique($responseProcessingTemplates);
             $isOnlyMatchCorrect = count($templates) === 1 && $templates[0] === Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT;

@@ -6480,6 +6480,7 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
 <ul class="link-list">
             <li><a href="#mcq">mcq</a></li>
             <li><a href="#choicematrix">choicematrix</a></li>
+            <li><a href="#clozeassociation">clozeassociation</a></li>
             <li><a href="#longtext">longtext</a></li>
             <li><a href="#orderlist">orderlist</a></li>
             <li><a href="#plaintext">plaintext</a></li>
@@ -6494,7 +6495,6 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
     <span class="secondary label">simplechart</span>
     <span class="secondary label">simpleshading</span>
     <span class="secondary label">classification</span>
-    <span class="secondary label">clozeassociation</span>
     <span class="secondary label">clozedropdown</span>
     <span class="secondary label">clozeinlinetext</span>
     <span class="secondary label">clozeformula</span>
@@ -6522,7 +6522,7 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
 <hr>
 
     <h4 style="display: inline-block" id="mcq">mcq</h4>
-    <a style="display: inline-block" href="http://docs.learnosity.com/assessment/questions/questiontypes#mcq" target="_blank">http://docs.learnosity.com/assessment/questions/questiontypes#mcq</a>
+    <a style="display: inline-block" href="http://docs.learnosity.com/assessment/questions/questiontypes#mcq" target="_blank">(documentation)</a>
     <a style="display: inline-block; float: right; margin-top: 10px;" href="#mapping-question-types">Back to Top</a>
 
             <div class="panel">This question type is mapped to &lt;choiceInteraction&gt;</div>
@@ -6647,7 +6647,7 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
     
     <hr/>
     <h4 style="display: inline-block" id="choicematrix">choicematrix</h4>
-    <a style="display: inline-block" href="http://docs.learnosity.com/assessment/questions/questiontypes#choicematrix" target="_blank">http://docs.learnosity.com/assessment/questions/questiontypes#choicematrix</a>
+    <a style="display: inline-block" href="http://docs.learnosity.com/assessment/questions/questiontypes#choicematrix" target="_blank">(documentation)</a>
     <a style="display: inline-block; float: right; margin-top: 10px;" href="#mapping-question-types">Back to Top</a>
 
             <div class="panel">This question type is mapped to &lt;matchInteraction&gt; and only `exactMatch` validation can be supported</div>
@@ -6781,8 +6781,173 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                     </table>
     
     <hr/>
+    <h4 style="display: inline-block" id="clozeassociation">clozeassociation</h4>
+    <a style="display: inline-block" href="http://docs.learnosity.com/assessment/questions/questiontypes#clozeassociation" target="_blank">(documentation)</a>
+    <a style="display: inline-block; float: right; margin-top: 10px;" href="#mapping-question-types">Back to Top</a>
+
+            <div class="panel">This question type is mapped to &lt;gapMatchInteraction&gt; and only `exactMatch` validation can be supported</div>
+    
+                <table class="doc-table">
+            <tr>
+                <th></th>
+                <th>Support</th>
+                <th>Description</th>
+            </tr>
+                            <tr>
+                    <td class="name">stimulus</td>
+                    <td class="support-status support-status-yes">YES</td>
+                    <td class="description">This is mapped to `prompt`</td>
+                </tr>
+                            <tr>
+                    <td class="name">template</td>
+                    <td class="support-status support-status-yes">YES</td>
+                    <td class="description">This is mapped to the interaction content, the {{response}} would be replaced with `gap` elements</td>
+                </tr>
+                            <tr>
+                    <td class="name">possible_responses</td>
+                    <td class="support-status support-status-yes">YES</td>
+                    <td class="description">This is mapped to the interaction gap choices, would be mapped as either `gapText` or `gapImg`</td>
+                </tr>
+                            <tr>
+                    <td class="name">duplicate_responses</td>
+                    <td class="support-status support-status-yes">YES</td>
+                    <td class="description">When this option sets to true, then it would map the interaction `matchMax` attribute with the highest number of choices possibles</td>
+                </tr>
+                            <tr>
+                    <td class="name">ui_style</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">ui_style.possibility_list_position</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">ui_style.fontsize</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">ui_style.validation_stem_numeration</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">ui_style.show_drag_handle</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">is_math</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">math_renderer</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">metadata</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">metadata.distractor_rationale</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">metadata.rubric_reference</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">metadata.sample_answer</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">metadata.acknowledgements</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">metadata.distractor_rationale_response_level</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">stimulus_review</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">type</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">feedback_attempts</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">instant_feedback</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">response_container</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">response_container.height</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">response_container.width</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">response_container.wordwrap</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">response_containers</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">response_containers[].height</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">response_containers[].width</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">response_containers[].wordwrap</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">description</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                    </table>
+    
+    <hr/>
     <h4 style="display: inline-block" id="longtext">longtext</h4>
-    <a style="display: inline-block" href="http://docs.learnosity.com/assessment/questions/questiontypes#longtext" target="_blank">http://docs.learnosity.com/assessment/questions/questiontypes#longtext</a>
+    <a style="display: inline-block" href="http://docs.learnosity.com/assessment/questions/questiontypes#longtext" target="_blank">(documentation)</a>
     <a style="display: inline-block; float: right; margin-top: 10px;" href="#mapping-question-types">Back to Top</a>
 
             <div class="panel">This question type is mapped to &lt;extendedTextEntryInteraction&gt; with `&lt;strong&gt;format&lt;/strong&gt;` attribute as `xhtml`. Both the interaction attribute `&lt;strong&gt;minString&lt;/strong&gt;` and `&lt;strong&gt;maxString&lt;/strong&gt;` is mapped to 1.Validation is not supported thus &lt;responseProcessing&gt; and &lt;responseDeclaration&gt; won&#039;t be populated.</div>
@@ -6907,7 +7072,7 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
     
     <hr/>
     <h4 style="display: inline-block" id="orderlist">orderlist</h4>
-    <a style="display: inline-block" href="http://docs.learnosity.com/assessment/questions/questiontypes#orderlist" target="_blank">http://docs.learnosity.com/assessment/questions/questiontypes#orderlist</a>
+    <a style="display: inline-block" href="http://docs.learnosity.com/assessment/questions/questiontypes#orderlist" target="_blank">(documentation)</a>
     <a style="display: inline-block; float: right; margin-top: 10px;" href="#mapping-question-types">Back to Top</a>
 
             <div class="panel">This question type is mapped to &lt;orderInteraction&gt; with match_correct.xml template. Therefore, any `alt_responses` are ignored and `valid_response` score can only be mapped to 1</div>
@@ -7017,10 +7182,10 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
     
     <hr/>
     <h4 style="display: inline-block" id="plaintext">plaintext</h4>
-    <a style="display: inline-block" href="http://docs.learnosity.com/assessment/questions/questiontypes#plaintext" target="_blank">http://docs.learnosity.com/assessment/questions/questiontypes#plaintext</a>
+    <a style="display: inline-block" href="http://docs.learnosity.com/assessment/questions/questiontypes#plaintext" target="_blank">(documentation)</a>
     <a style="display: inline-block; float: right; margin-top: 10px;" href="#mapping-question-types">Back to Top</a>
 
-            <div class="panel">This question type is mapped to &lt;extendedTextEntryInteraction&gt; with `&lt;strong&gt;format&lt;/strong&gt;` attribute as `plain`. Both the interaction attribute `&lt;strong&gt;minString&lt;/strong&gt;` and `&lt;strong&gt;maxString&lt;/strong&gt;` is mapped to 1.Validation is not supported thus &lt;responseProcessing&gt; and &lt;responseDeclaration&gt; won&#039;t be populated.</div>
+            <div class="panel">This question type is mapped to &lt;extendedTextEntryInteraction&gt; with `format` attribute as `plain`. Both the interaction attribute `minString` and `maxString` is mapped to 1.Validation is not supported thus &lt;responseProcessing&gt; and &lt;responseDeclaration&gt; won&#039;t be populated.</div>
     
                 <table class="doc-table">
             <tr>
@@ -7152,7 +7317,7 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
     
     <hr/>
     <h4 style="display: inline-block" id="shorttext">shorttext</h4>
-    <a style="display: inline-block" href="http://docs.learnosity.com/assessment/questions/questiontypes#shorttext" target="_blank">http://docs.learnosity.com/assessment/questions/questiontypes#shorttext</a>
+    <a style="display: inline-block" href="http://docs.learnosity.com/assessment/questions/questiontypes#shorttext" target="_blank">(documentation)</a>
     <a style="display: inline-block; float: right; margin-top: 10px;" href="#mapping-question-types">Back to Top</a>
 
             <div class="panel">This question type is mapped to &lt;textEntryInteraction&gt;</div>
@@ -7277,7 +7442,7 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
     
     <hr/>
     <h4 style="display: inline-block" id="tokenhighlight">tokenhighlight</h4>
-    <a style="display: inline-block" href="http://docs.learnosity.com/assessment/questions/questiontypes#tokenhighlight" target="_blank">http://docs.learnosity.com/assessment/questions/questiontypes#tokenhighlight</a>
+    <a style="display: inline-block" href="http://docs.learnosity.com/assessment/questions/questiontypes#tokenhighlight" target="_blank">(documentation)</a>
     <a style="display: inline-block; float: right; margin-top: 10px;" href="#mapping-question-types">Back to Top</a>
 
             <div class="panel">This question type is mapped to &lt;hottextInteraction&gt;</div>

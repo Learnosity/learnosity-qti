@@ -50,7 +50,7 @@
 
 {% for questionTypeName, data in questionTypes %}
     <h4 style="display: inline-block" id="{{ questionTypeName }}">{{ questionTypeName }}</h4>
-    <a style="display: inline-block" href="http://docs.learnosity.com/assessment/questions/questiontypes#{{ questionTypeName }}" target="_blank">http://docs.learnosity.com/assessment/questions/questiontypes#{{ questionTypeName }}</a>
+    <a style="display: inline-block" href="http://docs.learnosity.com/assessment/questions/questiontypes#{{ questionTypeName }}" target="_blank">(documentation)</a>
     <a style="display: inline-block; float: right; margin-top: 10px;" href="#mapping-question-types">Back to Top</a>
 
     {% if data.introduction is not empty %}

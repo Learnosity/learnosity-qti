@@ -42,6 +42,16 @@ abstract class BaseInteractionValidationBuilder
                 case ResponseProcessingTemplate::CC2_MAP_RESPONSE:
                     return $this->getMapResponseTemplateValidation();
                 case ResponseProcessingTemplate::NONE:
+                    //TODO: Nested `try catch`, need to tidy this up
+                    try {
+                        return $this->getMapResponseTemplateValidation();
+                    } catch (\Exception $e) {
+                        try {
+                            $this->getMatchCorrectTemplateValidation();
+                        } catch (\Exception $e) {
+                            return $this->getNoTemplateResponsesValidation();
+                        }
+                    }
                     return $this->getNoTemplateResponsesValidation();
                 default:
                     LogService::log('Unrecognised response processing template. Validation is not available');

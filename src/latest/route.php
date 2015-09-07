@@ -4,6 +4,7 @@ require_once 'vendor/autoload.php';
 
 use Learnosity\Converter;
 use Learnosity\Exceptions\BaseKnownException;
+use Learnosity\Exceptions\RequestException;
 use Slim\Slim;
 
 $app = new Slim();

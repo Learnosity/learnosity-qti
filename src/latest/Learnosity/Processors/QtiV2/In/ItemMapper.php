@@ -25,7 +25,7 @@ class ItemMapper
     public function parse($xmlString)
     {
         $xmlDocument = new XmlDocument();
-        $xmlDocument->loadFromString($xmlString, true);
+        $xmlDocument->loadFromString($xmlString);
 
         /** @var AssessmentItem $assessmentItem */
         $assessmentItem = $xmlDocument->getDocumentComponent();
@@ -118,13 +118,15 @@ class ItemMapper
         }
         if ($responseProcessing->getResponseRules()->count()) {
             LogService::log('Does not support custom response processing on <responseProcessing>. Ignoring <responseProcessing>');
+            return ResponseProcessingTemplate::unsupported();
         }
         if (!empty($responseProcessing->getTemplateLocation())) {
             LogService::log('Does not support \'templateLocation\' on <responseProcessing>. Ignoring <responseProcessing>');
+            return ResponseProcessingTemplate::unsupported();
         }
         if (!empty($responseProcessing->getTemplate())) {
             return ResponseProcessingTemplate::getFromTemplateUrl($responseProcessing->getTemplate());
         }
-        return ResponseProcessingTemplate::unsupported();
+        return ResponseProcessingTemplate::none();
     }
 }
