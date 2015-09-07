@@ -5,9 +5,17 @@ namespace Learnosity\Processors\QtiV2\In\Validation;
 use Learnosity\Exceptions\MappingException;
 use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
 use Learnosity\Services\LogService;
+use qtism\data\state\ResponseDeclaration;
 
 abstract class BaseInteractionValidationBuilder
 {
+    protected $responseDeclaration;
+
+    public function __construct(ResponseDeclaration $responseDeclaration = null)
+    {
+        $this->responseDeclaration = $responseDeclaration;
+    }
+
     protected function getMatchCorrectTemplateValidation()
     {
         LogService::log(
@@ -42,14 +50,16 @@ abstract class BaseInteractionValidationBuilder
                 case ResponseProcessingTemplate::CC2_MAP_RESPONSE:
                     return $this->getMapResponseTemplateValidation();
                 case ResponseProcessingTemplate::NONE:
-                    //TODO: Nested `try catch`, need to tidy this up
-                    try {
-                        return $this->getMapResponseTemplateValidation();
-                    } catch (\Exception $e) {
-                        try {
-                            $this->getMatchCorrectTemplateValidation();
-                        } catch (\Exception $e) {
-                            return $this->getNoTemplateResponsesValidation();
+                    if (!empty($this->responseDeclaration)) {
+                        // If the response processing template is not set, simply check whether `mapping` or `correctResponse` exists and
+                        // simply use `em
+                        if (!empty($this->responseDeclaration->getMapping()) && $this->responseDeclaration->getMapping()->getMapEntries()->count() > 0) {
+                            LogService::log('Response processing is not set, the `validation` object is assumed to be mapped based on `mapping` map entries elements');
+                            return $this->getMapResponseTemplateValidation();
+                        }
+                        if (!empty($this->responseDeclaration->getCorrectResponse()) && $this->responseDeclaration->getCorrectResponse()->getValues()->count() > 0) {
+                            LogService::log('Response processing is not set, the `validation` object is assumed to be mapped based on `correctResponse` values elements');
+                            return $this->getMatchCorrectTemplateValidation();
                         }
                     }
                     return $this->getNoTemplateResponsesValidation();

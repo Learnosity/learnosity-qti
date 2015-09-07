@@ -22,10 +22,16 @@ class ItemMapper
         $this->itemBuilderFactory = $itemBuilderFactory;
     }
 
-    public function parse($xmlString)
+    public function parse($xmlString, $validate = true)
     {
+        // TODO: Remove this, and move it higher up
+        LogService::flush();
+
         $xmlDocument = new XmlDocument();
-        $xmlDocument->loadFromString($xmlString);
+        if ($validate === false) {
+            LogService::log('QTI pre-validation is turned off, some invalid attributes might be stripped from XML content upon conversion');
+        }
+        $xmlDocument->loadFromString($xmlString, $validate);
 
         /** @var AssessmentItem $assessmentItem */
         $assessmentItem = $xmlDocument->getDocumentComponent();
@@ -37,8 +43,9 @@ class ItemMapper
 
     public function parseWithAssessmentItemComponent(AssessmentItem $assessmentItem)
     {
+        // TODO: Move this logging service upper to converter class level
         // Make sure we clean up the log
-        LogService::flush();
+        // LogService::flush();
 
         $processings = [
             new RubricsProcessing(),

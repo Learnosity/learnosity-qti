@@ -9,7 +9,7 @@ class ConverterTest extends AbstractTest
 {
     public function testConvertInvalidQtiXmlToLearnosityJson()
     {
-        $this->setExpectedException('Learnosity\Exceptions\MappingException');
+        $this->setExpectedException('Learnosity\Exceptions\InvalidQtiException');
         $xmlString = $this->getFixtureFileContents('otherqtis/invalid.xml');
         list($item, $questions, $manifest) = Converter::convertQtiItemToLearnosity($xmlString);
     }

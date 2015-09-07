@@ -26,10 +26,12 @@ $app->post('/:version/fromqti', function () use ($app) {
             throw new RequestException('Invalid request object, QTI to Learnosity transformation required `items` as array with one `xml` string');
         }
         $baseAssetsUrl = isset($body['base_asset_path']) ? $body['base_asset_path'] : '';
+        $validate = isset($body['validate']) ? filter_var($body['validate'], FILTER_VALIDATE_BOOLEAN) : true;
+
         $result = [];
         foreach ($body['items'] as $xmlString) {
             list($itemData, $questionsData, $manifest) =
-                Converter::convertQtiItemToLearnosity($xmlString, $baseAssetsUrl);
+                Converter::convertQtiItemToLearnosity($xmlString, $baseAssetsUrl, $validate);
             $result[] = [
                 'item' => $itemData,
                 'questions' => $questionsData,

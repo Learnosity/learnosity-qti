@@ -1,4 +1,5 @@
 <?php
+
 namespace Learnosity\Processors\QtiV2\In\Validation;
 
 use Learnosity\Processors\Learnosity\In\ValidationBuilder\ValidationBuilder;
@@ -10,12 +11,11 @@ use qtism\data\state\Value;
 class OrderInteractionValidationBuilder extends BaseInteractionValidationBuilder
 {
     private $orderMapping;
-    private $responseDeclaration;
 
     public function __construct(array $orderMapping, ResponseDeclaration $responseDeclaration = null)
     {
+        parent::__construct($responseDeclaration);
         $this->orderMapping = $orderMapping;
-        $this->responseDeclaration = $responseDeclaration;
     }
 
     protected function getMatchCorrectTemplateValidation()

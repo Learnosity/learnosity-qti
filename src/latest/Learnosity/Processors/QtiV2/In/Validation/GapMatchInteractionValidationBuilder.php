@@ -15,8 +15,6 @@ class GapMatchInteractionValidationBuilder extends BaseInteractionValidationBuil
     private $questionTypeName;
     private $gapIdentifiers;
     private $possibleResponses;
-    private $responseDeclaration;
-
     private $isDuplicatedResponse = false;
 
     public function __construct(
@@ -25,10 +23,10 @@ class GapMatchInteractionValidationBuilder extends BaseInteractionValidationBuil
         array $possibleResponses,
         ResponseDeclaration $responseDeclaration = null
     ) {
+        parent::__construct($responseDeclaration);
         $this->questionTypeName = $questionTypeName;
         $this->gapIdentifiers = $gapIdentifiers;
         $this->possibleResponses = $possibleResponses;
-        $this->responseDeclaration = $responseDeclaration;
     }
 
     public function isDuplicatedResponse()

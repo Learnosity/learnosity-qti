@@ -4,6 +4,7 @@ namespace Learnosity;
 
 use Exception;
 use Learnosity\Entities\Item\item;
+use Learnosity\Exceptions\InvalidQtiException;
 use Learnosity\Exceptions\MappingException;
 use Learnosity\Processors\Learnosity\In\ItemMapper;
 use Learnosity\Processors\Learnosity\In\QuestionMapper;
@@ -11,7 +12,9 @@ use Learnosity\Processors\QtiV2\Out\ItemWriter;
 use Learnosity\Processors\QtiV2\Out\QuestionWriter;
 use Learnosity\Services\LearnosityToQtiPreProcessingService;
 use Learnosity\Services\LogService;
+use Learnosity\Utils\StringUtil;
 use qtism\data\storage\xml\XmlDocument;
+use qtism\data\storage\xml\XmlStorageException;
 
 class Converter
 {
@@ -22,7 +25,7 @@ class Converter
     const LEARNOSITY_DATA_QUESTION = 'question';
     const LEARNOSITY_DATA_QUESTION_DATA = 'questiondata';
 
-    public static function convertQtiItemToLearnosity($xmlString, $baseAssetsUrl = '')
+    public static function convertQtiItemToLearnosity($xmlString, $baseAssetsUrl = '', $validate = true)
     {
         $itemMapper = AppContainer::getApplicationContainer()->get('qtiv2_item_mapper');
         $itemWriter = AppContainer::getApplicationContainer()->get('learnosity_item_writer');
@@ -31,7 +34,18 @@ class Converter
         $assetsProcessing->setBaseAssetUrl($baseAssetsUrl);
 
         // Parse `em
-        list($item, $questions, $exceptions) = $itemMapper->parse($xmlString);
+        try {
+            list($item, $questions, $exceptions) = $itemMapper->parse($xmlString, $validate);
+        } catch (XmlStorageException $e) {
+            // Check invalid schema error message and intercept to rethrow as known `InvalidQtiException` exception
+            $exceptionMessage = $e->getMessage();
+            if (StringUtil::startsWith($exceptionMessage, 'The document could not be validated with schema')) {
+                $exceptionMessage = preg_replace('/The document could not be validated with schema(.*)/', 'The document could not be validated with standard QTI schema: ', $exceptionMessage);
+                throw new InvalidQtiException($exceptionMessage);
+            } else {
+                throw $e;
+            }
+        }
 
         // Conversion to JSON
         $itemData = [];

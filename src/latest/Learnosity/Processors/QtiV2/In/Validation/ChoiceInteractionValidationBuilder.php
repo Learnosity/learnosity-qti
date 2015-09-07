@@ -13,13 +13,12 @@ use qtism\data\state\Value;
 
 class ChoiceInteractionValidationBuilder extends BaseInteractionValidationBuilder
 {
-    private $responseDeclaration;
     private $options;
     private $maxChoices;
 
     public function __construct(ResponseDeclaration $responseDeclaration = null, array $options, $maxChoices)
     {
-        $this->responseDeclaration = $responseDeclaration;
+        parent::__construct($responseDeclaration);
         $this->options = $options;
         $this->maxChoices = $maxChoices;
     }
