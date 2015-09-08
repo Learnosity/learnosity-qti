@@ -26,7 +26,7 @@ class ClozeassociationMapper extends AbstractQuestionTypeMapper
 
         // Replace {{ response }} with `gap` elements
         $index = 0;
-        $template = $results = preg_replace_callback('/{{response}}/', function ($match) use (&$index) {
+        $template = preg_replace_callback('/{{response}}/', function ($match) use (&$index) {
             $gapIdentifier = self::GAP_IDENTIFIER_PREFIX . $index;
             $replacement = '<gap identifier="' . $gapIdentifier . '"/>';
             $index++;

@@ -1,0 +1,56 @@
+<?php
+
+namespace Learnosity\Processors\QtiV2\Out\QuestionTypes;
+
+use Learnosity\Entities\BaseQuestionType;
+use Learnosity\Entities\QuestionTypes\clozetext;
+use Learnosity\Processors\QtiV2\Out\ContentCollectionBuilder;
+use Learnosity\Utils\QtiMarshallerUtil;
+use qtism\data\content\interactions\TextEntryInteraction;
+use qtism\data\content\xhtml\text\Div;
+
+class ClozetextMapper extends AbstractQuestionTypeMapper
+{
+    private $extraContent;
+
+    public function convert(BaseQuestionType $questionType, $interactionIdentifier, $interactionLabel)
+    {
+        /** @var clozetext $question */
+        $question = $questionType;
+
+        // Extra text that can't be mapped since we are in textEntryInteraction which does not have prompt
+        $this->extraContent = $question->get_stimulus();
+
+        // Replace {{ response }} with `textEntryInteraction` elements
+        $maxLength = !is_null($question->get_max_length()) ? intval($question->get_max_length()) : 15; // Set default to `15` if not set
+        $index = 0;
+        $template = preg_replace_callback('/{{response}}/', function ($match) use (
+            &$index,
+            $interactionIdentifier,
+            $interactionLabel,
+            $maxLength
+        ) {
+            $interaction = new TextEntryInteraction($interactionIdentifier . '_' . $index);
+            $interaction->setLabel($interactionLabel);
+            $interaction->setExpectedLength($maxLength);
+            $index++;
+            $replacement = QtiMarshallerUtil::marshall($interaction);
+            return $replacement;
+        }, $question->get_template());
+
+        // Wrap this interaction in a block since our `clozetext` `template` meant to be blocky and not inline
+        $div = new Div();
+        $div->setClass('lrn-template');
+        $div->setContent(ContentCollectionBuilder::buildFlowCollectionContent(QtiMarshallerUtil::unmarshallElement($template)));
+
+        $responseDeclaration = null;
+        $responseProcessing = null;
+
+        return [$div, $responseDeclaration, $responseProcessing];
+    }
+
+    public function getExtraContent()
+    {
+        return $this->extraContent;
+    }
+}
