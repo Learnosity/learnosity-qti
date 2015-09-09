@@ -30,7 +30,7 @@ class ItemMapperTest extends AbstractQuestionTypeTest
         $this->assertEquals('audio/x-wav', $object->getType());
     }
 
-    public function testMappingItemWithEmbeddedFeatures()
+    public function testMappingItemWithRegularFeatures()
     {
         $data = json_decode($this->getFixtureFileContents('learnosityjsons/item_longtext_audioplayer.json'), true);
         $assessmentItem = $this->convertToAssessmentItem($data);

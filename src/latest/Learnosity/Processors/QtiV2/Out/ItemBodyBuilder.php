@@ -75,14 +75,11 @@ class ItemBodyBuilder
 
                 // Build the actual interaction
                 $interaction = $interactions[$questionReference]['interaction'];
-                $content = null;
+                $content = new FlowCollection();
                 if (isset($interactions[$questionReference]['extraContent'])) {
-                    $content = new FlowCollection();
                     $content->attach($interactions[$questionReference]['extraContent']);
-                    $content->attach($interaction);
-                } else {
-                    $content = $interactions[$questionReference]['extraContent'];
                 }
+                $content->attach($interaction);
 
                 $replacement = ContentCollectionBuilder::buildContent($currentContainer, $content)->current();
                 $currentContainer->getComponents()->replace($component, $replacement);

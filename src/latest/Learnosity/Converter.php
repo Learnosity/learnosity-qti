@@ -128,9 +128,12 @@ class Converter
         $itemMapper = new ItemMapper();
         $questionMapper = new QuestionMapper();
         $item = $itemMapper->parse($itemJson);
-        $questions = array_map(function ($questionJson) use ($questionMapper) {
-            return $questionMapper->parse($questionJson);
-        }, $questionsJson);
+        $questions = [];
+        foreach ($questionsJson as $question) {
+            if (!in_array($question['type'], ['audioplayer', 'videoplayer'])) {
+                $questions[] = $questionMapper->parse($question);
+            }
+        }
 
         // Write em` to QTI
         $itemWriter = new ItemWriter();
