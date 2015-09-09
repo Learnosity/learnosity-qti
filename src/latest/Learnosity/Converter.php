@@ -130,7 +130,7 @@ class Converter
         $item = $itemMapper->parse($itemJson);
         $questions = [];
         foreach ($questionsJson as $question) {
-            if (!in_array($question['type'], ['audioplayer', 'videoplayer'])) {
+            if (!in_array($question['data']['type'], ['audioplayer', 'videoplayer'])) {
                 $questions[] = $questionMapper->parse($question);
             }
         }

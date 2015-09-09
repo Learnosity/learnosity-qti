@@ -13,7 +13,8 @@ class Constants
         'choicematrix',
         'tokenhighlight',
         'clozeassociation',
-        'clozetext'
+        'clozetext',
+        'clozedropdown'
     ];
 
     const RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT = 'http://www.imsglobal.org/question/qtiv2p1/rptemplates/match_correct.xml';

@@ -6482,6 +6482,7 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
             <li><a href="#clozetext">clozetext</a></li>
             <li><a href="#choicematrix">choicematrix</a></li>
             <li><a href="#clozeassociation">clozeassociation</a></li>
+            <li><a href="#clozedropdown">clozedropdown</a></li>
             <li><a href="#longtext">longtext</a></li>
             <li><a href="#orderlist">orderlist</a></li>
             <li><a href="#plaintext">plaintext</a></li>
@@ -6495,7 +6496,6 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
     <span class="secondary label">simplechart</span>
     <span class="secondary label">simpleshading</span>
     <span class="secondary label">classification</span>
-    <span class="secondary label">clozedropdown</span>
     <span class="secondary label">clozeinlinetext</span>
     <span class="secondary label">clozeformula</span>
     <span class="secondary label">clozechemistry</span>
@@ -7120,6 +7120,156 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                 </tr>
                             <tr>
                     <td class="name">description</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                    </table>
+    
+    <hr/>
+    <h4 style="display: inline-block" id="clozedropdown">clozedropdown</h4>
+    <a style="display: inline-block" href="http://docs.learnosity.com/assessment/questions/questiontypes#clozedropdown" target="_blank">(documentation)</a>
+    <a style="display: inline-block; float: right; margin-top: 10px;" href="#mapping-question-types">Back to Top</a>
+
+            <div class="panel">This question type is mapped to multiple &lt;inlineChoiceInteraction&gt; for each {{response}} at `template` attribute. Currently only support `exactMatch` validation</div>
+    
+                <table class="doc-table">
+            <tr>
+                <th></th>
+                <th>Support</th>
+                <th>Description</th>
+            </tr>
+                            <tr>
+                    <td class="name">stimulus</td>
+                    <td class="support-status support-status-yes">YES</td>
+                    <td class="description">Since InlineChoiceInteraction is inline and does not have prompt, this `stimulus` is then prepended to the itembody content</td>
+                </tr>
+                            <tr>
+                    <td class="name">template</td>
+                    <td class="support-status support-status-yes">YES</td>
+                    <td class="description">This is mapped to the interaction content, the {{response}} would be replaced with `inlineChoiceInteraction` elements</td>
+                </tr>
+                            <tr>
+                    <td class="name">is_math</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">math_renderer</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">metadata</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">metadata.distractor_rationale</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">metadata.rubric_reference</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">metadata.sample_answer</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">metadata.acknowledgements</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">metadata.distractor_rationale_response_level</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">stimulus_review</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">type</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">ui_style</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">ui_style.fontsize</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">ui_style.validation_stem_numeration</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">feedback_attempts</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">instant_feedback</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">response_container</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">response_container.height</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">response_container.width</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">response_container.placeholder</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">response_containers</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">response_containers[].height</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">response_containers[].width</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">response_containers[].placeholder</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">description</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">possible_responses</td>
                     <td class="support-status support-status-no">NO</td>
                     <td class="description"></td>
                 </tr>

@@ -1,0 +1,40 @@
+{
+    "image": {
+        "src": "//dw6y82u65ww8h.cloudfront.net/demos/docs/blank_us_map.png"
+    },
+    "possible_responses": [
+        "Choice A",
+        "Choice B",
+        "Choice C"
+    ],
+    "response_container": {
+        "pointer": "left"
+    },
+    "response_positions": [
+        {
+            "x": 0.14,
+            "y": 48
+        },
+        {
+            "x": 35.1,
+            "y": 73.57
+        },
+        {
+            "x": 72.38,
+            "y": 84.58
+        }
+    ],
+    "stimulus": "<p>[This is the stem.]</p>",
+    "type": "imageclozeassociation",
+    "validation": {
+        "scoring_type": "exactMatch",
+        "valid_response": {
+            "score": 1,
+            "value": [
+                "Choice C",
+                "Choice B",
+                "Choice A"
+            ]
+        }
+    }
+}
