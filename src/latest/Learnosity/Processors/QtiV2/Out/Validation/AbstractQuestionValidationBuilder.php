@@ -32,6 +32,7 @@ abstract class AbstractQuestionValidationBuilder
             return [null, null];
         }
 
+        // TODO: Some of our mapper doesn't care about this, we shouldn't bother
         if (!empty($validation->get_alt_responses())) {
             foreach ($validation->get_alt_responses() as $alt) {
                 if (empty($alt->get_value()) || empty($alt->get_score())) {

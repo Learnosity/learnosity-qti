@@ -1,0 +1,12 @@
+{
+    "stimulus": "<p>[This is the stem.]</p>",
+    "template": "<p>Risus {{response}}, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum. Nunc diam enim, porta sed eros vitae. {{response}} dignissim, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum.</p>",
+    "type": "clozetext",
+    "validation": {
+        "scoring_type": "exactMatch",
+        "valid_response": {
+            "score": 1,
+            "value": ["responseone", "responsetwo"]
+        }
+    }
+}

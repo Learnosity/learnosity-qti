@@ -49,7 +49,13 @@ class AssessmentItemBuilder
             // The extraContent usually comes from `stimulus` of item that mapped to inline interaction and has no `prompt`
             list($interaction, $responseDeclaration, $responseProcessing, $extraContent) = $this->map($question);
             if (!empty($responseDeclaration)) {
-                $responseDeclarationCollection->attach($responseDeclaration);
+                // TODO: Need to tidy this up
+                // Well sometimes we can have multiple response declarations, ie. clozetext
+                if ($responseDeclaration instanceof ResponseDeclarationCollection) {
+                    $responseDeclarationCollection->merge($responseDeclaration);
+                } else {
+                    $responseDeclarationCollection->attach($responseDeclaration);
+                }
             }
             if (!empty($responseProcessing)) {
                 /** @var ResponseProcessing $responseProcessing */

@@ -9,6 +9,7 @@ use qtism\data\state\Mapping;
 
 class QtiMappingBuilder
 {
+    // TODO: Should remove support for alt_responses
     public function buildWithBaseTypeIdentifier($validation, array $valueIdentifierMap)
     {
         $mapEntryCollection = $this->buildMapEntryCollection($validation);

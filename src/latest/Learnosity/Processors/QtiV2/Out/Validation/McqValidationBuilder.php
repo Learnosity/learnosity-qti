@@ -2,9 +2,12 @@
 
 namespace Learnosity\Processors\QtiV2\Out\Validation;
 
+use Learnosity\Entities\QuestionTypes\mcq_validation;
 use Learnosity\Exceptions\MappingException;
+use Learnosity\Processors\QtiV2\Out\Constants;
 use qtism\common\enums\BaseType;
 use qtism\common\enums\Cardinality;
+use qtism\data\processing\ResponseProcessing;
 use qtism\data\state\ResponseDeclaration;
 
 class McqValidationBuilder extends AbstractQuestionValidationBuilder
@@ -20,6 +23,7 @@ class McqValidationBuilder extends AbstractQuestionValidationBuilder
 
     protected function buildResponseDeclaration($responseIdentifier, $validation)
     {
+        /** @var mcq_validation $validation */
         if ($validation->get_scoring_type() !== 'exactMatch') {
             throw new MappingException('Does not support other scoring type mapping other than `exactNatch`');
         }

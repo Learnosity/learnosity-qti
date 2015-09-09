@@ -41,7 +41,7 @@ class OrderlistValidationBuilder extends AbstractQuestionValidationBuilder
 
         if ($validation->get_valid_response()->get_score() != 1) {
             $validation->get_valid_response()->set_score(1);
-            LogService::log('Only support mapping to `matchCorrect` template, thus validation score is changed to 1 and would be mpped to QTI `match_correct.xml` template');
+            LogService::log('Only support mapping to `matchCorrect` template, thus validation score is changed to 1 and since mapped to QTI pre-defined `match_correct.xml` template');
         }
 
         $correctResponseBuilder = new QtiCorrectResponseBuilder();

@@ -5,6 +5,7 @@ namespace Learnosity\Processors\QtiV2\Out\QuestionTypes;
 use Learnosity\Entities\BaseQuestionType;
 use Learnosity\Entities\QuestionTypes\clozetext;
 use Learnosity\Processors\QtiV2\Out\ContentCollectionBuilder;
+use Learnosity\Processors\QtiV2\Out\Validation\ClozetextValidationBuilder;
 use Learnosity\Utils\QtiMarshallerUtil;
 use qtism\data\content\interactions\TextEntryInteraction;
 use qtism\data\content\xhtml\text\Div;
@@ -43,8 +44,10 @@ class ClozetextMapper extends AbstractQuestionTypeMapper
         $div->setClass('lrn-template');
         $div->setContent(ContentCollectionBuilder::buildFlowCollectionContent(QtiMarshallerUtil::unmarshallElement($template)));
 
-        $responseDeclaration = null;
-        $responseProcessing = null;
+        // Build validation
+        $validationBuilder = new ClozetextValidationBuilder();
+        $isCaseSensitive = is_null($question->get_case_sensitive()) ? true : $question->get_case_sensitive();
+        list($responseDeclaration, $responseProcessing) = $validationBuilder->buildValidation($interactionIdentifier, $question->get_validation(), $isCaseSensitive);
 
         return [$div, $responseDeclaration, $responseProcessing];
     }
