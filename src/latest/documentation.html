@@ -6483,6 +6483,7 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
             <li><a href="#choicematrix">choicematrix</a></li>
             <li><a href="#clozeassociation">clozeassociation</a></li>
             <li><a href="#clozedropdown">clozedropdown</a></li>
+            <li><a href="#imageclozeassociation">imageclozeassociation</a></li>
             <li><a href="#longtext">longtext</a></li>
             <li><a href="#orderlist">orderlist</a></li>
             <li><a href="#plaintext">plaintext</a></li>
@@ -6507,7 +6508,6 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
     <span class="secondary label">chemistryessay</span>
     <span class="secondary label">graphplotting</span>
     <span class="secondary label">highlight</span>
-    <span class="secondary label">imageclozeassociation</span>
     <span class="secondary label">imageclozedropdown</span>
     <span class="secondary label">imageclozeformula</span>
     <span class="secondary label">imageclozechemistry</span>
@@ -7270,6 +7270,206 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                 </tr>
                             <tr>
                     <td class="name">possible_responses</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                    </table>
+    
+    <hr/>
+    <h4 style="display: inline-block" id="imageclozeassociation">imageclozeassociation</h4>
+    <a style="display: inline-block" href="http://docs.learnosity.com/assessment/questions/questiontypes#imageclozeassociation" target="_blank">(documentation)</a>
+    <a style="display: inline-block; float: right; margin-top: 10px;" href="#mapping-question-types">Back to Top</a>
+
+            <div class="panel">This question type is mapped to &lt;graphicGapMatchInteraction&gt; and only `exactMatch` validation can be supported</div>
+    
+                <table class="doc-table">
+            <tr>
+                <th></th>
+                <th>Support</th>
+                <th>Description</th>
+            </tr>
+                            <tr>
+                    <td class="name">stimulus</td>
+                    <td class="support-status support-status-yes">YES</td>
+                    <td class="description">This is mapped to `prompt`</td>
+                </tr>
+                            <tr>
+                    <td class="name">image.src</td>
+                    <td class="support-status support-status-yes">YES</td>
+                    <td class="description">This is mapped to the interaction background image `object`</td>
+                </tr>
+                            <tr>
+                    <td class="name">possible_responses</td>
+                    <td class="support-status support-status-yes">YES</td>
+                    <td class="description">These are mapped to `gapImg`(s). Texts would be converted to base64 image `object`</td>
+                </tr>
+                            <tr>
+                    <td class="name">response_positions</td>
+                    <td class="support-status support-status-yes">YES</td>
+                    <td class="description">These are mapped to `associableHostpot`(s)</td>
+                </tr>
+                            <tr>
+                    <td class="name">ui_style</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">ui_style.possibility_list_position</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">ui_style.fontsize</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">ui_style.validation_stem_numeration</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">ui_style.show_drag_handle</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">image</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">image.alt</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">image.title</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">image.scale</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">response_container</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">response_container.pointer</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">response_container.height</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">response_container.width</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">response_container.wordwrap</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">response_containers</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">response_containers[].pointer</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">response_containers[].height</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">response_containers[].width</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">response_containers[].wordwrap</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">is_math</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">math_renderer</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">metadata</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">metadata.distractor_rationale</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">metadata.rubric_reference</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">metadata.sample_answer</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">metadata.acknowledgements</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">metadata.distractor_rationale_response_level</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">stimulus_review</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">type</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">feedback_attempts</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">instant_feedback</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">img_src</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">duplicate_responses</td>
                     <td class="support-status support-status-no">NO</td>
                     <td class="description"></td>
                 </tr>

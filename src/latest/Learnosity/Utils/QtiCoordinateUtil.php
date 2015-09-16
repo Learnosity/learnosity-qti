@@ -2,6 +2,7 @@
 
 namespace Learnosity\Utils;
 
+use qtism\common\datatypes\Coords;
 use qtism\common\datatypes\Shape;
 
 class QtiCoordinateUtil
@@ -24,5 +25,15 @@ class QtiCoordinateUtil
             default:
                 return null;
         }
+    }
+
+    public static function convertPercentageToQtiCoords(array $responsePosition, $imageWidth, $imageHeight, $rectangleWidth, $rectangleHeight)
+    {
+        $leftX = round($responsePosition['x'] / 100 * $imageWidth, 0);
+        $topY = round($responsePosition['y'] / 100 * $imageHeight, 0);
+        $rightX = round($leftX + $rectangleWidth, 0);
+        $bottomY = round($topY + $rectangleHeight, 0);
+
+        return new Coords(Shape::RECT, [intval($leftX), intval($topY), intval($rightX), intval($bottomY)]);
     }
 }

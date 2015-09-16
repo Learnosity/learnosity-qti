@@ -4,6 +4,7 @@ namespace Learnosity\Processors\QtiV2\In\Interactions;
 
 use Learnosity\Entities\QuestionTypes\imageclozeassociation;
 use Learnosity\Entities\QuestionTypes\imageclozeassociation_image;
+use Learnosity\Entities\QuestionTypes\imageclozedropdown_response_containers_item;
 use Learnosity\Processors\QtiV2\In\Validation\GapMatchInteractionValidationBuilder;
 use Learnosity\Utils\QtiCoordinateUtil;
 use Learnosity\Utils\QtiMarshallerUtil;
@@ -25,12 +26,17 @@ class GraphicGapMatchInteractionMapper extends AbstractInteractionMapper
         $image = new imageclozeassociation_image();
         $image->set_src($imageObject->getData());
 
+        $responseContainers = [];
         $responsePosition = [];
         foreach ($associableHotspots as $associableHotspot) {
             $responsePosition [] = [
                 'x' => $associableHotspot['x'],
                 'y' => $associableHotspot['y']
             ];
+            $responseContainer = new imageclozedropdown_response_containers_item();
+            $responseContainer->set_height($associableHotspot['height'] . 'px');
+            $responseContainer->set_width($associableHotspot['width'] . 'px');
+            $responseContainers[] = $responseContainer;
         }
 
         $question = new imageclozeassociation(
@@ -39,7 +45,7 @@ class GraphicGapMatchInteractionMapper extends AbstractInteractionMapper
             'imageclozeassociation',
             array_values($possibleResponseMapping)
         );
-
+        $question->set_response_containers($responseContainers);
         $question->set_stimulus($this->getPrompt());
 
         // Build dah` validation
