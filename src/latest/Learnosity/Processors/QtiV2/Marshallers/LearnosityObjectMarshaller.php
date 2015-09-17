@@ -2,7 +2,9 @@
 
 namespace Learnosity\Processors\QtiV2\Marshallers;
 
+use Learnosity\Processors\QtiV2\Out\ContentCollectionBuilder;
 use Learnosity\Services\LogService;
+use Learnosity\Utils\QtiMarshallerUtil;
 use qtism\data\content\xhtml\Object;
 use qtism\data\QtiComponent;
 use qtism\data\storage\xml\marshalling\ObjectMarshaller;
@@ -17,6 +19,7 @@ class LearnosityObjectMarshaller extends ObjectMarshaller
 
     protected function marshallChildrenKnown(QtiComponent $component, array $elements)
     {
+        /** @var Object $component */
         switch ($this->getMIMEType($component->getType())) {
             case self::MIME_IMAGE:
                 $this->checkObjectComponents($component, '<img> tag');
@@ -38,6 +41,14 @@ class LearnosityObjectMarshaller extends ObjectMarshaller
                 $element->setAttribute('class', 'learnosity-feature');
                 $element->setAttribute('data-type', 'videoplayer');
                 $element->setAttribute('data-src', $component->getData());
+                return $element;
+                break;
+            case self::MIME_HTML:
+                $fragment = self::getDOMCradle()->createDocumentFragment();
+                $fragment->appendXML(QtiMarshallerUtil::marshallCollection(ContentCollectionBuilder::buildFlowCollectionContent($component->getComponents())));
+                $element = self::getDOMCradle()->createElement('div');
+                $element->setAttribute('data-type', 'sharedpassage');
+                $element->appendChild($fragment);
                 return $element;
                 break;
             default:

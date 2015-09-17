@@ -3,6 +3,7 @@
 namespace Learnosity\Services;
 
 use Learnosity\Exceptions\MappingException;
+use Learnosity\Processors\QtiV2\Out\ContentCollectionBuilder;
 use Learnosity\Utils\MimeUtil;
 use Learnosity\Utils\QtiMarshallerUtil;
 use Learnosity\Utils\SimpleHtmlDom\SimpleHtmlDom;
@@ -46,7 +47,8 @@ class LearnosityToQtiPreProcessingService
         foreach ($html->find('span.learnosity-feature') as &$node) {
             try {
                 // Replace <span..> with <object..>
-                $node->outertext = $this->getFeatureReplacementString($node);
+                $replacement = $this->getFeatureReplacementString($node);
+                $node->outertext = $replacement;
             } catch (MappingException $e) {
                 LogService::log($e->getMessage() . '. Ignoring mapping feature ' . $node->outertext . '`');
             }
@@ -61,20 +63,31 @@ class LearnosityToQtiPreProcessingService
         if (isset($node->attr['data-type']) && isset($node->attr['data-src'])) {
             $src = trim($node->attr['data-src']);
             $type = trim($node->attr['data-type']);
+            if ($type === 'audioplayer' || $type === 'audioplayer') {
+                return QtiMarshallerUtil::marshallValidQti(new Object($src, MimeUtil::guessMimeType(basename($src))));
+            }
         // Process regular question feature
         } else {
-            $featureReference = $this->getFeatureReferenceFromClassName($node->attr['class']);
+            $nodeClassAttribute = $node->attr['class'];
+            $featureReference = $this->getFeatureReferenceFromClassName($nodeClassAttribute);
             $feature = $this->widgets[$featureReference];
-            $src = $feature['data']['src'];
             $type = $feature['data']['type'];
-        }
 
-        if ($type === 'audioplayer' || $type === 'audioplayer') {
-            // Replace <span..> with <object..>
-            return QtiMarshallerUtil::marshallValidQti(new Object($src, MimeUtil::guessMimeType(basename($src))));
-        } else {
-            throw new MappingException($type . ' not supported');
+            if ($type === 'audioplayer' || $type === 'audioplayer') {
+                $src = $feature['data']['src'];
+                $object = new Object($src, MimeUtil::guessMimeType(basename($src)));
+                $object->setLabel($featureReference);
+                return QtiMarshallerUtil::marshallValidQti($object);
+
+            } else if ($type === 'sharedpassage') {
+                $content = $feature['data']['content'];
+                $object = new Object('', 'text/html');
+                $object->setContent(ContentCollectionBuilder::buildObjectFlowCollectionContent(QtiMarshallerUtil::unmarshallElement($content)));
+                $object->setLabel($featureReference);
+                return QtiMarshallerUtil::marshallValidQti($object);
+            }
         }
+        throw new MappingException($type . ' not supported');
     }
 
     private function getFeatureReferenceFromClassName($classname)

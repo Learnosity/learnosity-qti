@@ -8,10 +8,11 @@
         generated and previous Learnosity Item `reference` will be stored within `label` attribute.</li>
     <li>Questions within Item are mapped to QTI Interactions. Their identifiers are taken from Question `reference`,
         however if QTI invalid, a random identifier would be generated and the original `reference` will be stored within interaction `label` attributes.</li>
-    <li>Some feature and inline features are mapped to QTI `object` element and their `reference`(s) are discarded. Current supported feature types:
+    <li>Some feature and inline features are mapped to QTI `object` element and their `reference`(s) might be saved on `label` attribute. Current supported feature types:
         <ul>
             <li>audioplayer</li>
             <li>videoplayer</li>
+            <li>sharedpassage</li>
         </ul>
     </li>
 </ul>

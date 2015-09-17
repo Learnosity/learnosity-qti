@@ -3,6 +3,7 @@
 namespace Learnosity\Tests\Integration\Processors\QtiV2\Out;
 
 use Learnosity\Tests\Integration\Processors\QtiV2\Out\QuestionTypes\AbstractQuestionTypeTest;
+use Learnosity\Utils\QtiMarshallerUtil;
 use qtism\data\content\interactions\ChoiceInteraction;
 use qtism\data\content\interactions\ExtendedTextInteraction;
 
@@ -10,10 +11,22 @@ class ItemMapperTest extends AbstractQuestionTypeTest
 {
     public function testMappingItemWithMultipleQuestions()
     {
-        $this->markTestIncomplete();
-
         $data = json_decode($this->getFixtureFileContents('learnosityjsons/item_shorttext_orderlist.json'), true);
         $assessmentItem = $this->convertToAssessmentItem($data);
+
+        $this->assertEquals(1, $assessmentItem->getComponentsByClassName('orderInteraction')->count());
+        $this->assertEquals(1, $assessmentItem->getComponentsByClassName('textEntryInteraction')->count());
+    }
+
+    public function testMappingItemWithSharedPassage()
+    {
+        $data = json_decode($this->getFixtureFileContents('learnosityjsons/item_mcq_sharedpassage.json'), true);
+        $assessmentItem = $this->convertToAssessmentItem($data);
+
+        /** @var Object $object */
+        $object = $assessmentItem->getComponentsByClassName('object', true)->getArrayCopy()[0];
+        $this->assertEquals('text/html', $object->getType());
+        $this->assertEquals('<p>This is the content of my shared passage</p>', QtiMarshallerUtil::marshallCollection($object->getComponents()));
     }
 
     public function testMappingItemWithInlineFeatures()
@@ -41,9 +54,8 @@ class ItemMapperTest extends AbstractQuestionTypeTest
         $this->assertTrue($interaction instanceof ExtendedTextInteraction);
 
         /** @var Object $object */
-        $object = $interaction->getPrompt()->getComponentsByClassName('object', true)->getArrayCopy()[0];
-
+        $object = $assessmentItem->getComponentsByClassName('object', true)->getArrayCopy()[0];
+        $this->assertEquals('audio/mpeg', $object->getType());
         $this->assertEquals('https://s3.amazonaws.com/assets.learnosity.com/demos/docs/audiofeaturedemo.mp3', $object->getData());
-        $this->assertEquals('audio/x-wav', $object->getType());
     }
 }

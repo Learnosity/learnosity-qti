@@ -8,6 +8,7 @@ use Learnosity\Processors\QtiV2\Out\ContentBuilders\InlineCollectionContentBuild
 use qtism\data\content\BlockStaticCollection;
 use qtism\data\content\FlowCollection;
 use qtism\data\content\FlowStaticCollection;
+use qtism\data\content\ObjectFlowCollection;
 use qtism\data\QtiComponent;
 use qtism\data\QtiComponentCollection;
 
@@ -31,6 +32,8 @@ class ContentCollectionBuilder
             } elseif ($contentType === 'BlockStaticCollection') {
                 return self::buildBlockStaticCollectionContent($content);
             } elseif ($contentType === 'FlowCollection') {
+                return self::buildFlowCollectionContent($content);
+            } elseif ($contentType === 'ObjectFlowCollection') {
                 return self::buildFlowCollectionContent($content);
             } elseif ($contentType === 'FlowStaticCollection') {
                 return self::buildFlowStaticCollectionContent($content);
@@ -68,6 +71,15 @@ class ContentCollectionBuilder
     public static function buildFlowCollectionContent(QtiComponentCollection $content)
     {
         $collection = new FlowCollection();
+        foreach ($content as $component) {
+            $collection->attach($component);
+        }
+        return $collection;
+    }
+
+    public static function buildObjectFlowCollectionContent(QtiComponentCollection $content)
+    {
+        $collection = new ObjectFlowCollection();
         foreach ($content as $component) {
             $collection->attach($component);
         }
