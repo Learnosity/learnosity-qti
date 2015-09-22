@@ -36,9 +36,4 @@ class TokenhighlightMapperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('TOKEN_2', $hottexts[2]->getIdentifier());
         $this->assertEquals('Brown sugar', QtiMarshallerUtil::marshallCollection($hottexts[2]->getComponents()));
     }
-
-    public function testWithValidation()
-    {
-        $this->markTestIncomplete();
-    }
 }

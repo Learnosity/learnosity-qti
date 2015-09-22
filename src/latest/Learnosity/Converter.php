@@ -114,7 +114,6 @@ class Converter
     private static function convertLearnosityItem(array $itemJson)
     {
         // Separate question(s) and item
-        // TODO: Need to think this a bit better
         $itemJson['questionReferences'] = array_column($itemJson['questions'], 'reference');
         $questionsJson = $itemJson['questions'];
         unset($itemJson['questions']);

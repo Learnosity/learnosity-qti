@@ -4,7 +4,6 @@ namespace Learnosity\Processors\QtiV2\In\Interactions;
 
 use Learnosity\Entities\QuestionTypes\mcq;
 use Learnosity\Entities\QuestionTypes\mcq_ui_style;
-use Learnosity\Exceptions\MappingException;
 use Learnosity\Utils\QtiMarshallerUtil;
 use Learnosity\Processors\QtiV2\In\Validation\ChoiceInteractionValidationBuilder;
 use Learnosity\Services\LogService;

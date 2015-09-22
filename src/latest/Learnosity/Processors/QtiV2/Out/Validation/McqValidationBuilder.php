@@ -24,10 +24,6 @@ class McqValidationBuilder extends AbstractQuestionValidationBuilder
     protected function buildResponseDeclaration($responseIdentifier, $validation)
     {
         /** @var mcq_validation $validation */
-        if ($validation->get_scoring_type() !== 'exactMatch') {
-            throw new MappingException('Does not support other scoring type mapping other than `exactNatch`');
-        }
-
         $responseDeclaration = new ResponseDeclaration($responseIdentifier);
 
         $responseDeclaration->setCardinality($this->isMultipleResponse ? Cardinality::MULTIPLE : Cardinality::SINGLE);

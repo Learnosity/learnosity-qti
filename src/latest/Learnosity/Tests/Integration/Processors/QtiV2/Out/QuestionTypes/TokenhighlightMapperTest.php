@@ -56,6 +56,8 @@ class TokenhighlightMapperTest extends AbstractQuestionTypeTest
         $this->assertEquals('TOKEN_2', $values[1]->getValue());
 
         /** @var MapEntry[] $mapEntries */
+        // TODO: Remove mapping support because we dont want to support it
+        // TODO: I'm letting the test to fail as reminder
         $mapEntries = $responseDeclaration->getMapping()->getMapEntries()->getArrayCopy(true);
         $this->assertEquals(1.0, $responseDeclaration->getMapping()->getUpperBound());
         $this->assertEquals(0.0, $responseDeclaration->getMapping()->getLowerBound());

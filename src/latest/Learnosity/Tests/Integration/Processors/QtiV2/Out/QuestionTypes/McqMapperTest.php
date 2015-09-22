@@ -33,7 +33,7 @@ class McqMapperTest extends AbstractQuestionTypeTest
 
         // And its prompt is mapped correctly
         $promptString = QtiMarshallerUtil::marshallCollection($interaction->getPrompt()->getComponents());
-        $this->assertEquals('<p>Listen.</p><div><span class="learnosity-feature"/></div>What does it say?', $promptString);
+        $this->assertEquals('<p>Listen.</p><div><span class="learnosity-feature" data-type="audioplayer" data-src="http://www.kozco.com/tech/LRMonoPhase4.wav"/></div>What does it say?', $promptString);
 
         // All the choices also mapped properly
         /** @var SimpleChoice[] $simpleChoices */

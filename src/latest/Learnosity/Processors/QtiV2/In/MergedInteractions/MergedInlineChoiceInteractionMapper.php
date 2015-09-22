@@ -5,7 +5,6 @@ namespace Learnosity\Processors\QtiV2\In\MergedInteractions;
 use Learnosity\Entities\QuestionTypes\clozedropdown;
 use Learnosity\Utils\QtiMarshallerUtil;
 use Learnosity\Processors\QtiV2\In\Validation\InlineChoiceInteractionValidationBuilder;
-use Learnosity\Services\LogService;
 use qtism\data\content\interactions\InlineChoice;
 use qtism\data\content\interactions\Interaction;
 use qtism\data\content\ItemBody;

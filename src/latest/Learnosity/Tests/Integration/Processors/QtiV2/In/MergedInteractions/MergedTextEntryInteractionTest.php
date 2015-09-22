@@ -6,7 +6,6 @@ use Learnosity\AppContainer;
 use Learnosity\Processors\QtiV2\In\ItemMapper;
 use Learnosity\Tests\AbstractTest;
 use Learnosity\Utils\ArrayUtil;
-use Learnosity\Utils\FileSystemUtil;
 
 class MergedTextEntryInteractionTest extends AbstractTest
 {

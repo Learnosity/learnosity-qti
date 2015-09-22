@@ -15,12 +15,14 @@ class MathsProcessing implements ProcessingInterface
     public function processAssessmentItem(AssessmentItem $assessmentItem)
     {
         $itemBody = $assessmentItem->getItemBody();
-        // TODO: Tidy up, yea remove those mathML stuffs
         foreach ($itemBody->getIterator() as $component) {
             if ($component instanceof Math) {
                 $element = $component->getXml()->documentElement;
+                // Remove prefix if exists for conversion
+                // ie. <m:math> to just <math>
                 $element->removeAttributeNS($element->namespaceURI, $element->prefix);
                 $component->setXmlString($element->ownerDocument->saveHTML());
+                // Remove MathML namespace declaration
                 $component->setTargetNamespace('');
                 $this->hasMathML = true;
             }

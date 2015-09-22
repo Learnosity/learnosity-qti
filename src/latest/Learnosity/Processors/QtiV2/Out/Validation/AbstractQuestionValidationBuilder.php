@@ -8,7 +8,7 @@ use qtism\data\processing\ResponseProcessing;
 
 abstract class AbstractQuestionValidationBuilder
 {
-    private $supportedScoringType = ['exactMatch', 'partialMatch', 'partialMatchV2'];
+    private $supportedScoringType = ['exactMatch'];
 
     abstract protected function buildResponseDeclaration($responseIdentifier, $validation);
 
@@ -23,7 +23,8 @@ abstract class AbstractQuestionValidationBuilder
         }
 
         if (empty($validation->get_scoring_type()) || !in_array($validation->get_scoring_type(), $this->supportedScoringType)) {
-            LogService::log('Invalid `scoring_type`, fail to build `responseDeclaration` and `responseProcessingTemplate');
+            // TODO: Need to support more validation type :)
+            LogService::log('Invalid `scoring_type`, only supported `exactMatch`. Fail to build `responseDeclaration` and `responseProcessingTemplate');
             return [null, null];
         }
 
