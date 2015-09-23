@@ -19,6 +19,7 @@ class TokenhighlightDocumentation implements QuestionTypeDocumentationInterface
     public static function getIntroductionNotes()
     {
         return
-            "This question type is mapped to <hottextInteraction>";
+            "This question type is mapped to <hottextInteraction> and currently only support `exactMatch` validation. ' .
+            'Response processing would by default mapped using `match_correct` template.";
     }
 }

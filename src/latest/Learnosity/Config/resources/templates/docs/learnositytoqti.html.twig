@@ -29,10 +29,10 @@
 <ul>
     <li>Div block might be added to wrap around HTML elements when appropriate. For example, QTI itembody only allow Block elements within its content
         and if original HTML content from Learnosty Item `content` has spans, the transformation library would try its best to wrap it with a div block to make it a valid QTI.</li>
-    <li>QTI response declaration object is vastly different than Learnosity. Thus, `alt_responses` and `penalty` are currently ignored.</li>
+    <li>QTI response declaration object is vastly different than Learnosity. Thus, most of the time, `alt_responses` and `penalty` are currently ignored.</li>
     <li>We only map our validation object to QTI pre-defined response processing templates, its either `map_response` or `match_correct`.
-        If our validation object within Item and its respective questions only contain a score of 1, then it would always be mapped to `match_correct`. Everything else, we would map
-        it to `map_response` response processing template.
+        Generally we map `map_response` to question types that would have responseDeclaration `single `cardinality such as `shorttext` and `clozetext`. Everything else, we would map
+        it to `match_correct` response processing template.
     </li>
 </ul>
 

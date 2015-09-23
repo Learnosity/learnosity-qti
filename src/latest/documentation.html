@@ -6470,10 +6470,10 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
 <ul>
     <li>Div block might be added to wrap around HTML elements when appropriate. For example, QTI itembody only allow Block elements within its content
         and if original HTML content from Learnosty Item `content` has spans, the transformation library would try its best to wrap it with a div block to make it a valid QTI.</li>
-    <li>QTI response declaration object is vastly different than Learnosity. Thus, `alt_responses` and `penalty` are currently ignored.</li>
+    <li>QTI response declaration object is vastly different than Learnosity. Thus, most of the time, `alt_responses` and `penalty` are currently ignored.</li>
     <li>We only map our validation object to QTI pre-defined response processing templates, its either `map_response` or `match_correct`.
-        If our validation object within Item and its respective questions only contain a score of 1, then it would always be mapped to `match_correct`. Everything else, we would map
-        it to `map_response` response processing template.
+        Generally we map `map_response` to question types that would have responseDeclaration `single `cardinality such as `shorttext` and `clozetext`. Everything else, we would map
+        it to `match_correct` response processing template.
     </li>
 </ul>
 
@@ -6526,7 +6526,7 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
     <a style="display: inline-block" href="http://docs.learnosity.com/assessment/questions/questiontypes#mcq" target="_blank">(documentation)</a>
     <a style="display: inline-block; float: right; margin-top: 10px;" href="#mapping-question-types">Back to Top</a>
 
-            <div class="panel">This question type is mapped to &lt;choiceInteraction&gt;</div>
+            <div class="panel">This question type is mapped to &lt;choiceInteraction&gt; and currently only support `exactMatch` validation. Response processing would by default mapped using `match_correct` template.</div>
     
                 <table class="doc-table">
             <tr>
@@ -6651,7 +6651,7 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
     <a style="display: inline-block" href="http://docs.learnosity.com/assessment/questions/questiontypes#clozetext" target="_blank">(documentation)</a>
     <a style="display: inline-block; float: right; margin-top: 10px;" href="#mapping-question-types">Back to Top</a>
 
-            <div class="panel">This question type is mapped to multiple &lt;textEntryInteraction&gt; for each {{response}} at `template` attribute. Currently only support `exactMatch` validation</div>
+            <div class="panel">This question type is mapped to multiple &lt;textEntryInteraction&gt; for each {{response}} at `template` attribute. Currently only support `exactMatch` validation. Response processing would by default mapped using `map_response` template.</div>
     
                 <table class="doc-table">
             <tr>
@@ -6673,6 +6673,11 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                     <td class="name">template</td>
                     <td class="support-status support-status-yes">YES</td>
                     <td class="description">This is mapped to the interaction content, the {{response}} would be replaced with `textEntryInteraction` elements</td>
+                </tr>
+                            <tr>
+                    <td class="name">case_sensitive</td>
+                    <td class="support-status support-status-yes">YES</td>
+                    <td class="description">This is mapped to each `mapEntry` case sensitive attribute at `mapping`</td>
                 </tr>
                             <tr>
                     <td class="name">is_math</td>
@@ -6819,11 +6824,6 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                     <td class="support-status support-status-no">NO</td>
                     <td class="description"></td>
                 </tr>
-                            <tr>
-                    <td class="name">case_sensitive</td>
-                    <td class="support-status support-status-no">NO</td>
-                    <td class="description"></td>
-                </tr>
                     </table>
     
     <hr/>
@@ -6831,7 +6831,7 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
     <a style="display: inline-block" href="http://docs.learnosity.com/assessment/questions/questiontypes#choicematrix" target="_blank">(documentation)</a>
     <a style="display: inline-block; float: right; margin-top: 10px;" href="#mapping-question-types">Back to Top</a>
 
-            <div class="panel">This question type is mapped to &lt;matchInteraction&gt; and only `exactMatch` validation can be supported</div>
+            <div class="panel">This question type is mapped to &lt;matchInteraction&gt; and only `exactMatch` validation can be supported. Response processing would by default mapped using `match_correct` template.</div>
     
                 <table class="doc-table">
             <tr>
@@ -6966,7 +6966,7 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
     <a style="display: inline-block" href="http://docs.learnosity.com/assessment/questions/questiontypes#clozeassociation" target="_blank">(documentation)</a>
     <a style="display: inline-block; float: right; margin-top: 10px;" href="#mapping-question-types">Back to Top</a>
 
-            <div class="panel">This question type is mapped to &lt;gapMatchInteraction&gt; and only `exactMatch` validation can be supported</div>
+            <div class="panel">This question type is mapped to &lt;gapMatchInteraction&gt; and only `exactMatch` validation can be supported. Response processing would by default mapped using `match_correct` template.</div>
     
                 <table class="doc-table">
             <tr>
@@ -7131,7 +7131,7 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
     <a style="display: inline-block" href="http://docs.learnosity.com/assessment/questions/questiontypes#clozedropdown" target="_blank">(documentation)</a>
     <a style="display: inline-block; float: right; margin-top: 10px;" href="#mapping-question-types">Back to Top</a>
 
-            <div class="panel">This question type is mapped to multiple &lt;inlineChoiceInteraction&gt; for each {{response}} at `template` attribute. Currently only support `exactMatch` validation</div>
+            <div class="panel">This question type is mapped to multiple &lt;inlineChoiceInteraction&gt; for each {{response}} at `template` attribute. Currently only support `exactMatch` validation. Response processing would by default mapped using `match_correct` template.</div>
     
                 <table class="doc-table">
             <tr>
@@ -7281,7 +7281,7 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
     <a style="display: inline-block" href="http://docs.learnosity.com/assessment/questions/questiontypes#imageclozeassociation" target="_blank">(documentation)</a>
     <a style="display: inline-block; float: right; margin-top: 10px;" href="#mapping-question-types">Back to Top</a>
 
-            <div class="panel">This question type is mapped to &lt;graphicGapMatchInteraction&gt; and only `exactMatch` validation can be supported</div>
+            <div class="panel">This question type is mapped to &lt;graphicGapMatchInteraction&gt; and only `exactMatch` validation can be supported. Response processing would by default mapped using `match_correct` template.</div>
     
                 <table class="doc-table">
             <tr>
@@ -7481,7 +7481,7 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
     <a style="display: inline-block" href="http://docs.learnosity.com/assessment/questions/questiontypes#longtext" target="_blank">(documentation)</a>
     <a style="display: inline-block; float: right; margin-top: 10px;" href="#mapping-question-types">Back to Top</a>
 
-            <div class="panel">This question type is mapped to &lt;extendedTextEntryInteraction&gt; with `&lt;strong&gt;format&lt;/strong&gt;` attribute as `xhtml`. Both the interaction attribute `&lt;strong&gt;minString&lt;/strong&gt;` and `&lt;strong&gt;maxString&lt;/strong&gt;` is mapped to 1.Validation is not supported thus &lt;responseProcessing&gt; and &lt;responseDeclaration&gt; won&#039;t be populated.</div>
+            <div class="panel">This question type is mapped to &lt;extendedTextEntryInteraction&gt; with `&lt;strong&gt;format&lt;/strong&gt;` attribute as `xhtml`. Both the interaction attribute `minString` and `maxString` is mapped to 1.Validation is not supported thus &lt;responseProcessing&gt; and &lt;responseDeclaration&gt; won&#039;t be populated.</div>
     
                 <table class="doc-table">
             <tr>
@@ -7606,7 +7606,7 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
     <a style="display: inline-block" href="http://docs.learnosity.com/assessment/questions/questiontypes#orderlist" target="_blank">(documentation)</a>
     <a style="display: inline-block; float: right; margin-top: 10px;" href="#mapping-question-types">Back to Top</a>
 
-            <div class="panel">This question type is mapped to &lt;orderInteraction&gt; with match_correct.xml template. Therefore, any `alt_responses` are ignored and `valid_response` score can only be mapped to 1</div>
+            <div class="panel">This question type is mapped to &lt;orderInteraction&gt; and currently only support `exactMatch` validation. Therefore, any `alt_responses` are ignored and `valid_response` score can only be mapped to 1. Response processing would by default mapped using `match_correct` template.</div>
     
                 <table class="doc-table">
             <tr>
@@ -7851,7 +7851,7 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
     <a style="display: inline-block" href="http://docs.learnosity.com/assessment/questions/questiontypes#shorttext" target="_blank">(documentation)</a>
     <a style="display: inline-block; float: right; margin-top: 10px;" href="#mapping-question-types">Back to Top</a>
 
-            <div class="panel">This question type is mapped to &lt;textEntryInteraction&gt;</div>
+            <div class="panel">This question type is mapped to &lt;textEntryInteraction&gt; and currently only support `exactMatch` validation. Response processing would by default mapped using `map_response` template.</div>
     
                 <table class="doc-table">
             <tr>
@@ -7862,7 +7862,7 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
                             <tr>
                     <td class="name">stimulus</td>
                     <td class="support-status support-status-yes">YES</td>
-                    <td class="description">Since TextEntryInteraction is inline and does not have prompt, this `stimulus` is then prepended to the itembody content</td>
+                    <td class="description">Since TextEntryInteraction is inline and does not have prompt, this `stimulus` is then prepended to the itemBody content</td>
                 </tr>
                             <tr>
                     <td class="name">placeholder</td>
@@ -7976,7 +7976,8 @@ c=null==c?[b]:_.makeArray(c,[b]),l=_.event.special[n]||{},e||!l.trigger||l.trigg
     <a style="display: inline-block" href="http://docs.learnosity.com/assessment/questions/questiontypes#tokenhighlight" target="_blank">(documentation)</a>
     <a style="display: inline-block; float: right; margin-top: 10px;" href="#mapping-question-types">Back to Top</a>
 
-            <div class="panel">This question type is mapped to &lt;hottextInteraction&gt;</div>
+            <div class="panel">This question type is mapped to &lt;hottextInteraction&gt; and currently only support `exactMatch` validation. &#039; .
+            &#039;Response processing would by default mapped using `match_correct` template.</div>
     
                 <table class="doc-table">
             <tr>

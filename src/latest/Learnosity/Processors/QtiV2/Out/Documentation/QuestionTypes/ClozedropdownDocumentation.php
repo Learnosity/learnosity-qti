@@ -18,6 +18,6 @@ class ClozedropdownDocumentation implements QuestionTypeDocumentationInterface
     public static function getIntroductionNotes()
     {
         return
-            "This question type is mapped to multiple <inlineChoiceInteraction> for each {{response}} at `template` attribute. Currently only support `exactMatch` validation";
+            "This question type is mapped to multiple <inlineChoiceInteraction> for each {{response}} at `template` attribute. Currently only support `exactMatch` validation. Response processing would by default mapped using `match_correct` template.";
     }
 }

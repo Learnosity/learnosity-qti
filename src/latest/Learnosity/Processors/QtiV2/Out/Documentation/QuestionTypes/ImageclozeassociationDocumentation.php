@@ -20,6 +20,6 @@ class ImageclozeassociationDocumentation implements QuestionTypeDocumentationInt
     public static function getIntroductionNotes()
     {
         return
-            "This question type is mapped to <graphicGapMatchInteraction> and only `exactMatch` validation can be supported";
+            "This question type is mapped to <graphicGapMatchInteraction> and only `exactMatch` validation can be supported. Response processing would by default mapped using `match_correct` template.";
     }
 }

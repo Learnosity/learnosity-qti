@@ -18,7 +18,7 @@ class OrderlistDocumentation implements QuestionTypeDocumentationInterface
     public static function getIntroductionNotes()
     {
         return
-            "This question type is mapped to <orderInteraction> with match_correct.xml template. " .
-            "Therefore, any `alt_responses` are ignored and `valid_response` score can only be mapped to 1";
+            "This question type is mapped to <orderInteraction> and currently only support `exactMatch` validation. " .
+            "Therefore, any `alt_responses` are ignored and `valid_response` score can only be mapped to 1. Response processing would by default mapped using `match_correct` template.";
     }
 }

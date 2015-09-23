@@ -19,7 +19,7 @@ class LongtextDocumentation implements QuestionTypeDocumentationInterface
     {
         return
             "This question type is mapped to <extendedTextEntryInteraction> with `<strong>format</strong>` attribute as `xhtml`. " .
-            "Both the interaction attribute `<strong>minString</strong>` and `<strong>maxString</strong>` is mapped to 1." .
+            "Both the interaction attribute `minString` and `maxString` is mapped to 1." .
             "Validation is not supported thus <responseProcessing> and <responseDeclaration> won't be populated.";
     }
 }

@@ -21,6 +21,6 @@ class McqDocumentation implements QuestionTypeDocumentationInterface
     public static function getIntroductionNotes()
     {
         return
-            "This question type is mapped to <choiceInteraction>";
+            "This question type is mapped to <choiceInteraction> and currently only support `exactMatch` validation. Response processing would by default mapped using `match_correct` template.";
     }
 }
