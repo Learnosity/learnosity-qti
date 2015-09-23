@@ -56,10 +56,22 @@ class EntityGenerator
         if (isset($attribute['attributes'])) {
             $attribute['fieldType'] = $fieldType;
         }
-        // Chappo says this just an object, no array - might change later :/
         if (isset($attribute['conditional_attributes'])) {
-            $key = $attribute['conditional_attributes']['attribute_key'];
-            foreach ($attribute['conditional_attributes']['conditions'] as $condition) {
+            // Chappo used to says that this is just an object
+            // And now, it sometimes can be object and can be array :'(
+            if ($this->isAssociativeArray($attribute['conditional_attributes'])) {
+                $key = $attribute['conditional_attributes']['attribute_key'];
+                $conditions = $attribute['conditional_attributes']['conditions'];
+            } else {
+                // Now assume the content array count is always one
+                // If not, then we will need to fix the code
+                if (count($attribute['conditional_attributes']) > 1) {
+                    throw new \Exception('Need to fix this code to handle conditional multiple attributes');
+                }
+                $key = $attribute['conditional_attributes'][0]['attribute_key'];
+                $conditions = $attribute['conditional_attributes'][0]['conditions'];
+            }
+            foreach ($conditions as $condition) {
                 $conditionValue = $condition['value'];
                 foreach ($condition['attributes'] as $k => $v) {
                     // Add the attribute only if required, otherwise use the existing/original
@@ -72,6 +84,11 @@ class EntityGenerator
             }
         }
         return $attribute;
+    }
+
+    private function isAssociativeArray(array $array)
+    {
+        return array_keys($array) !== range(0, count($array) - 1);
     }
 
     private function generateAttributeClasses($outputDir, $identifier, array &$attributes)

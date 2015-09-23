@@ -6,7 +6,7 @@ use Learnosity\Entities\BaseQuestionTypeAttribute;
 
 /**
 * This class is auto-generated based on Schemas API and you should not modify its content
-* Metadata: {"responses":"v2.68.0","feedback":"v2.35.0","features":"v2.68.0"}
+* Metadata: {"responses":"v2.72.0","feedback":"v2.71.0","features":"v2.72.0"}
 */
 class activity_data_config_configuration extends BaseQuestionTypeAttribute {
     protected $fontsize;

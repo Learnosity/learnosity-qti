@@ -5,73 +5,85 @@ namespace Learnosity\Entities\QuestionTypes;
 use Learnosity\Entities\BaseQuestionTypeAttribute;
 
 /**
-* This class is auto-generated based on Schemas API and you should not modify its content
-* Metadata: {"responses":"v2.68.0","feedback":"v2.35.0","features":"v2.68.0"}
-*/
-class imageclozechemistry_response_containers_item extends BaseQuestionTypeAttribute {
+ * This class is auto-generated based on Schemas API and you should not modify its content
+ * Metadata: {"responses":"v2.72.0","feedback":"v2.71.0","features":"v2.72.0"}
+ */
+class imageclozechemistry_response_containers_item extends BaseQuestionTypeAttribute
+{
     protected $template;
     protected $width;
     protected $height;
-    
-    public function __construct(
-            )
+
+    public function __construct()
     {
-            }
+    }
 
     /**
-    * Get Template \
-    *  \
-    * @return string $template \
-    */
-    public function get_template() {
+     * Get Template \
+     *  \
+     *
+     * @return string $template \
+     */
+    public function get_template()
+    {
         return $this->template;
     }
 
     /**
-    * Set Template \
-    *  \
-    * @param string $template \
-    */
-    public function set_template ($template) {
+     * Set Template \
+     *  \
+     *
+     * @param string $template \
+     */
+    public function set_template($template)
+    {
         $this->template = $template;
     }
 
     /**
-    * Get Width \
-    *  \
-    * @return string $width \
-    */
-    public function get_width() {
+     * Get Width \
+     *  \
+     *
+     * @return string $width \
+     */
+    public function get_width()
+    {
         return $this->width;
     }
 
     /**
-    * Set Width \
-    *  \
-    * @param string $width \
-    */
-    public function set_width ($width) {
+     * Set Width \
+     *  \
+     *
+     * @param string $width \
+     */
+    public function set_width($width)
+    {
         $this->width = $width;
     }
 
     /**
-    * Get Height \
-    *  \
-    * @return string $height \
-    */
-    public function get_height() {
+     * Get Height \
+     *  \
+     *
+     * @return string $height \
+     */
+    public function get_height()
+    {
         return $this->height;
     }
 
     /**
-    * Set Height \
-    *  \
-    * @param string $height \
-    */
-    public function set_height ($height) {
+     * Set Height \
+     *  \
+     *
+     * @param string $height \
+     */
+    public function set_height($height)
+    {
         $this->height = $height;
     }
 
-    
+
 }
 
