@@ -1,6 +1,6 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\Out\Validation;
+namespace Learnosity\Processors\QtiV2\Out\ResponseDeclarationBuilders;
 
 use Learnosity\Exceptions\MappingException;
 use qtism\data\state\MapEntry;

@@ -4,13 +4,10 @@ namespace Learnosity\Processors\QtiV2\Out\Validation;
 
 use Learnosity\Entities\QuestionTypes\clozeassociation_validation;
 use Learnosity\Exceptions\MappingException;
-use Learnosity\Processors\QtiV2\Out\Constants;
 use Learnosity\Processors\QtiV2\Out\QuestionTypes\ClozeassociationMapper;
-use Learnosity\Services\LogService;
 use qtism\common\datatypes\DirectedPair;
 use qtism\common\enums\BaseType;
 use qtism\common\enums\Cardinality;
-use qtism\data\processing\ResponseProcessing;
 use qtism\data\state\CorrectResponse;
 use qtism\data\state\ResponseDeclaration;
 use qtism\data\state\Value;
@@ -51,23 +48,7 @@ class ClozeassociationValidationBuilder extends AbstractQuestionValidationBuilde
         if ($values->count() > 0) {
             $correctResponse = new CorrectResponse($values);
             $responseDeclaration->setCorrectResponse($correctResponse);
-
-            // Building mapping is too complicated since validation object between QTI and Learnosity is too different
-            // So, left this out and always assume we are dealing with `match_correct`
-            if (intval($validationScore) !== 1) {
-                LogService::log('Mapped with `match_correct` response template even though the validation score is not 1, but ' . $validationScore);
-            }
         }
         return $responseDeclaration;
-    }
-
-    protected function buildResponseProcessing($validation, $isCaseSensitive = true)
-    {
-        // TODO: Support for partial match and partial match per response is left out
-        // TODO: Check values
-        $responseProcessing = new ResponseProcessing();
-        $responseProcessing->setTemplate(Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT);
-
-        return $responseProcessing;
     }
 }

@@ -5,6 +5,7 @@ namespace Learnosity\Tests\Integration\Processors\QtiV2\Out\QuestionTypes;
 use Learnosity\Processors\QtiV2\Out\Constants;
 use Learnosity\Utils\QtiMarshallerUtil;
 use qtism\data\content\interactions\TextEntryInteraction;
+use qtism\data\state\MapEntry;
 use qtism\data\state\ResponseDeclaration;
 use qtism\data\state\Value;
 
@@ -24,15 +25,22 @@ class ShorttextMapperTest extends AbstractQuestionTypeTest
         $this->assertEquals('placeholdertext', $interaction->getPlaceholderText());
         $this->assertEquals(15, $interaction->getExpectedLength());
 
-        // Shorttext shall have one simple exactMatch <responseDeclaration> and <responseProcessing>
+        // Shorttext shall have one simple `map_response` <responseDeclaration> and <responseProcessing>
         /** @var ResponseDeclaration $responseDeclaration */
         $responseDeclaration = $assessmentItem->getResponseDeclarations()->getArrayCopy()[0];
-        $this->assertEquals(Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT, $assessmentItem->getResponseProcessing()->getTemplate());
+        $this->assertEquals(Constants::RESPONSE_PROCESSING_TEMPLATE_MAP_RESPONSE, $assessmentItem->getResponseProcessing()->getTemplate());
 
         /** @var Value[] $values */
         $values = $responseDeclaration->getCorrectResponse()->getValues()->getArrayCopy(true);
         $this->assertEquals('hello', $values[0]->getValue());
         $this->assertEquals('anotherhello', $values[1]->getValue());
+
+        /** @var MapEntry[] $mapEntries */
+        $mapEntries = $responseDeclaration->getMapping()->getMapEntries()->getArrayCopy(true);
+        $this->assertEquals('hello', $mapEntries[0]->getMapKey());
+        $this->assertEquals(2, $mapEntries[0]->getMappedValue());
+        $this->assertEquals('anotherhello', $mapEntries[1]->getMapKey());
+        $this->assertEquals(1, $mapEntries[1]->getMappedValue());
 
         // Check itembody is correct that the stimulus is appended before
         $itemBodyContent = QtiMarshallerUtil::marshallCollection($assessmentItem->getItemBody()->getComponents());

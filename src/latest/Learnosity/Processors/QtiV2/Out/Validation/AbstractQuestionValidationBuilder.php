@@ -12,9 +12,6 @@ abstract class AbstractQuestionValidationBuilder
 
     abstract protected function buildResponseDeclaration($responseIdentifier, $validation);
 
-    // TODO: Only `single` cardinality is able to be mapped with `alt_responses`
-    // abstract protected function buildResponseDeclarationCardinality();
-
     public function buildValidation($responseIdentifier, $validation, $isCaseSensitive = true)
     {
         // Some basic validation on the `validation` object
@@ -33,16 +30,6 @@ abstract class AbstractQuestionValidationBuilder
             return [null, null];
         }
 
-        // TODO: Some of our mapper doesn't care about this, we shouldn't bother
-        if (!empty($validation->get_alt_responses())) {
-            foreach ($validation->get_alt_responses() as $alt) {
-                if (empty($alt->get_value()) || empty($alt->get_score())) {
-                    LogService::log('Invalid `alt_responses` object, fail to build `responseDeclaration` and `responseProcessingTemplate');
-                    return [null, null];
-                }
-            }
-        }
-
         $responseProcessing = $this->buildResponseProcessing($validation, $isCaseSensitive);
         $responseDeclaration = $this->buildResponseDeclaration($responseIdentifier, $validation);
         return [$responseDeclaration, $responseProcessing];
@@ -50,35 +37,33 @@ abstract class AbstractQuestionValidationBuilder
 
     protected function buildResponseProcessing($validation, $isCaseSensitive = true)
     {
-        $responseProcessing = new ResponseProcessing();
+        // Guess question type
+        $validationClazz = new \ReflectionClass($validation);
+        $questionType = str_replace('_validation', '', $validationClazz->getShortName());
 
-        $scoringType = $validation->get_scoring_type();
-        // If question has `exactMatch` and has `valid_response` and `alt_responses` with score of only `1`s
-        // and it is not case sensitive, then it would be mapped to <correctResponse> with `match_correct` template
-        if ($scoringType === 'exactMatch' && $this->canBeMappedToCorrectAnswer($validation) && $isCaseSensitive) {
-            $responseProcessing->setTemplate(Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT);
-        } else {
-            // Otherwise, we would need to build the `MapResponse`
+        if (in_array($questionType, Constants::$questionTypesWithMappingSupport)) {
+            $responseProcessing = new ResponseProcessing();
             $responseProcessing->setTemplate(Constants::RESPONSE_PROCESSING_TEMPLATE_MAP_RESPONSE);
+            return $responseProcessing;
         }
 
-        return $responseProcessing;
-    }
-
-    private function canBeMappedToCorrectAnswer($validation)
-    {
-        // Basically check whether all the score in `valid_response` and `alt_responses` are just simply 1s,
-        // because `match_correct` simply expects those to be just 1s
-        if (intval($validation->get_valid_response()->get_score()) !== 1) {
-            return false;
+        if ($validation->get_valid_response()->get_score() != 1) {
+            $validation->get_valid_response()->set_score(1);
+            LogService::log('Only support mapping to `matchCorrect` template, thus validation score is changed to 1 and since mapped to QTI pre-defined `match_correct.xml` template');
         }
+
+        // Warn and remove `alt_responses` because couldn't support responseDeclaration with multiple valid answers
         if (!empty($validation->get_alt_responses())) {
-            foreach ($validation->get_alt_responses() as $alt) {
-                if (intval($alt->get_score()) !== 1) {
-                    return false;
-                }
-            }
+            $validation->set_alt_responses([]);
+            LogService::log('Does not support multiple validation responses for `responseDeclaration`, only use `valid_response`, ignoring `alt_responses`');
         }
-        return true;
+
+        // Warn since we only support match_correct, can't support `$isCaseSensitive`
+        if ($isCaseSensitive == false) {
+            LogService::log('Only support mapping to `matchCorrect` template, thus case sensitivity is ignored');
+        }
+        $responseProcessing = new ResponseProcessing();
+        $responseProcessing->setTemplate(Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT);
+        return $responseProcessing;
     }
 }

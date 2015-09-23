@@ -2,7 +2,8 @@
 
 namespace Learnosity\Processors\QtiV2\Out\Validation;
 
-use Learnosity\Exceptions\MappingException;
+use Learnosity\Processors\QtiV2\Out\ResponseDeclarationBuilders\QtiCorrectResponseBuilder;
+use Learnosity\Processors\QtiV2\Out\ResponseDeclarationBuilders\QtiMappingBuilder;
 use qtism\common\enums\BaseType;
 use qtism\common\enums\Cardinality;
 use qtism\data\state\MapEntry;
@@ -19,16 +20,13 @@ class ShorttextValidationBuilder extends AbstractQuestionValidationBuilder
 
     protected function buildResponseDeclaration($responseIdentifier, $validation)
     {
-        if ($validation->get_scoring_type() !== 'exactMatch') {
-            throw new MappingException('Does not support other scoring type mapping other than `exactNatch`');
-        }
-
         $responseDeclaration = new ResponseDeclaration($responseIdentifier);
         $responseDeclaration->setCardinality(Cardinality::SINGLE);
         $responseDeclaration->setBaseType(BaseType::STRING);
 
         $correctResponseBuilder = new QtiCorrectResponseBuilder();
         $responseDeclaration->setCorrectResponse($correctResponseBuilder->build($validation));
+
         $mappingResponseBuilder = new QtiMappingBuilder();
         $mapping = $mappingResponseBuilder->build($validation);
         $responseDeclaration->setMapping($mapping);
@@ -37,7 +35,6 @@ class ShorttextValidationBuilder extends AbstractQuestionValidationBuilder
             /** @var MapEntry $mapEntry */
             $mapEntry->setCaseSensitive($this->isCaseSensitive);
         }
-
         return $responseDeclaration;
     }
 }

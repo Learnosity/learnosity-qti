@@ -35,12 +35,17 @@ class ShorttextMapperTest extends \PHPUnit_Framework_TestCase
 
         // Shorttext shall have one simple exactMatch <responseDeclaration> and <responseProcessing>
         /** @var ResponseProcessing $responseProcessing */
-        $this->assertEquals(Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT, $responseProcessing->getTemplate());
+        $this->assertEquals(Constants::RESPONSE_PROCESSING_TEMPLATE_MAP_RESPONSE, $responseProcessing->getTemplate());
 
         /** @var ResponseDeclaration $responseDeclaration */
         /** @var Value[] $values */
         $values = $responseDeclaration->getCorrectResponse()->getValues()->getArrayCopy(true);
         $this->assertEquals('testhello', $values[0]->getValue());
+
+        /** @var MapEntry[] $mapEntries */
+        $mapEntries = $responseDeclaration->getMapping()->getMapEntries()->getArrayCopy(true);
+        $this->assertEquals('testhello', $mapEntries[0]->getMapKey());
+        $this->assertEquals(1, $mapEntries[0]->getMappedValue());
     }
 
     public function testSimpleCaseWithMultipleValidation()

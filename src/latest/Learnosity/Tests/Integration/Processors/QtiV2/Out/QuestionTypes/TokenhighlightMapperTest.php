@@ -8,7 +8,6 @@ use qtism\common\enums\BaseType;
 use qtism\common\enums\Cardinality;
 use qtism\data\content\interactions\Hottext;
 use qtism\data\content\interactions\HottextInteraction;
-use qtism\data\state\MapEntry;
 use qtism\data\state\ResponseDeclaration;
 use qtism\data\state\Value;
 
@@ -55,15 +54,6 @@ class TokenhighlightMapperTest extends AbstractQuestionTypeTest
         $this->assertEquals('TOKEN_0', $values[0]->getValue());
         $this->assertEquals('TOKEN_2', $values[1]->getValue());
 
-        /** @var MapEntry[] $mapEntries */
-        // TODO: Remove mapping support because we dont want to support it
-        // TODO: I'm letting the test to fail as reminder
-        $mapEntries = $responseDeclaration->getMapping()->getMapEntries()->getArrayCopy(true);
-        $this->assertEquals(1.0, $responseDeclaration->getMapping()->getUpperBound());
-        $this->assertEquals(0.0, $responseDeclaration->getMapping()->getLowerBound());
-        $this->assertEquals('TOKEN_0', $mapEntries[0]->getMapKey());
-        $this->assertEquals(0.5, $mapEntries[0]->getMappedValue());
-        $this->assertEquals('TOKEN_2', $mapEntries[1]->getMapKey());
-        $this->assertEquals(0.5, $mapEntries[0]->getMappedValue());
+        $this->assertNull($responseDeclaration->getMapping());
     }
 }

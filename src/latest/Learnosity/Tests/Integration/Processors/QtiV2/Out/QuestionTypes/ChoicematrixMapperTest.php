@@ -71,16 +71,7 @@ class ChoicematrixMapperTest extends AbstractQuestionTypeTest
         $this->assertDirectPair($values[2]->getValue(), 'STEM_2', 'OPTION_1');
         $this->assertDirectPair($values[3]->getValue(), 'STEM_3', 'OPTION_0');
 
-        /** @var MapEntry[] $mapEntries */
-        $mapEntries = $responseDeclaration->getMapping()->getMapEntries()->getArrayCopy(true);
-        $this->assertDirectPair($mapEntries[0]->getMapKey(), 'STEM_0', 'OPTION_0');
-        $this->assertEquals(1.0, $mapEntries[0]->getMappedValue());
-        $this->assertDirectPair($mapEntries[1]->getMapKey(), 'STEM_1', 'OPTION_1');
-        $this->assertEquals(1.0, $mapEntries[1]->getMappedValue());
-        $this->assertDirectPair($mapEntries[2]->getMapKey(), 'STEM_2', 'OPTION_1');
-        $this->assertEquals(1.0, $mapEntries[2]->getMappedValue());
-        $this->assertDirectPair($mapEntries[3]->getMapKey(), 'STEM_3', 'OPTION_0');
-        $this->assertEquals(1.0, $mapEntries[3]->getMappedValue());
+        $this->assertNull($responseDeclaration->getMapping());
     }
 
     private function assertDirectPair(DirectedPair $pair, $expectedFirstValue, $expectedSecondValue)

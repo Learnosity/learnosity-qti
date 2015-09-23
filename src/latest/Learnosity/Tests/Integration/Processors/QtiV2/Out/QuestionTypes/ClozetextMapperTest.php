@@ -29,9 +29,6 @@ class ClozetextMapperTest extends AbstractQuestionTypeTest
         $content = QtiMarshallerUtil::marshallCollection($assessmentItem->getItemBody()->getContent());
         $this->assertNotEmpty($content);
 
-        // Assert response processing template
-        $this->assertEquals(Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT, $assessmentItem->getResponseProcessing()->getTemplate());
-
         // Assert response declarations
         $responseDeclarations = $assessmentItem->getResponseDeclarations()->getArrayCopy();
         /** @var ResponseDeclaration $responseDeclarationOne */
@@ -39,13 +36,34 @@ class ClozetextMapperTest extends AbstractQuestionTypeTest
         /** @var ResponseDeclaration $responseDeclarationTwo */
         $responseDeclarationTwo = $responseDeclarations[1];
 
-        // Check has the correct identifiers, also correct `correctResponse` values
+        // Check has the correct identifiers
         $this->assertEquals($responseDeclarationOne->getIdentifier(), $interactionOne->getResponseIdentifier());
-        $this->assertNull($responseDeclarationOne->getMapping());
-        $this->assertEquals('responseone', $responseDeclarationOne->getCorrectResponse()->getValues()->getArrayCopy()[0]->getValue());
-
         $this->assertEquals($responseDeclarationTwo->getIdentifier(), $interactionTwo->getResponseIdentifier());
-        $this->assertNull($responseDeclarationTwo->getMapping());
+
+        // Also correct `correctResponse` values
+        $this->assertEquals('responseone', $responseDeclarationOne->getCorrectResponse()->getValues()->getArrayCopy()[0]->getValue());
+        $this->assertEquals('otherresponseone', $responseDeclarationOne->getCorrectResponse()->getValues()->getArrayCopy()[1]->getValue());
+        $this->assertEquals('anotherresponseone', $responseDeclarationOne->getCorrectResponse()->getValues()->getArrayCopy()[2]->getValue());
         $this->assertEquals('responsetwo', $responseDeclarationTwo->getCorrectResponse()->getValues()->getArrayCopy()[0]->getValue());
+        $this->assertEquals('otherresponsetwo', $responseDeclarationTwo->getCorrectResponse()->getValues()->getArrayCopy()[1]->getValue());
+        $this->assertEquals('anotherresponsetwo', $responseDeclarationTwo->getCorrectResponse()->getValues()->getArrayCopy()[2]->getValue());
+
+        // Also correct `mapping` entries
+        $this->assertEquals('responseone', $responseDeclarationOne->getMapping()->getMapEntries()->getArrayCopy()[0]->getMapKey());
+        $this->assertEquals(3, $responseDeclarationOne->getMapping()->getMapEntries()->getArrayCopy()[0]->getMappedValue());
+        $this->assertEquals('otherresponseone', $responseDeclarationOne->getMapping()->getMapEntries()->getArrayCopy()[1]->getMapKey());
+        $this->assertEquals(2, $responseDeclarationOne->getMapping()->getMapEntries()->getArrayCopy()[1]->getMappedValue());
+        $this->assertEquals('anotherresponseone', $responseDeclarationOne->getMapping()->getMapEntries()->getArrayCopy()[2]->getMapKey());
+        $this->assertEquals(1, $responseDeclarationOne->getMapping()->getMapEntries()->getArrayCopy()[2]->getMappedValue());
+
+        $this->assertEquals('responsetwo', $responseDeclarationTwo->getMapping()->getMapEntries()->getArrayCopy()[0]->getMapKey());
+        $this->assertEquals(3, $responseDeclarationTwo->getMapping()->getMapEntries()->getArrayCopy()[0]->getMappedValue());
+        $this->assertEquals('otherresponsetwo', $responseDeclarationTwo->getMapping()->getMapEntries()->getArrayCopy()[1]->getMapKey());
+        $this->assertEquals(2, $responseDeclarationTwo->getMapping()->getMapEntries()->getArrayCopy()[1]->getMappedValue());
+        $this->assertEquals('anotherresponsetwo', $responseDeclarationTwo->getMapping()->getMapEntries()->getArrayCopy()[2]->getMapKey());
+        $this->assertEquals(1, $responseDeclarationTwo->getMapping()->getMapEntries()->getArrayCopy()[2]->getMappedValue());
+
+        // Assert response processing template
+        $this->assertEquals(Constants::RESPONSE_PROCESSING_TEMPLATE_MAP_RESPONSE, $assessmentItem->getResponseProcessing()->getTemplate());
     }
 }

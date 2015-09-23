@@ -72,7 +72,7 @@ class McqMapperTest extends AbstractQuestionTypeTest
         // Simple validation on <responseDeclaration> and <responseProcessing>
         $responseDeclarations = $assessmentItem->getResponseDeclarations()->getArrayCopy(true);
         $this->assertCount(2, $responseDeclarations);
-        $this->assertEquals(Constants::RESPONSE_PROCESSING_TEMPLATE_MAP_RESPONSE, $assessmentItem->getResponseProcessing()->getTemplate());
+        $this->assertEquals(Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT, $assessmentItem->getResponseProcessing()->getTemplate());
         $responseDeclarationOne = $responseDeclarations[$interactionOne->getResponseIdentifier()];
         $responseDeclarationTwo = $responseDeclarations[$interactionTwo->getResponseIdentifier()];
 
@@ -117,16 +117,7 @@ class McqMapperTest extends AbstractQuestionTypeTest
         $this->assertEquals($values[1]->getValue(), 'CHOICE_1');
         $this->assertEquals($values[2]->getValue(), 'CHOICE_3');
 
-        $mapping = $responseDeclaration->getMapping();
-        $this->assertTrue($mapping instanceof Mapping);
-        /** @var MapEntry[] $mapEntries */
-        $mapEntries = $mapping->getMapEntries()->getArrayCopy(true);
-        $this->assertEquals($mapEntries[0]->getMapKey(), 'CHOICE_0');
-        $this->assertEquals($mapEntries[0]->getMappedValue(), 1);
-        $this->assertEquals($mapEntries[1]->getMapKey(), 'CHOICE_1');
-        $this->assertEquals($mapEntries[0]->getMappedValue(), 1);
-        $this->assertEquals($mapEntries[2]->getMapKey(), 'CHOICE_3');
-        $this->assertEquals($mapEntries[0]->getMappedValue(), 1);
+        $this->assertNull($responseDeclaration->getMapping());
     }
 
     private function assertInteractionTwo(ChoiceInteraction $interaction, ResponseDeclaration $responseDeclaration)
@@ -163,11 +154,6 @@ class McqMapperTest extends AbstractQuestionTypeTest
         $values = $correctResponse->getValues()->getArrayCopy(true);
         $this->assertEquals($values[0]->getValue(), 'CHOICE_2');
 
-        $mapping = $responseDeclaration->getMapping();
-        $this->assertTrue($mapping instanceof Mapping);
-        /** @var MapEntry[] $mapEntries */
-        $mapEntries = $mapping->getMapEntries()->getArrayCopy(true);
-        $this->assertEquals($mapEntries[0]->getMapKey(), 'CHOICE_2');
-        $this->assertEquals($mapEntries[0]->getMappedValue(), 3);
+        $this->assertNull($responseDeclaration->getMapping());
     }
 }

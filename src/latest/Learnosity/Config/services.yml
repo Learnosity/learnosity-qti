@@ -22,9 +22,15 @@ services:
     learnosity_question_writer:
         class:      Learnosity\Processors\Learnosity\Out\QuestionWriter
         scope:      prototype
+
+    # QTI Import Processings
     assets_processing:
         class:      Learnosity\Processors\QtiV2\In\Processings\AssetsProcessing
     identifiers_processing:
         class:      Learnosity\Processors\QtiV2\In\Processings\IdentifiersProcessing
+    maths_processing:
+        class:      Learnosity\Processors\QtiV2\In\Processings\MathsProcessing
+    rubrics_processing:
+        class:      Learnosity\Processors\QtiV2\In\Processings\RubricsProcessing
 
 

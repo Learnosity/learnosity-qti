@@ -89,10 +89,7 @@ class McqMapperTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($responseDeclaration->getCorrectResponse());
         $this->assertEquals('ChoiceB', $responseDeclaration->getCorrectResponse()->getValues()->getArrayCopy(true)[0]->getValue());
 
-        // The mapping would still be mapped but would not be used
-        $this->assertNotNull($responseDeclaration->getMapping());
-        $this->assertEquals('ChoiceB', $responseDeclaration->getMapping()->getMapEntries()->getArrayCopy(true)[0]->getMapKey());
-        $this->assertEquals(1, $responseDeclaration->getMapping()->getMapEntries()->getArrayCopy(true)[0]->getMappedValue());
+        $this->assertNull($responseDeclaration->getMapping());
     }
 
     /**

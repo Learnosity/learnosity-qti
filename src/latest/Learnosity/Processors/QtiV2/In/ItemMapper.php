@@ -48,8 +48,8 @@ class ItemMapper
         // LogService::flush();
 
         $processings = [
-            new RubricsProcessing(),
-            new MathsProcessing(),
+            AppContainer::getApplicationContainer()->get('rubrics_processing'),
+            AppContainer::getApplicationContainer()->get('maths_processing'),
             AppContainer::getApplicationContainer()->get('assets_processing'),
             AppContainer::getApplicationContainer()->get('identifiers_processing')
         ];

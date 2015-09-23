@@ -5,8 +5,27 @@
     "validation": {
         "scoring_type": "exactMatch",
         "valid_response": {
-            "score": 1,
-            "value": ["responseone", "responsetwo"]
-        }
+            "score": 3,
+            "value": [
+                "responseone",
+                "responsetwo"
+            ]
+        },
+        "alt_responses": [
+            {
+                "score": 2,
+                "value": [
+                    "otherresponseone",
+                    "otherresponsetwo"
+                ]
+            },
+            {
+                "score": 1,
+                "value": [
+                    "anotherresponseone",
+                    "anotherresponsetwo"
+                ]
+            }
+        ]
     }
 }

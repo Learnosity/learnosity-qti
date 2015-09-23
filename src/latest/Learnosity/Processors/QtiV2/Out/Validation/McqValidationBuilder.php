@@ -3,11 +3,9 @@
 namespace Learnosity\Processors\QtiV2\Out\Validation;
 
 use Learnosity\Entities\QuestionTypes\mcq_validation;
-use Learnosity\Exceptions\MappingException;
-use Learnosity\Processors\QtiV2\Out\Constants;
+use Learnosity\Processors\QtiV2\Out\ResponseDeclarationBuilders\QtiCorrectResponseBuilder;
 use qtism\common\enums\BaseType;
 use qtism\common\enums\Cardinality;
-use qtism\data\processing\ResponseProcessing;
 use qtism\data\state\ResponseDeclaration;
 
 class McqValidationBuilder extends AbstractQuestionValidationBuilder
@@ -31,8 +29,6 @@ class McqValidationBuilder extends AbstractQuestionValidationBuilder
 
         $correctResponseBuilder = new QtiCorrectResponseBuilder();
         $responseDeclaration->setCorrectResponse($correctResponseBuilder->buildWithBaseTypeIdentifier($validation, $this->valueIdentifierMap));
-        $mappingBuilder = new QtiMappingBuilder();
-        $responseDeclaration->setMapping($mappingBuilder->buildWithBaseTypeIdentifier($validation, $this->valueIdentifierMap));
 
         return $responseDeclaration;
     }

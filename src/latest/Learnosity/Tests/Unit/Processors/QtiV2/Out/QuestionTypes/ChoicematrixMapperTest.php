@@ -108,12 +108,7 @@ class ChoicematrixMapperTest extends \PHPUnit_Framework_TestCase
         $this->assertDirectPair($correctResponseValues[0]->getValue(), 'STEM_0', 'OPTION_0');
         $this->assertDirectPair($correctResponseValues[1]->getValue(), 'STEM_1', 'OPTION_2');
 
-        /** @var MapEntry[] $mapEntries */
-        $mapEntries = $responseDeclaration->getMapping()->getMapEntries()->getArrayCopy(true);
-        $this->assertDirectPair($mapEntries[0]->getMapKey(), 'STEM_0', 'OPTION_0');
-        $this->assertEquals(1.0, $mapEntries[0]->getMappedValue());
-        $this->assertDirectPair($mapEntries[1]->getMapKey(), 'STEM_1', 'OPTION_2');
-        $this->assertEquals(1.0, $mapEntries[1]->getMappedValue());
+        $this->assertNull($responseDeclaration->getMapping());
 
         $this->assertEquals(Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT, $responseProcessing->getTemplate());
     }
@@ -146,17 +141,7 @@ class ChoicematrixMapperTest extends \PHPUnit_Framework_TestCase
 
         // The validation in `choicematrix` relies on its key to describe the index of stem/option pair
         // Scoring is always set to `1`, with the upper bound is set to the actual valid_response`'s score
-        /** @var MapEntry[] $mapEntries */
-        $mapEntries = $responseDeclaration->getMapping()->getMapEntries()->getArrayCopy(true);
-        $this->assertDirectPair($mapEntries[0]->getMapKey(), 'STEM_0', 'OPTION_0');
-        $this->assertEquals(1.0, $mapEntries[0]->getMappedValue());
-        $this->assertDirectPair($mapEntries[1]->getMapKey(), 'STEM_1', 'OPTION_1');
-        $this->assertEquals(1.0, $mapEntries[1]->getMappedValue());
-        $this->assertDirectPair($mapEntries[2]->getMapKey(), 'STEM_1', 'OPTION_2');
-        $this->assertEquals(1.0, $mapEntries[2]->getMappedValue());
-        $this->assertEquals(3.0, $responseDeclaration->getMapping()->getUpperBound());
-
-        $this->assertEquals(Constants::RESPONSE_PROCESSING_TEMPLATE_MAP_RESPONSE, $responseProcessing->getTemplate());
+        $this->assertNull($responseDeclaration->getMapping());
     }
 
     private function buildSimpleChoiceMatrixQuestion()

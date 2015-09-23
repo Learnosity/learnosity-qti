@@ -45,8 +45,8 @@ class ClozetextMapper extends AbstractQuestionTypeMapper
         $div->setContent(ContentCollectionBuilder::buildFlowCollectionContent(QtiMarshallerUtil::unmarshallElement($template)));
 
         // Build validation
-        $validationBuilder = new ClozetextValidationBuilder();
         $isCaseSensitive = is_null($question->get_case_sensitive()) ? true : $question->get_case_sensitive();
+        $validationBuilder = new ClozetextValidationBuilder($isCaseSensitive);
         list($responseDeclaration, $responseProcessing) = $validationBuilder->buildValidation($interactionIdentifier, $question->get_validation(), $isCaseSensitive);
 
         return [$div, $responseDeclaration, $responseProcessing];
