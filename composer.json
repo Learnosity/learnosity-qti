@@ -2,6 +2,14 @@
     "name": "learnosity/learnosity-qti",
     "type": "library",
     "description": "Learnosity QTI Conversion Library",
+    "keywords": [
+        "learnosity",
+        "qti",
+        "tei"
+    ],
+    "license" : [
+        "GPL-2.0"
+    ],
     "autoload": {
         "psr-4": {
             "LearnosityQti\\": "src/"
