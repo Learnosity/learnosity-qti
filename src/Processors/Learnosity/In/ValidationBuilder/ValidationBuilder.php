@@ -1,13 +1,13 @@
 <?php
 
 
-namespace Learnosity\Processors\Learnosity\In\ValidationBuilder;
+namespace LearnosityQti\Processors\Learnosity\In\ValidationBuilder;
 
-use Learnosity\Services\LogService;
+use LearnosityQti\Services\LogService;
 
 class ValidationBuilder
 {
-    const BASE_NS = '\\Learnosity\\Entities\\QuestionTypes\\';
+    const BASE_NS = '\\LearnosityQti\\Entities\\QuestionTypes\\';
 
     public static function build($questionType, $scoringType, array $responses)
     {

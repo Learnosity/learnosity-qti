@@ -1,10 +1,10 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\Out\Validation;
+namespace LearnosityQti\Processors\QtiV2\Out\Validation;
 
-use Learnosity\Entities\QuestionTypes\imageclozeassociation_validation;
-use Learnosity\Exceptions\MappingException;
-use Learnosity\Processors\QtiV2\Out\QuestionTypes\ImageclozeassociationMapper;
+use LearnosityQti\Entities\QuestionTypes\imageclozeassociation_validation;
+use LearnosityQti\Exceptions\MappingException;
+use LearnosityQti\Processors\QtiV2\Out\QuestionTypes\ImageclozeassociationMapper;
 use qtism\common\datatypes\DirectedPair;
 use qtism\common\enums\BaseType;
 use qtism\common\enums\Cardinality;

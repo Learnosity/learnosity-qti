@@ -1,12 +1,12 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\Out\QuestionTypes;
+namespace LearnosityQti\Processors\QtiV2\Out\QuestionTypes;
 
-use Learnosity\Entities\BaseQuestionType;
-use Learnosity\Entities\QuestionTypes\choicematrix;
-use Learnosity\Processors\QtiV2\Out\ContentCollectionBuilder;
-use Learnosity\Processors\QtiV2\Out\Validation\ChoicematrixValidationBuilder;
-use Learnosity\Utils\QtiMarshallerUtil;
+use LearnosityQti\Entities\BaseQuestionType;
+use LearnosityQti\Entities\QuestionTypes\choicematrix;
+use LearnosityQti\Processors\QtiV2\Out\ContentCollectionBuilder;
+use LearnosityQti\Processors\QtiV2\Out\Validation\ChoicematrixValidationBuilder;
+use LearnosityQti\Utils\QtiMarshallerUtil;
 use qtism\data\content\interactions\MatchInteraction;
 use qtism\data\content\interactions\SimpleAssociableChoice;
 use qtism\data\content\interactions\SimpleAssociableChoiceCollection;

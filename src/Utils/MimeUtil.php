@@ -1,6 +1,6 @@
 <?php
 
-namespace Learnosity\Utils;
+namespace LearnosityQti\Utils;
 
 class MimeUtil
 {

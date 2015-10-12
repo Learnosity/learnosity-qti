@@ -1,6 +1,6 @@
 <?php
 
-namespace Learnosity\Services;
+namespace LearnosityQti\Services;
 
 class LogService
 {

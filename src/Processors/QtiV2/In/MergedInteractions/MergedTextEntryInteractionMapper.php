@@ -1,10 +1,10 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\In\MergedInteractions;
+namespace LearnosityQti\Processors\QtiV2\In\MergedInteractions;
 
-use Learnosity\Entities\QuestionTypes\clozetext;
-use Learnosity\Utils\QtiMarshallerUtil;
-use Learnosity\Processors\QtiV2\In\Validation\TextEntryInteractionValidationBuilder;
+use LearnosityQti\Entities\QuestionTypes\clozetext;
+use LearnosityQti\Utils\QtiMarshallerUtil;
+use LearnosityQti\Processors\QtiV2\In\Validation\TextEntryInteractionValidationBuilder;
 use qtism\data\content\interactions\TextEntryInteraction;
 use qtism\data\content\ItemBody;
 

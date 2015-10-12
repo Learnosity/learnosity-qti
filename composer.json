@@ -4,13 +4,12 @@
     "description": "Learnosity QTI Conversion Library",
     "autoload": {
         "psr-4": {
-            "Learnosity\\": "src/"
+            "LearnosityQti\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-
-            "Learnosity\\Tests\\": "tests/"
+            "LearnosityQti\\Tests\\": "tests/"
         }
     },
     "require": {

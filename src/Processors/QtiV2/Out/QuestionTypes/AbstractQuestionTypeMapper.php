@@ -1,10 +1,10 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\Out\QuestionTypes;
+namespace LearnosityQti\Processors\QtiV2\Out\QuestionTypes;
 
-use Learnosity\Entities\BaseQuestionType;
-use Learnosity\Processors\QtiV2\Out\ContentCollectionBuilder;
-use Learnosity\Utils\QtiMarshallerUtil;
+use LearnosityQti\Entities\BaseQuestionType;
+use LearnosityQti\Processors\QtiV2\Out\ContentCollectionBuilder;
+use LearnosityQti\Utils\QtiMarshallerUtil;
 use qtism\data\content\interactions\Prompt;
 
 abstract class AbstractQuestionTypeMapper

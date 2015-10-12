@@ -1,8 +1,8 @@
 <?php
 
-namespace Learnosity\Entities\Activity;
+namespace LearnosityQti\Entities\Activity;
 
-use Learnosity\Entities\BaseEntity;
+use LearnosityQti\Entities\BaseEntity;
 
 /**
 * This class is auto-generated based on Schemas API and you should not modify its content

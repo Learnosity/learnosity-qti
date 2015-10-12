@@ -1,10 +1,10 @@
 <?php
 
-namespace Learnosity\Processors\Learnosity\In;
+namespace LearnosityQti\Processors\Learnosity\In;
 
-use Learnosity\Entities\BaseQuestionType;
-use Learnosity\Entities\Question;
-use Learnosity\Utils\UuidUtil;
+use LearnosityQti\Entities\BaseQuestionType;
+use LearnosityQti\Entities\Question;
+use LearnosityQti\Utils\UuidUtil;
 
 class QuestionMapper
 {
@@ -13,7 +13,7 @@ class QuestionMapper
         // TODO: Some validation to check all the required keys exists
         // TODO: Type and data should definitely exists
         // Map the `data` attribute
-        $questionTypeClassName = 'Learnosity\Entities\QuestionTypes\\' . $questionJson['data']['type'];
+        $questionTypeClassName = 'LearnosityQti\Entities\QuestionTypes\\' . $questionJson['data']['type'];
 
         /** @var BaseQuestionType $questionType */
         $questionType = EntityBuilder::build($questionTypeClassName, $questionJson['data']);

@@ -1,10 +1,10 @@
 <?php
 
-namespace Learnosity\Tests\Processors\QtiV2\Out;
+namespace LearnosityQti\Tests\Processors\QtiV2\Out;
 
-use Learnosity\Converter;
-use Learnosity\Tests\Integration\Processors\QtiV2\Out\QuestionTypes\AbstractQuestionTypeTest;
-use Learnosity\Utils\StringUtil;
+use LearnosityQti\Converter;
+use LearnosityQti\Tests\Integration\Processors\QtiV2\Out\QuestionTypes\AbstractQuestionTypeTest;
+use LearnosityQti\Utils\StringUtil;
 use qtism\data\storage\xml\XmlDocument;
 use qtism\runtime\rendering\markup\xhtml\XhtmlRenderingEngine;
 

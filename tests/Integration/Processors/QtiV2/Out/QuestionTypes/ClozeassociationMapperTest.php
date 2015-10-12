@@ -1,9 +1,9 @@
 <?php
 
-namespace Learnosity\Tests\Integration\Processors\QtiV2\Out\QuestionTypes;
+namespace LearnosityQti\Tests\Integration\Processors\QtiV2\Out\QuestionTypes;
 
-use Learnosity\Processors\QtiV2\Out\Constants;
-use Learnosity\Utils\QtiMarshallerUtil;
+use LearnosityQti\Processors\QtiV2\Out\Constants;
+use LearnosityQti\Utils\QtiMarshallerUtil;
 use qtism\common\datatypes\DirectedPair;
 use qtism\common\enums\BaseType;
 use qtism\common\enums\Cardinality;

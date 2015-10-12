@@ -1,6 +1,6 @@
 <?php
 
-namespace Learnosity\Entities;
+namespace LearnosityQti\Entities;
 
 class Question extends BaseEntity
 {

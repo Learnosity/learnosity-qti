@@ -1,8 +1,8 @@
 <?php
 
-namespace Learnosity\Processors\Learnosity\Out;
+namespace LearnosityQti\Processors\Learnosity\Out;
 
-use Learnosity\Entities\Item\item;
+use LearnosityQti\Entities\Item\item;
 
 class ItemWriter
 {

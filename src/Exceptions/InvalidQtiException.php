@@ -1,6 +1,6 @@
 <?php
 
-namespace Learnosity\Exceptions;
+namespace LearnosityQti\Exceptions;
 
 class InvalidQtiException extends BaseKnownException
 {

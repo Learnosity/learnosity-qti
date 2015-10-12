@@ -1,10 +1,10 @@
 <?php
 
-namespace Learnosity\Tests\Integration\Mappers\QtiV2\In\Interactions;
+namespace LearnosityQti\Tests\Integration\Mappers\QtiV2\In\Interactions;
 
-use Learnosity\AppContainer;
-use Learnosity\Entities\Item\item;
-use Learnosity\Tests\AbstractTest;
+use LearnosityQti\AppContainer;
+use LearnosityQti\Entities\Item\item;
+use LearnosityQti\Tests\AbstractTest;
 
 class ChoiceInteractionTest extends AbstractTest
 {
@@ -14,7 +14,7 @@ class ChoiceInteractionTest extends AbstractTest
         list($item, $questions) = $mapper->parse($this->getFixtureFileContents('interactions/choice.xml'));
 
         /** @var item $item */
-        $this->assertInstanceOf('Learnosity\Entities\Item\item', $item);
+        $this->assertInstanceOf('LearnosityQti\Entities\Item\item', $item);
         $this->assertTrue($item->get_reference() === 'choice');
         $this->assertTrue($item->get_status() === 'published');
 
@@ -23,15 +23,15 @@ class ChoiceInteractionTest extends AbstractTest
                 '<span class="learnosity-response question-' . $item->get_questionReferences()[0] . '"></span>') === 1);
         $this->assertTrue(count($questions) === 1);
         $q = $questions[0];
-        $this->assertInstanceOf('\Learnosity\Entities\Question', $q);
+        $this->assertInstanceOf('\LearnosityQti\Entities\Question', $q);
 
-        /* @var $q \Learnosity\Entities\Question */
+        /* @var $q \LearnosityQti\Entities\Question */
         $this->assertTrue($q->get_type() === 'mcq');
         $this->assertTrue($q->get_reference() === $item->get_reference() . '_' . 'RESPONSE');
 
-        /* @var $questionType \Learnosity\Entities\QuestionTypes\mcq */
+        /* @var $questionType \LearnosityQti\Entities\QuestionTypes\mcq */
         $questionType = $q->get_data();
-        $this->assertInstanceOf('\Learnosity\Entities\QuestionTypes\mcq', $questionType);
+        $this->assertInstanceOf('\LearnosityQti\Entities\QuestionTypes\mcq', $questionType);
         $this->assertNotEmpty($questionType->get_stimulus());
         $this->assertTrue($questionType->get_type() === 'mcq');
         $options = $questionType->get_options();
@@ -47,12 +47,12 @@ class ChoiceInteractionTest extends AbstractTest
         $this->assertContains('ChoiceB', $values);
         $this->assertContains('ChoiceC', $values);
 
-        /* @var $validation \Learnosity\Entities\QuestionTypes\mcq_validation */
+        /* @var $validation \LearnosityQti\Entities\QuestionTypes\mcq_validation */
         $validation = $questionType->get_validation();
-        $this->assertInstanceOf('\Learnosity\Entities\QuestionTypes\mcq_validation', $validation);
+        $this->assertInstanceOf('\LearnosityQti\Entities\QuestionTypes\mcq_validation', $validation);
         $this->assertTrue($validation->get_scoring_type() === 'exactMatch');
 
-        /* @var $validResponse \Learnosity\Entities\QuestionTypes\mcq_validation_valid_response */
+        /* @var $validResponse \LearnosityQti\Entities\QuestionTypes\mcq_validation_valid_response */
         $validResponse = $validation->get_valid_response();
         $this->assertEquals(1, $validResponse->get_score());
         $this->assertTrue($validResponse->get_value()[0] === 'ChoiceA');

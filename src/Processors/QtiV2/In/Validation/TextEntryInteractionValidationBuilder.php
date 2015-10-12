@@ -1,9 +1,9 @@
 <?php
-namespace Learnosity\Processors\QtiV2\In\Validation;
+namespace LearnosityQti\Processors\QtiV2\In\Validation;
 
-use Learnosity\Processors\Learnosity\In\ValidationBuilder\ValidationBuilder;
-use Learnosity\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
-use Learnosity\Utils\ArrayUtil;
+use LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidationBuilder;
+use LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
+use LearnosityQti\Utils\ArrayUtil;
 use qtism\data\state\MapEntry;
 use qtism\data\state\ResponseDeclaration;
 use qtism\data\state\Value;

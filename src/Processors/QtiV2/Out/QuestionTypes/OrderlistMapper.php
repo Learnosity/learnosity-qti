@@ -1,11 +1,11 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\Out\QuestionTypes;
+namespace LearnosityQti\Processors\QtiV2\Out\QuestionTypes;
 
-use Learnosity\Entities\BaseQuestionType;
-use Learnosity\Entities\QuestionTypes\orderlist;
-use Learnosity\Processors\QtiV2\Out\Validation\OrderlistValidationBuilder;
-use Learnosity\Utils\QtiMarshallerUtil;
+use LearnosityQti\Entities\BaseQuestionType;
+use LearnosityQti\Entities\QuestionTypes\orderlist;
+use LearnosityQti\Processors\QtiV2\Out\Validation\OrderlistValidationBuilder;
+use LearnosityQti\Utils\QtiMarshallerUtil;
 use qtism\data\content\FlowStaticCollection;
 use qtism\data\content\interactions\OrderInteraction;
 use qtism\data\content\interactions\Orientation;

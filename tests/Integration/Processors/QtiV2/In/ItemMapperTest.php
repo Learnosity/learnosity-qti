@@ -1,11 +1,11 @@
 <?php
 
-namespace Learnosity\Tests\Processors\QtiV2;
+namespace LearnosityQti\Tests\Processors\QtiV2;
 
-use Learnosity\AppContainer;
-use Learnosity\Entities\Item\item;
-use Learnosity\Entities\QuestionTypes\mcq;
-use Learnosity\Tests\AbstractTest;
+use LearnosityQti\AppContainer;
+use LearnosityQti\Entities\Item\item;
+use LearnosityQti\Entities\QuestionTypes\mcq;
+use LearnosityQti\Tests\AbstractTest;
 
 class ItemMapperTest extends AbstractTest
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\In\ItemBuilders;
+namespace LearnosityQti\Processors\QtiV2\In\ItemBuilders;
 
-use Learnosity\Entities\Item\item;
-use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
+use LearnosityQti\Entities\Item\item;
+use LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
 use qtism\data\content\ItemBody;
 use qtism\data\QtiComponentCollection;
 

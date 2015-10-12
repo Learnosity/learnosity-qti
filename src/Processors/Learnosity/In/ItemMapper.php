@@ -1,8 +1,8 @@
 <?php
 
-namespace Learnosity\Processors\Learnosity\In;
+namespace LearnosityQti\Processors\Learnosity\In;
 
-use Learnosity\Entities\Item\item;
+use LearnosityQti\Entities\Item\item;
 
 class ItemMapper
 {
@@ -12,7 +12,7 @@ class ItemMapper
      */
     public function parse(array $itemJson)
     {
-        $item = EntityBuilder::build('Learnosity\Entities\Item\item', $itemJson);
+        $item = EntityBuilder::build('LearnosityQti\Entities\Item\item', $itemJson);
         return $item;
     }
 }

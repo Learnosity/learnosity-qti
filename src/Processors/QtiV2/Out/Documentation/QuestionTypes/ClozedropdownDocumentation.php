@@ -1,9 +1,9 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\Out\Documentation\QuestionTypes;
+namespace LearnosityQti\Processors\QtiV2\Out\Documentation\QuestionTypes;
 
-use Learnosity\Processors\QtiV2\Out\Documentation\LearnosityDoc;
-use Learnosity\Processors\QtiV2\Out\Documentation\QuestionTypeDocumentationInterface;
+use LearnosityQti\Processors\QtiV2\Out\Documentation\LearnosityDoc;
+use LearnosityQti\Processors\QtiV2\Out\Documentation\QuestionTypeDocumentationInterface;
 
 class ClozedropdownDocumentation implements QuestionTypeDocumentationInterface
 {

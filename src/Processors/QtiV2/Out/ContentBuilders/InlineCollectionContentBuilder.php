@@ -1,6 +1,6 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\Out\ContentBuilders;
+namespace LearnosityQti\Processors\QtiV2\Out\ContentBuilders;
 
 use qtism\data\content\Inline;
 use qtism\data\QtiComponentCollection;

@@ -1,10 +1,10 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\Out;
+namespace LearnosityQti\Processors\QtiV2\Out;
 
-use Learnosity\Exceptions\MappingException;
-use Learnosity\Processors\QtiV2\Out\ContentBuilders\BlockCollectionContentBuilder;
-use Learnosity\Processors\QtiV2\Out\ContentBuilders\InlineCollectionContentBuilder;
+use LearnosityQti\Exceptions\MappingException;
+use LearnosityQti\Processors\QtiV2\Out\ContentBuilders\BlockCollectionContentBuilder;
+use LearnosityQti\Processors\QtiV2\Out\ContentBuilders\InlineCollectionContentBuilder;
 use qtism\data\content\BlockStaticCollection;
 use qtism\data\content\FlowCollection;
 use qtism\data\content\FlowStaticCollection;

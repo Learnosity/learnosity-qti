@@ -1,13 +1,13 @@
 <?php
 
-namespace Learnosity\Tests\Integration\Mappers\QtiV2\In\Interactions;
+namespace LearnosityQti\Tests\Integration\Mappers\QtiV2\In\Interactions;
 
-use Learnosity\AppContainer;
-use Learnosity\Entities\Item\item;
-use Learnosity\Entities\Question;
-use Learnosity\Entities\QuestionTypes\choicematrix;
-use Learnosity\Processors\QtiV2\In\ItemMapper;
-use Learnosity\Tests\AbstractTest;
+use LearnosityQti\AppContainer;
+use LearnosityQti\Entities\Item\item;
+use LearnosityQti\Entities\Question;
+use LearnosityQti\Entities\QuestionTypes\choicematrix;
+use LearnosityQti\Processors\QtiV2\In\ItemMapper;
+use LearnosityQti\Tests\AbstractTest;
 
 class MatchInteractionTest extends AbstractTest
 {
@@ -26,7 +26,7 @@ class MatchInteractionTest extends AbstractTest
         list($item, $questions) = $this->mapper->parse($this->file);
 
         /** @var item $item */
-        $this->assertInstanceOf('Learnosity\Entities\Item\item', $item);
+        $this->assertInstanceOf('LearnosityQti\Entities\Item\item', $item);
         $this->assertEquals('match', $item->get_reference());
         $this->assertEquals('<span class="learnosity-response question-match_RESPONSE"></span>', $item->get_content());
         $this->assertEquals('published', $item->get_status());
@@ -37,13 +37,13 @@ class MatchInteractionTest extends AbstractTest
 
         /** @var Question $question */
         $question = $questions[0];
-        $this->assertInstanceOf('Learnosity\Entities\Question', $question);
+        $this->assertInstanceOf('LearnosityQti\Entities\Question', $question);
         $this->assertEquals('match_RESPONSE', $question->get_reference());
         $this->assertEquals('choicematrix', $question->get_type());
 
         /** @var choicematrix $choicematrix */
         $choicematrix = $question->get_data();
-        $this->assertInstanceOf('Learnosity\Entities\QuestionTypes\choicematrix', $choicematrix);
+        $this->assertInstanceOf('LearnosityQti\Entities\QuestionTypes\choicematrix', $choicematrix);
         $this->assertEquals('Match the following characters to the Shakespeare play they appeared in:',
             $choicematrix->get_stimulus());
         $this->assertEquals('choicematrix', $choicematrix->get_type());
@@ -67,11 +67,11 @@ class MatchInteractionTest extends AbstractTest
         $this->assertTrue($choicematrix->get_multiple_responses());
 
         $validation = $choicematrix->get_validation();
-        $this->assertInstanceOf('Learnosity\Entities\QuestionTypes\choicematrix_validation', $validation);
+        $this->assertInstanceOf('LearnosityQti\Entities\QuestionTypes\choicematrix_validation', $validation);
         $this->assertEquals('exactMatch', $validation->get_scoring_type());
 
         $validResponse = $validation->get_valid_response();
-        $this->assertInstanceOf('Learnosity\Entities\QuestionTypes\choicematrix_validation_valid_response',
+        $this->assertInstanceOf('LearnosityQti\Entities\QuestionTypes\choicematrix_validation_valid_response',
             $validResponse);
         $this->assertEquals(3, $validResponse->get_score());
         $this->assertEquals([[1], [0], [0], [2]], $validResponse->get_value());

@@ -1,9 +1,9 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\Out\QuestionTypes;
+namespace LearnosityQti\Processors\QtiV2\Out\QuestionTypes;
 
-use Learnosity\Entities\BaseQuestionType;
-use Learnosity\Entities\QuestionTypes\plaintext;
+use LearnosityQti\Entities\BaseQuestionType;
+use LearnosityQti\Entities\QuestionTypes\plaintext;
 use qtism\data\content\interactions\ExtendedTextInteraction;
 use qtism\data\content\interactions\TextFormat;
 

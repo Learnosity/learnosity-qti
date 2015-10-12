@@ -1,8 +1,8 @@
 <?php
 
-namespace Learnosity\Utils;
+namespace LearnosityQti\Utils;
 
-use Learnosity\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
+use LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
 
 class ArrayUtil
 {

@@ -1,12 +1,12 @@
 <?php
 
-namespace Learnosity\Tests\Unit\Processors\QtiV2\In\Interactions;
+namespace LearnosityQti\Tests\Unit\Processors\QtiV2\In\Interactions;
 
-use Learnosity\Processors\QtiV2\In\Interactions\InlineChoiceInteractionMapper;
-use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
-use Learnosity\Services\LogService;
-use Learnosity\Tests\Unit\Processors\QtiV2\In\Fixtures\InlineChoiceInteractionBuilder;
-use Learnosity\Tests\Unit\Processors\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
+use LearnosityQti\Processors\QtiV2\In\Interactions\InlineChoiceInteractionMapper;
+use LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
+use LearnosityQti\Services\LogService;
+use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\InlineChoiceInteractionBuilder;
+use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
 
 class InlineChoiceInteractionTest extends AbstractInteractionTest
 {
@@ -73,7 +73,7 @@ class InlineChoiceInteractionTest extends AbstractInteractionTest
         // Should have validation object
         $validation = $question->get_validation();
         $this->assertNotNull($validation);
-        $this->assertInstanceOf('Learnosity\Entities\QuestionTypes\clozedropdown_validation', $validation);
+        $this->assertInstanceOf('LearnosityQti\Entities\QuestionTypes\clozedropdown_validation', $validation);
         $this->assertEquals('exactMatch', $validation->get_scoring_type());
 
         // Should set both `valid_response` and `alt_responses` for multiple correct values
@@ -118,7 +118,7 @@ class InlineChoiceInteractionTest extends AbstractInteractionTest
         // Should have validation object
         $validation = $question->get_validation();
         $this->assertNotNull($validation);
-        $this->assertInstanceOf('Learnosity\Entities\QuestionTypes\clozedropdown_validation', $validation);
+        $this->assertInstanceOf('LearnosityQti\Entities\QuestionTypes\clozedropdown_validation', $validation);
         $this->assertEquals('exactMatch', $validation->get_scoring_type());
 
         // Should set both `valid_response` and `alt_responses` for multiple correct values

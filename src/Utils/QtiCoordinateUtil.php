@@ -1,6 +1,6 @@
 <?php
 
-namespace Learnosity\Utils;
+namespace LearnosityQti\Utils;
 
 use qtism\common\datatypes\Coords;
 use qtism\common\datatypes\Shape;

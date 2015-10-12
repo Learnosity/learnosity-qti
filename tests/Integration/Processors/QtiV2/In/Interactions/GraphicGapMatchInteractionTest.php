@@ -1,13 +1,13 @@
 <?php
 
 
-namespace Learnosity\Tests\Integration\Mappers\QtiV2\In\Interactions;
+namespace LearnosityQti\Tests\Integration\Mappers\QtiV2\In\Interactions;
 
-use Learnosity\AppContainer;
-use Learnosity\Entities\Item\item;
-use Learnosity\Entities\QuestionTypes\imageclozeassociation;
-use Learnosity\Entities\QuestionTypes\imageclozeassociation_image;
-use Learnosity\Tests\AbstractTest;
+use LearnosityQti\AppContainer;
+use LearnosityQti\Entities\Item\item;
+use LearnosityQti\Entities\QuestionTypes\imageclozeassociation;
+use LearnosityQti\Entities\QuestionTypes\imageclozeassociation_image;
+use LearnosityQti\Tests\AbstractTest;
 
 class GraphicGapMatchInteractionTest extends AbstractTest
 {
@@ -18,7 +18,7 @@ class GraphicGapMatchInteractionTest extends AbstractTest
 
         /** @var item $item */
         $this->assertNotNull($item);
-        $this->assertInstanceOf('Learnosity\Entities\Item\item', $item);
+        $this->assertInstanceOf('LearnosityQti\Entities\Item\item', $item);
         $this->assertEquals('graphicGapfill', $item->get_reference());
         $this->assertEquals('<span class="learnosity-response question-graphicGapfill_RESPONSE"></span>', $item->get_content());
         $this->assertEquals('published', $item->get_status());
@@ -42,7 +42,7 @@ class GraphicGapMatchInteractionTest extends AbstractTest
         $this->assertFalse($question->get_duplicate_responses());
         /** @var imageclozeassociation_image $img */
         $img = $question->get_image();
-        $this->assertInstanceOf('Learnosity\Entities\QuestionTypes\imageclozeassociation_image', $img);
+        $this->assertInstanceOf('LearnosityQti\Entities\QuestionTypes\imageclozeassociation_image', $img);
         $this->assertEquals('images/ukairtags.png', $img->get_src());
         $this->assertEquals(
             [

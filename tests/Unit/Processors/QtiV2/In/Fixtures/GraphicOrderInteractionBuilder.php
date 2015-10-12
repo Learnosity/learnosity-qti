@@ -1,6 +1,6 @@
 <?php
 
-namespace Learnosity\Tests\Unit\Processors\QtiV2\In\Fixtures;
+namespace LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures;
 
 use qtism\common\datatypes\Coords;
 use qtism\common\datatypes\Shape;

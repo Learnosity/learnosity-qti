@@ -1,9 +1,9 @@
 <?php
 
-namespace Learnosity;
+namespace LearnosityQti;
 
-use Learnosity\Services\SchemasService;
-use Learnosity\Utils\FileSystemUtil;
+use LearnosityQti\Services\SchemasService;
+use LearnosityQti\Utils\FileSystemUtil;
 use Twig_Extension_Debug;
 use Twig_Extensions_Extension_Text;
 
@@ -146,7 +146,7 @@ class EntityGenerator
     public function generateQuestionsClasses()
     {
         $this->cleanUp($this->questionOutputDir);
-        $this->currentNamespace = 'Learnosity\Entities\QuestionTypes';
+        $this->currentNamespace = 'LearnosityQti\Entities\QuestionTypes';
         $schemas = array_merge(
             $this->schemasService->getResponsesSchemas(),
             $this->schemasService->getFeaturesSchemas()
@@ -157,7 +157,7 @@ class EntityGenerator
     public function generateItemClasses()
     {
         $this->cleanUp($this->itemOutputDir);
-        $this->currentNamespace = 'Learnosity\Entities\Item';
+        $this->currentNamespace = 'LearnosityQti\Entities\Item';
         $schemas = $this->schemasService->getItemSchemas();
         $this->generateClasses($schemas, $this->itemOutputDir, 'BaseEntity');
     }
@@ -165,7 +165,7 @@ class EntityGenerator
     public function generateActivityClasses()
     {
         $this->cleanUp($this->activityOutputDir);
-        $this->currentNamespace = 'Learnosity\Entities\Activity';
+        $this->currentNamespace = 'LearnosityQti\Entities\Activity';
         $schemas = $this->schemasService->getActivitySchemas();
         $this->generateClasses($schemas, $this->activityOutputDir, 'BaseEntity');
     }

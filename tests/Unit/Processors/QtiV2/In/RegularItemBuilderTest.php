@@ -1,12 +1,12 @@
 <?php
 
-namespace Learnosity\Tests\Unit\Processors\QtiV2\In;
+namespace LearnosityQti\Tests\Unit\Processors\QtiV2\In;
 
 
-use Learnosity\Processors\QtiV2\In\ItemBuilders\RegularItemBuilder;
-use Learnosity\Tests\Unit\Processors\QtiV2\In\Fixtures\ChoiceInteractionBuilder;
-use Learnosity\Tests\Unit\Processors\QtiV2\In\Fixtures\ItemBodyBuilder;
-use Learnosity\Tests\Unit\Processors\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
+use LearnosityQti\Processors\QtiV2\In\ItemBuilders\RegularItemBuilder;
+use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\ChoiceInteractionBuilder;
+use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\ItemBodyBuilder;
+use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
 use qtism\data\content\interactions\TextEntryInteraction;
 use qtism\data\QtiComponentCollection;
 
@@ -42,12 +42,12 @@ class RegularItemBuilderTest
         $q1 = $questions[0];
         $this->assertEquals('testAssessmentItemIdentifier_testChoiceInteractionIdentifier', $q1->get_reference());
         $this->assertEquals('mcq', $q1->get_type());
-        $this->assertInstanceOf('Learnosity\Entities\QuestionTypes\mcq', $q1->get_data());
+        $this->assertInstanceOf('LearnosityQti\Entities\QuestionTypes\mcq', $q1->get_data());
 
         $q2 = $questions[1];
         $this->assertEquals('testAssessmentItemIdentifier_testTextEntryInteractionIdentifier', $q2->get_reference());
         $this->assertEquals('clozetext', $q2->get_type());
-        $this->assertInstanceOf('Learnosity\Entities\QuestionTypes\clozetext', $q2->get_data());
+        $this->assertInstanceOf('LearnosityQti\Entities\QuestionTypes\clozetext', $q2->get_data());
     }
 
 

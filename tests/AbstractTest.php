@@ -1,8 +1,8 @@
 <?php
 
-namespace Learnosity\Tests;
+namespace LearnosityQti\Tests;
 
-use Learnosity\Utils\FileSystemUtil;
+use LearnosityQti\Utils\FileSystemUtil;
 
 abstract class AbstractTest extends \PHPUnit_Framework_TestCase
 {

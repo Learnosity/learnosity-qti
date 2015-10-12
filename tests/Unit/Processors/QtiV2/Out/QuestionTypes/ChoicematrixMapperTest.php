@@ -1,14 +1,14 @@
 <?php
 
-namespace Learnosity\Tests\Unit\Processors\QtiV2\Out\QuestionTypes;
+namespace LearnosityQti\Tests\Unit\Processors\QtiV2\Out\QuestionTypes;
 
-use Learnosity\Entities\QuestionTypes\choicematrix;
-use Learnosity\Entities\QuestionTypes\choicematrix_validation;
-use Learnosity\Processors\Learnosity\In\ValidationBuilder\ValidationBuilder;
-use Learnosity\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
-use Learnosity\Processors\QtiV2\Out\Constants;
-use Learnosity\Processors\QtiV2\Out\QuestionTypes\ChoicematrixMapper;
-use Learnosity\Utils\QtiMarshallerUtil;
+use LearnosityQti\Entities\QuestionTypes\choicematrix;
+use LearnosityQti\Entities\QuestionTypes\choicematrix_validation;
+use LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidationBuilder;
+use LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
+use LearnosityQti\Processors\QtiV2\Out\Constants;
+use LearnosityQti\Processors\QtiV2\Out\QuestionTypes\ChoicematrixMapper;
+use LearnosityQti\Utils\QtiMarshallerUtil;
 use qtism\common\datatypes\DirectedPair;
 use qtism\data\content\interactions\MatchInteraction;
 use qtism\data\content\interactions\SimpleAssociableChoice;

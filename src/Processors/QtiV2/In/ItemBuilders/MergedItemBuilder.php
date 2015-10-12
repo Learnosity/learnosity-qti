@@ -1,11 +1,11 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\In\ItemBuilders;
+namespace LearnosityQti\Processors\QtiV2\In\ItemBuilders;
 
-use Learnosity\Entities\BaseQuestionType;
-use Learnosity\Entities\Question;
-use Learnosity\Processors\QtiV2\In\MergedInteractions\AbstractMergedInteractionMapper;
-use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
+use LearnosityQti\Entities\BaseQuestionType;
+use LearnosityQti\Entities\Question;
+use LearnosityQti\Processors\QtiV2\In\MergedInteractions\AbstractMergedInteractionMapper;
+use LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
 use qtism\data\content\interactions\Interaction;
 use qtism\data\content\ItemBody;
 use qtism\data\QtiComponentCollection;
@@ -13,7 +13,7 @@ use qtism\data\state\ResponseDeclaration;
 
 class MergedItemBuilder extends AbstractItemBuilder
 {
-    const MAPPER_CLASS_BASE = 'Learnosity\Processors\QtiV2\In\MergedInteractions\\Merged';
+    const MAPPER_CLASS_BASE = 'LearnosityQti\Processors\QtiV2\In\MergedInteractions\\Merged';
 
     public function map(
         $itemReference,

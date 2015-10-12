@@ -1,9 +1,9 @@
 <?php
 
-namespace Learnosity\Tests\Integration\Processors\QtiV2\Out;
+namespace LearnosityQti\Tests\Integration\Processors\QtiV2\Out;
 
-use Learnosity\Tests\Integration\Processors\QtiV2\Out\QuestionTypes\AbstractQuestionTypeTest;
-use Learnosity\Utils\QtiMarshallerUtil;
+use LearnosityQti\Tests\Integration\Processors\QtiV2\Out\QuestionTypes\AbstractQuestionTypeTest;
+use LearnosityQti\Utils\QtiMarshallerUtil;
 use qtism\data\content\interactions\ChoiceInteraction;
 use qtism\data\content\interactions\ExtendedTextInteraction;
 

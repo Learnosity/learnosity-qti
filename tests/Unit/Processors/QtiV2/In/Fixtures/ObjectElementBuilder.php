@@ -1,5 +1,5 @@
 <?php
-namespace Learnosity\Tests\Unit\Processors\QtiV2\In\Fixtures;
+namespace LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures;
 
 use DOMDocument;
 use qtism\data\content\ObjectFlowCollection;

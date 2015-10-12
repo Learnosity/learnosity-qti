@@ -1,12 +1,12 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\In\ItemBuilders;
+namespace LearnosityQti\Processors\QtiV2\In\ItemBuilders;
 
 
-use Learnosity\Entities\Question;
-use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
-use Learnosity\Utils\QtiMarshallerUtil;
-use Learnosity\Services\LogService;
+use LearnosityQti\Entities\Question;
+use LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
+use LearnosityQti\Utils\QtiMarshallerUtil;
+use LearnosityQti\Services\LogService;
 use qtism\data\content\interactions\Interaction;
 use qtism\data\content\ItemBody;
 use qtism\data\QtiComponentCollection;
@@ -14,7 +14,7 @@ use qtism\data\state\ResponseDeclaration;
 
 class RegularItemBuilder extends AbstractItemBuilder
 {
-    const MAPPER_CLASS_BASE = 'Learnosity\Processors\QtiV2\In\Interactions\\';
+    const MAPPER_CLASS_BASE = 'LearnosityQti\Processors\QtiV2\In\Interactions\\';
 
     public function map(
         $itemReference,

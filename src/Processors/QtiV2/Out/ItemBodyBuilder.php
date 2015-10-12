@@ -1,11 +1,11 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\Out;
+namespace LearnosityQti\Processors\QtiV2\Out;
 
-use Learnosity\Services\LogService;
-use Learnosity\Utils\QtiMarshallerUtil;
-use Learnosity\Utils\SimpleHtmlDom\SimpleHtmlDom;
-use Learnosity\Utils\StringUtil;
+use LearnosityQti\Services\LogService;
+use LearnosityQti\Utils\QtiMarshallerUtil;
+use LearnosityQti\Utils\SimpleHtmlDom\SimpleHtmlDom;
+use LearnosityQti\Utils\StringUtil;
 use qtism\data\content\BlockCollection;
 use qtism\data\content\FlowCollection;
 use qtism\data\content\ItemBody;

@@ -2,7 +2,7 @@
 
 require 'vendor/autoload.php';
 
-use Learnosity\AppContainer;
+use LearnosityQti\AppContainer;
 
 // Generate entities
 $generator = AppContainer::getApplicationContainer()->get('learnosity_entity_generator');

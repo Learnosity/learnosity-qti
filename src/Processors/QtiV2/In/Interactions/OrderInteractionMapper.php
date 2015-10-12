@@ -1,12 +1,12 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\In\Interactions;
+namespace LearnosityQti\Processors\QtiV2\In\Interactions;
 
-use Learnosity\Entities\QuestionTypes\orderlist;
-use Learnosity\Exceptions\MappingException;
-use Learnosity\Utils\QtiMarshallerUtil;
-use Learnosity\Processors\QtiV2\In\Validation\OrderInteractionValidationBuilder;
-use Learnosity\Services\LogService;
+use LearnosityQti\Entities\QuestionTypes\orderlist;
+use LearnosityQti\Exceptions\MappingException;
+use LearnosityQti\Utils\QtiMarshallerUtil;
+use LearnosityQti\Processors\QtiV2\In\Validation\OrderInteractionValidationBuilder;
+use LearnosityQti\Services\LogService;
 use qtism\data\content\interactions\OrderInteraction as QtiOrderInteraction;
 use qtism\data\content\interactions\SimpleChoice;
 

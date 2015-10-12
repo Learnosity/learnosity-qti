@@ -1,9 +1,9 @@
 <?php
 
 
-namespace Learnosity\Tests\Unit\Processors\QtiV2\In\Interactions;
+namespace LearnosityQti\Tests\Unit\Processors\QtiV2\In\Interactions;
 
-use Learnosity\Services\LogService;
+use LearnosityQti\Services\LogService;
 
 abstract class AbstractInteractionTest extends \PHPUnit_Framework_TestCase
 {

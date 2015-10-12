@@ -1,9 +1,9 @@
 <?php
 
-namespace Learnosity\Tests\Unit\Utils;
+namespace LearnosityQti\Tests\Unit\Utils;
 
-use Learnosity\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
-use Learnosity\Utils\ArrayUtil;
+use LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
+use LearnosityQti\Utils\ArrayUtil;
 use PHPUnit_Framework_TestCase;
 
 class ArrayUtilTest extends PHPUnit_Framework_TestCase

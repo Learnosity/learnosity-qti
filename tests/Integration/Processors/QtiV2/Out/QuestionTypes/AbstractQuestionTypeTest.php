@@ -1,9 +1,9 @@
 <?php
 
-namespace Learnosity\Tests\Integration\Processors\QtiV2\Out\QuestionTypes;
+namespace LearnosityQti\Tests\Integration\Processors\QtiV2\Out\QuestionTypes;
 
-use Learnosity\Converter;
-use Learnosity\Tests\AbstractTest;
+use LearnosityQti\Converter;
+use LearnosityQti\Tests\AbstractTest;
 use qtism\data\AssessmentItem;
 use qtism\data\storage\xml\XmlDocument;
 

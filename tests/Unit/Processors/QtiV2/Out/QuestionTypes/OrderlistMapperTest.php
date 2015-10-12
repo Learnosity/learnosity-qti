@@ -1,14 +1,14 @@
 <?php
 
-namespace latest\Learnosity\Tests\Unit\Processors\QtiV2\Out\QuestionTypes;
+namespace LearnosityQti\Tests\Unit\Processors\QtiV2\Out\QuestionTypes;
 
-use Learnosity\Entities\QuestionTypes\orderlist;
-use Learnosity\Entities\QuestionTypes\orderlist_validation;
-use Learnosity\Processors\Learnosity\In\ValidationBuilder\ValidationBuilder;
-use Learnosity\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
-use Learnosity\Processors\QtiV2\Out\Constants;
-use Learnosity\Processors\QtiV2\Out\QuestionTypes\OrderlistMapper;
-use Learnosity\Utils\QtiMarshallerUtil;
+use LearnosityQti\Entities\QuestionTypes\orderlist;
+use LearnosityQti\Entities\QuestionTypes\orderlist_validation;
+use LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidationBuilder;
+use LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
+use LearnosityQti\Processors\QtiV2\Out\Constants;
+use LearnosityQti\Processors\QtiV2\Out\QuestionTypes\OrderlistMapper;
+use LearnosityQti\Utils\QtiMarshallerUtil;
 use qtism\common\enums\Cardinality;
 use qtism\data\content\interactions\OrderInteraction;
 use qtism\data\content\interactions\Orientation;

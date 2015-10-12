@@ -1,6 +1,6 @@
 <?php
 
-namespace Learnosity\Utils;
+namespace LearnosityQti\Utils;
 
 use Exception;
 use Symfony\Component\Finder\SplFileInfo;

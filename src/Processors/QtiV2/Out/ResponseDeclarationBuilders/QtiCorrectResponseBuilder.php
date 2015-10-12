@@ -1,8 +1,8 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\Out\ResponseDeclarationBuilders;
+namespace LearnosityQti\Processors\QtiV2\Out\ResponseDeclarationBuilders;
 
-use Learnosity\Exceptions\MappingException;
+use LearnosityQti\Exceptions\MappingException;
 use qtism\data\state\CorrectResponse;
 use qtism\data\state\Value;
 use qtism\data\state\ValueCollection;

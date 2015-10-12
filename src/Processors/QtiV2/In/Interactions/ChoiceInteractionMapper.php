@@ -1,12 +1,12 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\In\Interactions;
+namespace LearnosityQti\Processors\QtiV2\In\Interactions;
 
-use Learnosity\Entities\QuestionTypes\mcq;
-use Learnosity\Entities\QuestionTypes\mcq_ui_style;
-use Learnosity\Utils\QtiMarshallerUtil;
-use Learnosity\Processors\QtiV2\In\Validation\ChoiceInteractionValidationBuilder;
-use Learnosity\Services\LogService;
+use LearnosityQti\Entities\QuestionTypes\mcq;
+use LearnosityQti\Entities\QuestionTypes\mcq_ui_style;
+use LearnosityQti\Utils\QtiMarshallerUtil;
+use LearnosityQti\Processors\QtiV2\In\Validation\ChoiceInteractionValidationBuilder;
+use LearnosityQti\Services\LogService;
 use qtism\data\content\interactions\Orientation;
 use qtism\data\content\interactions\Prompt;
 use qtism\data\content\interactions\SimpleChoice;

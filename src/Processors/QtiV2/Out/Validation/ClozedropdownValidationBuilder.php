@@ -1,8 +1,8 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\Out\Validation;
+namespace LearnosityQti\Processors\QtiV2\Out\Validation;
 
-use Learnosity\Entities\QuestionTypes\clozedropdown_validation;
+use LearnosityQti\Entities\QuestionTypes\clozedropdown_validation;
 use qtism\common\enums\BaseType;
 use qtism\common\enums\Cardinality;
 use qtism\data\state\CorrectResponse;

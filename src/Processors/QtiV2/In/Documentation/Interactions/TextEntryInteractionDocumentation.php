@@ -1,9 +1,9 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\In\Documentation\Interactions;
+namespace LearnosityQti\Processors\QtiV2\In\Documentation\Interactions;
 
-use Learnosity\Processors\QtiV2\In\Documentation\InteractionDocumentationInterface;
-use Learnosity\Processors\QtiV2\In\Documentation\QtiDoc;
+use LearnosityQti\Processors\QtiV2\In\Documentation\InteractionDocumentationInterface;
+use LearnosityQti\Processors\QtiV2\In\Documentation\QtiDoc;
 
 class TextEntryInteractionDocumentation implements InteractionDocumentationInterface
 {

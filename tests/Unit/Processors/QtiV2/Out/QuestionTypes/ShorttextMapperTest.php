@@ -1,12 +1,12 @@
 <?php
 
-namespace Learnosity\Tests\Unit\Processors\QtiV2\Out\QuestionTypes;
+namespace LearnosityQti\Tests\Unit\Processors\QtiV2\Out\QuestionTypes;
 
-use Learnosity\Entities\QuestionTypes\shorttext;
-use Learnosity\Processors\Learnosity\In\ValidationBuilder\ValidationBuilder;
-use Learnosity\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
-use Learnosity\Processors\QtiV2\Out\Constants;
-use Learnosity\Processors\QtiV2\Out\QuestionTypes\ShorttextMapper;
+use LearnosityQti\Entities\QuestionTypes\shorttext;
+use LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidationBuilder;
+use LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
+use LearnosityQti\Processors\QtiV2\Out\Constants;
+use LearnosityQti\Processors\QtiV2\Out\QuestionTypes\ShorttextMapper;
 use qtism\data\content\interactions\TextEntryInteraction;
 use qtism\data\content\xhtml\text\Div;
 use qtism\data\processing\ResponseProcessing;

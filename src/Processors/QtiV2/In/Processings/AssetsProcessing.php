@@ -1,8 +1,8 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\In\Processings;
+namespace LearnosityQti\Processors\QtiV2\In\Processings;
 
-use Learnosity\Entities\Item\item;
+use LearnosityQti\Entities\Item\item;
 use qtism\data\AssessmentItem;
 use qtism\data\content\xhtml\Img;
 use qtism\data\content\xhtml\Object;

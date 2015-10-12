@@ -1,18 +1,18 @@
 <?php
 
-namespace Learnosity;
+namespace LearnosityQti;
 
 use Exception;
-use Learnosity\Entities\Item\item;
-use Learnosity\Exceptions\InvalidQtiException;
-use Learnosity\Exceptions\MappingException;
-use Learnosity\Processors\Learnosity\In\ItemMapper;
-use Learnosity\Processors\Learnosity\In\QuestionMapper;
-use Learnosity\Processors\QtiV2\Out\ItemWriter;
-use Learnosity\Processors\QtiV2\Out\QuestionWriter;
-use Learnosity\Services\LearnosityToQtiPreProcessingService;
-use Learnosity\Services\LogService;
-use Learnosity\Utils\StringUtil;
+use LearnosityQti\Entities\Item\item;
+use LearnosityQti\Exceptions\InvalidQtiException;
+use LearnosityQti\Exceptions\MappingException;
+use LearnosityQti\Processors\Learnosity\In\ItemMapper;
+use LearnosityQti\Processors\Learnosity\In\QuestionMapper;
+use LearnosityQti\Processors\QtiV2\Out\ItemWriter;
+use LearnosityQti\Processors\QtiV2\Out\QuestionWriter;
+use LearnosityQti\Services\LearnosityToQtiPreProcessingService;
+use LearnosityQti\Services\LogService;
+use LearnosityQti\Utils\StringUtil;
 use qtism\data\storage\xml\XmlDocument;
 use qtism\data\storage\xml\XmlStorageException;
 

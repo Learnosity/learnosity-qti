@@ -1,6 +1,6 @@
 <?php
 
-namespace Learnosity\Processors\IMSCP\Entities;
+namespace LearnosityQti\Processors\IMSCP\Entities;
 
 class Dependency
 {

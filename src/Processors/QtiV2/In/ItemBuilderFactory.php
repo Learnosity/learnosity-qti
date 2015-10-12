@@ -1,9 +1,9 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\In;
+namespace LearnosityQti\Processors\QtiV2\In;
 
-use Learnosity\Processors\QtiV2\In\ItemBuilders\MergedItemBuilder;
-use Learnosity\Processors\QtiV2\In\ItemBuilders\RegularItemBuilder;
+use LearnosityQti\Processors\QtiV2\In\ItemBuilders\MergedItemBuilder;
+use LearnosityQti\Processors\QtiV2\In\ItemBuilders\RegularItemBuilder;
 use qtism\data\content\interactions\Interaction;
 use qtism\data\QtiComponentCollection;
 

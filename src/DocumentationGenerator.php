@@ -1,16 +1,16 @@
 <?php
 
-namespace Learnosity;
+namespace LearnosityQti;
 
-use Learnosity\Processors\QtiV2\In\Constants as QtiImportConstant;
-use Learnosity\Processors\QtiV2\Out\Constants as QtiExportConstant;
-use Learnosity\Processors\QtiV2\In\Documentation\AssessmentItemDocumentation;
-use Learnosity\Processors\QtiV2\In\Documentation\InteractionDocumentationInterface;
-use Learnosity\Processors\QtiV2\Out\Documentation\LearnosityDoc;
-use Learnosity\Processors\QtiV2\Out\Documentation\QuestionTypeDocumentationInterface;
-use Learnosity\Services\SchemasService;
-use Learnosity\Utils\FileSystemUtil;
-use Learnosity\Utils\StringUtil;
+use LearnosityQti\Processors\QtiV2\In\Constants as QtiImportConstant;
+use LearnosityQti\Processors\QtiV2\Out\Constants as QtiExportConstant;
+use LearnosityQti\Processors\QtiV2\In\Documentation\AssessmentItemDocumentation;
+use LearnosityQti\Processors\QtiV2\In\Documentation\InteractionDocumentationInterface;
+use LearnosityQti\Processors\QtiV2\Out\Documentation\LearnosityDoc;
+use LearnosityQti\Processors\QtiV2\Out\Documentation\QuestionTypeDocumentationInterface;
+use LearnosityQti\Services\SchemasService;
+use LearnosityQti\Utils\FileSystemUtil;
+use LearnosityQti\Utils\StringUtil;
 use Twig_Extension_Debug;
 use Twig_Extensions_Extension_Text;
 
@@ -50,7 +50,7 @@ class DocumentationGenerator
         foreach ($responsesSchemas as $questionType => $data) {
             if (in_array($questionType, QtiExportConstant::$supportedQuestionTypes)) {
                 /** @var QuestionTypeDocumentationInterface $mapperClass */
-                $mapperClass = 'Learnosity\Processors\QtiV2\Out\Documentation\QuestionTypes\\' . ucfirst($questionType) . 'Documentation';
+                $mapperClass = 'LearnosityQti\Processors\QtiV2\Out\Documentation\QuestionTypes\\' . ucfirst($questionType) . 'Documentation';
                 $documentation = $mapperClass::getDocumentation();
                 foreach (array_keys($this->generateAtributeTable($data['attributes'])) as $flattenedAttributeName) {
                     // TODO: Need to check new or non-existing attribute name in case our schemas change
@@ -110,7 +110,7 @@ class DocumentationGenerator
         $interactionDocumentation = [];
         foreach (QtiImportConstant::$supportedInteractions as $className) {
             /** @var InteractionDocumentationInterface $mapperClass */
-            $mapperClass = 'Learnosity\Processors\QtiV2\In\Documentation\Interactions\\' . ucfirst($className) . 'Documentation';
+            $mapperClass = 'LearnosityQti\Processors\QtiV2\In\Documentation\Interactions\\' . ucfirst($className) . 'Documentation';
             $interactionDocumentation[ucfirst($className)] = [
                 'interactionMapping' => $mapperClass::getInteractionDocumentation()
             ];

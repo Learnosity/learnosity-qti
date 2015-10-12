@@ -1,10 +1,10 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\In\Validation;
+namespace LearnosityQti\Processors\QtiV2\In\Validation;
 
-use Learnosity\Exceptions\MappingException;
-use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
-use Learnosity\Services\LogService;
+use LearnosityQti\Exceptions\MappingException;
+use LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
+use LearnosityQti\Services\LogService;
 use qtism\data\state\ResponseDeclaration;
 
 abstract class BaseInteractionValidationBuilder

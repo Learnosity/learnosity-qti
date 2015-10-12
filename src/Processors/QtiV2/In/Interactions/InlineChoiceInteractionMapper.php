@@ -1,11 +1,11 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\In\Interactions;
+namespace LearnosityQti\Processors\QtiV2\In\Interactions;
 
-use Learnosity\Entities\QuestionTypes\clozedropdown;
-use Learnosity\Utils\QtiMarshallerUtil;
-use Learnosity\Processors\QtiV2\In\Validation\InlineChoiceInteractionValidationBuilder;
-use Learnosity\Services\LogService;
+use LearnosityQti\Entities\QuestionTypes\clozedropdown;
+use LearnosityQti\Utils\QtiMarshallerUtil;
+use LearnosityQti\Processors\QtiV2\In\Validation\InlineChoiceInteractionValidationBuilder;
+use LearnosityQti\Services\LogService;
 use qtism\data\content\interactions\InlineChoiceInteraction;
 
 class InlineChoiceInteractionMapper extends AbstractInteractionMapper

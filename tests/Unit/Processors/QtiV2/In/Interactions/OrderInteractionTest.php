@@ -1,13 +1,13 @@
 <?php
-namespace Learnosity\Tests\Unit\Processors\QtiV2\In\Interactions;
+namespace LearnosityQti\Tests\Unit\Processors\QtiV2\In\Interactions;
 
-use Learnosity\Entities\QuestionTypes\orderlist;
-use Learnosity\Entities\QuestionTypes\orderlist_validation_valid_response;
-use Learnosity\Processors\QtiV2\In\Interactions\OrderInteractionMapper;
-use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
-use Learnosity\Services\LogService;
-use Learnosity\Tests\Unit\Processors\QtiV2\In\Fixtures\OrderInteractionBuilder;
-use Learnosity\Tests\Unit\Processors\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
+use LearnosityQti\Entities\QuestionTypes\orderlist;
+use LearnosityQti\Entities\QuestionTypes\orderlist_validation_valid_response;
+use LearnosityQti\Processors\QtiV2\In\Interactions\OrderInteractionMapper;
+use LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
+use LearnosityQti\Services\LogService;
+use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\OrderInteractionBuilder;
+use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
 
 class OrderInteractionTest extends AbstractInteractionTest
 {
@@ -102,14 +102,14 @@ class OrderInteractionTest extends AbstractInteractionTest
 
         /** @var orderlist $q */
         $q = $mapper->getQuestionType();
-        $this->assertInstanceOf('Learnosity\Entities\QuestionTypes\orderlist', $q);
+        $this->assertInstanceOf('LearnosityQti\Entities\QuestionTypes\orderlist', $q);
         $this->assertEquals('orderlist', $q->get_type());
         $this->assertEquals('testPrompt', $q->get_stimulus());
         $this->assertEquals(['Order A', 'Order B', 'Order C'], $q->get_list());
 
         $validation = $q->get_validation();
         $this->assertInstanceOf(
-            'Learnosity\Entities\QuestionTypes\orderlist_validation',
+            'LearnosityQti\Entities\QuestionTypes\orderlist_validation',
             $validation
         );
         $this->assertEquals('exactMatch', $validation->get_scoring_type());
@@ -117,7 +117,7 @@ class OrderInteractionTest extends AbstractInteractionTest
         /** @var orderlist_validation_valid_response $validResponse */
         $validResponse = $validation->get_valid_response();
         $this->assertInstanceOf(
-            'Learnosity\Entities\QuestionTypes\orderlist_validation_valid_response',
+            'LearnosityQti\Entities\QuestionTypes\orderlist_validation_valid_response',
             $validResponse
         );
         $this->assertEquals(1, $validResponse->get_score());

@@ -1,8 +1,8 @@
 <?php
 
-namespace Learnosity\Processors\Learnosity\Out;
+namespace LearnosityQti\Processors\Learnosity\Out;
 
-use Learnosity\Entities\Question;
+use LearnosityQti\Entities\Question;
 
 class QuestionWriter
 {

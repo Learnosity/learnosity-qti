@@ -1,13 +1,13 @@
 <?php
 
-namespace Learnosity\Tests\Unit\Processors\QtiV2\In\Interactions;
+namespace LearnosityQti\Tests\Unit\Processors\QtiV2\In\Interactions;
 
-use Learnosity\Entities\QuestionTypes\clozeassociation;
-use Learnosity\Processors\QtiV2\In\Interactions\GapMatchInteractionMapper;
-use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
-use Learnosity\Services\LogService;
-use Learnosity\Tests\Unit\Processors\QtiV2\In\Fixtures\GapMatchInteractionBuilder;
-use Learnosity\Tests\Unit\Processors\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
+use LearnosityQti\Entities\QuestionTypes\clozeassociation;
+use LearnosityQti\Processors\QtiV2\In\Interactions\GapMatchInteractionMapper;
+use LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
+use LearnosityQti\Services\LogService;
+use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\GapMatchInteractionBuilder;
+use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
 use qtism\common\datatypes\DirectedPair;
 
 class GapMatchInteractionTest extends AbstractInteractionTest
@@ -117,14 +117,14 @@ class GapMatchInteractionTest extends AbstractInteractionTest
 
         $validation = $q->get_validation();
         $this->assertInstanceOf(
-            'Learnosity\Entities\QuestionTypes\clozeassociation_validation',
+            'LearnosityQti\Entities\QuestionTypes\clozeassociation_validation',
             $validation
         );
         $this->assertEquals('exactMatch', $validation->get_scoring_type());
 
         $validResponse = $validation->get_valid_response();
         $this->assertInstanceOf(
-            'Learnosity\Entities\QuestionTypes\clozeassociation_validation_valid_response',
+            'LearnosityQti\Entities\QuestionTypes\clozeassociation_validation_valid_response',
             $validResponse
         );
         $this->assertEquals(6, $validResponse->get_score());
@@ -175,14 +175,14 @@ class GapMatchInteractionTest extends AbstractInteractionTest
 
         $validation = $q->get_validation();
         $this->assertInstanceOf(
-            'Learnosity\Entities\QuestionTypes\clozeassociation_validation',
+            'LearnosityQti\Entities\QuestionTypes\clozeassociation_validation',
             $validation
         );
         $this->assertEquals('exactMatch', $validation->get_scoring_type());
 
         $validResponse = $validation->get_valid_response();
         $this->assertInstanceOf(
-            'Learnosity\Entities\QuestionTypes\clozeassociation_validation_valid_response',
+            'LearnosityQti\Entities\QuestionTypes\clozeassociation_validation_valid_response',
             $validResponse
         );
         $this->assertEquals(1, $validResponse->get_score());
@@ -238,14 +238,14 @@ class GapMatchInteractionTest extends AbstractInteractionTest
 
         $validation = $q->get_validation();
         $this->assertInstanceOf(
-            'Learnosity\Entities\QuestionTypes\clozeassociation_validation',
+            'LearnosityQti\Entities\QuestionTypes\clozeassociation_validation',
             $validation
         );
         $this->assertEquals('exactMatch', $validation->get_scoring_type());
 
         $validResponse = $validation->get_valid_response();
         $this->assertInstanceOf(
-            'Learnosity\Entities\QuestionTypes\clozeassociation_validation_valid_response',
+            'LearnosityQti\Entities\QuestionTypes\clozeassociation_validation_valid_response',
             $validResponse
         );
         $this->assertEquals(9, $validResponse->get_score());
@@ -297,14 +297,14 @@ class GapMatchInteractionTest extends AbstractInteractionTest
 
         $validation = $q->get_validation();
         $this->assertInstanceOf(
-            'Learnosity\Entities\QuestionTypes\clozeassociation_validation',
+            'LearnosityQti\Entities\QuestionTypes\clozeassociation_validation',
             $validation
         );
         $this->assertEquals('exactMatch', $validation->get_scoring_type());
 
         $validResponse = $validation->get_valid_response();
         $this->assertInstanceOf(
-            'Learnosity\Entities\QuestionTypes\clozeassociation_validation_valid_response',
+            'LearnosityQti\Entities\QuestionTypes\clozeassociation_validation_valid_response',
             $validResponse
         );
         $this->assertEquals(1, $validResponse->get_score());
@@ -356,14 +356,14 @@ class GapMatchInteractionTest extends AbstractInteractionTest
         $q = $mapper->getQuestionType();
         $validation = $q->get_validation();
         $this->assertInstanceOf(
-            'Learnosity\Entities\QuestionTypes\clozeassociation_validation',
+            'LearnosityQti\Entities\QuestionTypes\clozeassociation_validation',
             $validation
         );
         $this->assertEquals('exactMatch', $validation->get_scoring_type());
 
         $validResponse = $validation->get_valid_response();
         $this->assertInstanceOf(
-            'Learnosity\Entities\QuestionTypes\clozeassociation_validation_valid_response',
+            'LearnosityQti\Entities\QuestionTypes\clozeassociation_validation_valid_response',
             $validResponse
         );
         $this->assertEquals(9, $validResponse->get_score());

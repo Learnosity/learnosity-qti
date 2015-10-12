@@ -1,15 +1,15 @@
 <?php
 
-namespace Learnosity\Tests\Integration;
+namespace LearnosityQti\Tests\Integration;
 
-use Learnosity\Converter;
-use Learnosity\Tests\AbstractTest;
+use LearnosityQti\Converter;
+use LearnosityQti\Tests\AbstractTest;
 
 class ConverterTest extends AbstractTest
 {
     public function testConvertInvalidQtiXmlToLearnosityJson()
     {
-        $this->setExpectedException('Learnosity\Exceptions\InvalidQtiException');
+        $this->setExpectedException('LearnosityQti\Exceptions\InvalidQtiException');
         $xmlString = $this->getFixtureFileContents('otherqtis/invalid.xml');
         list($item, $questions, $manifest) = Converter::convertQtiItemToLearnosity($xmlString);
     }

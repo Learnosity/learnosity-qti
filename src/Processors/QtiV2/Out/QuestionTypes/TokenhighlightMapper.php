@@ -1,13 +1,13 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\Out\QuestionTypes;
+namespace LearnosityQti\Processors\QtiV2\Out\QuestionTypes;
 
-use Learnosity\Entities\BaseQuestionType;
-use Learnosity\Entities\QuestionTypes\tokenhighlight;
-use Learnosity\Processors\QtiV2\Out\ContentCollectionBuilder;
-use Learnosity\Processors\QtiV2\Out\Validation\TokenhighlightValidationBuilder;
-use Learnosity\Utils\QtiMarshallerUtil;
-use Learnosity\Utils\SimpleHtmlDom\SimpleHtmlDom;
+use LearnosityQti\Entities\BaseQuestionType;
+use LearnosityQti\Entities\QuestionTypes\tokenhighlight;
+use LearnosityQti\Processors\QtiV2\Out\ContentCollectionBuilder;
+use LearnosityQti\Processors\QtiV2\Out\Validation\TokenhighlightValidationBuilder;
+use LearnosityQti\Utils\QtiMarshallerUtil;
+use LearnosityQti\Utils\SimpleHtmlDom\SimpleHtmlDom;
 use qtism\data\content\interactions\HottextInteraction;
 
 class TokenhighlightMapper extends AbstractQuestionTypeMapper

@@ -1,6 +1,6 @@
 <?php
 
-namespace Learnosity\Utils\SimpleHtmlDom;
+namespace LearnosityQti\Utils\SimpleHtmlDom;
 
 /**
  * Website: http://sourceforge.net/projects/simplehtmldom/

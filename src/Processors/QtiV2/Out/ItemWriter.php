@@ -1,10 +1,10 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\Out;
+namespace LearnosityQti\Processors\QtiV2\Out;
 
-use Learnosity\Entities\Item\item;
-use Learnosity\Services\LogService;
-use Learnosity\Utils\StringUtil;
+use LearnosityQti\Entities\Item\item;
+use LearnosityQti\Services\LogService;
+use LearnosityQti\Utils\StringUtil;
 use qtism\common\utils\Format;
 use qtism\data\storage\xml\XmlDocument;
 

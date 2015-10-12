@@ -1,9 +1,9 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\In\Processings;
+namespace LearnosityQti\Processors\QtiV2\In\Processings;
 
-use Learnosity\Entities\Item\item;
-use Learnosity\Services\LogService;
+use LearnosityQti\Entities\Item\item;
+use LearnosityQti\Services\LogService;
 use qtism\data\AssessmentItem;
 use qtism\data\content\BlockCollection;
 use qtism\data\content\ItemBody;

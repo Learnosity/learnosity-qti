@@ -1,10 +1,10 @@
 <?php
 
-namespace Learnosity\Utils;
+namespace LearnosityQti\Utils;
 
 use DOMDocument;
-use Learnosity\Exceptions\MappingException;
-use Learnosity\Processors\QtiV2\Marshallers\LearnosityMarshallerFactory;
+use LearnosityQti\Exceptions\MappingException;
+use LearnosityQti\Processors\QtiV2\Marshallers\LearnosityMarshallerFactory;
 use qtism\data\content\TextRun;
 use qtism\data\QtiComponent;
 use qtism\data\QtiComponentCollection;

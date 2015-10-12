@@ -1,8 +1,8 @@
 <?php
 
-namespace Learnosity\Services;
+namespace LearnosityQti\Services;
 
-use Learnosity\Utils\FileSystemUtil;
+use LearnosityQti\Utils\FileSystemUtil;
 
 class SchemasService
 {

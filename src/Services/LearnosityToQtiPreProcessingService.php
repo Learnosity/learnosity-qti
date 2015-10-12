@@ -1,13 +1,13 @@
 <?php
 
-namespace Learnosity\Services;
+namespace LearnosityQti\Services;
 
-use Learnosity\Exceptions\MappingException;
-use Learnosity\Processors\QtiV2\Out\ContentCollectionBuilder;
-use Learnosity\Utils\MimeUtil;
-use Learnosity\Utils\QtiMarshallerUtil;
-use Learnosity\Utils\SimpleHtmlDom\SimpleHtmlDom;
-use Learnosity\Utils\StringUtil;
+use LearnosityQti\Exceptions\MappingException;
+use LearnosityQti\Processors\QtiV2\Out\ContentCollectionBuilder;
+use LearnosityQti\Utils\MimeUtil;
+use LearnosityQti\Utils\QtiMarshallerUtil;
+use LearnosityQti\Utils\SimpleHtmlDom\SimpleHtmlDom;
+use LearnosityQti\Utils\StringUtil;
 use qtism\data\content\xhtml\Object;
 
 class LearnosityToQtiPreProcessingService

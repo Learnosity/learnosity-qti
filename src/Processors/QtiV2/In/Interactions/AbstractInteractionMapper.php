@@ -1,9 +1,9 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\In\Interactions;
+namespace LearnosityQti\Processors\QtiV2\In\Interactions;
 
-use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
-use Learnosity\Utils\QtiMarshallerUtil;
+use LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
+use LearnosityQti\Utils\QtiMarshallerUtil;
 use qtism\data\content\interactions\Interaction;
 use qtism\data\content\interactions\Prompt;
 use qtism\data\state\ResponseDeclaration;

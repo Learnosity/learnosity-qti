@@ -1,6 +1,6 @@
 <?php
 
-namespace Learnosity\Processors\Learnosity\In\ValidationBuilder;
+namespace LearnosityQti\Processors\Learnosity\In\ValidationBuilder;
 
 class ValidResponse
 {

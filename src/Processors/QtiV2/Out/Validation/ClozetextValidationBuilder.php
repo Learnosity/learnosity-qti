@@ -1,9 +1,9 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\Out\Validation;
+namespace LearnosityQti\Processors\QtiV2\Out\Validation;
 
-use Learnosity\Entities\QuestionTypes\clozetext_validation;
-use Learnosity\Entities\QuestionTypes\clozetext_validation_alt_responses_item;
+use LearnosityQti\Entities\QuestionTypes\clozetext_validation;
+use LearnosityQti\Entities\QuestionTypes\clozetext_validation_alt_responses_item;
 use qtism\common\enums\BaseType;
 use qtism\common\enums\Cardinality;
 use qtism\data\state\CorrectResponse;

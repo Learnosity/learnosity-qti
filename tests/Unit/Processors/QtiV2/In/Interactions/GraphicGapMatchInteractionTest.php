@@ -1,16 +1,16 @@
 <?php
 
-namespace Learnosity\Tests\Unit\Processors\QtiV2\In\Interactions;
+namespace LearnosityQti\Tests\Unit\Processors\QtiV2\In\Interactions;
 
-use Learnosity\Entities\QuestionTypes\imageclozeassociation;
-use Learnosity\Entities\QuestionTypes\imageclozeassociation_validation;
-use Learnosity\Entities\QuestionTypes\imageclozeassociation_validation_valid_response;
-use Learnosity\Processors\QtiV2\In\Interactions\GraphicGapMatchInteractionMapper;
-use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
-use Learnosity\Services\LogService;
-use Learnosity\Tests\Unit\Processors\QtiV2\In\Fixtures\GraphicGapInteractionBuilder;
-use Learnosity\Tests\Unit\Processors\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
-use Learnosity\Utils\StringUtil;
+use LearnosityQti\Entities\QuestionTypes\imageclozeassociation;
+use LearnosityQti\Entities\QuestionTypes\imageclozeassociation_validation;
+use LearnosityQti\Entities\QuestionTypes\imageclozeassociation_validation_valid_response;
+use LearnosityQti\Processors\QtiV2\In\Interactions\GraphicGapMatchInteractionMapper;
+use LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
+use LearnosityQti\Services\LogService;
+use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\GraphicGapInteractionBuilder;
+use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
+use LearnosityQti\Utils\StringUtil;
 use qtism\common\datatypes\DirectedPair;
 use qtism\data\content\xhtml\Object;
 
@@ -104,13 +104,13 @@ class GraphicGapMatchInteractionTest extends \PHPUnit_Framework_TestCase
         ], $q->get_response_positions());
 
         $img = $q->get_image();
-        $this->assertInstanceOf('Learnosity\Entities\QuestionTypes\imageclozeassociation_image', $img);
+        $this->assertInstanceOf('LearnosityQti\Entities\QuestionTypes\imageclozeassociation_image', $img);
         $this->assertEquals('http://img.png', $img->get_src());
 
         /** @var imageclozeassociation_validation $validation */
         $validation = $q->get_validation();
         $this->assertInstanceOf(
-            'Learnosity\Entities\QuestionTypes\imageclozeassociation_validation',
+            'LearnosityQti\Entities\QuestionTypes\imageclozeassociation_validation',
             $validation
         );
         $this->assertEquals('exactMatch', $validation->get_scoring_type());
@@ -118,7 +118,7 @@ class GraphicGapMatchInteractionTest extends \PHPUnit_Framework_TestCase
         /** @var imageclozeassociation_validation_valid_response $validResponse */
         $validResponse = $validation->get_valid_response();
         $this->assertInstanceOf(
-            'Learnosity\Entities\QuestionTypes\imageclozeassociation_validation_valid_response',
+            'LearnosityQti\Entities\QuestionTypes\imageclozeassociation_validation_valid_response',
             $validResponse
         );
         $this->assertEquals(5, $validResponse->get_score());
@@ -171,13 +171,13 @@ class GraphicGapMatchInteractionTest extends \PHPUnit_Framework_TestCase
         ], $q->get_response_positions());
 
         $img = $q->get_image();
-        $this->assertInstanceOf('Learnosity\Entities\QuestionTypes\imageclozeassociation_image', $img);
+        $this->assertInstanceOf('LearnosityQti\Entities\QuestionTypes\imageclozeassociation_image', $img);
         $this->assertEquals('http://img.png', $img->get_src());
 
         /** @var imageclozeassociation_validation $validation */
         $validation = $q->get_validation();
         $this->assertInstanceOf(
-            'Learnosity\Entities\QuestionTypes\imageclozeassociation_validation',
+            'LearnosityQti\Entities\QuestionTypes\imageclozeassociation_validation',
             $validation
         );
         $this->assertEquals('exactMatch', $validation->get_scoring_type());
@@ -185,7 +185,7 @@ class GraphicGapMatchInteractionTest extends \PHPUnit_Framework_TestCase
         /** @var imageclozeassociation_validation_valid_response $validResponse */
         $validResponse = $validation->get_valid_response();
         $this->assertInstanceOf(
-            'Learnosity\Entities\QuestionTypes\imageclozeassociation_validation_valid_response',
+            'LearnosityQti\Entities\QuestionTypes\imageclozeassociation_validation_valid_response',
             $validResponse
         );
         $this->assertEquals(1, $validResponse->get_score());

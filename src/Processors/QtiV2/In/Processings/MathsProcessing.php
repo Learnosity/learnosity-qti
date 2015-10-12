@@ -1,10 +1,10 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\In\Processings;
+namespace LearnosityQti\Processors\QtiV2\In\Processings;
 
-use Learnosity\Entities\BaseQuestionType;
-use Learnosity\Entities\Item\item;
-use Learnosity\Entities\Question;
+use LearnosityQti\Entities\BaseQuestionType;
+use LearnosityQti\Entities\Item\item;
+use LearnosityQti\Entities\Question;
 use qtism\data\AssessmentItem;
 use qtism\data\content\Math;
 

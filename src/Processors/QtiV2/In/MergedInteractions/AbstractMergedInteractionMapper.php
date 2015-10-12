@@ -1,8 +1,8 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\In\MergedInteractions;
+namespace LearnosityQti\Processors\QtiV2\In\MergedInteractions;
 
-use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
+use LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
 use qtism\data\content\ItemBody;
 use qtism\data\QtiComponentCollection;
 

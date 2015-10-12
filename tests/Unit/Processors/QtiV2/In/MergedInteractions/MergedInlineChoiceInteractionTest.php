@@ -1,12 +1,12 @@
 <?php
 
-namespace Learnosity\Tests\Unit\Processors\QtiV2\In\MergedInteractions;
+namespace LearnosityQti\Tests\Unit\Processors\QtiV2\In\MergedInteractions;
 
-use Learnosity\Processors\QtiV2\In\MergedInteractions\MergedInlineChoiceInteractionMapper;
-use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
-use Learnosity\Tests\Unit\Processors\QtiV2\In\Fixtures\InlineChoiceInteractionBuilder;
-use Learnosity\Tests\Unit\Processors\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
-use Learnosity\Tests\Unit\Processors\QtiV2\In\Interactions\AbstractInteractionTest;
+use LearnosityQti\Processors\QtiV2\In\MergedInteractions\MergedInlineChoiceInteractionMapper;
+use LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
+use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\InlineChoiceInteractionBuilder;
+use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
+use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Interactions\AbstractInteractionTest;
 use qtism\data\content\BlockCollection;
 use qtism\data\content\InlineCollection;
 use qtism\data\content\ItemBody;

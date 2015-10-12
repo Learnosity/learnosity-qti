@@ -1,6 +1,6 @@
 <?php
 
-namespace Learnosity\Utils\SimpleHtmlDom;
+namespace LearnosityQti\Utils\SimpleHtmlDom;
 
 require_once "simple_html_dom.php";
 

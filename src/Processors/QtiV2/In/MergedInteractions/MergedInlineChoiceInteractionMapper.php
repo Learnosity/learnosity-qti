@@ -1,10 +1,10 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\In\MergedInteractions;
+namespace LearnosityQti\Processors\QtiV2\In\MergedInteractions;
 
-use Learnosity\Entities\QuestionTypes\clozedropdown;
-use Learnosity\Utils\QtiMarshallerUtil;
-use Learnosity\Processors\QtiV2\In\Validation\InlineChoiceInteractionValidationBuilder;
+use LearnosityQti\Entities\QuestionTypes\clozedropdown;
+use LearnosityQti\Utils\QtiMarshallerUtil;
+use LearnosityQti\Processors\QtiV2\In\Validation\InlineChoiceInteractionValidationBuilder;
 use qtism\data\content\interactions\InlineChoice;
 use qtism\data\content\interactions\Interaction;
 use qtism\data\content\ItemBody;

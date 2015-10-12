@@ -1,9 +1,9 @@
 <?php
 
-namespace Learnosity\Processors\Learnosity\In;
+namespace LearnosityQti\Processors\Learnosity\In;
 
-use Learnosity\Exceptions\MappingException;
-use Learnosity\Services\LogService;
+use LearnosityQti\Exceptions\MappingException;
+use LearnosityQti\Services\LogService;
 
 class EntityBuilder
 {

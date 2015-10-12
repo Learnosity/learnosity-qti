@@ -1,9 +1,9 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\In\Processings;
+namespace LearnosityQti\Processors\QtiV2\In\Processings;
 
-use Learnosity\Entities\Item\item;
-use Learnosity\Utils\UuidUtil;
+use LearnosityQti\Entities\Item\item;
+use LearnosityQti\Utils\UuidUtil;
 use qtism\data\AssessmentItem;
 
 class IdentifiersProcessing implements ProcessingInterface

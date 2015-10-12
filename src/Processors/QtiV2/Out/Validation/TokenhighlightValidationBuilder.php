@@ -1,9 +1,9 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\Out\Validation;
+namespace LearnosityQti\Processors\QtiV2\Out\Validation;
 
-use Learnosity\Entities\QuestionTypes\tokenhighlight_validation;
-use Learnosity\Processors\QtiV2\Out\ResponseDeclarationBuilders\QtiCorrectResponseBuilder;
+use LearnosityQti\Entities\QuestionTypes\tokenhighlight_validation;
+use LearnosityQti\Processors\QtiV2\Out\ResponseDeclarationBuilders\QtiCorrectResponseBuilder;
 use qtism\common\enums\BaseType;
 use qtism\common\enums\Cardinality;
 use qtism\data\state\ResponseDeclaration;

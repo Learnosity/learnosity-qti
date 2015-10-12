@@ -1,10 +1,10 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\In\Validation;
+namespace LearnosityQti\Processors\QtiV2\In\Validation;
 
-use Learnosity\Exceptions\MappingException;
-use Learnosity\Processors\Learnosity\In\ValidationBuilder\ValidationBuilder;
-use Learnosity\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
+use LearnosityQti\Exceptions\MappingException;
+use LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidationBuilder;
+use LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
 use qtism\common\datatypes\DirectedPair;
 use qtism\data\state\MapEntry;
 use qtism\data\state\ResponseDeclaration;

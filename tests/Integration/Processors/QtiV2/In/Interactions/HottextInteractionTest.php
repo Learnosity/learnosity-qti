@@ -1,10 +1,10 @@
 <?php
 
-namespace Learnosity\Tests\Integration\Mappers\QtiV2\In\Interactions;
+namespace LearnosityQti\Tests\Integration\Mappers\QtiV2\In\Interactions;
 
-use Learnosity\AppContainer;
-use Learnosity\Entities\QuestionTypes\tokenhighlight;
-use Learnosity\Tests\AbstractTest;
+use LearnosityQti\AppContainer;
+use LearnosityQti\Entities\QuestionTypes\tokenhighlight;
+use LearnosityQti\Tests\AbstractTest;
 
 class HottextInteractionTest extends AbstractTest
 {
@@ -13,7 +13,7 @@ class HottextInteractionTest extends AbstractTest
         $mapper = AppContainer::getApplicationContainer()->get('qtiv2_item_mapper');
         list($item, $questions, $exceptions) = $mapper->parse($this->getFixtureFileContents('interactions/hottext.xml'));
 
-        $this->assertInstanceOf('Learnosity\Entities\Item\item', $item);
+        $this->assertInstanceOf('LearnosityQti\Entities\Item\item', $item);
         $this->assertEquals('IMS00004_StemError', $item->get_reference());
         $this->assertContains('<span class="learnosity-response question-IMS00004_StemError_RESPONSE"></span>', $item->get_content());
         $this->assertEquals('published', $item->get_status());
@@ -22,8 +22,8 @@ class HottextInteractionTest extends AbstractTest
 
         /** @var tokenhighlight $question */
         $question = $questions[0];
-        $this->assertInstanceOf('Learnosity\Entities\Question', $question);
-        $this->assertInstanceOf('Learnosity\Entities\QuestionTypes\tokenhighlight', $question->get_data());
+        $this->assertInstanceOf('LearnosityQti\Entities\Question', $question);
+        $this->assertInstanceOf('LearnosityQti\Entities\QuestionTypes\tokenhighlight', $question->get_data());
         $this->assertEquals('tokenhighlight', $question->get_type());
         $this->assertEquals('custom', $question->get_data()->get_tokenization());
 

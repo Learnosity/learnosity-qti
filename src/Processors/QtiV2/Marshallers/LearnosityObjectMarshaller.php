@@ -1,10 +1,10 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\Marshallers;
+namespace LearnosityQti\Processors\QtiV2\Marshallers;
 
-use Learnosity\Processors\QtiV2\Out\ContentCollectionBuilder;
-use Learnosity\Services\LogService;
-use Learnosity\Utils\QtiMarshallerUtil;
+use LearnosityQti\Processors\QtiV2\Out\ContentCollectionBuilder;
+use LearnosityQti\Services\LogService;
+use LearnosityQti\Utils\QtiMarshallerUtil;
 use qtism\data\content\xhtml\Object;
 use qtism\data\QtiComponent;
 use qtism\data\storage\xml\marshalling\ObjectMarshaller;

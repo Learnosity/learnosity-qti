@@ -1,12 +1,12 @@
 <?php
 
-namespace Learnosity\Tests\Unit\Processors\QtiV2\In;
+namespace LearnosityQti\Tests\Unit\Processors\QtiV2\In;
 
 
-use Learnosity\Processors\QtiV2\In\ItemBuilders\MergedItemBuilder;
-use Learnosity\Services\LogService;
-use Learnosity\Tests\Unit\Processors\QtiV2\In\Fixtures\ChoiceInteractionBuilder;
-use Learnosity\Tests\Unit\Processors\QtiV2\In\Fixtures\ItemBodyBuilder;
+use LearnosityQti\Processors\QtiV2\In\ItemBuilders\MergedItemBuilder;
+use LearnosityQti\Services\LogService;
+use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\ChoiceInteractionBuilder;
+use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\ItemBodyBuilder;
 use qtism\data\content\interactions\TextEntryInteraction;
 use qtism\data\QtiComponentCollection;
 
@@ -43,7 +43,7 @@ class MergedItemBuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(1, LogService::read());
         $questions = $this->mergedItemBuilder->getQuestions();
         $this->assertCount(1, $questions);
-        $this->assertInstanceOf('Learnosity\Entities\Question', $questions[0]);
+        $this->assertInstanceOf('LearnosityQti\Entities\Question', $questions[0]);
         $q = $questions[0];
         $this->assertEquals('testAssessmentItemIdentifier_testTextEntryInteractionOne_testTextEntryInteractionTwo', $q->get_reference());
         $this->assertEquals('clozetext', $q->get_type());

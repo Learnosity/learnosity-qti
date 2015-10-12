@@ -1,13 +1,13 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\In\Interactions;
+namespace LearnosityQti\Processors\QtiV2\In\Interactions;
 
-use Learnosity\Entities\QuestionTypes\imageclozeassociation;
-use Learnosity\Entities\QuestionTypes\imageclozeassociation_image;
-use Learnosity\Entities\QuestionTypes\imageclozedropdown_response_containers_item;
-use Learnosity\Processors\QtiV2\In\Validation\GapMatchInteractionValidationBuilder;
-use Learnosity\Utils\QtiCoordinateUtil;
-use Learnosity\Utils\QtiMarshallerUtil;
+use LearnosityQti\Entities\QuestionTypes\imageclozeassociation;
+use LearnosityQti\Entities\QuestionTypes\imageclozeassociation_image;
+use LearnosityQti\Entities\QuestionTypes\imageclozedropdown_response_containers_item;
+use LearnosityQti\Processors\QtiV2\In\Validation\GapMatchInteractionValidationBuilder;
+use LearnosityQti\Utils\QtiCoordinateUtil;
+use LearnosityQti\Utils\QtiMarshallerUtil;
 use qtism\data\content\interactions\AssociableHotspot;
 use qtism\data\content\interactions\GapChoice;
 use qtism\data\content\interactions\GraphicGapMatchInteraction as QtiGraphicGapMatchInteraction;

@@ -1,8 +1,8 @@
 <?php
 
-namespace Learnosity\Tests\Integration\Processors\QtiV2\Out\QuestionTypes;
+namespace LearnosityQti\Tests\Integration\Processors\QtiV2\Out\QuestionTypes;
 
-use Learnosity\Utils\QtiMarshallerUtil;
+use LearnosityQti\Utils\QtiMarshallerUtil;
 use qtism\data\content\interactions\ExtendedTextInteraction;
 use qtism\data\content\interactions\TextFormat;
 

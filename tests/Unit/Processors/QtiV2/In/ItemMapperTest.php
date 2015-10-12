@@ -1,12 +1,12 @@
 <?php
-namespace Learnosity\Tests\Unit\Processors\QtiV2\In;
+namespace LearnosityQti\Tests\Unit\Processors\QtiV2\In;
 
-use Learnosity\Entities\Item\item;
-use Learnosity\Entities\Question;
-use Learnosity\Entities\QuestionTypes\clozetext;
-use Learnosity\Processors\QtiV2\In\ItemMapper;
-use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
-use Learnosity\Tests\Unit\Processors\QtiV2\In\Fixtures\InlineChoiceInteractionBuilder;
+use LearnosityQti\Entities\Item\item;
+use LearnosityQti\Entities\Question;
+use LearnosityQti\Entities\QuestionTypes\clozetext;
+use LearnosityQti\Processors\QtiV2\In\ItemMapper;
+use LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
+use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\InlineChoiceInteractionBuilder;
 use PHPUnit_Framework_MockObject_MockObject;
 use qtism\data\AssessmentItem;
 use qtism\data\content\BlockCollection;
@@ -27,14 +27,14 @@ class ItemMapperTest extends \PHPUnit_Framework_TestCase
 
     public function setup()
     {
-        $this->itemBuilderFactoryMock = $this->getMockBuilder('Learnosity\Processors\QtiV2\In\ItemBuilderFactory')
+        $this->itemBuilderFactoryMock = $this->getMockBuilder('LearnosityQti\Processors\QtiV2\In\ItemBuilderFactory')
             ->disableOriginalConstructor()->getMock();
         $this->itemMapper = new ItemMapper($this->itemBuilderFactoryMock);
     }
 
     public function testParseWithoutInteraction()
     {
-        $this->setExpectedException('Learnosity\Exceptions\MappingException');
+        $this->setExpectedException('LearnosityQti\Exceptions\MappingException');
 
         $assessmentItem = $this->buildAssessmentItemWithoutInteraction();
         $data = $this->itemMapper->parseWithAssessmentItemComponent($assessmentItem);
@@ -42,7 +42,7 @@ class ItemMapperTest extends \PHPUnit_Framework_TestCase
 
     private function getMockItemBuilderWith(item $item, array $questions)
     {
-        $mockItemBuilder = $this->getMockBuilder('Learnosity\Processors\QtiV2\In\ItemBuilders\AbstractItemBuilder')
+        $mockItemBuilder = $this->getMockBuilder('LearnosityQti\Processors\QtiV2\In\ItemBuilders\AbstractItemBuilder')
             ->disableOriginalConstructor()->getMock();
         $mockItemBuilder->expects($this->once())->method('getItem')->willReturn($item);
         $mockItemBuilder->expects($this->once())->method('getQuestions')->willReturn($questions);

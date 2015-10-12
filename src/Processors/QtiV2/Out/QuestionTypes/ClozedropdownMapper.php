@@ -1,13 +1,13 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\Out\QuestionTypes;
+namespace LearnosityQti\Processors\QtiV2\Out\QuestionTypes;
 
-use Learnosity\Entities\BaseQuestionType;
-use Learnosity\Entities\QuestionTypes\clozedropdown;
-use Learnosity\Exceptions\MappingException;
-use Learnosity\Processors\QtiV2\Out\ContentCollectionBuilder;
-use Learnosity\Processors\QtiV2\Out\Validation\ClozedropdownValidationBuilder;
-use Learnosity\Utils\QtiMarshallerUtil;
+use LearnosityQti\Entities\BaseQuestionType;
+use LearnosityQti\Entities\QuestionTypes\clozedropdown;
+use LearnosityQti\Exceptions\MappingException;
+use LearnosityQti\Processors\QtiV2\Out\ContentCollectionBuilder;
+use LearnosityQti\Processors\QtiV2\Out\Validation\ClozedropdownValidationBuilder;
+use LearnosityQti\Utils\QtiMarshallerUtil;
 use qtism\data\content\interactions\InlineChoice;
 use qtism\data\content\interactions\InlineChoiceCollection;
 use qtism\data\content\interactions\InlineChoiceInteraction;

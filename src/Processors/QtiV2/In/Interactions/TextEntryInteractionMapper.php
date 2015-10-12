@@ -1,9 +1,9 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\In\Interactions;
+namespace LearnosityQti\Processors\QtiV2\In\Interactions;
 
-use Learnosity\Entities\QuestionTypes\clozetext;
-use Learnosity\Processors\QtiV2\In\Validation\TextEntryInteractionValidationBuilder;
+use LearnosityQti\Entities\QuestionTypes\clozetext;
+use LearnosityQti\Processors\QtiV2\In\Validation\TextEntryInteractionValidationBuilder;
 
 class TextEntryInteractionMapper extends AbstractInteractionMapper
 {

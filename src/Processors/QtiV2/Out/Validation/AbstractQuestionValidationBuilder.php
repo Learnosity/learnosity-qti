@@ -1,9 +1,9 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\Out\Validation;
+namespace LearnosityQti\Processors\QtiV2\Out\Validation;
 
-use Learnosity\Processors\QtiV2\Out\Constants;
-use Learnosity\Services\LogService;
+use LearnosityQti\Processors\QtiV2\Out\Constants;
+use LearnosityQti\Services\LogService;
 use qtism\data\processing\ResponseProcessing;
 
 abstract class AbstractQuestionValidationBuilder

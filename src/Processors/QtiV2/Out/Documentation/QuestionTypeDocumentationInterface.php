@@ -1,6 +1,6 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\Out\Documentation;
+namespace LearnosityQti\Processors\QtiV2\Out\Documentation;
 
 interface QuestionTypeDocumentationInterface
 {

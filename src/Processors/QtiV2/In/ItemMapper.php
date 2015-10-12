@@ -1,13 +1,13 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\In;
+namespace LearnosityQti\Processors\QtiV2\In;
 
-use Learnosity\AppContainer;
-use Learnosity\Exceptions\MappingException;
-use Learnosity\Processors\QtiV2\In\Processings\MathsProcessing;
-use Learnosity\Processors\QtiV2\In\Processings\ProcessingInterface;
-use Learnosity\Processors\QtiV2\In\Processings\RubricsProcessing;
-use Learnosity\Services\LogService;
+use LearnosityQti\AppContainer;
+use LearnosityQti\Exceptions\MappingException;
+use LearnosityQti\Processors\QtiV2\In\Processings\MathsProcessing;
+use LearnosityQti\Processors\QtiV2\In\Processings\ProcessingInterface;
+use LearnosityQti\Processors\QtiV2\In\Processings\RubricsProcessing;
+use LearnosityQti\Services\LogService;
 use qtism\data\AssessmentItem;
 use qtism\data\content\ItemBody;
 use qtism\data\processing\ResponseProcessing;

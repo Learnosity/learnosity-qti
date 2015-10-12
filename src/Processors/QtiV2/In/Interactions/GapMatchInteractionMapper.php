@@ -1,11 +1,11 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\In\Interactions;
+namespace LearnosityQti\Processors\QtiV2\In\Interactions;
 
-use Learnosity\Entities\QuestionTypes\clozeassociation;
-use Learnosity\Entities\QuestionTypes\clozeassociation_response_container;
-use Learnosity\Utils\QtiMarshallerUtil;
-use Learnosity\Processors\QtiV2\In\Validation\GapMatchInteractionValidationBuilder;
+use LearnosityQti\Entities\QuestionTypes\clozeassociation;
+use LearnosityQti\Entities\QuestionTypes\clozeassociation_response_container;
+use LearnosityQti\Utils\QtiMarshallerUtil;
+use LearnosityQti\Processors\QtiV2\In\Validation\GapMatchInteractionValidationBuilder;
 use qtism\data\content\interactions\Gap;
 use qtism\data\content\interactions\GapChoice;
 use qtism\data\content\interactions\GapMatchInteraction as QtiGapMatchInteraction;

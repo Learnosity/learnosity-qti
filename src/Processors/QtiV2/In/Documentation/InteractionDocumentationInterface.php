@@ -1,6 +1,6 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\In\Documentation;
+namespace LearnosityQti\Processors\QtiV2\In\Documentation;
 
 interface InteractionDocumentationInterface
 {

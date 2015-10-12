@@ -1,11 +1,11 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\Out;
+namespace LearnosityQti\Processors\QtiV2\Out;
 
-use Learnosity\Entities\Question;
-use Learnosity\Exceptions\MappingException;
-use Learnosity\Services\LogService;
-use Learnosity\Utils\StringUtil;
+use LearnosityQti\Entities\Question;
+use LearnosityQti\Exceptions\MappingException;
+use LearnosityQti\Services\LogService;
+use LearnosityQti\Utils\StringUtil;
 use qtism\common\enums\BaseType;
 use qtism\common\utils\Format;
 use qtism\data\AssessmentItem;
@@ -19,7 +19,7 @@ use qtism\data\state\ValueCollection;
 
 class AssessmentItemBuilder
 {
-    const MAPPER_CLASS_BASE = 'Learnosity\Processors\QtiV2\Out\QuestionTypes\\';
+    const MAPPER_CLASS_BASE = 'LearnosityQti\Processors\QtiV2\Out\QuestionTypes\\';
 
     /**
      * @var ItemBodyBuilder

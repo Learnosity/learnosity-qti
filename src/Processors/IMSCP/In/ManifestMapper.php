@@ -1,12 +1,12 @@
 <?php
 
-namespace Learnosity\Processors\IMSCP\In;
+namespace LearnosityQti\Processors\IMSCP\In;
 
-use Learnosity\Exceptions\MappingException;
-use Learnosity\Processors\IMSCP\Entities\Dependency;
-use Learnosity\Processors\IMSCP\Entities\File;
-use Learnosity\Processors\IMSCP\Entities\Manifest;
-use Learnosity\Processors\IMSCP\Entities\Resource;
+use LearnosityQti\Exceptions\MappingException;
+use LearnosityQti\Processors\IMSCP\Entities\Dependency;
+use LearnosityQti\Processors\IMSCP\Entities\File;
+use LearnosityQti\Processors\IMSCP\Entities\Manifest;
+use LearnosityQti\Processors\IMSCP\Entities\Resource;
 use qtism\data\storage\xml\marshalling\Marshaller;
 
 class ManifestMapper

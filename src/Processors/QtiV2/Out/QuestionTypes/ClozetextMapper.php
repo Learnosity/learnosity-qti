@@ -1,12 +1,12 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\Out\QuestionTypes;
+namespace LearnosityQti\Processors\QtiV2\Out\QuestionTypes;
 
-use Learnosity\Entities\BaseQuestionType;
-use Learnosity\Entities\QuestionTypes\clozetext;
-use Learnosity\Processors\QtiV2\Out\ContentCollectionBuilder;
-use Learnosity\Processors\QtiV2\Out\Validation\ClozetextValidationBuilder;
-use Learnosity\Utils\QtiMarshallerUtil;
+use LearnosityQti\Entities\BaseQuestionType;
+use LearnosityQti\Entities\QuestionTypes\clozetext;
+use LearnosityQti\Processors\QtiV2\Out\ContentCollectionBuilder;
+use LearnosityQti\Processors\QtiV2\Out\Validation\ClozetextValidationBuilder;
+use LearnosityQti\Utils\QtiMarshallerUtil;
 use qtism\data\content\interactions\TextEntryInteraction;
 use qtism\data\content\xhtml\text\Div;
 

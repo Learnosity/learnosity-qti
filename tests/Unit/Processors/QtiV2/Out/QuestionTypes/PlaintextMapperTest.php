@@ -1,10 +1,10 @@
 <?php
 
-namespace Learnosity\Tests\Unit\Processors\QtiV2\Out\QuestionTypes;
+namespace LearnosityQti\Tests\Unit\Processors\QtiV2\Out\QuestionTypes;
 
-use Learnosity\Entities\QuestionTypes\plaintext;
-use Learnosity\Processors\QtiV2\Out\QuestionTypes\PlaintextMapper;
-use Learnosity\Utils\QtiMarshallerUtil;
+use LearnosityQti\Entities\QuestionTypes\plaintext;
+use LearnosityQti\Processors\QtiV2\Out\QuestionTypes\PlaintextMapper;
+use LearnosityQti\Utils\QtiMarshallerUtil;
 use qtism\data\content\interactions\ExtendedTextInteraction;
 use qtism\data\content\interactions\TextFormat;
 

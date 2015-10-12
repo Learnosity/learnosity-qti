@@ -1,16 +1,16 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\Out\QuestionTypes;
+namespace LearnosityQti\Processors\QtiV2\Out\QuestionTypes;
 
-use Learnosity\Entities\BaseQuestionType;
-use Learnosity\Entities\QuestionTypes\imageclozeassociation;
-use Learnosity\Entities\QuestionTypes\imageclozeassociation_image;
-use Learnosity\Exceptions\MappingException;
-use Learnosity\Processors\QtiV2\Out\Validation\ImageclozeassociationValidationBuilder;
-use Learnosity\Utils\CurlUtil;
-use Learnosity\Utils\MimeUtil;
-use Learnosity\Utils\QtiCoordinateUtil;
-use Learnosity\Utils\SimpleHtmlDom\SimpleHtmlDom;
+use LearnosityQti\Entities\BaseQuestionType;
+use LearnosityQti\Entities\QuestionTypes\imageclozeassociation;
+use LearnosityQti\Entities\QuestionTypes\imageclozeassociation_image;
+use LearnosityQti\Exceptions\MappingException;
+use LearnosityQti\Processors\QtiV2\Out\Validation\ImageclozeassociationValidationBuilder;
+use LearnosityQti\Utils\CurlUtil;
+use LearnosityQti\Utils\MimeUtil;
+use LearnosityQti\Utils\QtiCoordinateUtil;
+use LearnosityQti\Utils\SimpleHtmlDom\SimpleHtmlDom;
 use qtism\common\datatypes\Shape;
 use qtism\data\content\interactions\AssociableHotspot;
 use qtism\data\content\interactions\AssociableHotspotCollection;

@@ -1,14 +1,14 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\Out\QuestionTypes;
+namespace LearnosityQti\Processors\QtiV2\Out\QuestionTypes;
 
-use Learnosity\Entities\QuestionTypes\mcq_ui_style;
-use Learnosity\Processors\QtiV2\Out\Validation\McqValidationBuilder;
-use Learnosity\Entities\BaseQuestionType;
-use Learnosity\Entities\QuestionTypes\mcq;
-use Learnosity\Entities\QuestionTypes\mcq_options_item;
-use Learnosity\Services\LogService;
-use Learnosity\Utils\QtiMarshallerUtil;
+use LearnosityQti\Entities\QuestionTypes\mcq_ui_style;
+use LearnosityQti\Processors\QtiV2\Out\Validation\McqValidationBuilder;
+use LearnosityQti\Entities\BaseQuestionType;
+use LearnosityQti\Entities\QuestionTypes\mcq;
+use LearnosityQti\Entities\QuestionTypes\mcq_options_item;
+use LearnosityQti\Services\LogService;
+use LearnosityQti\Utils\QtiMarshallerUtil;
 use qtism\common\utils\Format;
 use qtism\data\content\FlowStaticCollection;
 use qtism\data\content\interactions\ChoiceInteraction;

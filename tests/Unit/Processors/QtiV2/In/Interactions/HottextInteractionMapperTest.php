@@ -1,11 +1,11 @@
 <?php
 
-namespace Learnosity\Tests\Unit\Processors\QtiV2\In\Interactions;
+namespace LearnosityQti\Tests\Unit\Processors\QtiV2\In\Interactions;
 
-use Learnosity\Processors\QtiV2\In\Interactions\HottextInteractionMapper;
-use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
-use Learnosity\Tests\Unit\Processors\QtiV2\In\Fixtures\HottextInteractionBuilder;
-use Learnosity\Tests\Unit\Processors\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
+use LearnosityQti\Processors\QtiV2\In\Interactions\HottextInteractionMapper;
+use LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
+use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\HottextInteractionBuilder;
+use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
 use qtism\data\content\FlowStaticCollection;
 use qtism\data\content\interactions\Prompt;
 use qtism\data\content\TextRun;

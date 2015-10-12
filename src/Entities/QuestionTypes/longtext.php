@@ -1,8 +1,8 @@
 <?php
 
-namespace Learnosity\Entities\QuestionTypes;
+namespace LearnosityQti\Entities\QuestionTypes;
 
-use Learnosity\Entities\BaseQuestionType;
+use LearnosityQti\Entities\BaseQuestionType;
 
 /**
 * This class is auto-generated based on Schemas API and you should not modify its content

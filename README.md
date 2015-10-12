@@ -74,7 +74,7 @@ ie. `item.json`
 }
 ```
 ```
-use Learnosity\Converter;
+use LearnosityQti\Converter;
 
 $question = json_decode(file_get_contents('item.json'), true);
 list($xmlString, $manifest) = Converter::convertLearnosityToQtiItem($question);
@@ -86,7 +86,7 @@ var_dump($manifest);
 ### Converting QTI XML string to Learnosity JSON
 
 ```
-use Learnosity\Converter;
+use LearnosityQti\Converter;
 
 $xmlString = '<assessmentItem ...> ... </assessmentItem>'
 list($item, $questions, $manifest) = Converter::convertQtiItemToLearnosity($xmlString);

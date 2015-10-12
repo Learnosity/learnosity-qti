@@ -1,10 +1,10 @@
 <?php
 
-namespace Learnosity\Tests\Integration\Mappers\QtiV2\In\Interactions;
+namespace LearnosityQti\Tests\Integration\Mappers\QtiV2\In\Interactions;
 
-use Learnosity\AppContainer;
-use Learnosity\Entities\QuestionTypes\clozeassociation;
-use Learnosity\Tests\AbstractTest;
+use LearnosityQti\AppContainer;
+use LearnosityQti\Entities\QuestionTypes\clozeassociation;
+use LearnosityQti\Tests\AbstractTest;
 
 class GapMatchInteractionTest extends AbstractTest
 {
@@ -14,7 +14,7 @@ class GapMatchInteractionTest extends AbstractTest
         list($item, $questions, $exceptions) = $mapper->parse($this->getFixtureFileContents('interactions/gap_match.xml'));
 
         $this->assertNotNull($item);
-        $this->assertInstanceOf('Learnosity\Entities\Item\item', $item);
+        $this->assertInstanceOf('LearnosityQti\Entities\Item\item', $item);
         $this->assertEquals('gapMatch', $item->get_reference());
 
         $this->assertCount(1, $questions);
@@ -36,7 +36,7 @@ class GapMatchInteractionTest extends AbstractTest
         list($item, $questions, $exceptions) = $mapper->parse($this->getFixtureFileContents('interactions/gap_match_with_duplicated_map.xml'));
 
         $this->assertNotNull($item);
-        $this->assertInstanceOf('Learnosity\Entities\Item\item', $item);
+        $this->assertInstanceOf('LearnosityQti\Entities\Item\item', $item);
         $this->assertEquals('gapMatch', $item->get_reference());
 
         $this->assertCount(1, $questions);
@@ -71,7 +71,7 @@ class GapMatchInteractionTest extends AbstractTest
         list($item, $questions, $exceptions) = $mapper->parse($this->getFixtureFileContents('interactions/gap_match_with_imageObject.xml'));
 
         $this->assertNotNull($item);
-        $this->assertInstanceOf('Learnosity\Entities\Item\item', $item);
+        $this->assertInstanceOf('LearnosityQti\Entities\Item\item', $item);
         $this->assertEquals('gapMatch', $item->get_reference());
 
         $this->assertCount(1, $questions);

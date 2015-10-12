@@ -1,6 +1,6 @@
 <?php
 
-namespace Learnosity\Utils;
+namespace LearnosityQti\Utils;
 
 // Thanks to Andrew Moore http://www.php.net/manual/en/function.uniqid.php#94959
 class UuidUtil

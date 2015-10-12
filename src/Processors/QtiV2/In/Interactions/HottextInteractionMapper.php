@@ -1,10 +1,10 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\In\Interactions;
+namespace LearnosityQti\Processors\QtiV2\In\Interactions;
 
-use Learnosity\Entities\QuestionTypes\tokenhighlight;
-use Learnosity\Utils\QtiMarshallerUtil;
-use Learnosity\Processors\QtiV2\In\Validation\HottextInteractionValidationBuilder;
+use LearnosityQti\Entities\QuestionTypes\tokenhighlight;
+use LearnosityQti\Utils\QtiMarshallerUtil;
+use LearnosityQti\Processors\QtiV2\In\Validation\HottextInteractionValidationBuilder;
 use qtism\data\content\InlineCollection;
 use qtism\data\content\interactions\Hottext;
 use qtism\data\content\interactions\HottextInteraction;

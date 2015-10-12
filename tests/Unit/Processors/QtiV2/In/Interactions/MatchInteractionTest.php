@@ -1,14 +1,14 @@
 <?php
 
-namespace Learnosity\Tests\Unit\Processors\QtiV2\In\Interactions;
+namespace LearnosityQti\Tests\Unit\Processors\QtiV2\In\Interactions;
 
-use Learnosity\Entities\QuestionTypes\choicematrix;
-use Learnosity\Entities\QuestionTypes\choicematrix_validation;
-use Learnosity\Entities\QuestionTypes\choicematrix_validation_valid_response;
-use Learnosity\Processors\QtiV2\In\Interactions\MatchInteractionMapper;
-use Learnosity\Processors\QtiV2\In\ResponseProcessingTemplate;
-use Learnosity\Tests\Unit\Processors\QtiV2\In\Fixtures\MatchInteractionBuilder;
-use Learnosity\Tests\Unit\Processors\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
+use LearnosityQti\Entities\QuestionTypes\choicematrix;
+use LearnosityQti\Entities\QuestionTypes\choicematrix_validation;
+use LearnosityQti\Entities\QuestionTypes\choicematrix_validation_valid_response;
+use LearnosityQti\Processors\QtiV2\In\Interactions\MatchInteractionMapper;
+use LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
+use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\MatchInteractionBuilder;
+use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
 use qtism\common\datatypes\DirectedPair;
 
 class MatchInteractionTest extends AbstractInteractionTest
@@ -155,7 +155,7 @@ class MatchInteractionTest extends AbstractInteractionTest
 
         /** @var choicematrix $choicematrix */
         $choicematrix = $mapper->getQuestionType();
-        $this->assertInstanceOf('Learnosity\Entities\QuestionTypes\choicematrix', $choicematrix);
+        $this->assertInstanceOf('LearnosityQti\Entities\QuestionTypes\choicematrix', $choicematrix);
         $this->assertEquals('choicematrix', $choicematrix->get_type());
         $this->assertCount(2, $choicematrix->get_options());
         $this->assertContains('Item C', $choicematrix->get_options());

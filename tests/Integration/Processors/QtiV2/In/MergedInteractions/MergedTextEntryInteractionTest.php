@@ -1,11 +1,11 @@
 <?php
 
-namespace Learnosity\Tests\Integration\Processors\QtiV2\In\MergedInteractions;
+namespace LearnosityQti\Tests\Integration\Processors\QtiV2\In\MergedInteractions;
 
-use Learnosity\AppContainer;
-use Learnosity\Processors\QtiV2\In\ItemMapper;
-use Learnosity\Tests\AbstractTest;
-use Learnosity\Utils\ArrayUtil;
+use LearnosityQti\AppContainer;
+use LearnosityQti\Processors\QtiV2\In\ItemMapper;
+use LearnosityQti\Tests\AbstractTest;
+use LearnosityQti\Utils\ArrayUtil;
 
 class MergedTextEntryInteractionTest extends AbstractTest
 {
@@ -22,8 +22,8 @@ class MergedTextEntryInteractionTest extends AbstractTest
         $file = $this->getFixtureFileContents('interactions/textentryinteraction.xml');
         list($item, $questions) = $this->mapper->parse($file);
 
-        /** @var \Learnosity\Entities\Item\item $item */
-        $this->assertInstanceOf('Learnosity\Entities\Item\item', $item);
+        /** @var \LearnosityQti\Entities\Item\item $item */
+        $this->assertInstanceOf('LearnosityQti\Entities\Item\item', $item);
         $this->assertTrue($item->get_reference() === 'res_AA-FIB_B13_CH1_geoc_f1f1');
         $this->assertTrue($item->get_status() === 'published');
 
@@ -32,27 +32,27 @@ class MergedTextEntryInteractionTest extends AbstractTest
                 '<span class="learnosity-response question-' . $item->get_questionReferences()[0] . '"></span>') === 1);
         $this->assertTrue(count($questions) === 1);
         $q = $questions[0];
-        $this->assertInstanceOf('\Learnosity\Entities\Question', $q);
+        $this->assertInstanceOf('\LearnosityQti\Entities\Question', $q);
 
-        /* @var $q \Learnosity\Entities\Question */
+        /* @var $q \LearnosityQti\Entities\Question */
         $this->assertTrue($q->get_type() === 'clozetext');
 
-        /* @var $questionType \Learnosity\Entities\QuestionTypes\clozetext */
+        /* @var $questionType \LearnosityQti\Entities\QuestionTypes\clozetext */
         $questionType = $q->get_data();
-        $this->assertInstanceOf('\Learnosity\Entities\QuestionTypes\clozetext', $questionType);
+        $this->assertInstanceOf('\LearnosityQti\Entities\QuestionTypes\clozetext', $questionType);
         $this->assertEmpty($questionType->get_stimulus());
         $this->assertTrue($questionType->get_type() === 'clozetext');
         $this->assertTrue(substr_count($questionType->get_template(), '{{response}}') === 2);
 
-        /* @var $validation \Learnosity\Entities\QuestionTypes\clozetext_validation */
+        /* @var $validation \LearnosityQti\Entities\QuestionTypes\clozetext_validation */
         $validation = $questionType->get_validation();
-        $this->assertInstanceOf('\Learnosity\Entities\QuestionTypes\clozetext_validation', $validation);
+        $this->assertInstanceOf('\LearnosityQti\Entities\QuestionTypes\clozetext_validation', $validation);
         $this->assertEquals($validation->get_scoring_type(), 'exactMatch');
 
-        /* @var $validResponse \Learnosity\Entities\QuestionTypes\clozetext_validation_valid_response */
+        /* @var $validResponse \LearnosityQti\Entities\QuestionTypes\clozetext_validation_valid_response */
         $validResponse = $validation->get_valid_response();
         $this->assertInstanceOf(
-            '\Learnosity\Entities\QuestionTypes\clozetext_validation_valid_response',
+            '\LearnosityQti\Entities\QuestionTypes\clozetext_validation_valid_response',
             $validResponse
         );
         $this->assertEquals(6, $validResponse->get_score());
@@ -62,10 +62,10 @@ class MergedTextEntryInteractionTest extends AbstractTest
 
         $altResponses = $validation->get_alt_responses();
         $this->assertTrue(count($altResponses) === 3);
-        /* @var $altResponse \Learnosity\Entities\QuestionTypes\clozetext_validation_alt_responses_item */
+        /* @var $altResponse \LearnosityQti\Entities\QuestionTypes\clozetext_validation_alt_responses_item */
         foreach ($altResponses as $altResponse) {
             $this->assertInstanceOf(
-                '\Learnosity\Entities\QuestionTypes\clozetext_validation_alt_responses_item',
+                '\LearnosityQti\Entities\QuestionTypes\clozetext_validation_alt_responses_item',
                 $altResponse
             );
             $options[] = $altResponse->get_value();

@@ -1,8 +1,8 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\Out\Validation;
+namespace LearnosityQti\Processors\QtiV2\Out\Validation;
 
-use Learnosity\Exceptions\MappingException;
+use LearnosityQti\Exceptions\MappingException;
 use qtism\common\datatypes\DirectedPair;
 use qtism\common\enums\BaseType;
 use qtism\common\enums\Cardinality;

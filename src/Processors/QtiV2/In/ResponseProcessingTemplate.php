@@ -1,6 +1,6 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\In;
+namespace LearnosityQti\Processors\QtiV2\In;
 
 class ResponseProcessingTemplate
 {

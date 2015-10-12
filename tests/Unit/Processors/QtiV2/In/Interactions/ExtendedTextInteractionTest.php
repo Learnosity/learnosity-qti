@@ -1,7 +1,8 @@
 <?php
 
-namespace Learnosity\Tests\Unit\Processors\QtiV2\In\Interactions;
+namespace LearnosityQti\Tests\Unit\Processors\QtiV2\In\Interactions;
 
+use LearnosityQti\Processors\QtiV2\In\Interactions\ExtendedTextInteractionMapper;
 use qtism\data\content\FlowStaticCollection;
 use qtism\data\content\interactions\ExtendedTextInteraction;
 use qtism\data\content\interactions\Prompt;
@@ -12,7 +13,7 @@ class ExtendedTextInteractionTest extends AbstractInteractionTest
     public function testWithNoValidation()
     {
         $interaction = $this->buildExtendedTextInteraction('identifierOne');
-        $mapper = new \Learnosity\Processors\QtiV2\In\Interactions\ExtendedTextInteractionMapper($interaction);
+        $mapper = new ExtendedTextInteractionMapper($interaction);
         $question = $mapper->getQuestionType();
 
         $this->assertNotNull($question);
@@ -25,7 +26,7 @@ class ExtendedTextInteractionTest extends AbstractInteractionTest
     {
         $interaction = $this->buildExtendedTextInteraction('identifierOne');
         $interaction->setPlaceholderText('I am awesome!');
-        $mapper = new \Learnosity\Processors\QtiV2\In\Interactions\ExtendedTextInteractionMapper($interaction);
+        $mapper = new ExtendedTextInteractionMapper($interaction);
         $question = $mapper->getQuestionType();
 
         $this->assertNotNull($question);
@@ -36,7 +37,7 @@ class ExtendedTextInteractionTest extends AbstractInteractionTest
     {
         $interaction = $this->buildExtendedTextInteraction('identifierOne');
         $interaction->setExpectedLength(200);
-        $mapper = new \Learnosity\Processors\QtiV2\In\Interactions\ExtendedTextInteractionMapper($interaction);
+        $mapper = new ExtendedTextInteractionMapper($interaction);
         $question = $mapper->getQuestionType();
 
         $this->assertNotNull($question);
@@ -49,7 +50,7 @@ class ExtendedTextInteractionTest extends AbstractInteractionTest
         $interaction = $this->buildExtendedTextInteraction('identifierOne');
         $interaction->setMaxStrings(5);
         $interaction->setExpectedLength(10);
-        $mapper = new \Learnosity\Processors\QtiV2\In\Interactions\ExtendedTextInteractionMapper($interaction);
+        $mapper = new ExtendedTextInteractionMapper($interaction);
         $question = $mapper->getQuestionType();
 
         $this->assertNotNull($question);

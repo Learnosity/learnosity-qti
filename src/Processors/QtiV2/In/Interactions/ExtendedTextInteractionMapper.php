@@ -1,10 +1,10 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\In\Interactions;
+namespace LearnosityQti\Processors\QtiV2\In\Interactions;
 
-use Learnosity\Entities\QuestionTypes\longtext;
-use Learnosity\Utils\QtiMarshallerUtil;
-use Learnosity\Services\LogService;
+use LearnosityQti\Entities\QuestionTypes\longtext;
+use LearnosityQti\Utils\QtiMarshallerUtil;
+use LearnosityQti\Services\LogService;
 use qtism\data\content\interactions\ExtendedTextInteraction as QtiExtendedTextInteraction;
 
 class ExtendedTextInteractionMapper extends AbstractInteractionMapper

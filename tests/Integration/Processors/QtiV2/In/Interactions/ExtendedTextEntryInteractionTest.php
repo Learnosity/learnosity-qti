@@ -1,13 +1,13 @@
 <?php
 
-namespace Learnosity\Tests\Integration\Mappers\QtiV2\In\Interactions;
+namespace LearnosityQti\Tests\Integration\Mappers\QtiV2\In\Interactions;
 
-use Learnosity\AppContainer;
-use Learnosity\Entities\Item\item;
-use Learnosity\Entities\Question;
-use Learnosity\Entities\QuestionTypes\longtext;
-use Learnosity\Processors\QtiV2\In\ItemMapper;
-use Learnosity\Tests\AbstractTest;
+use LearnosityQti\AppContainer;
+use LearnosityQti\Entities\Item\item;
+use LearnosityQti\Entities\Question;
+use LearnosityQti\Entities\QuestionTypes\longtext;
+use LearnosityQti\Processors\QtiV2\In\ItemMapper;
+use LearnosityQti\Tests\AbstractTest;
 
 class ExtendedTextEntryInteractionTest extends AbstractTest
 {
@@ -28,7 +28,7 @@ class ExtendedTextEntryInteractionTest extends AbstractTest
         $this->assertCount(1, $data[1]);
         /** @var item $item */
         $item = $data[0];
-        $this->assertInstanceOf('Learnosity\Entities\Item\item', $item);
+        $this->assertInstanceOf('LearnosityQti\Entities\Item\item', $item);
         $this->assertEquals('extendedText', $item->get_reference());
         $this->assertEquals('published', $item->get_status());
         $this->assertEquals('Writing a Postcard', $item->get_description());
@@ -41,13 +41,13 @@ class ExtendedTextEntryInteractionTest extends AbstractTest
 
         /** @var Question $question */
         $question = $data[1][0];
-        $this->assertInstanceOf('Learnosity\Entities\Question', $question);
+        $this->assertInstanceOf('LearnosityQti\Entities\Question', $question);
         $this->assertEquals('extendedText_RESPONSE', $question->get_reference());
         $this->assertEquals('longtext', $question->get_type());
 
         /** @var longtext $q */
         $q = $question->get_data();
-        $this->assertInstanceOf('Learnosity\Entities\QuestionTypes\longtext', $q);
+        $this->assertInstanceOf('LearnosityQti\Entities\QuestionTypes\longtext', $q);
         $this->assertEquals('longtext', $q->get_type());
         $this->assertEquals('<p>Read this postcard from your English pen-friend, Sam.</p>' . 'Write Sam a postcard. Answer the questions. Write 25-35 words.', $q->get_stimulus());
         $this->assertEquals(40, $q->get_max_length());

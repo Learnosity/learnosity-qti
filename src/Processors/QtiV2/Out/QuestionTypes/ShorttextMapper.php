@@ -1,10 +1,10 @@
 <?php
 
-namespace Learnosity\Processors\QtiV2\Out\QuestionTypes;
+namespace LearnosityQti\Processors\QtiV2\Out\QuestionTypes;
 
-use Learnosity\Entities\BaseQuestionType;
-use Learnosity\Entities\QuestionTypes\shorttext;
-use Learnosity\Processors\QtiV2\Out\Validation\ShorttextValidationBuilder;
+use LearnosityQti\Entities\BaseQuestionType;
+use LearnosityQti\Entities\QuestionTypes\shorttext;
+use LearnosityQti\Processors\QtiV2\Out\Validation\ShorttextValidationBuilder;
 use qtism\data\content\FlowCollection;
 use qtism\data\content\interactions\TextEntryInteraction;
 use qtism\data\content\xhtml\text\Div;
