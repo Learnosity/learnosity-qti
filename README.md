@@ -3,8 +3,9 @@
 Include this package into easily convert QTI Assessment Item to our Item and Question JSON format
 This SDK should run on PHP 5.5+
 
-Demo: [http://docs.learnosity.com/demos/other/qti/index.php](http://docs.learnosity.com/demos/other/qti/index.php)
-Documentation: [http://docs.learnosity.com/demos/other/qti/documentation.html](http://docs.learnosity.com/demos/other/qti/documentation.html)
+Live Demo: [http://docs.learnosity.com/authoring/qti/demo](http://docs.learnosity.com/authoring/qti/demo)
+
+Documentation: [http://docs.learnosity.com/authoring/qti](http://docs.learnosity.com/authoring/qti)
 
 ## Installation via Composer
 
