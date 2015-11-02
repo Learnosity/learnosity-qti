@@ -4,6 +4,7 @@ namespace LearnosityQti\Tests\Integration;
 
 use LearnosityQti\Converter;
 use LearnosityQti\Tests\AbstractTest;
+use LearnosityQti\Utils\FileSystemUtil;
 
 class ConverterTest extends AbstractTest
 {
@@ -18,5 +19,13 @@ class ConverterTest extends AbstractTest
     {
         $xmlString = $this->getFixtureFileContents('otherqtis/test.xml');
         list($item, $questions, $manifest) = Converter::convertQtiItemToLearnosity($xmlString);
+    }
+
+    public function testConvertImcpDirectoryToLearnosityDirectory()
+    {
+        $qtiDirectory = FileSystemUtil::getTestFixturesPath() . '/imscp/Bien_Dit_Level_1_QTIv2-1cp_ABGUID__20150605';
+        $learnosityDirectory = FileSystemUtil::getTestFixturesPath() . '/imscp/Bien_Dit_Level_1_QTIv2-1cp_ABGUID__20150605_Result';
+        FileSystemUtil::createOrReplaceDir($learnosityDirectory);
+        Converter::convertImscpDirectoryToLearnosityDirectory($qtiDirectory, $learnosityDirectory);
     }
 }

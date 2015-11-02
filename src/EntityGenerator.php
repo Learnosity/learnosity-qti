@@ -26,7 +26,7 @@ class EntityGenerator
 
     private function cleanUp($path)
     {
-        @FileSystemUtil::recursiveRemoveDirectory($path);
+        @FileSystemUtil::removeDir($path);
     }
 
     private function renderFile($template, $target, $parameters)

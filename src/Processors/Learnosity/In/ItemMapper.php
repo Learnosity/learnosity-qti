@@ -8,7 +8,7 @@ class ItemMapper
 {
     /**
      * @return item
-     * @throws \Learnosity\Exceptions\MappingException
+     * @throws \LearnosityQti\Exceptions\MappingException
      */
     public function parse(array $itemJson)
     {

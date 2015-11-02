@@ -12,9 +12,12 @@ use LearnosityQti\Processors\QtiV2\Out\ItemWriter;
 use LearnosityQti\Processors\QtiV2\Out\QuestionWriter;
 use LearnosityQti\Services\LearnosityToQtiPreProcessingService;
 use LearnosityQti\Services\LogService;
+use LearnosityQti\Utils\FileSystemUtil;
 use LearnosityQti\Utils\StringUtil;
 use qtism\data\storage\xml\XmlDocument;
 use qtism\data\storage\xml\XmlStorageException;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 class Converter
 {
@@ -24,6 +27,74 @@ class Converter
     const LEARNOSITY_DATA_ITEM = 'item';
     const LEARNOSITY_DATA_QUESTION = 'question';
     const LEARNOSITY_DATA_QUESTION_DATA = 'questiondata';
+
+    public static function convertImscpDirectoryToLearnosityDirectory($imscpDirectory, $learnosityDirectory, $baseAssetsUrl = '', $validate = true)
+    {
+        // Brute extract all images from the target IMSCP folder
+        // TODO: Need more than just jpg and gif
+        $learnosityImagesDirectory = $learnosityDirectory . '/Images';
+        FileSystemUtil::createOrReplaceDir($learnosityImagesDirectory);
+        $allImages = array_merge(
+            self::extractFiles('*.jpg', $imscpDirectory, $learnosityImagesDirectory),
+            self::extractFiles('*.jpeg', $imscpDirectory, $learnosityImagesDirectory),
+            self::extractFiles('*.gif', $imscpDirectory, $learnosityImagesDirectory)
+        );
+
+        // Brute extract all the xml excepts imsmanifest.xml
+        $itemReferences = [];
+        $failedQtiXmlFilename = [];
+
+        $learnosityJsonDirectory = $learnosityDirectory . '/Json';
+        FileSystemUtil::createOrReplaceDir($learnosityJsonDirectory);
+        $finder = new Finder();
+        /** @var SplFileInfo $file */
+        foreach ($finder->files()->in($imscpDirectory)->name('*.xml') as $file) {
+            $filename = $file->getFilename();
+            if ($filename === 'imsmanifest.xml') {
+                continue;
+            }
+            $resultPath = $learnosityJsonDirectory . '/' . basename($filename, '.xml') . '.json';
+            try {
+                // Write the JSON result to a folder named with its original XML filename
+                list($item, $questions, $manifest) = self::convertQtiItemToLearnosity($file->getContents(), $baseAssetsUrl, $validate);
+                $result = [
+                    'meta' => [
+                        'status' => 'success',
+                        'manifest' => $manifest
+                    ],
+                    'data' => [
+                        'item' => $item,
+                        'questions' => $questions,
+                    ]
+                ];
+                FileSystemUtil::writeJsonToFile($result, $resultPath);
+                $itemReferences[] = $item['reference'];
+            } catch (Exception $e) {
+                $result = [
+                    'meta' => [
+                        'status' => 'failed',
+                        'message' => $e->getMessage()
+                    ],
+                    'data' => []
+                ];
+                FileSystemUtil::writeJsonToFile($result, $resultPath);
+                $failedQtiXmlFilename[] = $filename;
+            }
+        }
+        return $itemReferences;
+    }
+
+    private static function extractFiles($filename, $searchDirectory, $resultDirectory)
+    {
+        $filenames = [];
+        $finder = new Finder();
+        /** @var SplFileInfo $file */
+        foreach ($finder->files()->in($searchDirectory)->name($filename) as $file) {
+            copy($file->getPathname(), $resultDirectory . '/' . $file->getFilename());
+            $filenames[] = $file->getFilename();
+        }
+        return $filenames;
+    }
 
     public static function convertQtiItemToLearnosity($xmlString, $baseAssetsUrl = '', $validate = true)
     {

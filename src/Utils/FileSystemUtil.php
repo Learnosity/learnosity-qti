@@ -2,6 +2,7 @@
 
 namespace LearnosityQti\Utils;
 
+use DirectoryIterator;
 use Exception;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -19,35 +20,6 @@ class FileSystemUtil
             throw new Exception('Invalid file. Fail to get file ' . $path);
         }
         return $file;
-    }
-
-    public static function getPathType($path)
-    {
-        $fileInfo = new SplFileInfo($path, '', '');
-        if ($fileInfo->isDir()) {
-            return self::PATH_TYPE_DIRECTORY;
-        } elseif ($fileInfo->isFile()) {
-            $ext = $fileInfo->getExtension();
-            switch ($ext) {
-                case 'zip':
-                    return self::PATH_TYPE_ZIP;
-                default:
-                    return self::PATH_TYPE_FILE;
-            }
-        }
-        return self::PATH_TYPE_UNKNOWN;
-    }
-
-    public static function createWorkingFolder($rootPath = '/tmp', $prefix = '', $suffix = '')
-    {
-        $folderName = $prefix . '_' . StringUtil::generateRandomString(6) . '_' . $suffix;
-        $folderName = $rootPath . DIRECTORY_SEPARATOR . $folderName;
-
-        if (!@mkdir($folderName, 0700, true)) {
-            $error = error_get_last();
-            throw new Exception($error['message']);
-        }
-        return $folderName;
     }
 
     public static function readJsonContent($path)
@@ -71,15 +43,41 @@ class FileSystemUtil
         return dirname(__FILE__) . '/../../tests/Fixtures';
     }
 
-    public static function recursiveRemoveDirectory($directory)
+    public static function createDirIfNotExists($path, $mode = 0777, $recursive = true)
     {
-        foreach (glob("{$directory}/*") as $file) {
-            if (is_dir($file)) {
-                self::recursiveRemoveDirectory($file);
-            } else {
-                unlink($file);
+        if (!is_dir($path)) {
+            mkdir($path, $mode, $recursive);
+        }
+    }
+
+    public static function createOrReplaceDir($path, $mode = 0777, $recursive = true)
+    {
+        if (!is_dir($path)) {
+            mkdir($path, $mode, $recursive);
+        } else {
+            self::removeDir($path);
+            mkdir($path, $mode, $recursive);
+        }
+    }
+
+    public static function removeDir($path)
+    {
+        $dir = new DirectoryIterator($path);
+        foreach ($dir as $item) {
+            if ($item->isFile()) {
+                unlink($item->getRealPath());
+            } elseif (!$item->isDot() && $item->isDir()) {
+                self::removeDir($item->getRealPath());
             }
         }
-        rmdir($directory);
+        rmdir($path);
+    }
+
+    public static function writeJsonToFile($array, $pathname)
+    {
+        file_put_contents(
+            $pathname,
+            json_encode($array, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT)
+        );
     }
 }
