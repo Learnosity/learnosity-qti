@@ -58,9 +58,14 @@ class QtiMarshallerUtil
         $dom = new \DOMDocument();
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = false;
+        $dom->substituteEntities = false;
         $node = $dom->importNode($element, true);
 
-        return $dom->saveXML($node);
+        $string = $dom->saveXML($node);
+
+        // TODO: Decode html entitfy back here, this is a hack until I can figure out
+        // TODO: how to not do that with DomDocument.saveXML();
+        return html_entity_decode($string);
     }
 
     public static function marshallValidQti(QtiComponent $component)
