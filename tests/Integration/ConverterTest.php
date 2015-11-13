@@ -27,6 +27,12 @@ class ConverterTest extends AbstractTest
         list($item, $questions, $manifest) = Converter::convertQtiItemToLearnosity($xmlString);
     }
 
+    public function testConvertRegularManifestXmlToLearnosityJson()
+    {
+        $xmlString = $this->getFixtureFileContents('imscp/samplecp/imsmanifest.xml');
+        list($activities, $activitiesTags, $itemsTags) = Converter::convertQtiManifestToLearnosity($xmlString);
+    }
+
     public function testConvertImcpDirectoryToLearnosityDirectory()
     {
         $qtiDirectory = FileSystemUtil::getTestFixturesPath() . '/imscp/Bien_Dit_Level_1_QTIv2-1cp_ABGUID__20150605';

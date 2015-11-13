@@ -6,6 +6,8 @@ use Exception;
 use LearnosityQti\Entities\Item\item;
 use LearnosityQti\Exceptions\InvalidQtiException;
 use LearnosityQti\Exceptions\MappingException;
+use LearnosityQti\Processors\IMSCP\In\ManifestMapper;
+use LearnosityQti\Processors\IMSCP\Out\ManifestWriter;
 use LearnosityQti\Processors\Learnosity\In\ItemMapper;
 use LearnosityQti\Processors\Learnosity\In\QuestionMapper;
 use LearnosityQti\Processors\QtiV2\Out\ItemWriter;
@@ -94,6 +96,22 @@ class Converter
             $filenames[] = $file->getFilename();
         }
         return $filenames;
+    }
+
+    public static function convertQtiManifestToLearnosity($xmlString)
+    {
+        /** @var ManifestMapper $manifestMapper */
+        $manifestMapper = AppContainer::getApplicationContainer()->get('imscp_manifest_mapper');
+        /** @var ManifestWriter $manifestWriter */
+        $manifestWriter = AppContainer::getApplicationContainer()->get('learnosity_manifest_writer');
+
+        try {
+            $manifest = $manifestMapper->parse($xmlString);
+            list($activities, $activitiesTags, $itemsTags) = $manifestWriter->convert($manifest);
+            return [$activities, $activitiesTags, $itemsTags];
+        } catch (Exception $e) {
+            throw new MappingException($e->getMessage());
+        }
     }
 
     public static function convertQtiItemToLearnosity($xmlString, $baseAssetsUrl = '', $validate = true)

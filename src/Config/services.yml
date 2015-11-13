@@ -25,6 +25,9 @@ services:
     imscp_manifest_mapper:
         class:      LearnosityQti\Processors\IMSCP\In\ManifestMapper
         scope:      prototype
+    learnosity_manifest_writer:
+        class:      LearnosityQti\Processors\IMSCP\Out\ManifestWriter
+        scope:      prototype
 
     # QTI Import Processings
     assets_processing:
