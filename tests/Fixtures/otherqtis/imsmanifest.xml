@@ -1,0 +1,3469 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest xmlns="http://www.imsglobal.org/xsd/imscp_v1p1"
+	xmlns:imsmd="http://ltsc.ieee.org/xsd/LOM"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:imsqti="http://www.imsglobal.org/xsd/imsqti_metadata_v2p1"
+	identifier="MANIFEST_QTI_23843_9780544519534"
+    xsi:schemaLocation="http://ltsc.ieee.org/xsd/LOM http://www.imsglobal.org/xsd/imsmd_loose_v1p3p2.xsd
+    http://www.imsglobal.org/xsd/imscp_v1p1 http://www.imsglobal.org/xsd/qti/qtiv2p1/qtiv2p1_imscpv1p2_v1p0.xsd
+	http://www.imsglobal.org/xsd/imsqti_metadata_v2p1 http://www.imsglobal.org/xsd/qti/qtiv2p1/imsqti_metadata_v2p1p1.xsd">
+	<metadata>
+		<schema>QTIv2.1 Package</schema>
+		<schemaversion>1.0.0</schemaversion>
+		<imsmd:lom>
+			<imsmd:general>
+				<imsmd:identifier>
+					<imsmd:catalog>QTI Package</imsmd:catalog>
+				</imsmd:identifier>
+				<imsmd:title>
+					<imsmd:string xml:lang="en">Go Math FL 2015 Algebra 1 ACE</imsmd:string>
+				</imsmd:title>
+				<imsmd:language></imsmd:language>
+				<imsmd:description>
+					<imsmd:string xml:lang="en">HMH QTI v2.1 Assessment Package - FL Grade G8-9 Math</imsmd:string>
+				</imsmd:description>
+			</imsmd:general>
+			<imsmd:lifeCycle>
+				<imsmd:version>
+					<imsmd:string xml:lang="en">1.0</imsmd:string>
+				</imsmd:version>
+				<imsmd:status>
+					<imsmd:source>LOMv1.0</imsmd:source>
+					<imsmd:value>Final</imsmd:value>
+				</imsmd:status>
+			</imsmd:lifeCycle>
+			<imsmd:metaMetadata>
+				<imsmd:metadataschema>LOMv1.0</imsmd:metadataschema>
+				<imsmd:metadataschema>QTIv2.1</imsmd:metadataschema>
+				<imsmd:language>en</imsmd:language>
+			</imsmd:metaMetadata>
+			<imsmd:technical>
+				<imsmd:format>text/x-imsqti-item-xml</imsmd:format>
+			</imsmd:technical>
+			<imsmd:rights>
+				<imsmd:description>
+					<imsmd:string xml:lang="en">(c) 2014, Houghton Mifflin Harcourt. (9780544519534)</imsmd:string>
+				</imsmd:description>
+			</imsmd:rights>
+		</imsmd:lom>
+	</metadata><organizations/><resources>
+	  <resource identifier="res_-FGM_FL15E_CAR_GALBT1_000" type="imsqti_test_xmlv2p1" href="testitems/-FGM_FL15E_CAR_GALBT1_000.xml">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_000.xml"/><dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_001"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_002"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_003"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_004"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_005"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_006"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_007"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_008"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_009"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_010"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_011"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_012"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_013"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_014"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_015"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_016"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_017"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_018"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_019"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_020"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_021"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_022"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_023"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_024"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_025"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_026"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_027"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_028"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_029"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_030"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_031"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_032"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_033"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_034"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_035"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_036"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_037"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_038"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_039"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_040"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_041"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_042"/>
+					<dependency identifierref="res_-FGM_FL15E_CAR_GALBT1_043"/>
+					</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_001" href="testitems/-FGM_FL15E_CAR_GALBT1_001.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>cc0687ff-bd03-4206-bfd1-a6c00a3b0e6d</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>multichoice</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_001.xml"/>
+              
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_002" href="testitems/-FGM_FL15E_CAR_GALBT1_002.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>cc0687ff-bd03-4206-bfd1-a6c00a3b0e6d</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>essay</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_002.xml"/>
+              
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_003" href="testitems/-FGM_FL15E_CAR_GALBT1_003.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>4641014a-4a04-42ea-a758-242a7c410bc5</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>essay</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_003.xml"/>
+              
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_004" href="testitems/-FGM_FL15E_CAR_GALBT1_004.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>4641014a-4a04-42ea-a758-242a7c410bc5</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>essay</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_004.xml"/>
+              <file href="testitems/p_ca_gm_eng_ga1_bt2_v02a_1.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_005" href="testitems/-FGM_FL15E_CAR_GALBT1_005.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>4641014a-4a04-42ea-a758-242a7c410bc5</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>multichoice</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_005.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_13.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_14.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_15.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_16.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_006" href="testitems/-FGM_FL15E_CAR_GALBT1_006.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>b8a7e69e-d432-491e-a178-6d0c6369ece1</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>multichoice</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_006.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_17.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_18.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_19.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_20.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_21.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_007" href="testitems/-FGM_FL15E_CAR_GALBT1_007.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>b8a7e69e-d432-491e-a178-6d0c6369ece1</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>multichoice</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_007.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_22.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_008" href="testitems/-FGM_FL15E_CAR_GALBT1_008.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>b8a7e69e-d432-491e-a178-6d0c6369ece1</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>multichoice</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_008.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_23.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_24.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_25.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_26.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_27.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_009" href="testitems/-FGM_FL15E_CAR_GALBT1_009.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>b8a7e69e-d432-491e-a178-6d0c6369ece1</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>multichoice</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_009.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_28.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_29.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_30.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_31.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_32.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_010" href="testitems/-FGM_FL15E_CAR_GALBT1_010.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>2191a90d-1030-4c19-980d-a90826e2ce9e</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>multichoice</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_010.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_35_a.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_33.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_34.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_35.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_011" href="testitems/-FGM_FL15E_CAR_GALBT1_011.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>2191a90d-1030-4c19-980d-a90826e2ce9e</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>multiple response</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_011.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_36.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_012" href="testitems/-FGM_FL15E_CAR_GALBT1_012.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>5253e510-7b24-44fb-b86e-89bf9576f607</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>essay</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_012.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_37.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_38.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_013" href="testitems/-FGM_FL15E_CAR_GALBT1_013.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>ab53e453-944a-43b3-9178-8443bbd95b16</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>multichoice</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_013.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_39.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_40.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_41.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_42.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_43.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_014" href="testitems/-FGM_FL15E_CAR_GALBT1_014.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>0374dc6c-a25f-460b-8fb4-fd72200c73f1,da7cba3a-a3e6-4f08-9654-c377fe57bcf3</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>multichoice</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_014.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_44.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_45.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_015" href="testitems/-FGM_FL15E_CAR_GALBT1_015.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>8f350077-a0f8-40fa-99b2-7f4e0d02815a</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>multichoice</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_015.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_46.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_47.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_48.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_49.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_016" href="testitems/-FGM_FL15E_CAR_GALBT1_016.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>5253e510-7b24-44fb-b86e-89bf9576f607</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>essay</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_016.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_50.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_51.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_52.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_017" href="testitems/-FGM_FL15E_CAR_GALBT1_017.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>74b31224-ff95-4c0d-a7d3-3ed7d443ee48</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>essay</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_017.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_53.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_018" href="testitems/-FGM_FL15E_CAR_GALBT1_018.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>74b31224-ff95-4c0d-a7d3-3ed7d443ee48</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>essay</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_018.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_54.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_019" href="testitems/-FGM_FL15E_CAR_GALBT1_019.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>74b31224-ff95-4c0d-a7d3-3ed7d443ee48</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>essay</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_019.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_56.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_020" href="testitems/-FGM_FL15E_CAR_GALBT1_020.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>74b31224-ff95-4c0d-a7d3-3ed7d443ee48</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>multiple response</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_020.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_58.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_59.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_60.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_61.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_021" href="testitems/-FGM_FL15E_CAR_GALBT1_021.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>74b31224-ff95-4c0d-a7d3-3ed7d443ee48</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>multichoice</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_021.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_62.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_63.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_64.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_65.jpg"/>
+                        <file href="testitems/p_ca_gm_eng_ga1_bt2_v02a_2.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_022" href="testitems/-FGM_FL15E_CAR_GALBT1_022.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>74b31224-ff95-4c0d-a7d3-3ed7d443ee48</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>multichoice</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_022.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_66.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_023" href="testitems/-FGM_FL15E_CAR_GALBT1_023.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>74b31224-ff95-4c0d-a7d3-3ed7d443ee48</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>multichoice</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_023.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_67.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_68.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_69.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_024" href="testitems/-FGM_FL15E_CAR_GALBT1_024.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>18186a04-0947-4402-bdac-f6aba4c9e901</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>essay</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_024.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_70.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_025" href="testitems/-FGM_FL15E_CAR_GALBT1_025.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>a764f529-16f8-4fa9-b5cd-3d0831349fe3</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>multichoice</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_025.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_72.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_73.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_74.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_75.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_76.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_77.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_78.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_79.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_80.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_81.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_026" href="testitems/-FGM_FL15E_CAR_GALBT1_026.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>a764f529-16f8-4fa9-b5cd-3d0831349fe3</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>multiple response</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_026.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_82.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_83.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_84.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_85.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_027" href="testitems/-FGM_FL15E_CAR_GALBT1_027.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>2fdbdd0a-4139-4e9c-bd71-d65d15db100d</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>multichoice</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_027.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_86.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_87.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_88.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_89.jpg"/>
+                        <file href="testitems/p_ca_gm_eng_ga1_bt2_v02a_3.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_028" href="testitems/-FGM_FL15E_CAR_GALBT1_028.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>a764f529-16f8-4fa9-b5cd-3d0831349fe3</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>multichoice</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_028.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_90.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_029" href="testitems/-FGM_FL15E_CAR_GALBT1_029.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>3b9e7038-0e8e-4ad9-b588-f99932d41bed</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>multichoice</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_029.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_91.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_92.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_93.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_94.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_030" href="testitems/-FGM_FL15E_CAR_GALBT1_030.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>3b9e7038-0e8e-4ad9-b588-f99932d41bed</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>essay</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_030.xml"/>
+              <file href="testitems/p_ca_gm_eng_ga1_bt2_v02a_4.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_031" href="testitems/-FGM_FL15E_CAR_GALBT1_031.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>46d77c7e-5843-4183-950c-b7ba0a8c2f3f</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>essay</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_031.xml"/>
+              
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_032" href="testitems/-FGM_FL15E_CAR_GALBT1_032.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>cc0687ff-bd03-4206-bfd1-a6c00a3b0e6d</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>essay</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_032.xml"/>
+              
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_033" href="testitems/-FGM_FL15E_CAR_GALBT1_033.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>4641014a-4a04-42ea-a758-242a7c410bc5</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>essay</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_033.xml"/>
+              
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_034" href="testitems/-FGM_FL15E_CAR_GALBT1_034.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>b8a7e69e-d432-491e-a178-6d0c6369ece1</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>essay</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_034.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_97.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_035" href="testitems/-FGM_FL15E_CAR_GALBT1_035.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>b8a7e69e-d432-491e-a178-6d0c6369ece1</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>essay</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_035.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_99.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_036" href="testitems/-FGM_FL15E_CAR_GALBT1_036.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>2191a90d-1030-4c19-980d-a90826e2ce9e</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>essay</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_036.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_100.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_037" href="testitems/-FGM_FL15E_CAR_GALBT1_037.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>0374dc6c-a25f-460b-8fb4-fd72200c73f1</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>essay</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_037.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_101.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_102.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_038" href="testitems/-FGM_FL15E_CAR_GALBT1_038.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>ab53e453-944a-43b3-9178-8443bbd95b16</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>essay</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_038.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_103.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_039" href="testitems/-FGM_FL15E_CAR_GALBT1_039.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>74b31224-ff95-4c0d-a7d3-3ed7d443ee48</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>essay</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_039.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_105.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_040" href="testitems/-FGM_FL15E_CAR_GALBT1_040.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>74b31224-ff95-4c0d-a7d3-3ed7d443ee48</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>multichoice</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_040.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_107.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_108.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_109.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_110.jpg"/>
+                        <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_111.jpg"/>
+                        <file href="testitems/p_ca_gm_eng_ga1_bt2_v02a_5.jpg"/>
+                        <file href="testitems/p_ca_gm_eng_ga1_bt2_v02a_6.jpg"/>
+                        <file href="testitems/p_ca_gm_eng_ga1_bt2_v02a_7.jpg"/>
+                        <file href="testitems/p_ca_gm_eng_ga1_bt2_v02a_8.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_041" href="testitems/-FGM_FL15E_CAR_GALBT1_041.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>74b31224-ff95-4c0d-a7d3-3ed7d443ee48</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>essay</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_041.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_112.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_042" href="testitems/-FGM_FL15E_CAR_GALBT1_042.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>39c4a7bf-37d3-4b65-9448-981cc401c99a</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>multichoice</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_042.xml"/>
+              <file href="testitems/e_ca_gm_eng_ga1_bt2_v02a_113.jpg"/>
+                        <file href="testitems/p_ca_gm_eng_ga1_bt2_v02a_10.jpg"/>
+                        <file href="testitems/p_ca_gm_eng_ga1_bt2_v02a_11.jpg"/>
+                        <file href="testitems/p_ca_gm_eng_ga1_bt2_v02a_12.jpg"/>
+                        <file href="testitems/p_ca_gm_eng_ga1_bt2_v02a_9.jpg"/>
+                        
+			</resource>
+						<resource identifier="res_-FGM_FL15E_CAR_GALBT1_043" href="testitems/-FGM_FL15E_CAR_GALBT1_043.xml" type="imsqti_item_xmlv2p1">
+			  <metadata>
+				<imsmd:lom>
+				  <imsmd:educational>
+					<imsmd:intendedEndUserRole>
+					  <imsmd:source>IMSGLC_CC_Rolesv1p3</imsmd:source>
+					  <imsmd:value>Learner</imsmd:value>
+					</imsmd:intendedEndUserRole>
+				  </imsmd:educational>
+				  <imsmd:lifeCycle>
+					<imsmd:version>
+					  <imsmd:string language="en">Published</imsmd:string>
+					</imsmd:version>
+				  </imsmd:lifeCycle>
+				  <imsmd:classification>
+						<imsmd:purpose>
+							<imsmd:source>LOMv1.0</imsmd:source>
+							<imsmd:value>discipline</imsmd:value>
+						</imsmd:purpose>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Grade Level</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>G8-9</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Subject</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Math</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Blooms Taxonomy</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>Comprehension</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>ABStandardGUIDs</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>7a98c37a-1fa1-4a05-b35b-890ae4ac8933</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+						<imsmd:taxonPath>
+							<imsmd:source>
+								<imsmd:string>Question Type</imsmd:string>
+							</imsmd:source>
+							<imsmd:taxon>
+								<imsmd:entry>
+									<imsmd:string>essay</imsmd:string>
+								</imsmd:entry>
+							</imsmd:taxon>
+						</imsmd:taxonPath>
+					</imsmd:classification>
+				  </imsmd:lom>
+				  </metadata>
+			  <file href="testitems/-FGM_FL15E_CAR_GALBT1_043.xml"/>
+              
+			</resource>
+						</resources>
+			</manifest>

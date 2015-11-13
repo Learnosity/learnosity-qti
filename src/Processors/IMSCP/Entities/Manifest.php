@@ -36,7 +36,7 @@ class Manifest
     /**
      * @param mixed $metadata
      */
-    public function setMetadata($metadata)
+    public function setMetadata(array $metadata)
     {
         $this->metadata = $metadata;
     }
