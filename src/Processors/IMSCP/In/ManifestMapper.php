@@ -3,7 +3,6 @@
 namespace LearnosityQti\Processors\IMSCP\In;
 
 use LearnosityQti\Exceptions\MappingException;
-use LearnosityQti\Processors\IMSCP\Entities\Dependency;
 use LearnosityQti\Processors\IMSCP\Entities\Manifest;
 use qtism\data\storage\xml\marshalling\Marshaller;
 
@@ -30,44 +29,13 @@ class ManifestMapper
         $resources = $resourceMapper->map($resourcesListElements);
         $manifest->setResources($resources);
 
+        // TODO: Mapping <organisation>(s) to Organisation model
+
         // Mapping package Metadata
         $metadataMapper = new MetadataMapper();
         $metadataElement = Marshaller::getChildElementsByTagName($rootElement, 'metadata');
 
-        $manifest->setMetadata(empty($metadataElement) ? [] : $metadataMapper->map($metadataElement[0]));
-
-        // TODO: Fix this
-        $errors = $this->validate($manifest);
-
+        $manifest->setMetadata($metadataMapper->map($metadataElement[0]));
         return $manifest;
-    }
-
-    /**
-     * TODO: Not done, we assume everything all good
-     * TODO: Checking if
-     * a). All files are available
-     * b). Dependency are met
-     *
-     * @param Manifest $manifest
-     * @return array
-     */
-    public function validate(Manifest $manifest)
-    {
-        $issues = [];
-        $resources = $manifest->getResources();
-
-        /* @var $resource Resource */
-        foreach ($resources as $resource) {
-            /* @var $dependency Dependency */
-            foreach ($resource->getDependencies() as $dependency) {
-                if (!isset($resources[$dependency->getIdentifierref()])) {
-                    $issues[] = new MappingException(
-                        'Dependency ' . $dependency->getIdentifierref() .
-                        ' in resource ' . $resource->getIdentifier() . ' cannot be satisfied.'
-                    );
-                }
-            }
-        }
-        return $issues;
     }
 }

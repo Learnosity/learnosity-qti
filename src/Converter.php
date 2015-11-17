@@ -98,7 +98,7 @@ class Converter
         return $filenames;
     }
 
-    public static function convertQtiManifestToLearnosity($xmlString)
+    public static function convertQtiManifestToLearnosity($xmlString, array $rules = [])
     {
         /** @var ManifestMapper $manifestMapper */
         $manifestMapper = AppContainer::getApplicationContainer()->get('imscp_manifest_mapper');
@@ -107,7 +107,7 @@ class Converter
 
         try {
             $manifest = $manifestMapper->parse($xmlString);
-            list($activities, $activitiesTags, $itemsTags) = $manifestWriter->convert($manifest);
+            list($activities, $activitiesTags, $itemsTags) = $manifestWriter->convert($manifest, $rules);
             return [$activities, $activitiesTags, $itemsTags];
         } catch (Exception $e) {
             throw new MappingException($e->getMessage());

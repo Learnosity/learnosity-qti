@@ -3,12 +3,12 @@
 namespace LearnosityQti\Processors\IMSCP\In;
 
 use DOMElement;
-use qtism\data\storage\xml\marshalling\Marshaller;
+use LearnosityQti\Processors\IMSCP\Entities\Metadata;
 
 class MetadataMapper
 {
     /**
-     * Parse an object of DOMElement to a `tags` PHP array since MetadataXML has no meaning to Learnosity
+     * Parse an object of DOMElement to an array of flattened list since MetadataXML has no meaning to Learnosity
      *
      * @param DOMElement $metadataElement
      *
@@ -16,48 +16,49 @@ class MetadataMapper
      */
     public function map(DOMElement $metadataElement)
     {
-        $flattenedMetadata = [];
-
-        // Mapping <schema>
-        $schemaElement = Marshaller::getChildElementsByTagName($metadataElement, 'schema');
-        if (!empty($schemaElement) && is_array($schemaElement) && count($schemaElement) > 0) {
-            $flattenedMetadata[$schemaElement[0]->nodeName] = [$schemaElement[0]->nodeValue];
-        }
-        // Mapping <schemaversion>
-        $schemaversionElement = Marshaller::getChildElementsByTagName($metadataElement, 'schemaversion');
-        if (!empty($schemaversionElement) && is_array($schemaversionElement) && count($schemaversionElement) > 0) {
-            $flattenedMetadata[$schemaversionElement[0]->nodeName] = [$schemaversionElement[0]->nodeValue];
-        }
-
-        // Mapping all those <lom> (s)
-        $lomElement = Marshaller::getChildElementsByTagName($metadataElement, 'lom');
-        if (!empty($lomElement) && is_array($lomElement) && count($lomElement) > 0) {
-            foreach ($lomElement[0]->childNodes as $child) {
-                $tagType = $child->localName; // No namespace
-                $tagLines = $this->recursively_find_text_nodes($child);
-                $flattenedMetadata[$tagType] = $tagLines;
-            }
-        }
-
-        return $flattenedMetadata;
+        $metadatas = $this->xml_to_array($metadataElement);
+        return new Metadata($metadatas);
     }
 
-    private function recursively_find_text_nodes($dom_element, $depth = 1, $carry = '')
+    /**
+     * http://stackoverflow.com/questions/14553547/what-is-the-best-php-dom-2-array-function
+     */
+    private function xml_to_array(DOMElement $root)
     {
-        $return = [];
-        foreach ($dom_element->childNodes as $dom_child) {
-            switch ($dom_child->nodeType) {
-                case XML_TEXT_NODE:
-                    if (trim($dom_child->nodeValue) !== '') {
-                        $return[] = $carry . $dom_child->nodeValue;
-                    }
-                    break;
-                case XML_ELEMENT_NODE:
-                    $carry .= $dom_child->localName . ':';
-                    $return = array_merge($return, $this->recursively_find_text_nodes($dom_child, $depth + 1, $carry));
-                    break;
+        $result = [];
+
+        if ($root->hasAttributes()) {
+            $attrs = $root->attributes;
+            foreach ($attrs as $attr) {
+                $result['@attributes'][$attr->name] = $attr->value;
             }
         }
-        return $return;
+
+        if ($root->hasChildNodes()) {
+            $children = $root->childNodes;
+            if ($children->length == 1) {
+                $child = $children->item(0);
+                if ($child->nodeType == XML_TEXT_NODE) {
+                    $result['_value'] = $child->nodeValue;
+                    return count($result) == 1
+                        ? $result['_value']
+                        : $result;
+                }
+            }
+            $groups = [];
+            foreach ($children as $child) {
+                if (!isset($result[$child->localName])) {
+                    $result[$child->localName] = $this->xml_to_array($child);
+                } else {
+                    if (!isset($groups[$child->localName])) {
+                        $result[$child->localName] = [$result[$child->localName]];
+                        $groups[$child->localName] = 1;
+                    }
+                    $result[$child->localName][] = $this->xml_to_array($child);
+                }
+            }
+        }
+
+        return $result;
     }
 }

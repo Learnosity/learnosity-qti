@@ -73,7 +73,7 @@ class Resource
     /**
      * @param mixed $metadata
      */
-    public function setMetadata($metadata)
+    public function setMetadata(Metadata $metadata)
     {
         $this->metadata = $metadata;
     }
