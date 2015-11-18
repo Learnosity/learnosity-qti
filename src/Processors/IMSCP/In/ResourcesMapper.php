@@ -32,7 +32,7 @@ class ResourcesMapper
             $dependencyListElements = Marshaller::getChildElementsByTagName($resourceElement, 'dependency');
             $resource->setDependencies($this->mapDependencyElements($dependencyListElements));
 
-            // Mapping its metdata
+            // Mapping its metadata
             $metadataListElements = Marshaller::getChildElementsByTagName($resourceElement, 'metadata');
             if (count($metadataListElements) > 0) {
                 $metadataMapper = new MetadataMapper();

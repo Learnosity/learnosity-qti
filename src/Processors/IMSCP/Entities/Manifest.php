@@ -8,6 +8,7 @@ class Manifest
     protected $resources;
     protected $metadata;
     protected $organizations;
+    protected $manifest;
 
     /**
      * @return mixed
@@ -71,5 +72,15 @@ class Manifest
     public function setIdentifier($identifier)
     {
         $this->identifier = $identifier;
+    }
+
+    public function getManifest()
+    {
+        return $this->manifest;
+    }
+
+    public function setManifest($manifest)
+    {
+        $this->manifest = $manifest;
     }
 }

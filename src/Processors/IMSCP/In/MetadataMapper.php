@@ -8,11 +8,7 @@ use LearnosityQti\Processors\IMSCP\Entities\Metadata;
 class MetadataMapper
 {
     /**
-     * Parse an object of DOMElement to an array of flattened list since MetadataXML has no meaning to Learnosity
-     *
-     * @param DOMElement $metadataElement
-     *
-     * @return array
+     * Parse an object of DOMElement to a nested array of array in a simple tree like structure
      */
     public function map(DOMElement $metadataElement)
     {

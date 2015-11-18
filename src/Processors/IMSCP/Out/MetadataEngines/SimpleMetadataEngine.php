@@ -18,6 +18,7 @@ class SimpleMetadataEngine
         foreach ($rules as $pathPattern => $rule) {
             $matches = $metadata->matchAndRemoveByKey($pathPattern);
             foreach ($matches as $key => $value) {
+                $value = $value['value'];
                 // Yap this guy got matched so let's fix convert it to tags
                 $tagTypeRule = $rule['tagTypeRule'];
                 $tagNameRule = $rule['tagNameRule'];

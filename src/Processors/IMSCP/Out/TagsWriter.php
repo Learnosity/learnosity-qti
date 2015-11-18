@@ -23,8 +23,7 @@ class TagsWriter
         // Lets do mapping!
         $convertedTags = [];
 
-        // TODO: Some mapping hack, need proper test and tidy up
-        // TODO: Proper JSON validation
+        // TODO: Some mapping hack, need proper test and tidy up also proper JSON validation
         // Do `simple` mapping
         if (!$metadata->isEmpty() && isset($rules['rules']['simple'])) {
             $simpleRules = $rules['rules']['simple'];
@@ -32,13 +31,13 @@ class TagsWriter
             list($convertedTags, $metadata) = $engine->mapTagsSimple($metadata, $simpleRules);
         }
 
-        // TODO: Some mapping hack, need proper test and tidy up
-        // TODO: Proper JSON validation
+        // TODO: Some mapping hack, need proper test and tidy up also proper JSON validation
         // Do `valueMap` mapping
         if (!$metadata->isEmpty() && isset($rules['rules']['valueMap'])) {
             $valueMapRules = $rules['rules']['valueMap'];
             $engine = new ValueMapEngine();
-            list($convertedTags, $metadata) = $engine->mapValueMap($metadata, $valueMapRules);
+            list($valueMapTags, $metadata) = $engine->mapValueMap($metadata, $valueMapRules);
+            $convertedTags = array_merge_recursive($convertedTags, $valueMapTags);
         }
 
         // Fix the rest with dah default `flat` mapping
@@ -48,6 +47,10 @@ class TagsWriter
             $convertedTags = array_merge_recursive($convertedTags, $otherTags);
         }
 
+        // Avoid duplication
+        foreach ($convertedTags as &$tags) {
+            $tags = array_values(array_unique($tags));
+        }
         return $convertedTags;
     }
 }

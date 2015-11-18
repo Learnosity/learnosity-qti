@@ -106,9 +106,13 @@ class Converter
         $manifestWriter = AppContainer::getApplicationContainer()->get('learnosity_manifest_writer');
 
         try {
+            LogService::flush();
+
             $manifest = $manifestMapper->parse($xmlString);
             list($activities, $activitiesTags, $itemsTags) = $manifestWriter->convert($manifest, $rules);
-            return [$activities, $activitiesTags, $itemsTags];
+
+            $messages = LogService::flush();
+            return [$activities, $activitiesTags, $itemsTags, $messages];
         } catch (Exception $e) {
             throw new MappingException($e->getMessage());
         }

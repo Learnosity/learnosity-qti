@@ -27,4 +27,15 @@ class StringUtil
         // Search forward starting from end minus needle length characters
         return $needle === "" || (($temp = strlen($haystack) - strlen($needle)) >= 0 && strpos($haystack, $needle, $temp) !== FALSE);
     }
+
+    /**
+     * http://stackoverflow.com/questions/5622085/match-string-with-asterisk
+     */
+    public static function matchString($pattern, $str)
+    {
+        $pattern = preg_replace('/([^*])/e', 'preg_quote("$1", "/")', $pattern);
+        $pattern = str_replace('*', '(.*)', $pattern);
+        $matched = preg_match_all('/^' . $pattern . '$/i', $str, $matches);
+        return [(bool) $matched, $matches];
+    }
 }

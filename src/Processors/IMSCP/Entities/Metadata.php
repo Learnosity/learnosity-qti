@@ -2,6 +2,8 @@
 
 namespace LearnosityQti\Processors\IMSCP\Entities;
 
+use LearnosityQti\Utils\StringUtil;
+
 class Metadata
 {
     private $flattenedMetadatas = [];
@@ -21,23 +23,17 @@ class Metadata
         $matches = [];
         foreach ($this->flattenedMetadatas as $key => $value)
         {
-            $match = $this->match_string($pathPattern, $key);
-            if ($match === true) {
-                $matches[$key] = $value;
+            list($valueMatched, $valueMatches) = StringUtil::matchString($pathPattern, $key);
+            if ($valueMatched === true) {
+                $matches[$key] = [
+                    'value' => $value,
+                    'valueMatched' => $valueMatched,
+                    'valueMatches' => $valueMatches
+                ];
             }
         }
         $this->removeKeys(array_keys($matches));
         return $matches;
-    }
-
-    /**
-     * http://stackoverflow.com/questions/5622085/match-string-with-asterisk
-     */
-    private function match_string($pattern, $str)
-    {
-        $pattern = preg_replace('/([^*])/e', 'preg_quote("$1", "/")', $pattern);
-        $pattern = str_replace('*', '.*', $pattern);
-        return (bool) preg_match('/^' . $pattern . '$/i', $str);
     }
 
     public function trimValues()
@@ -46,6 +42,9 @@ class Metadata
         {
             // Clean up tabs, newlines and left/right spaces and so on...
             $value = trim(preg_replace('/\s+/', ' ', $value));
+
+            // Trim to 240 chars
+            $value = substr($value, 0, 100);
         }
     }
 
