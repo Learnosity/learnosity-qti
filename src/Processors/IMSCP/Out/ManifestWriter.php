@@ -35,19 +35,22 @@ class ManifestWriter
             }
         }
 
-        // Build item reference and item tags JSON
         $itemReferences = [];
         $itemsTags = [];
-        $resources = $manifest->getResources();
+
+
+        // Build item reference and item tags JSON
         $organisations = $manifest->getOrganizations();
-        // Prioritise `organisation` element to built `items`, if does not exist then can go for `resources`
         if (!empty($organisations)) {
             foreach ($organisations as $organisation) {
                 foreach ($organisation->getItems() as $item) {
                     $itemReferences[] = $item->getIdentifier();
                 }
             }
-        } else if (!empty($resource)) {
+        }
+        // Build item reference and item tags JSON
+        $resources = $manifest->getResources();
+        if (!empty($resources)) {
             foreach ($resources as $resource) {
                 // Just add `item` resource as items, and leave css and any other resources alone
                 if (StringUtil::startsWith($resource->getType(), 'imsqti_item')) {
@@ -65,12 +68,11 @@ class ManifestWriter
             }
         }
 
-
         // Build activity JSON
         $activity = [
             'reference' => $activityReference,
             'data' => [
-                'items' => $itemReferences
+                'items' => array_values(array_unique($itemReferences)) // Just mash them up together
             ],
             'status' => 'published'
         ];
