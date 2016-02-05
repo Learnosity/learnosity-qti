@@ -21,7 +21,7 @@ class MathsProcessing implements ProcessingInterface
                 // Remove prefix if exists for conversion
                 // ie. <m:math> to just <math>
                 $element->removeAttributeNS($element->namespaceURI, $element->prefix);
-                $component->setXmlString($element->ownerDocument->saveHTML());
+                $component->setXmlString($element->ownerDocument->saveXML());
                 // Remove MathML namespace declaration
                 $component->setTargetNamespace('');
                 $this->hasMathML = true;
