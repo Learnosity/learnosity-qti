@@ -6,7 +6,7 @@ use LearnosityQti\Entities\BaseQuestionType;
 
 /**
 * This class is auto-generated based on Schemas API and you should not modify its content
-* Metadata: {"responses":"v2.72.0","feedback":"v2.71.0","features":"v2.72.0"}
+* Metadata: {"responses":"v2.84.0","feedback":"v2.71.0","features":"v2.84.0"}
 */
 class audioplayer extends BaseQuestionType {
     protected $type;
@@ -16,9 +16,6 @@ class audioplayer extends BaseQuestionType {
     protected $playback_limit;
     protected $waveform;
     protected $format;
-    protected $ui_style;
-    protected $heading;
-    protected $caption;
     
     public function __construct(
                     $type,
@@ -48,25 +45,25 @@ class audioplayer extends BaseQuestionType {
     }
 
     /**
-    * Get Metadata \
-    * Additional data for the audio player \
-    * @return audioplayer_metadata $metadata \
+    * Get metadata \
+    *  \
+    * @return object $metadata \
     */
     public function get_metadata() {
         return $this->metadata;
     }
 
     /**
-    * Set Metadata \
-    * Additional data for the audio player \
-    * @param audioplayer_metadata $metadata \
+    * Set metadata \
+    *  \
+    * @param object $metadata \
     */
-    public function set_metadata (audioplayer_metadata $metadata) {
+    public function set_metadata ($metadata) {
         $this->metadata = $metadata;
     }
 
     /**
-    * Get Source Url \
+    * Get Source URL \
     * Embed an audio clip as an additional feature to the current content. You can use your own audio or audio hosted on the I
 	nternet. \
     * @return string $src \
@@ -76,7 +73,7 @@ class audioplayer extends BaseQuestionType {
     }
 
     /**
-    * Set Source Url \
+    * Set Source URL \
     * Embed an audio clip as an additional feature to the current content. You can use your own audio or audio hosted on the I
 	nternet. \
     * @param string $src \
@@ -86,7 +83,7 @@ class audioplayer extends BaseQuestionType {
     }
 
     /**
-    * Get Player Type \
+    * Get Player type \
     * Specify the type of audio player between the options: block, button, minimal, bar.</ul> \
     * @return string $player \
     */
@@ -95,7 +92,7 @@ class audioplayer extends BaseQuestionType {
     }
 
     /**
-    * Set Player Type \
+    * Set Player type \
     * Specify the type of audio player between the options: block, button, minimal, bar.</ul> \
     * @param string $player \
     */
@@ -157,60 +154,6 @@ class audioplayer extends BaseQuestionType {
     */
     public function set_format ($format) {
         $this->format = $format;
-    }
-
-    /**
-    * Get UI style \
-    * Object that defines the different UI styles of the audio player. \
-    * @return audioplayer_ui_style $ui_style \
-    */
-    public function get_ui_style() {
-        return $this->ui_style;
-    }
-
-    /**
-    * Set UI style \
-    * Object that defines the different UI styles of the audio player. \
-    * @param audioplayer_ui_style $ui_style \
-    */
-    public function set_ui_style (audioplayer_ui_style $ui_style) {
-        $this->ui_style = $ui_style;
-    }
-
-    /**
-    * Get Heading \
-    * Heading of the audio player \
-    * @return string $heading \
-    */
-    public function get_heading() {
-        return $this->heading;
-    }
-
-    /**
-    * Set Heading \
-    * Heading of the audio player \
-    * @param string $heading \
-    */
-    public function set_heading ($heading) {
-        $this->heading = $heading;
-    }
-
-    /**
-    * Get Caption \
-    * Description of the audio being played \
-    * @return string $caption \
-    */
-    public function get_caption() {
-        return $this->caption;
-    }
-
-    /**
-    * Set Caption \
-    * Description of the audio being played \
-    * @param string $caption \
-    */
-    public function set_caption ($caption) {
-        $this->caption = $caption;
     }
 
     

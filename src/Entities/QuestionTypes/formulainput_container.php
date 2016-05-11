@@ -6,7 +6,7 @@ use LearnosityQti\Entities\BaseQuestionTypeAttribute;
 
 /**
 * This class is auto-generated based on Schemas API and you should not modify its content
-* Metadata: {"responses":"v2.72.0","feedback":"v2.71.0","features":"v2.72.0"}
+* Metadata: {"responses":"v2.84.0","feedback":"v2.71.0","features":"v2.84.0"}
 */
 class formulainput_container extends BaseQuestionTypeAttribute {
     protected $height;
@@ -18,7 +18,7 @@ class formulainput_container extends BaseQuestionTypeAttribute {
             }
 
     /**
-    * Get Height \
+    * Get Input height \
     * The height of the input containers including units. Example: "100px" \
     * @return string $height \
     */
@@ -27,7 +27,7 @@ class formulainput_container extends BaseQuestionTypeAttribute {
     }
 
     /**
-    * Set Height \
+    * Set Input height \
     * The height of the input containers including units. Example: "100px" \
     * @param string $height \
     */
@@ -36,7 +36,7 @@ class formulainput_container extends BaseQuestionTypeAttribute {
     }
 
     /**
-    * Get Width \
+    * Get Input width \
     * The width of the input containers including units. Example: "100px" \
     * @return string $width \
     */
@@ -45,7 +45,7 @@ class formulainput_container extends BaseQuestionTypeAttribute {
     }
 
     /**
-    * Set Width \
+    * Set Input width \
     * The width of the input containers including units. Example: "100px" \
     * @param string $width \
     */

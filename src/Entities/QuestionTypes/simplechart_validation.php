@@ -6,7 +6,7 @@ use LearnosityQti\Entities\BaseQuestionTypeAttribute;
 
 /**
 * This class is auto-generated based on Schemas API and you should not modify its content
-* Metadata: {"responses":"v2.72.0","feedback":"v2.71.0","features":"v2.72.0"}
+* Metadata: {"responses":"v2.84.0","feedback":"v2.71.0","features":"v2.84.0"}
 */
 class simplechart_validation extends BaseQuestionTypeAttribute {
     protected $penalty;
@@ -41,9 +41,8 @@ class simplechart_validation extends BaseQuestionTypeAttribute {
 
     /**
     * Get Scoring type \
-    * Defines the scoring approach used.<br><strong>Exact Match</strong>: Entire response must match exactly<br><strong>Partia
-	l Match</strong>: A relative part of the score will be given for each correct response area<br><strong>Partial Match per
-	 response</strong>: Cumulative Score value will be given for each correct response area \
+    * Defines the scoring approach used. Possible options:<br><strong>'exactMatch'</strong>: Exact Match - Entire response mus
+	t match exactly \
     * @return string $scoring_type ie. exactMatch  \
     */
     public function get_scoring_type() {
@@ -52,9 +51,8 @@ class simplechart_validation extends BaseQuestionTypeAttribute {
 
     /**
     * Set Scoring type \
-    * Defines the scoring approach used.<br><strong>Exact Match</strong>: Entire response must match exactly<br><strong>Partia
-	l Match</strong>: A relative part of the score will be given for each correct response area<br><strong>Partial Match per
-	 response</strong>: Cumulative Score value will be given for each correct response area \
+    * Defines the scoring approach used. Possible options:<br><strong>'exactMatch'</strong>: Exact Match - Entire response mus
+	t match exactly \
     * @param string $scoring_type ie. exactMatch  \
     */
     public function set_scoring_type ($scoring_type) {

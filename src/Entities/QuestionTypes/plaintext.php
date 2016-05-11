@@ -6,7 +6,7 @@ use LearnosityQti\Entities\BaseQuestionType;
 
 /**
 * This class is auto-generated based on Schemas API and you should not modify its content
-* Metadata: {"responses":"v2.72.0","feedback":"v2.71.0","features":"v2.72.0"}
+* Metadata: {"responses":"v2.84.0","feedback":"v2.71.0","features":"v2.84.0"}
 */
 class plaintext extends BaseQuestionType {
     protected $is_math;
@@ -151,9 +151,8 @@ class plaintext extends BaseQuestionType {
     }
 
     /**
-    * Get Validation [DEV] \
-    * Validation object that includes guidelines on for how this question should be marked. Support for marking non-autoscorab
-	le questions is currently being developed and expected in Q4 2014. \
+    * Get Validation \
+    * Validation object that includes guidelines on for how this question should be marked. \
     * @return plaintext_validation $validation \
     */
     public function get_validation() {
@@ -161,9 +160,8 @@ class plaintext extends BaseQuestionType {
     }
 
     /**
-    * Set Validation [DEV] \
-    * Validation object that includes guidelines on for how this question should be marked. Support for marking non-autoscorab
-	le questions is currently being developed and expected in Q4 2014. \
+    * Set Validation \
+    * Validation object that includes guidelines on for how this question should be marked. \
     * @param plaintext_validation $validation \
     */
     public function set_validation (plaintext_validation $validation) {

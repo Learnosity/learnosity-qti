@@ -6,7 +6,7 @@ use LearnosityQti\Entities\BaseQuestionTypeAttribute;
 
 /**
 * This class is auto-generated based on Schemas API and you should not modify its content
-* Metadata: {"responses":"v2.72.0","feedback":"v2.71.0","features":"v2.72.0"}
+* Metadata: {"responses":"v2.84.0","feedback":"v2.71.0","features":"v2.84.0"}
 */
 class mcq_metadata extends BaseQuestionTypeAttribute {
     protected $distractor_rationale;
@@ -14,6 +14,7 @@ class mcq_metadata extends BaseQuestionTypeAttribute {
     protected $sample_answer;
     protected $acknowledgements;
     protected $distractor_rationale_response_level;
+    protected $response_shuffle_seed;
     
     public function __construct(
             )
@@ -112,6 +113,26 @@ class mcq_metadata extends BaseQuestionTypeAttribute {
     */
     public function set_distractor_rationale_response_level (array $distractor_rationale_response_level) {
         $this->distractor_rationale_response_level = $distractor_rationale_response_level;
+    }
+
+    /**
+    * Get Response shuffle seed \
+    * A seed to use to randomise the order of response options. If set, the responses will be shuffled according to this seed,
+	 and all students will see the same randomised order. \
+    * @return string $response_shuffle_seed \
+    */
+    public function get_response_shuffle_seed() {
+        return $this->response_shuffle_seed;
+    }
+
+    /**
+    * Set Response shuffle seed \
+    * A seed to use to randomise the order of response options. If set, the responses will be shuffled according to this seed,
+	 and all students will see the same randomised order. \
+    * @param string $response_shuffle_seed \
+    */
+    public function set_response_shuffle_seed ($response_shuffle_seed) {
+        $this->response_shuffle_seed = $response_shuffle_seed;
     }
 
     

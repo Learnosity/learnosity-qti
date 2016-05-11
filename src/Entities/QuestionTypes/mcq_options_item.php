@@ -6,7 +6,7 @@ use LearnosityQti\Entities\BaseQuestionTypeAttribute;
 
 /**
 * This class is auto-generated based on Schemas API and you should not modify its content
-* Metadata: {"responses":"v2.72.0","feedback":"v2.71.0","features":"v2.72.0"}
+* Metadata: {"responses":"v2.84.0","feedback":"v2.71.0","features":"v2.84.0"}
 */
 class mcq_options_item extends BaseQuestionTypeAttribute {
     protected $value;
@@ -20,7 +20,7 @@ class mcq_options_item extends BaseQuestionTypeAttribute {
     /**
     * Get Value \
     * Value for this option that would be stored as the response if selected. \
-    * @return number $value \
+    * @return string $value \
     */
     public function get_value() {
         return $this->value;
@@ -29,7 +29,7 @@ class mcq_options_item extends BaseQuestionTypeAttribute {
     /**
     * Set Value \
     * Value for this option that would be stored as the response if selected. \
-    * @param number $value \
+    * @param string $value \
     */
     public function set_value ($value) {
         $this->value = $value;

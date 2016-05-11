@@ -6,7 +6,7 @@ use LearnosityQti\Entities\BaseQuestionTypeAttribute;
 
 /**
 * This class is auto-generated based on Schemas API and you should not modify its content
-* Metadata: {"responses":"v2.72.0","feedback":"v2.71.0","features":"v2.72.0"}
+* Metadata: {"responses":"v2.84.0","feedback":"v2.71.0","features":"v2.84.0"}
 */
 class mcq_validation_valid_response extends BaseQuestionTypeAttribute {
     protected $score;
@@ -37,7 +37,7 @@ class mcq_validation_valid_response extends BaseQuestionTypeAttribute {
 
     /**
     * Get Value \
-    * An array containing a single valid response or many if multiple_responses is true. \
+    * A list of valid answers for mcq options \
     * @return array $value \
     */
     public function get_value() {
@@ -46,7 +46,7 @@ class mcq_validation_valid_response extends BaseQuestionTypeAttribute {
 
     /**
     * Set Value \
-    * An array containing a single valid response or many if multiple_responses is true. \
+    * A list of valid answers for mcq options \
     * @param array $value \
     */
     public function set_value (array $value) {

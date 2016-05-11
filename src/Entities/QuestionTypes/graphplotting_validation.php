@@ -6,13 +6,14 @@ use LearnosityQti\Entities\BaseQuestionTypeAttribute;
 
 /**
 * This class is auto-generated based on Schemas API and you should not modify its content
-* Metadata: {"responses":"v2.72.0","feedback":"v2.71.0","features":"v2.72.0"}
+* Metadata: {"responses":"v2.84.0","feedback":"v2.71.0","features":"v2.84.0"}
 */
 class graphplotting_validation extends BaseQuestionTypeAttribute {
     protected $penalty;
     protected $scoring_type;
     protected $valid_response;
     protected $alt_responses;
+    protected $ignore_repeated_shapes;
     protected $rounding;
     
     public function __construct(
@@ -40,9 +41,8 @@ class graphplotting_validation extends BaseQuestionTypeAttribute {
 
     /**
     * Get Scoring type \
-    * Defines the scoring approach used.<br><strong>Exact Match</strong>: Entire response must match exactly<br><strong>Partia
-	l Match</strong>: A relative part of the score will be given for each correct response area<br><strong>Partial Match per
-	 response</strong>: Cumulative Score value will be given for each correct response area \
+    * Defines the scoring approach used. Possible options:<br><strong>'exactMatch'</strong>: Exact Match - Entire response mus
+	t match exactly \
     * @return string $scoring_type ie. exactMatch  \
     */
     public function get_scoring_type() {
@@ -51,9 +51,8 @@ class graphplotting_validation extends BaseQuestionTypeAttribute {
 
     /**
     * Set Scoring type \
-    * Defines the scoring approach used.<br><strong>Exact Match</strong>: Entire response must match exactly<br><strong>Partia
-	l Match</strong>: A relative part of the score will be given for each correct response area<br><strong>Partial Match per
-	 response</strong>: Cumulative Score value will be given for each correct response area \
+    * Defines the scoring approach used. Possible options:<br><strong>'exactMatch'</strong>: Exact Match - Entire response mus
+	t match exactly \
     * @param string $scoring_type ie. exactMatch  \
     */
     public function set_scoring_type ($scoring_type) {
@@ -94,6 +93,30 @@ class graphplotting_validation extends BaseQuestionTypeAttribute {
     */
     public function set_alt_responses (array $alt_responses) {
         $this->alt_responses = $alt_responses;
+    }
+
+    /**
+    * Get Ignore repeated shapes \
+    * When set to 'yes', scoring will ignore shapes which are plotted multiple times within the same composition (authored val
+	ue is treated separately to student's response). When the value is set to 'strict', the shapes are only considered equal
+	 if the points are equivalent, not just the position and slope. See the knowledgebase article for more details: http://d
+	ocs.learnosity.com/assessment/questions/knowledgebase/graphplotting_ignore_repeated_shapes \
+    * @return string $ignore_repeated_shapes ie. no, yes, strict  \
+    */
+    public function get_ignore_repeated_shapes() {
+        return $this->ignore_repeated_shapes;
+    }
+
+    /**
+    * Set Ignore repeated shapes \
+    * When set to 'yes', scoring will ignore shapes which are plotted multiple times within the same composition (authored val
+	ue is treated separately to student's response). When the value is set to 'strict', the shapes are only considered equal
+	 if the points are equivalent, not just the position and slope. See the knowledgebase article for more details: http://d
+	ocs.learnosity.com/assessment/questions/knowledgebase/graphplotting_ignore_repeated_shapes \
+    * @param string $ignore_repeated_shapes ie. no, yes, strict  \
+    */
+    public function set_ignore_repeated_shapes ($ignore_repeated_shapes) {
+        $this->ignore_repeated_shapes = $ignore_repeated_shapes;
     }
 
     /**
