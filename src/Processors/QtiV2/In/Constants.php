@@ -13,6 +13,7 @@ class Constants
         'hottextInteraction',
         'gapMatchInteraction',
         'orderInteraction',
-        'graphicGapMatchInteraction'
+        'graphicGapMatchInteraction',
+        'hotspotInteraction'
     ];
 }
