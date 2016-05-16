@@ -155,7 +155,7 @@ class HotspotInteractionMapper extends AbstractInteractionMapper
                 // When these coordinate values are not the same, user agents should infer an additional coordinate pair to close the polygon.
                 $result = [];
                 for ($i = 0; $i < count($coords); $i += 2) {
-                    $result[] = ['x' => round($coords[$i] / $width * 100, 2), 'y' => round($coords[$i + 1] / $width * 100, 2)];
+                    $result[] = ['x' => round($coords[$i] / $width * 100, 2), 'y' => round($coords[$i + 1] / $height * 100, 2)];
                 }
                 return $result;
             case Shape::ELLIPSE:
