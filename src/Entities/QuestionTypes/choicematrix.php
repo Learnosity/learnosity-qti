@@ -6,7 +6,7 @@ use LearnosityQti\Entities\BaseQuestionType;
 
 /**
 * This class is auto-generated based on Schemas API and you should not modify its content
-* Metadata: {"responses":"v2.72.0","feedback":"v2.71.0","features":"v2.72.0"}
+* Metadata: {"responses":"v2.84.0","feedback":"v2.71.0","features":"v2.84.0"}
 */
 class choicematrix extends BaseQuestionType {
     protected $is_math;
@@ -25,13 +25,11 @@ class choicematrix extends BaseQuestionType {
     public function __construct(
                     $type,
                                 array $options,
-                                $multiple_responses,
                                 array $stems
                         )
     {
                 $this->type = $type;
                 $this->options = $options;
-                $this->multiple_responses = $multiple_responses;
                 $this->stems = $stems;
             }
 

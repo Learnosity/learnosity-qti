@@ -10,8 +10,6 @@ use qtism\data\content\interactions\ChoiceInteraction;
 use qtism\data\content\interactions\Orientation;
 use qtism\data\content\interactions\SimpleChoice;
 use qtism\data\state\CorrectResponse;
-use qtism\data\state\MapEntry;
-use qtism\data\state\Mapping;
 use qtism\data\state\ResponseDeclaration;
 use qtism\data\state\Value;
 

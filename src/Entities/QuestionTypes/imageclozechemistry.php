@@ -6,7 +6,7 @@ use LearnosityQti\Entities\BaseQuestionType;
 
 /**
 * This class is auto-generated based on Schemas API and you should not modify its content
-* Metadata: {"responses":"v2.72.0","feedback":"v2.71.0","features":"v2.72.0"}
+* Metadata: {"responses":"v2.84.0","feedback":"v2.71.0","features":"v2.84.0"}
 */
 class imageclozechemistry extends BaseQuestionType {
     protected $image;
@@ -24,6 +24,7 @@ class imageclozechemistry extends BaseQuestionType {
     protected $instant_feedback;
     protected $validation;
     protected $text_blocks;
+    protected $numberPad;
     protected $showHints;
     protected $symbols;
     
@@ -320,6 +321,24 @@ class imageclozechemistry extends BaseQuestionType {
     */
     public function set_text_blocks (array $text_blocks) {
         $this->text_blocks = $text_blocks;
+    }
+
+    /**
+    * Get Custom Number Pad \
+    *  \
+    * @return array $numberPad \
+    */
+    public function get_numberPad() {
+        return $this->numberPad;
+    }
+
+    /**
+    * Set Custom Number Pad \
+    *  \
+    * @param array $numberPad \
+    */
+    public function set_numberPad (array $numberPad) {
+        $this->numberPad = $numberPad;
     }
 
     /**

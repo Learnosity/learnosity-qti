@@ -6,7 +6,7 @@ use LearnosityQti\Entities\BaseQuestionType;
 
 /**
 * This class is auto-generated based on Schemas API and you should not modify its content
-* Metadata: {"responses":"v2.72.0","feedback":"v2.71.0","features":"v2.72.0"}
+* Metadata: {"responses":"v2.84.0","feedback":"v2.71.0","features":"v2.84.0"}
 */
 class chemistry extends BaseQuestionType {
     protected $handwriting_recognises;
@@ -22,6 +22,7 @@ class chemistry extends BaseQuestionType {
     protected $text_blocks;
     protected $template;
     protected $showHints;
+    protected $numberPad;
     protected $symbols;
     protected $response_container;
     protected $response_containers;
@@ -281,6 +282,24 @@ class chemistry extends BaseQuestionType {
     */
     public function set_showHints ($showHints) {
         $this->showHints = $showHints;
+    }
+
+    /**
+    * Get Custom Number Pad \
+    *  \
+    * @return array $numberPad \
+    */
+    public function get_numberPad() {
+        return $this->numberPad;
+    }
+
+    /**
+    * Set Custom Number Pad \
+    *  \
+    * @param array $numberPad \
+    */
+    public function set_numberPad (array $numberPad) {
+        $this->numberPad = $numberPad;
     }
 
     /**

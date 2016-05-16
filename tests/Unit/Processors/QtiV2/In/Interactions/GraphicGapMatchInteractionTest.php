@@ -14,8 +14,29 @@ use LearnosityQti\Utils\StringUtil;
 use qtism\common\datatypes\DirectedPair;
 use qtism\data\content\xhtml\Object;
 
-class GraphicGapMatchInteractionTest extends \PHPUnit_Framework_TestCase
+class GraphicGapMatchInteractionTest extends AbstractInteractionTest
 {
+    public function testWithoutSettingWidthOnImageObject()
+    {
+        $this->setExpectedException('LearnosityQti\Exceptions\MappingException');
+
+        $bgObject = new Object('http://img.png', 'image/png');
+        $testInteraction = GraphicGapInteractionBuilder::build(
+            'testInteraction',
+            $bgObject,
+            ['A' => 'img_A.png'],
+            ['G1' => [0, 0, 10, 10]]
+        );
+        $responseProcessingTemplate = ResponseProcessingTemplate::mapResponse();
+        $responseDeclaration = ResponseDeclarationBuilder::buildWithMapping(
+            'testIdentifier',
+            ['A G1' => [1, false]],
+            'DirectedPair'
+        );
+        $mapper = new GraphicGapMatchInteractionMapper($testInteraction, $responseDeclaration, $responseProcessingTemplate);
+        $question = $mapper->getQuestionType();
+    }
+    
     public function testWithMapResponseValidationMissingAssociableIdentifier()
     {
         $bgObject = new Object('http://img.png', 'image/png');
@@ -36,12 +57,9 @@ class GraphicGapMatchInteractionTest extends \PHPUnit_Framework_TestCase
         );
 
         $responseProcessingTemplate = ResponseProcessingTemplate::mapResponse();
-        $validResponseIdentifier = [
-            'A G1' => [1, false]
-        ];
         $responseDeclaration = ResponseDeclarationBuilder::buildWithMapping(
             'testIdentifier',
-            $validResponseIdentifier,
+            ['A G1' => [1, false]],
             'DirectedPair'
         );
         $mapper = new GraphicGapMatchInteractionMapper($testInteraction, $responseDeclaration, $responseProcessingTemplate);

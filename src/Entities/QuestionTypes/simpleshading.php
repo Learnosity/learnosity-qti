@@ -6,7 +6,7 @@ use LearnosityQti\Entities\BaseQuestionType;
 
 /**
 * This class is auto-generated based on Schemas API and you should not modify its content
-* Metadata: {"responses":"v2.72.0","feedback":"v2.71.0","features":"v2.72.0"}
+* Metadata: {"responses":"v2.84.0","feedback":"v2.71.0","features":"v2.84.0"}
 */
 class simpleshading extends BaseQuestionType {
     protected $is_math;
@@ -207,7 +207,7 @@ class simpleshading extends BaseQuestionType {
 
     /**
     * Get Max Selection \
-    * How many elements can user select? \
+    * How many elements can user select? If set to 0, user can select unlimited elements. \
     * @return number $max_selection \
     */
     public function get_max_selection() {
@@ -216,7 +216,7 @@ class simpleshading extends BaseQuestionType {
 
     /**
     * Set Max Selection \
-    * How many elements can user select? \
+    * How many elements can user select? If set to 0, user can select unlimited elements. \
     * @param number $max_selection \
     */
     public function set_max_selection ($max_selection) {

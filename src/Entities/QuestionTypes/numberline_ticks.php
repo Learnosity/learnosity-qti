@@ -6,7 +6,7 @@ use LearnosityQti\Entities\BaseQuestionTypeAttribute;
 
 /**
 * This class is auto-generated based on Schemas API and you should not modify its content
-* Metadata: {"responses":"v2.72.0","feedback":"v2.71.0","features":"v2.72.0"}
+* Metadata: {"responses":"v2.84.0","feedback":"v2.71.0","features":"v2.84.0"}
 */
 class numberline_ticks extends BaseQuestionTypeAttribute {
     protected $distance;
@@ -41,16 +41,14 @@ class numberline_ticks extends BaseQuestionTypeAttribute {
     * Get Fractions format \
     * <p style='text-align:left'>If the distance is set to a fraction this will determine in which format the fractions will b
 	e rendered on the Number Line. Select to display only:
-                                        <ul style='text-align:lef
-	t;padding:0px 0px 0px 15px;'>
-                                            <li>Not normalized and mixed fractions.</li>
- 
-	                                           <li>Normalized and mixed fractions.</li>
-                                    
-	        <li>Improper fractions.</li>
-                                        </ul>
-                                    <
-	/p> \
+                    <ul style='text-align:left;padding:0px 0px 0p
+	x 15px;'>
+                    <li>Not normalized and mixed fractions.</li>
+                    <li>Normalized and mixed 
+	fractions.</li>
+                    <li>Improper fractions.</li>
+                    </ul>
+                    </p> \
     * @return string $fractions \
     */
     public function get_fractions() {
@@ -61,16 +59,14 @@ class numberline_ticks extends BaseQuestionTypeAttribute {
     * Set Fractions format \
     * <p style='text-align:left'>If the distance is set to a fraction this will determine in which format the fractions will b
 	e rendered on the Number Line. Select to display only:
-                                        <ul style='text-align:lef
-	t;padding:0px 0px 0px 15px;'>
-                                            <li>Not normalized and mixed fractions.</li>
- 
-	                                           <li>Normalized and mixed fractions.</li>
-                                    
-	        <li>Improper fractions.</li>
-                                        </ul>
-                                    <
-	/p> \
+                    <ul style='text-align:left;padding:0px 0px 0p
+	x 15px;'>
+                    <li>Not normalized and mixed fractions.</li>
+                    <li>Normalized and mixed 
+	fractions.</li>
+                    <li>Improper fractions.</li>
+                    </ul>
+                    </p> \
     * @param string $fractions \
     */
     public function set_fractions ($fractions) {

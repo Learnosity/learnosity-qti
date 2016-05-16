@@ -5,6 +5,7 @@ namespace LearnosityQti\Processors\QtiV2\In\Interactions;
 use LearnosityQti\Entities\QuestionTypes\imageclozeassociation;
 use LearnosityQti\Entities\QuestionTypes\imageclozeassociation_image;
 use LearnosityQti\Entities\QuestionTypes\imageclozedropdown_response_containers_item;
+use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Processors\QtiV2\In\Validation\GapMatchInteractionValidationBuilder;
 use LearnosityQti\Utils\QtiCoordinateUtil;
 use LearnosityQti\Utils\QtiMarshallerUtil;
@@ -19,7 +20,14 @@ class GraphicGapMatchInteractionMapper extends AbstractInteractionMapper
     {
         /** @var QtiGraphicGapMatchInteraction $interaction */
         $interaction = $this->interaction;
+        /** @var Object $imageObject */
         $imageObject = $interaction->getObject();
+
+        // Yes, width and height is necessary unfortunately
+        if ($imageObject->getHeight() < 0 || $imageObject->getWidth() < 0) {
+            throw new MappingException('Hotspot interaction image object need to specifiy both width and height for conversion');
+        }
+
         $possibleResponseMapping = $this->buildPossibleResponseMapping($interaction);
         $associableHotspots = $this->buildTemplate($interaction, $imageObject);
 

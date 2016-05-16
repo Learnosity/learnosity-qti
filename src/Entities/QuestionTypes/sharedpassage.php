@@ -6,7 +6,7 @@ use LearnosityQti\Entities\BaseQuestionType;
 
 /**
 * This class is auto-generated based on Schemas API and you should not modify its content
-* Metadata: {"responses":"v2.72.0","feedback":"v2.71.0","features":"v2.72.0"}
+* Metadata: {"responses":"v2.84.0","feedback":"v2.71.0","features":"v2.84.0"}
 */
 class sharedpassage extends BaseQuestionType {
     protected $type;
@@ -44,7 +44,7 @@ class sharedpassage extends BaseQuestionType {
 
     /**
     * Get Metadata \
-    * Additional data for the shared passage \
+    * Additional data for the Passage \
     * @return sharedpassage_metadata $metadata \
     */
     public function get_metadata() {
@@ -53,7 +53,7 @@ class sharedpassage extends BaseQuestionType {
 
     /**
     * Set Metadata \
-    * Additional data for the shared passage \
+    * Additional data for the Passage \
     * @param sharedpassage_metadata $metadata \
     */
     public function set_metadata (sharedpassage_metadata $metadata) {
@@ -62,7 +62,7 @@ class sharedpassage extends BaseQuestionType {
 
     /**
     * Get Heading \
-    * Heading of the shared passage \
+    * Heading of the Passage \
     * @return string $heading \
     */
     public function get_heading() {
@@ -71,7 +71,7 @@ class sharedpassage extends BaseQuestionType {
 
     /**
     * Set Heading \
-    * Heading of the shared passage \
+    * Heading of the Passage \
     * @param string $heading \
     */
     public function set_heading ($heading) {
