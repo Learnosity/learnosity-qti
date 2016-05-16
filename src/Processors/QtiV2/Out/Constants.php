@@ -15,7 +15,8 @@ class Constants
         'clozeassociation',
         'clozetext',
         'clozedropdown',
-        'imageclozeassociation'
+        'imageclozeassociation',
+        'hotspot'
     ];
 
     /**

@@ -13,7 +13,7 @@ class hotspot_validation extends BaseQuestionTypeAttribute {
     protected $scoring_type;
     protected $valid_response;
     protected $rounding;
-    
+
     public function __construct(
             )
     {
@@ -95,6 +95,10 @@ class hotspot_validation extends BaseQuestionTypeAttribute {
         $this->rounding = $rounding;
     }
 
-    
+
+    public function get_alt_responses() {
+        // TODO: Hardcode this stuff until Kerem fix the hotspot question type to support `alt_responses`
+        return null;
+    }
 }
 
