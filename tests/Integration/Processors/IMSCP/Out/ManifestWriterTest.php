@@ -18,7 +18,5 @@ class ManifestWriterTest extends AbstractTest
 
         $manifestWriter = new ManifestWriter();
         list($activity, $activityTags, $itemTags) = $manifestWriter->convert($manifest);
-
-        die;
     }
 }

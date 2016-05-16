@@ -150,7 +150,8 @@ class ChoicematrixMapperTest extends \PHPUnit_Framework_TestCase
             "Option 1",
             "Option 2",
             "Option 3"
-        ], false, ["Stem 1", "Stem 2"]);
+        ], ["Stem 1", "Stem 2"]);
+        $question->set_multiple_responses(false);
         $question->set_stimulus('My stimulus string');
         return $question;
     }

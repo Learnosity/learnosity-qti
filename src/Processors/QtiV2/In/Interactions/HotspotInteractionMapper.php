@@ -6,6 +6,7 @@ use LearnosityQti\Entities\QuestionTypes\hotspot;
 use LearnosityQti\Entities\QuestionTypes\hotspot_area_attributes;
 use LearnosityQti\Entities\QuestionTypes\hotspot_area_attributes_global;
 use LearnosityQti\Entities\QuestionTypes\hotspot_image;
+use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Processors\QtiV2\In\Validation\HotspotInteractionValidationBuilder;
 use LearnosityQti\Services\LogService;
 use LearnosityQti\Utils\QtiMarshallerUtil;
@@ -23,10 +24,15 @@ class HotspotInteractionMapper extends AbstractInteractionMapper
     {
         /** @var HotspotInteraction $interaction */
         $interaction = $this->interaction;
-        $hotspot = new hotspot('hotspot');
-
-        // Slab the areas
         $imageObject = $interaction->getObject();
+
+        // Yes, width and height is necessary unfortunately
+        if ($imageObject->getHeight() < 0 || $imageObject->getWidth() < 0) {
+            throw new MappingException('Hotspot interaction image object need to specifiy both width and height for conversion');
+        }
+
+        // Slab the image object
+        $hotspot = new hotspot('hotspot');
         $hotspot->set_image($this->buildHotspotImage($imageObject));
 
         // Support mapping for <prompt>
@@ -84,14 +90,8 @@ class HotspotInteractionMapper extends AbstractInteractionMapper
     {
         $image = new hotspot_image();
         $image->set_source($imageObject->getData());
-        $imageHeight = $imageObject->getHeight();
-        if ($imageHeight > 0) {
-            $image->set_height($imageHeight);
-        }
-        $imageWidth = $imageObject->getWidth();
-        if ($imageWidth > 0) {
-            $image->set_width($imageWidth);
-        }
+        $image->set_height($imageObject->getHeight());
+        $image->set_width($imageObject->getWidth());
         return $image;
     }
 
@@ -116,12 +116,12 @@ class HotspotInteractionMapper extends AbstractInteractionMapper
 
     private function transformCoordinates(Coords $coords, $shape, Object $imageObject)
     {
-        // Yes, width and height is necessary unfortunately
         $width  = $imageObject->getWidth();
         $height = $imageObject->getHeight();
 
         $coords = explode(',', $coords);
         switch ($shape) {
+            // rect: left-x, top-y, right-x, bottom-y.
             case Shape::RECT:
                 $leftX   = round($coords[0] / $width * 100, 2);
                 $topY    = round($coords[1] / $height * 100, 2);
@@ -134,8 +134,34 @@ class HotspotInteractionMapper extends AbstractInteractionMapper
                     ['x' => $leftX, 'y' => $bottomY], // Bottom left
                 ];
                 return $result;
+            case Shape::CIRCLE:
+                // circle: center-x, center-y, radius. Note. When the radius value is a percentage value, user agents
+                // should calculate the final radius value based on the associated object's width and height. The radius should be the smaller value of the two.
+                LogService::log('Unable to map QTI `circle` Shape. Mapping it as `rect` instead');
+                $radius = $coords[2];
+                $leftX   = round(($coords[0] - $radius) / $width * 100, 2);
+                $topY    = round(($coords[1] + $radius) / $height * 100, 2);
+                $rightX  = round(($coords[0] + $radius) / $width * 100, 2);
+                $bottomY = round(($coords[1] - $radius) / $height * 100, 2);
+                $result = [
+                    ['x' => $leftX, 'y' => $topY], // Top left (-radius, +radius)
+                    ['x' => $rightX, 'y' => $topY], // Top right (+radius, +radius)
+                    ['x' => $rightX, 'y' => $bottomY], // Bottom right (+radius, -radius)
+                    ['x' => $leftX, 'y' => $bottomY], // Bottom left (-radius, -radius)
+                ];
+                return $result;
+            case Shape::POLY:
+                // poly: x1, y1, x2, y2, ..., xN, yN. The first x and y coordinate pair and the last should be the same to close the polygon.
+                // When these coordinate values are not the same, user agents should infer an additional coordinate pair to close the polygon.
+                $result = [];
+                for ($i = 0; $i < count($coords); $i += 2) {
+                    $result[] = ['x' => round($coords[$i] / $width * 100, 2), 'y' => round($coords[$i + 1] / $width * 100, 2)];
+                }
+                return $result;
+            case Shape::ELLIPSE:
             default:
-                return null;
+                LogService::log('Unsupported QTI Shape mapping conversion. Area mapping conversion is ignored');
+                return [];
         }
     }
 }

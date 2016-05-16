@@ -45,7 +45,8 @@ class MatchInteractionMapper extends AbstractInteractionMapper
         $uiStyle->set_type('table');
 
         $isMultipleResponse = $this->isMultipleResponse($interaction->getTargetChoices());
-        $question = new choicematrix('choicematrix', $options, $isMultipleResponse, $stems);
+        $question = new choicematrix('choicematrix', $options, $stems);
+        $question->set_multiple_responses($isMultipleResponse);
         $question->set_stimulus($this->getPrompt());
         $question->set_ui_style($uiStyle);
         if ($validation) {

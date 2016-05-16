@@ -7,7 +7,6 @@ use LearnosityQti\Processors\QtiV2\In\Documentation\QtiDoc;
 
 class GraphicGapMatchInteractionDocumentation implements InteractionDocumentationInterface
 {
-
     public static function getInteractionDocumentation()
     {
         $documentation['@attributes'] = QtiDoc::defaultCommonInteractionAttributeRow();
@@ -56,7 +55,6 @@ class GraphicGapMatchInteractionDocumentation implements InteractionDocumentatio
                 ],
             ]
         ]);
-        $documentation = array_merge($documentation, QtiDoc::defaultBlockStaticRow());
         return $documentation;
     }
 }

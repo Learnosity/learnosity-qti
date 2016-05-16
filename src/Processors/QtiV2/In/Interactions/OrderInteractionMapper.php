@@ -3,7 +3,6 @@
 namespace LearnosityQti\Processors\QtiV2\In\Interactions;
 
 use LearnosityQti\Entities\QuestionTypes\orderlist;
-use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Utils\QtiMarshallerUtil;
 use LearnosityQti\Processors\QtiV2\In\Validation\OrderInteractionValidationBuilder;
 use LearnosityQti\Services\LogService;
