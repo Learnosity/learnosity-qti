@@ -6462,6 +6462,7 @@ e=n.propHooks[b]),void 0!==c?e&&"set"in e&&void 0!==(d=e.set(a,c,b))?d:a[b]=c:e&
             <li><a href="#choicematrix">choicematrix</a></li>
             <li><a href="#clozeassociation">clozeassociation</a></li>
             <li><a href="#clozedropdown">clozedropdown</a></li>
+            <li><a href="#hotspot">hotspot</a></li>
             <li><a href="#imageclozeassociation">imageclozeassociation</a></li>
             <li><a href="#longtext">longtext</a></li>
             <li><a href="#orderlist">orderlist</a></li>
@@ -6487,7 +6488,6 @@ e=n.propHooks[b]),void 0!==c?e&&"set"in e&&void 0!==(d=e.set(a,c,b))?d:a[b]=c:e&
     <span class="secondary label">chemistryessay</span>
     <span class="secondary label">graphplotting</span>
     <span class="secondary label">highlight</span>
-    <span class="secondary label">hotspot</span>
     <span class="secondary label">imageclozedropdown</span>
     <span class="secondary label">imageclozeformula</span>
     <span class="secondary label">imageclozechemistry</span>
@@ -7230,6 +7230,176 @@ e=n.propHooks[b]),void 0!==c?e&&"set"in e&&void 0!==(d=e.set(a,c,b))?d:a[b]=c:e&
                 </tr>
                             <tr>
                     <td class="name">possible_responses</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                    </table>
+    
+    <hr/>
+    <h4 style="display: inline-block" id="hotspot">hotspot</h4>
+    <a style="display: inline-block" href="http://docs.learnosity.com/assessment/questions/questiontypes#hotspot" target="_blank">(documentation)</a>
+    <a style="display: inline-block; float: right; margin-top: 10px;" href="#mapping-question-types">Back to Top</a>
+
+            <div class="panel">This question type is mapped to &lt;choiceInteraction&gt; and currently only support `exactMatch` validation. Response processing would by default mapped using `match_correct` template.</div>
+    
+                <table class="doc-table">
+            <tr>
+                <th></th>
+                <th>Support</th>
+                <th>Description</th>
+            </tr>
+                            <tr>
+                    <td class="name">stimulus</td>
+                    <td class="support-status support-status-yes">YES</td>
+                    <td class="description">This is mapped to `prompt`</td>
+                </tr>
+                            <tr>
+                    <td class="name">options</td>
+                    <td class="support-status support-status-yes">YES</td>
+                    <td class="description">This is mapped to list of simpleChoice</td>
+                </tr>
+                            <tr>
+                    <td class="name">image</td>
+                    <td class="support-status support-status-yes">YES</td>
+                    <td class="description">This is mapped to the image object width</td>
+                </tr>
+                            <tr>
+                    <td class="name">image.source</td>
+                    <td class="support-status support-status-yes">YES</td>
+                    <td class="description">This is mapped to interaction image object, we will use its extension to map it to its type,ie. `hello.png` would be assumed to have image type of `image/png`</td>
+                </tr>
+                            <tr>
+                    <td class="name">image.width</td>
+                    <td class="support-status support-status-yes">YES</td>
+                    <td class="description">This is mapped to the image object width</td>
+                </tr>
+                            <tr>
+                    <td class="name">image.height</td>
+                    <td class="support-status support-status-yes">YES</td>
+                    <td class="description">This is mapped to the image object height</td>
+                </tr>
+                            <tr>
+                    <td class="name">areas</td>
+                    <td class="support-status support-status-yes">YES</td>
+                    <td class="description">This is mapped to a collection of hotspotChoice. Each hotspotChoice would be of a shape Poly and its percentage-based coordinates would be mapped to QTI fixed-based coordinates</td>
+                </tr>
+                            <tr>
+                    <td class="name">multiple_responses</td>
+                    <td class="support-status support-status-yes">YES</td>
+                    <td class="description">When this option sets to true, then it would map the interaction `maxChoices` attribute with the highest number of choices possible</td>
+                </tr>
+                            <tr>
+                    <td class="name">is_math</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">metadata</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">metadata.distractor_rationale</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">metadata.rubric_reference</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">metadata.sample_answer</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">metadata.acknowledgements</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">stimulus_review</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">type</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">ui_style</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">ui_style.fontsize</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">ui_style.validation_stem_numeration</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">feedback_attempts</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">instant_feedback</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">area_attributes</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">area_attributes.global</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">area_attributes.global.fill</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">area_attributes.global.stroke</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">area_attributes.individual</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">area_attributes.individual[].area</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">area_attributes.individual[].label</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">area_attributes.individual[].fill</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">area_attributes.individual[].stroke</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">max_width</td>
                     <td class="support-status support-status-no">NO</td>
                     <td class="description"></td>
                 </tr>
