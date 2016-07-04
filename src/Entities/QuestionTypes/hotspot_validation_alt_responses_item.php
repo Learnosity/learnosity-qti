@@ -8,7 +8,7 @@ use LearnosityQti\Entities\BaseQuestionTypeAttribute;
  * This class is auto-generated based on Schemas API and you should not modify its content
  * Metadata: {"responses":"v2.86.0","feedback":"v2.71.0","features":"v2.84.0"}
  */
-class tokenhighlight_validation_alt_responses_item extends BaseQuestionTypeAttribute
+class hotspot_validation_alt_responses_item extends BaseQuestionTypeAttribute
 {
     protected $score;
     protected $value;
@@ -41,7 +41,7 @@ class tokenhighlight_validation_alt_responses_item extends BaseQuestionTypeAttri
 
     /**
      * Get Value \
-     * An array contains the index of valid token \
+     * An array containing a single valid response or many if multiple_responses is true. \
      *
      * @return array $value \
      */
@@ -52,7 +52,7 @@ class tokenhighlight_validation_alt_responses_item extends BaseQuestionTypeAttri
 
     /**
      * Set Value \
-     * An array contains the index of valid token \
+     * An array containing a single valid response or many if multiple_responses is true. \
      *
      * @param array $value \
      */
