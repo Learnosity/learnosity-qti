@@ -60,10 +60,8 @@ class ChoiceInteractionTest extends AbstractInteractionTest
         $validation = $mcq->get_validation();
         $this->assertNotNull($validation);
 
-        $this->assertEquals(['one'], $validation->get_valid_response()->get_value());
+        $this->assertEquals(['one', 'two'], $validation->get_valid_response()->get_value());
         $this->assertEquals(1, $validation->get_valid_response()->get_score());
-        $this->assertEquals(['two'], $validation->get_alt_responses()[0]->get_value());
-        $this->assertEquals(1, $validation->get_alt_responses()[0]->get_score());
 
         $this->assertEquals(count($optionsMap), count($mcq->get_options()));
         foreach ($mcq->get_options() as $option) {
@@ -154,12 +152,8 @@ class ChoiceInteractionTest extends AbstractInteractionTest
 
         $validation = $mcq->get_validation();
         $this->assertNotNull($validation);
-        $this->assertEquals(['one'], $validation->get_valid_response()->get_value());
+        $this->assertEquals(['one', 'two'], $validation->get_valid_response()->get_value());
         $this->assertEquals(1, $validation->get_valid_response()->get_score());
-        $this->assertEquals(['two'], $validation->get_alt_responses()[0]->get_value());
-        $this->assertEquals(1, $validation->get_alt_responses()[1]->get_score());
-        $this->assertEquals(['two', 'one'], $validation->get_alt_responses()[1]->get_value());
-        $this->assertEquals(1, $validation->get_alt_responses()[0]->get_score());
     }
 
     public function testShouldHandleMultipleCardinalityWithMapResponse()

@@ -6,7 +6,7 @@ use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Processors\Learnosity\In\ValidationBuilder;
 use LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
 use LearnosityQti\Utils\ArrayUtil;
-use qtism\common\datatypes\DirectedPair;
+use qtism\common\datatypes\QtiDirectedPair;
 use qtism\data\state\MapEntry;
 use qtism\data\state\ResponseDeclaration;
 
@@ -41,10 +41,10 @@ class GapMatchInteractionValidationBuilder extends BaseInteractionValidationBuil
         $responseIndexSet = [];
 
         foreach ($this->responseDeclaration->getCorrectResponse()->getValues() as $value) {
-            /** @var DirectedPair $valuePair */
+            /** @var QtiDirectedPair $valuePair */
             $valuePair = $value->getValue();
 
-            // Map response value and index based from `DirectedPair` Value, try to guess which one is which since they
+            // Map response value and index based from `QtiDirectedPair` Value, try to guess which one is which since they
             // apparently can swap :(
             if (isset($this->possibleResponses[$valuePair->getFirst()]) && isset($gapIdentifiersIndexMap[$valuePair->getSecond()])) {
                 $responseValue = $this->possibleResponses[$valuePair->getFirst()];
@@ -91,7 +91,7 @@ class GapMatchInteractionValidationBuilder extends BaseInteractionValidationBuil
 
         foreach ($this->responseDeclaration->getMapping()->getMapEntries() as $mapEntry) {
             /** @var MapEntry $mapEntry */
-            /** @var DirectedPair $mapKey */
+            /** @var QtiDirectedPair $mapKey */
             $mapKey = $mapEntry->getMapKey();
 
             // Map response value and index based from the `mapKey`, try to guess which one is which since they

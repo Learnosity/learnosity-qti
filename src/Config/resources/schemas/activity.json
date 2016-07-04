@@ -10,12 +10,34 @@
                     "required": false,
                     "type": "string"
                 },
-                "items": {
-                    "required": false,
-                    "type": "array"
-                },
                 "data": {
                     "attributes": {
+                        "sections": {
+                            "required": false,
+                            "type": "array",
+                            "items": {
+                                "attributes": {
+                                    "items": {
+                                        "required": false,
+                                        "type": "array"
+                                    },
+                                    "config": {
+                                        "required": false,
+                                        "type": "object",
+                                        "attributes": {
+                                            "subtitle": {
+                                                "required": false,
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "items": {
+                            "required": false,
+                            "type": "array"
+                        },
                         "config": {
                             "attributes": {
                                 "ui_style": {

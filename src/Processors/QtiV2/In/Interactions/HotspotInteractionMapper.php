@@ -10,8 +10,8 @@ use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Processors\QtiV2\In\Validation\HotspotInteractionValidationBuilder;
 use LearnosityQti\Services\LogService;
 use LearnosityQti\Utils\QtiMarshallerUtil;
-use qtism\common\datatypes\Coords;
-use qtism\common\datatypes\Shape;
+use qtism\common\datatypes\QtiCoords;
+use qtism\common\datatypes\QtiShape;
 use qtism\data\content\interactions\HotspotChoice;
 use qtism\data\content\interactions\HotspotChoiceCollection;
 use qtism\data\content\interactions\HotspotInteraction;
@@ -103,7 +103,7 @@ class HotspotInteractionMapper extends AbstractInteractionMapper
         foreach ($hotspotChoices as $key => $choice) {
             // Store unsupported shapes so later on we can inform that we are not supporting them
             $shape = $choice->getShape();
-            if ($shape != Shape::RECT || $choice->getClass() != Shape::POLY) {
+            if ($shape != QtiShape::RECT || $choice->getClass() != QtiShape::POLY) {
                 if (in_array($shape, $unsupportedShapes)) {
                     $unsupportedShapes[] = $shape;
                 }
@@ -114,7 +114,7 @@ class HotspotInteractionMapper extends AbstractInteractionMapper
         return $areas;
     }
 
-    private function transformCoordinates(Coords $coords, $shape, Object $imageObject)
+    private function transformCoordinates(QtiCoords $coords, $shape, Object $imageObject)
     {
         $width  = $imageObject->getWidth();
         $height = $imageObject->getHeight();
@@ -122,7 +122,7 @@ class HotspotInteractionMapper extends AbstractInteractionMapper
         $coords = explode(',', $coords);
         switch ($shape) {
             // rect: left-x, top-y, right-x, bottom-y.
-            case Shape::RECT:
+            case QtiShape::RECT:
                 $leftX   = round($coords[0] / $width * 100, 2);
                 $topY    = round($coords[1] / $height * 100, 2);
                 $rightX  = round($coords[2] / $width * 100, 2);
@@ -134,7 +134,7 @@ class HotspotInteractionMapper extends AbstractInteractionMapper
                     ['x' => $leftX, 'y' => $bottomY], // Bottom left
                 ];
                 return $result;
-            case Shape::CIRCLE:
+            case QtiShape::CIRCLE:
                 // circle: center-x, center-y, radius. Note. When the radius value is a percentage value, user agents
                 // should calculate the final radius value based on the associated object's width and height. The radius should be the smaller value of the two.
                 LogService::log('Unable to map QTI `circle` Shape. Mapping it as `rect` instead');
@@ -150,7 +150,7 @@ class HotspotInteractionMapper extends AbstractInteractionMapper
                     ['x' => $leftX, 'y' => $bottomY], // Bottom left (-radius, -radius)
                 ];
                 return $result;
-            case Shape::POLY:
+            case QtiShape::POLY:
                 // poly: x1, y1, x2, y2, ..., xN, yN. The first x and y coordinate pair and the last should be the same to close the polygon.
                 // When these coordinate values are not the same, user agents should infer an additional coordinate pair to close the polygon.
                 $result = [];
@@ -158,7 +158,7 @@ class HotspotInteractionMapper extends AbstractInteractionMapper
                     $result[] = ['x' => round($coords[$i] / $width * 100, 2), 'y' => round($coords[$i + 1] / $height * 100, 2)];
                 }
                 return $result;
-            case Shape::ELLIPSE:
+            case QtiShape::ELLIPSE:
             default:
                 LogService::log('Unsupported QTI Shape mapping conversion. Area mapping conversion is ignored');
                 return [];

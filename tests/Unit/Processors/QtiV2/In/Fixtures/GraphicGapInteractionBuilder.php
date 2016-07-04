@@ -2,8 +2,8 @@
 
 namespace LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures;
 
-use qtism\common\datatypes\Coords;
-use qtism\common\datatypes\Shape;
+use qtism\common\datatypes\QtiCoords;
+use qtism\common\datatypes\QtiShape;
 use qtism\data\content\interactions\AssociableHotspot;
 use qtism\data\content\interactions\AssociableHotspotCollection;
 use qtism\data\content\interactions\GapImg;
@@ -25,8 +25,8 @@ class GraphicGapInteractionBuilder
 
         $associableHotspotCollection = new AssociableHotspotCollection();
         foreach ($hotspots as $id => $data) {
-            $coords = new Coords(Shape::RECT, $data);
-            $associableHotspot = new AssociableHotspot($id, 1, Shape::RECT, $coords);
+            $coords = new QtiCoords(QtiShape::RECT, $data);
+            $associableHotspot = new AssociableHotspot($id, 1, QtiShape::RECT, $coords);
             $associableHotspotCollection->attach($associableHotspot);
         }
 

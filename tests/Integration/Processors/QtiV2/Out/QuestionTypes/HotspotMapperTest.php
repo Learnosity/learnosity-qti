@@ -2,19 +2,13 @@
 
 namespace LearnosityQti\Tests\Integration\Processors\QtiV2\Out\QuestionTypes;
 
-use LearnosityQti\Processors\QtiV2\Out\Constants;
 use LearnosityQti\Utils\QtiMarshallerUtil;
-use qtism\common\datatypes\Shape;
+use qtism\common\datatypes\QtiShape;
 use qtism\common\enums\BaseType;
 use qtism\common\enums\Cardinality;
-use qtism\data\content\interactions\ChoiceInteraction;
 use qtism\data\content\interactions\HotspotChoice;
 use qtism\data\content\interactions\HotspotInteraction;
-use qtism\data\content\interactions\Orientation;
-use qtism\data\content\interactions\SimpleChoice;
 use qtism\data\state\CorrectResponse;
-use qtism\data\state\MapEntry;
-use qtism\data\state\Mapping;
 use qtism\data\state\ResponseDeclaration;
 use qtism\data\state\Value;
 
@@ -41,7 +35,7 @@ class HotspotMapperTest extends AbstractQuestionTypeTest
         /** @var HotspotChoice[] $choices */
         $choices = $interaction->getHotspotChoices()->getArrayCopy(true);
         $this->assertEquals($choices[0]->getIdentifier(), 'CHOICE_0');
-        $this->assertEquals($choices[0]->getShape(), Shape::POLY); // Shape shall be POLY
+        $this->assertEquals($choices[0]->getShape(), QtiShape::POLY); // QtiShape shall be POLY
         $this->assertEquals($choices[0]->getCoords()->count(), 96);
         $this->assertEquals($choices[1]->getIdentifier(), 'CHOICE_1');
         $this->assertEquals($choices[2]->getIdentifier(), 'CHOICE_2');
@@ -50,8 +44,6 @@ class HotspotMapperTest extends AbstractQuestionTypeTest
         // Check `minChoices` and `maxChoices`
         $this->assertEquals(0, $interaction->getMinChoices());
         $this->assertEquals(1, $interaction->getMaxChoices());
-
-
 
         // Simple validation on <responseDeclaration> and <responseProcessing>
         $this->assertEquals(1, $assessmentItem->getResponseDeclarations()->count());

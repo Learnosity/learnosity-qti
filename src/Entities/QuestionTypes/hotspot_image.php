@@ -5,73 +5,85 @@ namespace LearnosityQti\Entities\QuestionTypes;
 use LearnosityQti\Entities\BaseQuestionTypeAttribute;
 
 /**
-* This class is auto-generated based on Schemas API and you should not modify its content
-* Metadata: {"responses":"v2.84.0","feedback":"v2.71.0","features":"v2.84.0"}
-*/
-class hotspot_image extends BaseQuestionTypeAttribute {
+ * This class is auto-generated based on Schemas API and you should not modify its content
+ * Metadata: {"responses":"v2.86.0","feedback":"v2.71.0","features":"v2.84.0"}
+ */
+class hotspot_image extends BaseQuestionTypeAttribute
+{
     protected $source;
     protected $width;
     protected $height;
-    
-    public function __construct(
-            )
+
+    public function __construct()
     {
-            }
+    }
 
     /**
-    * Get Source URL \
-    * The image that should be displayed. \
-    * @return string $source \
-    */
-    public function get_source() {
+     * Get Source URL \
+     * The image that should be displayed. \
+     *
+     * @return string $source \
+     */
+    public function get_source()
+    {
         return $this->source;
     }
 
     /**
-    * Set Source URL \
-    * The image that should be displayed. \
-    * @param string $source \
-    */
-    public function set_source ($source) {
+     * Set Source URL \
+     * The image that should be displayed. \
+     *
+     * @param string $source \
+     */
+    public function set_source($source)
+    {
         $this->source = $source;
     }
 
     /**
-    * Get Width in pixels \
-    * The pixel width of the image is needed to calculate the aspect ratio of the image. \
-    * @return number $width \
-    */
-    public function get_width() {
+     * Get Width in pixels \
+     * The pixel width of the image is needed to calculate the aspect ratio of the image. \
+     *
+     * @return number $width \
+     */
+    public function get_width()
+    {
         return $this->width;
     }
 
     /**
-    * Set Width in pixels \
-    * The pixel width of the image is needed to calculate the aspect ratio of the image. \
-    * @param number $width \
-    */
-    public function set_width ($width) {
+     * Set Width in pixels \
+     * The pixel width of the image is needed to calculate the aspect ratio of the image. \
+     *
+     * @param number $width \
+     */
+    public function set_width($width)
+    {
         $this->width = $width;
     }
 
     /**
-    * Get Height in pixels \
-    * The pixel height of the image is needed to calculate the aspect ratio of the image. \
-    * @return number $height \
-    */
-    public function get_height() {
+     * Get Height in pixels \
+     * The pixel height of the image is needed to calculate the aspect ratio of the image. \
+     *
+     * @return number $height \
+     */
+    public function get_height()
+    {
         return $this->height;
     }
 
     /**
-    * Set Height in pixels \
-    * The pixel height of the image is needed to calculate the aspect ratio of the image. \
-    * @param number $height \
-    */
-    public function set_height ($height) {
+     * Set Height in pixels \
+     * The pixel height of the image is needed to calculate the aspect ratio of the image. \
+     *
+     * @param number $height \
+     */
+    public function set_height($height)
+    {
         $this->height = $height;
     }
 
-    
+
 }
 

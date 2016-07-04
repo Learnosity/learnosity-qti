@@ -5,7 +5,7 @@ namespace LearnosityQti\Processors\QtiV2\Out\Validation;
 use LearnosityQti\Entities\QuestionTypes\imageclozeassociation_validation;
 use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Processors\QtiV2\Out\QuestionTypes\ImageclozeassociationMapper;
-use qtism\common\datatypes\DirectedPair;
+use qtism\common\datatypes\QtiDirectedPair;
 use qtism\common\enums\BaseType;
 use qtism\common\enums\Cardinality;
 use qtism\data\state\CorrectResponse;
@@ -42,7 +42,7 @@ class ImageclozeassociationValidationBuilder extends AbstractQuestionValidationB
             if (!empty($validResponse)) {
                 $first = ImageclozeassociationMapper::ASSOCIABLEHOTSPOT_IDENTIFIER_PREFIX . $index;
                 $second = ImageclozeassociationMapper::GAPIMG_IDENTIFIER_PREFIX . $this->possibleResponsesMap[$validResponse];
-                $values->attach(new Value(new DirectedPair($first, $second)));
+                $values->attach(new Value(new QtiDirectedPair($first, $second)));
             }
         }
         if ($values->count() > 0) {

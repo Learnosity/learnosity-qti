@@ -2,9 +2,9 @@
 
 namespace LearnosityQti\Processors\QtiV2\Marshallers;
 
-use qtism\data\storage\xml\marshalling\MarshallerFactory;
+use qtism\data\storage\xml\marshalling\Qti21MarshallerFactory;
 
-class LearnosityMarshallerFactory extends MarshallerFactory
+class LearnosityMarshallerFactory extends Qti21MarshallerFactory
 {
     public function __construct()
     {
