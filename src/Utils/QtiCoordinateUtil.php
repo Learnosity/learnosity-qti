@@ -2,22 +2,22 @@
 
 namespace LearnosityQti\Utils;
 
-use qtism\common\datatypes\Coords;
-use qtism\common\datatypes\Shape;
+use qtism\common\datatypes\QtiCoords;
+use qtism\common\datatypes\QtiShape;
 
 class QtiCoordinateUtil
 {
     public static function convertQtiCoordsToPercentage(array $areaCoords, array $objectCoords, $qtiShape)
     {
         switch ($qtiShape) {
-            case Shape::RECT:
+            case QtiShape::RECT:
                 return [
                     'x' => round($objectCoords[0] / $areaCoords[0] * 100, 2),
                     'y' => round($objectCoords[1] / $areaCoords[1] * 100, 2),
                     'width' => $objectCoords[2] - $objectCoords[0],
                     'height' => $objectCoords[3] - $objectCoords[1]
                 ];
-            case Shape::CIRCLE:
+            case QtiShape::CIRCLE:
                 return [
                     'x' => round($objectCoords[0] / $areaCoords[0] * 100, 2),
                     'y' => round($objectCoords[1] / $areaCoords[1] * 100, 2)
@@ -34,6 +34,6 @@ class QtiCoordinateUtil
         $rightX = round($leftX + $rectangleWidth, 0);
         $bottomY = round($topY + $rectangleHeight, 0);
 
-        return new Coords(Shape::RECT, [intval($leftX), intval($topY), intval($rightX), intval($bottomY)]);
+        return new QtiCoords(QtiShape::RECT, [intval($leftX), intval($topY), intval($rightX), intval($bottomY)]);
     }
 }

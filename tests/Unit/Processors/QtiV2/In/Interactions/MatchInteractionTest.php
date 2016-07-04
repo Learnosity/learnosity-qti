@@ -9,7 +9,7 @@ use LearnosityQti\Processors\QtiV2\In\Interactions\MatchInteractionMapper;
 use LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
 use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\MatchInteractionBuilder;
 use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
-use qtism\common\datatypes\DirectedPair;
+use qtism\common\datatypes\QtiDirectedPair;
 
 class MatchInteractionTest extends AbstractInteractionTest
 {
@@ -41,7 +41,7 @@ class MatchInteractionTest extends AbstractInteractionTest
         $responseDeclaration = ResponseDeclarationBuilder::buildWithMapping(
             'testIdentifier',
             $validResponseIdentifier,
-            'DirectedPair'
+            'QtiDirectedPair'
         );
 
         $mapper = new MatchInteractionMapper($testMatchInteraction, $responseDeclaration, $responseProcessingTemplate);
@@ -90,9 +90,9 @@ class MatchInteractionTest extends AbstractInteractionTest
         $testMatchInteraction->setMaxAssociations(3);
         $responseProcessingTemplate = ResponseProcessingTemplate::matchCorrect();
         $validResponseIdentifier = [
-            new DirectedPair('A', 'D'),
-            new DirectedPair('B', 'C'),
-            new DirectedPair('A', 'E')
+            new QtiDirectedPair('A', 'D'),
+            new QtiDirectedPair('B', 'C'),
+            new QtiDirectedPair('A', 'E')
         ];
         $responseDeclaration = ResponseDeclarationBuilder::buildWithCorrectResponse(
             'testIdentifier',
@@ -143,8 +143,8 @@ class MatchInteractionTest extends AbstractInteractionTest
         $interaction->setMaxAssociations(2);
         $responseProcessingTemplate = ResponseProcessingTemplate::matchCorrect();
         $validResponseIdentifier = [
-            new DirectedPair('A', 'D'),
-            new DirectedPair('B', 'C')
+            new QtiDirectedPair('A', 'D'),
+            new QtiDirectedPair('B', 'C')
         ];
         $responseDeclaration = ResponseDeclarationBuilder::buildWithCorrectResponse(
             'testIdentifier',

@@ -4,7 +4,6 @@ namespace LearnosityQti\Tests\Integration;
 
 use LearnosityQti\Converter;
 use LearnosityQti\Tests\AbstractTest;
-use LearnosityQti\Utils\FileSystemUtil;
 
 class ConverterTest extends AbstractTest
 {

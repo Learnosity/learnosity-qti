@@ -14,10 +14,13 @@ services:
         arguments:  ["@item_builder_factory"]
         scope: prototype
     qtiv2_test_mapper:
-        class:      LearnosityQti\Processors\QtiV2\In\TestMapper
-        scope:      prototype
+      class:      LearnosityQti\Processors\QtiV2\In\TestMapper
+      scope: prototype
     learnosity_item_writer:
         class:      LearnosityQti\Processors\Learnosity\Out\ItemWriter
+        scope:      prototype
+    learnosity_activity_writer:
+        class:      LearnosityQti\Processors\Learnosity\Out\ActivityWriter
         scope:      prototype
     learnosity_question_writer:
         class:      LearnosityQti\Processors\Learnosity\Out\QuestionWriter

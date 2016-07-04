@@ -2,7 +2,7 @@
 
 namespace LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures;
 
-use qtism\common\datatypes\DirectedPair;
+use qtism\common\datatypes\QtiDirectedPair;
 use qtism\data\state\CorrectResponse;
 use qtism\data\state\MapEntry;
 use qtism\data\state\MapEntryCollection;
@@ -44,7 +44,7 @@ class ResponseDeclarationBuilder
             $caseSensitive = isset($values[1]) ? $values[1] : false;
             if ($mapEntryKeyType) {
                 $keyParts = explode(' ', $mapKey);
-                $mapKey = new DirectedPair($keyParts[0], $keyParts[1]);
+                $mapKey = new QtiDirectedPair($keyParts[0], $keyParts[1]);
             }
             $mapEntryCollection->attach(new MapEntry($mapKey, floatval($mappedValue), $caseSensitive));
         }

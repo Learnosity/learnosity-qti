@@ -5,13 +5,11 @@ namespace LearnosityQti\Processors\QtiV2\Out\QuestionTypes;
 use LearnosityQti\Entities\BaseQuestionType;
 use LearnosityQti\Entities\QuestionTypes\hotspot;
 use LearnosityQti\Entities\QuestionTypes\hotspot_image;
-use LearnosityQti\Entities\QuestionTypes\hotspot_metadata;
 use LearnosityQti\Processors\QtiV2\Out\Validation\HotspotValidationBuilder;
 use LearnosityQti\Utils\CurlUtil;
 use LearnosityQti\Utils\MimeUtil;
-use qtism\common\datatypes\Coords;
-use qtism\common\datatypes\Shape;
-use qtism\common\utils\Format;
+use qtism\common\datatypes\QtiCoords;
+use qtism\common\datatypes\QtiShape;
 use qtism\data\content\interactions\HotspotChoice;
 use qtism\data\content\interactions\HotspotChoiceCollection;
 use qtism\data\content\interactions\HotspotInteraction;
@@ -39,7 +37,7 @@ class HotspotMapper extends AbstractQuestionTypeMapper
             }
             $choiceIdentifier = 'CHOICE_' . $index;
             $valueIdentifierMap[$index] = $choiceIdentifier;
-            $hotspotChoice = new HotspotChoice($choiceIdentifier, Shape::POLY, new Coords(Shape::POLY,  $coords));
+            $hotspotChoice = new HotspotChoice($choiceIdentifier, QtiShape::POLY, new QtiCoords(QtiShape::POLY,  $coords));
             $choicesCollection->attach($hotspotChoice);
         }
 
@@ -47,7 +45,8 @@ class HotspotMapper extends AbstractQuestionTypeMapper
         $imageObject = $this->buildMainImageObject($question->get_image());
         $hasMultiResponses = !empty($question->get_multiple_responses()) && $question->get_multiple_responses();
         $maxChoices = $hasMultiResponses ? $choicesCollection->count() : 1;
-        $interaction = new HotspotInteraction($interactionIdentifier, $imageObject, $maxChoices, $choicesCollection);
+        $interaction = new HotspotInteraction($interactionIdentifier, $imageObject, $choicesCollection);
+        $interaction->setMaxChoices($maxChoices);
 
         // Set min choices are 0 because we allow no responses
         $interaction->setMinChoices(0);

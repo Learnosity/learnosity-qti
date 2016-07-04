@@ -33,17 +33,10 @@ class ChoiceInteractionValidationBuilder extends BaseInteractionValidationBuilde
                 LogService::log('Invalid choice `' . $value->getValue() .  '`');
                 continue;
             }
-            $values[] = new ValidResponse(1, [$value->getValue()]);
+            $values[] = $value->getValue();
         }
 
-        // Handle `multiple` cardinality
-        if ($this->responseDeclaration->getCardinality() === Cardinality::MULTIPLE) {
-            $combinationChoicesCount = $this->maxChoices === 0 ? count($values) : $this->maxChoices;
-            $combinationResponses = ArrayUtil::combinations($values, $combinationChoicesCount);
-            $values = ArrayUtil::combineValidResponsesWithFixedScore($combinationResponses, 1);
-        }
-
-        return ValidationBuilder::build('mcq', 'exactMatch', $values);
+        return ValidationBuilder::build('mcq', 'exactMatch', [new ValidResponse(1, $values)]);
     }
 
     protected function getMapResponseTemplateValidation()

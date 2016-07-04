@@ -4,6 +4,7 @@ namespace LearnosityQti\Processors\QtiV2\In\ItemBuilders;
 
 use LearnosityQti\Entities\BaseQuestionType;
 use LearnosityQti\Entities\Question;
+use LearnosityQti\Processors\QtiV2\In\Constants;
 use LearnosityQti\Processors\QtiV2\In\MergedInteractions\AbstractMergedInteractionMapper;
 use LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
 use qtism\data\content\interactions\Interaction;
@@ -63,9 +64,8 @@ class MergedItemBuilder extends AbstractItemBuilder
             /* @var $component Interaction */
             return $component->getQtiClassName();
         }, $interactionComponents->getArrayCopy()));
-        $possibleMergedInteractionTypes = ['textEntryInteraction', 'inlineChoiceInteraction'];
 
-        if (count($interactionTypes) === 1 && in_array($interactionTypes[0], $possibleMergedInteractionTypes)) {
+        if (count($interactionTypes) === 1 && in_array($interactionTypes[0], Constants::$needMergeInteractionTypes)) {
             return $interactionTypes[0];
         } else {
             return false;

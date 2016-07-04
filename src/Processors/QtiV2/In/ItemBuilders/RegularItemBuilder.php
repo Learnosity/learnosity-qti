@@ -7,6 +7,7 @@ use LearnosityQti\Entities\Question;
 use LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
 use LearnosityQti\Utils\QtiMarshallerUtil;
 use LearnosityQti\Services\LogService;
+use LearnosityQti\Utils\SimpleHtmlDom\SimpleHtmlDom;
 use qtism\data\content\interactions\Interaction;
 use qtism\data\content\ItemBody;
 use qtism\data\QtiComponentCollection;
@@ -50,17 +51,30 @@ class RegularItemBuilder extends AbstractItemBuilder
             $question = $mapper->getQuestionType();
 
             $this->questions[$questionReference] = new Question($question->get_type(), $questionReference, $question);
-            $questionsXmls[$questionReference] = QtiMarshallerUtil::marshall($component);
+            $questionsXmls[$questionReference] = [
+                'qtiClassName' => $component->getQtiClassName(),
+                'responseIdentifier' => $component->getResponseIdentifier()
+            ];
         }
 
         // Build item's HTML content
-        $extraContent = QtiMarshallerUtil::marshallCollection($itemBody->getComponents());
-        foreach ($questionsXmls as $questionReference => $interactionXml) {
+        $extraContentHtml = new SimpleHtmlDom();
+        if (!$extraContentHtml->load(QtiMarshallerUtil::marshallCollection($itemBody->getComponents()), false)) {
+            throw new \Exception('Issues with the content for itemBody, it might not be valid');
+        }
+
+        foreach ($questionsXmls as $questionReference => $interactionData) {
             // Append this question span to our `item` content as it is
             $this->content .= '<span class="learnosity-response question-' . $questionReference . '"></span>';
-            // Store extra html content since we now has to slug it in into question stimulus
-            $extraContent = str_replace($interactionXml, '', $extraContent);
+            // Clean up interaction HTML content
+            $qtiClassName = $interactionData['qtiClassName'];
+            $responseIdentifier = $interactionData['responseIdentifier'];
+            $toFind = $qtiClassName . '[responseIdentifier="' . $responseIdentifier. '"]';
+            foreach ($extraContentHtml->find($toFind) as &$tag) {
+                $tag->outertext = '';
+            }
         }
+        $extraContent = $extraContentHtml->save();
 
         // Making assumption question always has stimulus `right`?
         // So, prepend the extra content on the stimulus on the first question

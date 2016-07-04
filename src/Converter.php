@@ -10,6 +10,7 @@ use LearnosityQti\Processors\IMSCP\In\ManifestMapper;
 use LearnosityQti\Processors\IMSCP\Out\ManifestWriter;
 use LearnosityQti\Processors\Learnosity\In\ItemMapper;
 use LearnosityQti\Processors\Learnosity\In\QuestionMapper;
+use LearnosityQti\Processors\QtiV2\In\TestMapper;
 use LearnosityQti\Processors\QtiV2\Out\ItemWriter;
 use LearnosityQti\Processors\QtiV2\Out\QuestionWriter;
 use LearnosityQti\Services\LearnosityToQtiPreProcessingService;
@@ -118,13 +119,34 @@ class Converter
         }
     }
 
+    public static function convertQtiTestToLearnosity($xmlString, $validate = true)
+    {
+        $testMapper = AppContainer::getApplicationContainer()->get('qtiv2_test_mapper');
+        $activityWriter = AppContainer::getApplicationContainer()->get('learnosity_activity_writer');
+
+        try {
+            /** @var TestMapper $testMapper */
+            list($activity, $exceptions) = $testMapper->parse($xmlString, $validate);
+        } catch (XmlStorageException $e) {
+            // Check invalid schema error message and intercept to rethrow as known `InvalidQtiException` exception
+            $exceptionMessage = $e->getMessage();
+            if (StringUtil::startsWith($exceptionMessage, 'The document could not be validated with schema')) {
+                $exceptionMessage = preg_replace('/The document could not be validated with schema(.*)/', 'The document could not be validated with standard QTI schema: ', $exceptionMessage);
+                throw new InvalidQtiException($exceptionMessage);
+            } else {
+                throw $e;
+            }
+        }
+
+        $activityData = $activityWriter->convert($activity);
+        return [$activityData, $exceptions];
+    }
+    
     public static function convertQtiItemToLearnosity($xmlString, $baseAssetsUrl = '', $validate = true)
     {
         $itemMapper = AppContainer::getApplicationContainer()->get('qtiv2_item_mapper');
         $itemWriter = AppContainer::getApplicationContainer()->get('learnosity_item_writer');
         $questionWriter = AppContainer::getApplicationContainer()->get('learnosity_question_writer');
-        $assetsProcessing = AppContainer::getApplicationContainer()->get('assets_processing');
-        $assetsProcessing->setBaseAssetUrl($baseAssetsUrl);
 
         // Parse `em
         try {
@@ -132,7 +154,7 @@ class Converter
         } catch (XmlStorageException $e) {
             // Check invalid schema error message and intercept to rethrow as known `InvalidQtiException` exception
             $exceptionMessage = $e->getMessage();
-            if (StringUtil::startsWith($exceptionMessage, 'The document could not be validated with schema')) {
+            if (StringUtil::startsWith($exceptionMessage, 'The document could not be validated with XML Schema')) {
                 $exceptionMessage = preg_replace('/The document could not be validated with schema(.*)/', 'The document could not be validated with standard QTI schema: ', $exceptionMessage);
                 throw new InvalidQtiException($exceptionMessage);
             } else {

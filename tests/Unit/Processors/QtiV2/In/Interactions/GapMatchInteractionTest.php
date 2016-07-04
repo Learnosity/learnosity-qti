@@ -8,14 +8,13 @@ use LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
 use LearnosityQti\Services\LogService;
 use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\GapMatchInteractionBuilder;
 use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
-use qtism\common\datatypes\DirectedPair;
+use qtism\common\datatypes\QtiDirectedPair;
 
 class GapMatchInteractionTest extends AbstractInteractionTest
 {
     public function testWithMapResponseValidationMissingGapIdentifier()
     {
-        $testInteraction =
-            GapMatchInteractionBuilder::buildGapMatchInteraction(
+        $testInteraction = GapMatchInteractionBuilder::buildGapMatchInteraction(
                 'testGapMatchInteraction',
                 [
                     'A' => 'Gap A',
@@ -33,7 +32,7 @@ class GapMatchInteractionTest extends AbstractInteractionTest
         $responseDeclaration = ResponseDeclarationBuilder::buildWithMapping(
             'testIdentifier',
             $validResponseIdentifier,
-            'DirectedPair'
+            'QtiDirectedPair'
         );
         $mapper = new GapMatchInteractionMapper($testInteraction, $responseDeclaration, $responseProcessingTemplate);
         /** @var clozeassociation $q */
@@ -64,7 +63,7 @@ class GapMatchInteractionTest extends AbstractInteractionTest
             );
         $responseProcessingTemplate = ResponseProcessingTemplate::matchCorrect();
         $validResponseIdentifier = [
-            new DirectedPair('A', 'G1')
+            new QtiDirectedPair('A', 'G1')
         ];
         $responseDeclaration =
             ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifier', $validResponseIdentifier);
@@ -105,7 +104,7 @@ class GapMatchInteractionTest extends AbstractInteractionTest
         $responseDeclaration = ResponseDeclarationBuilder::buildWithMapping(
             'testIdentifier',
             $validResponseIdentifier,
-            'DirectedPair'
+            'QtiDirectedPair'
         );
         $mapper = new GapMatchInteractionMapper($testInteraction, $responseDeclaration, $responseProcessingTemplate);
         /** @var clozeassociation $q */
@@ -158,10 +157,10 @@ class GapMatchInteractionTest extends AbstractInteractionTest
             );
         $responseProcessingTemplate = ResponseProcessingTemplate::matchCorrect();
         $validResponseIdentifier = [
-            new DirectedPair('A', 'G1'),
-            new DirectedPair('B', 'G1'),
-            new DirectedPair('C', 'G2'),
-            new DirectedPair('B', 'G2')
+            new QtiDirectedPair('A', 'G1'),
+            new QtiDirectedPair('B', 'G1'),
+            new QtiDirectedPair('C', 'G2'),
+            new QtiDirectedPair('B', 'G2')
         ];
         $responseDeclaration =
             ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifier', $validResponseIdentifier);
@@ -226,7 +225,7 @@ class GapMatchInteractionTest extends AbstractInteractionTest
         $responseDeclaration = ResponseDeclarationBuilder::buildWithMapping(
             'testIdentifier',
             $validResponseIdentifier,
-            'DirectedPair'
+            'QtiDirectedPair'
         );
         $mapper = new GapMatchInteractionMapper($testInteraction, $responseDeclaration, $responseProcessingTemplate);
         /** @var clozeassociation $q */
@@ -280,10 +279,10 @@ class GapMatchInteractionTest extends AbstractInteractionTest
             );
         $responseProcessingTemplate = ResponseProcessingTemplate::matchCorrect();
         $validResponseIdentifier = [
-            new DirectedPair('G1', 'A'),
-            new DirectedPair('G1', 'B'),
-            new DirectedPair('G2', 'C'),
-            new DirectedPair('G2', 'B')
+            new QtiDirectedPair('G1', 'A'),
+            new QtiDirectedPair('G1', 'B'),
+            new QtiDirectedPair('G2', 'C'),
+            new QtiDirectedPair('G2', 'B')
         ];
         $responseDeclaration =
             ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifier', $validResponseIdentifier);
@@ -349,7 +348,7 @@ class GapMatchInteractionTest extends AbstractInteractionTest
         $responseDeclaration = ResponseDeclarationBuilder::buildWithMapping(
             'testIdentifier',
             $validResponseIdentifier,
-            'DirectedPair'
+            'QtiDirectedPair'
         );
         $mapper = new GapMatchInteractionMapper($testInteraction, $responseDeclaration, $responseProcessingTemplate);
         /** @var clozeassociation $q */

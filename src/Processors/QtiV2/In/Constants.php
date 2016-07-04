@@ -16,4 +16,9 @@ class Constants
         'graphicGapMatchInteraction',
         'hotspotInteraction'
     ];
+
+    public static $needMergeInteractionTypes = [
+        'textEntryInteraction',
+        'inlineChoiceInteraction'
+    ];
 }

@@ -48,7 +48,7 @@ class OrderInteractionMapper extends AbstractInteractionMapper
         foreach ($interaction->getSimpleChoices() as $simpleChoice) {
             /** @var SimpleChoice $simpleChoice */
             if ($simpleChoice->isFixed()) {
-                LogService::log('Attribute `fixed` for ' . $simpleChoice->getIdentifier() . 'is not supported');
+                LogService::log('Attribute `fixed` for ' . $simpleChoice->getIdentifier() . ' is not supported');
             }
         }
         return true;

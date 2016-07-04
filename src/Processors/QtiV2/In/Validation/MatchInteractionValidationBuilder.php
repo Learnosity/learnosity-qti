@@ -5,7 +5,7 @@ namespace LearnosityQti\Processors\QtiV2\In\Validation;
 use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidationBuilder;
 use LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
-use qtism\common\datatypes\DirectedPair;
+use qtism\common\datatypes\QtiDirectedPair;
 use qtism\data\state\MapEntry;
 use qtism\data\state\ResponseDeclaration;
 
@@ -26,10 +26,10 @@ class MatchInteractionValidationBuilder extends BaseInteractionValidationBuilder
         // Build `value` array for a `valid_response` objects
         $values = [];
         foreach ($this->responseDeclaration->getCorrectResponse()->getValues() as $value) {
-            /** @var DirectedPair $valuePair */
+            /** @var QtiDirectedPair $valuePair */
             $valuePair = $value->getValue();
 
-            // Map response value and index based from `DirectedPair` Value, try to guess which one is which since they
+            // Map response value and index based from `QtiDirectedPair` Value, try to guess which one is which since they
             // apparently can swap :(
             if (isset($this->stemsMapping[$valuePair->getFirst()]) && isset($this->optionsMapping[$valuePair->getSecond()])) {
                 $responseIndex = $this->stemsMapping[$valuePair->getFirst()];
@@ -64,7 +64,7 @@ class MatchInteractionValidationBuilder extends BaseInteractionValidationBuilder
             $score += $mapEntry->getMappedValue();
             $mapKey = $mapEntry->getMapKey();
 
-            // Map response value and index based from `DirectedPair` Value, try to guess which one is which since they
+            // Map response value and index based from `QtiDirectedPair` Value, try to guess which one is which since they
             // apparently can swap :(
             if (isset($this->stemsMapping[$mapKey->getFirst()]) && isset($this->optionsMapping[$mapKey->getSecond()])) {
                 $responseIndex = $this->stemsMapping[$mapKey->getFirst()];

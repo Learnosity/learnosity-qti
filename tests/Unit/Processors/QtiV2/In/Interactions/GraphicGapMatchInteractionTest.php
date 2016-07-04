@@ -11,7 +11,7 @@ use LearnosityQti\Services\LogService;
 use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\GraphicGapInteractionBuilder;
 use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
 use LearnosityQti\Utils\StringUtil;
-use qtism\common\datatypes\DirectedPair;
+use qtism\common\datatypes\QtiDirectedPair;
 use qtism\data\content\xhtml\Object;
 
 class GraphicGapMatchInteractionTest extends AbstractInteractionTest
@@ -31,7 +31,7 @@ class GraphicGapMatchInteractionTest extends AbstractInteractionTest
         $responseDeclaration = ResponseDeclarationBuilder::buildWithMapping(
             'testIdentifier',
             ['A G1' => [1, false]],
-            'DirectedPair'
+            'QtiDirectedPair'
         );
         $mapper = new GraphicGapMatchInteractionMapper($testInteraction, $responseDeclaration, $responseProcessingTemplate);
         $question = $mapper->getQuestionType();
@@ -60,7 +60,7 @@ class GraphicGapMatchInteractionTest extends AbstractInteractionTest
         $responseDeclaration = ResponseDeclarationBuilder::buildWithMapping(
             'testIdentifier',
             ['A G1' => [1, false]],
-            'DirectedPair'
+            'QtiDirectedPair'
         );
         $mapper = new GraphicGapMatchInteractionMapper($testInteraction, $responseDeclaration, $responseProcessingTemplate);
         /** @var imageclozeassociation $q */
@@ -106,7 +106,7 @@ class GraphicGapMatchInteractionTest extends AbstractInteractionTest
         $responseDeclaration = ResponseDeclarationBuilder::buildWithMapping(
             'testIdentifier',
             $validResponseIdentifier,
-            'DirectedPair'
+            'QtiDirectedPair'
         );
 
         $mapper = new GraphicGapMatchInteractionMapper($testInteraction, $responseDeclaration, $responseProcessingTemplate);
@@ -169,9 +169,9 @@ class GraphicGapMatchInteractionTest extends AbstractInteractionTest
 
         $responseProcessingTemplate = ResponseProcessingTemplate::matchCorrect();
         $validResponseIdentifier = [
-            new DirectedPair('A', 'G1'),
-            new DirectedPair('A', 'G2'),
-            new DirectedPair('B', 'G1'),
+            new QtiDirectedPair('A', 'G1'),
+            new QtiDirectedPair('A', 'G2'),
+            new QtiDirectedPair('B', 'G1'),
         ];
         $responseDeclaration =
             ResponseDeclarationBuilder::buildWithCorrectResponse('testIdentifier', $validResponseIdentifier);

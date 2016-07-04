@@ -3,14 +3,12 @@
 namespace LearnosityQti\Tests\Integration\Processors\QtiV2\Out\QuestionTypes;
 
 use LearnosityQti\Processors\QtiV2\Out\Constants;
-use LearnosityQti\Tests\Integration\Processors\QtiV2\Out\QuestionTypes\AbstractQuestionTypeTest;
 use LearnosityQti\Utils\QtiMarshallerUtil;
-use qtism\common\datatypes\DirectedPair;
+use qtism\common\datatypes\QtiDirectedPair;
 use qtism\common\enums\BaseType;
 use qtism\common\enums\Cardinality;
 use qtism\data\content\interactions\MatchInteraction;
 use qtism\data\content\interactions\SimpleAssociableChoice;
-use qtism\data\state\MapEntry;
 use qtism\data\state\ResponseDeclaration;
 use qtism\data\state\Value;
 
@@ -74,7 +72,7 @@ class ChoicematrixMapperTest extends AbstractQuestionTypeTest
         $this->assertNull($responseDeclaration->getMapping());
     }
 
-    private function assertDirectPair(DirectedPair $pair, $expectedFirstValue, $expectedSecondValue)
+    private function assertDirectPair(QtiDirectedPair $pair, $expectedFirstValue, $expectedSecondValue)
     {
         $this->assertEquals($expectedFirstValue, $pair->getFirst());
         $this->assertEquals($expectedSecondValue, $pair->getSecond());
