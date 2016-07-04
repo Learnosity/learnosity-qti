@@ -17,10 +17,10 @@ class HotspotInteractionTest extends AbstractInteractionTest
 
         $imageObject = new Object('http://anyurl.com', 'image/png');
         $collection = HotspotInteractionBuilder::buildRectShapesChoices();
-        $interaction = new HotspotInteraction('thisJustWontWork', $imageObject, 0, $collection);
+        $interaction = new HotspotInteraction('thisJustWontWork', $imageObject, $collection);
 
         $responseProcessingTemplate = ResponseProcessingTemplate::matchCorrect();
-        $responseDeclaration = ResponseDeclarationBuilder::buildWithCorrectResponse('thisJustWontWork', ['hotspot1']);
+        $responseDeclaration = ResponseDeclarationBuilder::buildWithCorrectResponse('thisJustWontWork', ['A']);
         $mapper = new HotspotInteractionMapper($interaction, $responseDeclaration, $responseProcessingTemplate);
         $question = $mapper->getQuestionType();
     }

@@ -11,7 +11,7 @@ use LearnosityQti\Utils\CurlUtil;
 use LearnosityQti\Utils\MimeUtil;
 use LearnosityQti\Utils\QtiCoordinateUtil;
 use LearnosityQti\Utils\SimpleHtmlDom\SimpleHtmlDom;
-use qtism\common\datatypes\Shape;
+use qtism\common\datatypes\QtiShape;
 use qtism\data\content\interactions\AssociableHotspot;
 use qtism\data\content\interactions\AssociableHotspotCollection;
 use qtism\data\content\interactions\GapImg;
@@ -68,7 +68,7 @@ class ImageclozeassociationMapper extends AbstractQuestionTypeMapper
                 $rectangleWidth,
                 $rectangleHeight
             );
-            $associableHotspot = new AssociableHotspot(self::ASSOCIABLEHOTSPOT_IDENTIFIER_PREFIX . $index, 1, Shape::RECT, $coords);
+            $associableHotspot = new AssociableHotspot(self::ASSOCIABLEHOTSPOT_IDENTIFIER_PREFIX . $index, 1, QtiShape::RECT, $coords);
             $associableHotspotCollection->attach($associableHotspot);
         }
         return $associableHotspotCollection;

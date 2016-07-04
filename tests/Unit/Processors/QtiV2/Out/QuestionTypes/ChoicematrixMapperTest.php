@@ -9,7 +9,7 @@ use LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
 use LearnosityQti\Processors\QtiV2\Out\Constants;
 use LearnosityQti\Processors\QtiV2\Out\QuestionTypes\ChoicematrixMapper;
 use LearnosityQti\Utils\QtiMarshallerUtil;
-use qtism\common\datatypes\DirectedPair;
+use qtism\common\datatypes\QtiDirectedPair;
 use qtism\data\content\interactions\MatchInteraction;
 use qtism\data\content\interactions\SimpleAssociableChoice;
 use qtism\data\processing\ResponseProcessing;
@@ -156,7 +156,7 @@ class ChoicematrixMapperTest extends \PHPUnit_Framework_TestCase
         return $question;
     }
 
-    private function assertDirectPair(DirectedPair $pair, $expectedFirstValue, $expectedSecondValue)
+    private function assertDirectPair(QtiDirectedPair $pair, $expectedFirstValue, $expectedSecondValue)
     {
         $this->assertEquals($expectedFirstValue, $pair->getFirst());
         $this->assertEquals($expectedSecondValue, $pair->getSecond());

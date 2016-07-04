@@ -3,7 +3,7 @@
 namespace LearnosityQti\Processors\QtiV2\Out\Validation;
 
 use LearnosityQti\Exceptions\MappingException;
-use qtism\common\datatypes\DirectedPair;
+use qtism\common\datatypes\QtiDirectedPair;
 use qtism\common\enums\BaseType;
 use qtism\common\enums\Cardinality;
 use qtism\data\state\CorrectResponse;
@@ -44,13 +44,13 @@ class ChoicematrixValidationBuilder extends AbstractQuestionValidationBuilder
     {
         // The validation in `choicematrix` relies on its key to describe the index of stem/option pair
         $valueCollection = new ValueCollection();
-        foreach ($this->buildDirectedPairs($learnosityValues) as $pair) {
+        foreach ($this->buildQtiDirectedPairs($learnosityValues) as $pair) {
             $valueCollection->attach(new Value($pair));
         }
         return $valueCollection;
     }
 
-    private function buildDirectedPairs(array $values)
+    private function buildQtiDirectedPairs(array $values)
     {
         $pairs = [];
         foreach ($values as $key => $value) {
@@ -58,12 +58,12 @@ class ChoicematrixValidationBuilder extends AbstractQuestionValidationBuilder
                 foreach ($value as $v) {
                     $stemIdentifier = $this->stemIndexIdentifierMap[$key];
                     $optionIdentifier = $this->optionIndexIdentifierMap[intval($v)];
-                    $pairs[] = new DirectedPair($stemIdentifier, $optionIdentifier);
+                    $pairs[] = new QtiDirectedPair($stemIdentifier, $optionIdentifier);
                 }
             } else {
                 $stemIdentifier = $this->stemIndexIdentifierMap[$key];
                 $optionIdentifier = $this->optionIndexIdentifierMap[intval($value)];
-                $pairs[] = new DirectedPair($stemIdentifier, $optionIdentifier);
+                $pairs[] = new QtiDirectedPair($stemIdentifier, $optionIdentifier);
             }
         }
         return $pairs;

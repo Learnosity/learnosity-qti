@@ -11,9 +11,8 @@ class ItemBuilderFactory
 {
     public function getItemBuilder(QtiComponentCollection $interactionComponents)
     {
-        $possibleMergedInteractionTypes = ['textEntryInteraction', 'inlineChoiceInteraction'];
         $interactionTypes = self::getUniqueInteractionTypes($interactionComponents);
-        if (count($interactionTypes) === 1 && in_array($interactionTypes[0], $possibleMergedInteractionTypes)) {
+        if (count($interactionTypes) === 1 && in_array($interactionTypes[0], Constants::$needMergeInteractionTypes)) {
             return new MergedItemBuilder();
         }
         return new RegularItemBuilder();

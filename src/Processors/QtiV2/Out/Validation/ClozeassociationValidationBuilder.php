@@ -5,7 +5,7 @@ namespace LearnosityQti\Processors\QtiV2\Out\Validation;
 use LearnosityQti\Entities\QuestionTypes\clozeassociation_validation;
 use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Processors\QtiV2\Out\QuestionTypes\ClozeassociationMapper;
-use qtism\common\datatypes\DirectedPair;
+use qtism\common\datatypes\QtiDirectedPair;
 use qtism\common\enums\BaseType;
 use qtism\common\enums\Cardinality;
 use qtism\data\state\CorrectResponse;
@@ -42,7 +42,7 @@ class ClozeassociationValidationBuilder extends AbstractQuestionValidationBuilde
             if (!empty($validResponse)) {
                 $first = ClozeassociationMapper::GAP_IDENTIFIER_PREFIX . $index;
                 $second = ClozeassociationMapper::GAPCHOICE_IDENTIFIER_PREFIX . $this->possibleResponsesMap[$validResponse];
-                $values->attach(new Value(new DirectedPair($first, $second)));
+                $values->attach(new Value(new QtiDirectedPair($first, $second)));
             }
         }
         if ($values->count() > 0) {

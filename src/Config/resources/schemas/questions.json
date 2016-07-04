@@ -1,10 +1,10 @@
 {
     "meta": {
         "status": true,
-        "timestamp": 1462889409,
+        "timestamp": 1465443048,
         "request_version": "",
         "schema_version": {
-            "responses": "v2.84.0",
+            "responses": "v2.86.0",
             "feedback": "v2.71.0",
             "features": "v2.84.0"
         },
@@ -15197,7 +15197,7 @@
                             "ticks_distance": {
                                 "default": 1,
                                 "description": "The distance between the ticks displayed in the axis",
-                                "min": 1,
+                                "min": 0,
                                 "name": "Ticks distance",
                                 "required": true,
                                 "type": "number"
@@ -15273,7 +15273,7 @@
                             "ticks_distance": {
                                 "default": 1,
                                 "description": "The distance between the ticks displayed in the axis",
-                                "min": 1,
+                                "min": 0,
                                 "name": "Ticks distance",
                                 "required": true,
                                 "type": "number"
@@ -15398,7 +15398,7 @@
                         "attributes": {
                             "x_distance": {
                                 "description": "Distance between grid lines perpendicular to the X axis",
-                                "min": 1,
+                                "min": 0,
                                 "name": "x_distance",
                                 "required": true,
                                 "default": 1,
@@ -15406,7 +15406,7 @@
                             },
                             "y_distance": {
                                 "description": "Distance between grid lines perpendicular to the Y axis",
-                                "min": 1,
+                                "min": 0,
                                 "name": "y_distance",
                                 "required": true,
                                 "default": 1,
@@ -16041,6 +16041,41 @@
                                 "name": "Valid response",
                                 "required": true,
                                 "type": "object"
+                            },
+                            "alt_responses": {
+                                "description": "An array of alternate response objects used for giving a supplementary value if the question was not valid",
+                                "items": {
+                                    "attributes": {
+                                        "score": {
+                                            "default": 1,
+                                            "description": "Score for this alternate response.",
+                                            "min": 0,
+                                            "name": "Score",
+                                            "required": true,
+                                            "type": "number"
+                                        },
+                                        "value": {
+                                            "name": "Value",
+                                            "type": "array",
+                                            "required": true,
+                                            "description": "An array containing a single valid response or many if multiple_responses is true.",
+                                            "items": {
+                                                "name": "Valid hotspot",
+                                                "type": "string",
+                                                "element": "select",
+                                                "options": {
+                                                    "dependency": "areas"
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "required": false,
+                                    "type": "object",
+                                    "name": "Alternate response"
+                                },
+                                "name": "Alternate responses",
+                                "required": false,
+                                "type": "array"
                             }
                         },
                         "conditional_attributes": {
