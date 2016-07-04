@@ -30,7 +30,7 @@
         "symfony/dependency-injection": "v2.6.8",
         "jms/aop-bundle": "1.0.1",
         "jms/di-extra-bundle": "1.5.0",
-        "qtism/qtism": "dev-master"
+        "qtism/qtism": "3.2.3"
     },
     "require-dev": {
         "phpunit/phpunit": "4.8.4"

@@ -45,8 +45,7 @@ class HotspotMapper extends AbstractQuestionTypeMapper
         $imageObject = $this->buildMainImageObject($question->get_image());
         $hasMultiResponses = !empty($question->get_multiple_responses()) && $question->get_multiple_responses();
         $maxChoices = $hasMultiResponses ? $choicesCollection->count() : 1;
-        $interaction = new HotspotInteraction($interactionIdentifier, $imageObject, $choicesCollection);
-        $interaction->setMaxChoices($maxChoices);
+        $interaction = new HotspotInteraction($interactionIdentifier, $imageObject, $maxChoices, $choicesCollection);
 
         // Set min choices are 0 because we allow no responses
         $interaction->setMinChoices(0);

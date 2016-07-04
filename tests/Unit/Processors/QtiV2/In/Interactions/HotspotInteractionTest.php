@@ -17,7 +17,7 @@ class HotspotInteractionTest extends AbstractInteractionTest
 
         $imageObject = new Object('http://anyurl.com', 'image/png');
         $collection = HotspotInteractionBuilder::buildRectShapesChoices();
-        $interaction = new HotspotInteraction('thisJustWontWork', $imageObject, $collection);
+        $interaction = new HotspotInteraction('thisJustWontWork', $imageObject, 0, $collection);
 
         $responseProcessingTemplate = ResponseProcessingTemplate::matchCorrect();
         $responseDeclaration = ResponseDeclarationBuilder::buildWithCorrectResponse('thisJustWontWork', ['A']);
