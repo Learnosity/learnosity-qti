@@ -3,6 +3,7 @@ namespace LearnosityQti\Processors\QtiV2\In\Validation;
 
 use LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidationBuilder;
 use LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
+use LearnosityQti\Services\LogService;
 use LearnosityQti\Utils\ArrayUtil;
 use qtism\data\state\MapEntry;
 use qtism\data\state\ResponseDeclaration;
@@ -31,11 +32,15 @@ class TextEntryInteractionValidationBuilder extends BaseInteractionValidationBui
         $interactionResponses = [];
         foreach ($this->responseDeclarations as $responseIdentifier => $responseDeclaration) {
             /** @var ResponseDeclaration $responseDeclaration */
-            $correctResponses = $responseDeclaration->getCorrectResponse()->getValues()->getArrayCopy(true);
-            $interactionResponses[] = array_map(function ($value) {
-                /** @var Value $value */
-                return new ValidResponse(1, [$value->getValue()]);
-            }, $correctResponses);
+            if (!empty($responseDeclaration->getCorrectResponse())) {
+                $correctResponses = $responseDeclaration->getCorrectResponse()->getValues()->getArrayCopy(true);
+                $interactionResponses[] = array_map(function ($value) {
+                    /** @var Value $value */
+                    return new ValidResponse(1, [$value->getValue()]);
+                }, $correctResponses);
+            } else {
+                LogService::log('Response declaration has no correct response values. Thus, validation ignored');
+            }
         }
         $responses = ArrayUtil::cartesianProductForResponses($interactionResponses);
         return ValidationBuilder::build('clozetext', 'exactMatch', $responses);

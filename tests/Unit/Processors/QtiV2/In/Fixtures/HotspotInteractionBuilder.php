@@ -17,7 +17,7 @@ class HotspotInteractionBuilder
         $imageObject->setWidth(131);
         $imageObject->setHeight(37);
         $collection = self::buildRectShapesChoices();
-        return new HotspotInteraction($responseIdentifier, $imageObject, 0, $collection);
+        return new HotspotInteraction($responseIdentifier, $imageObject, $collection);
     }
 
     public static function buildWithCircleShapesChoices($responseIdentifier)
@@ -31,7 +31,7 @@ class HotspotInteractionBuilder
         $collection->attach(new HotspotChoice('B', QtiShape::CIRCLE, new QtiCoords(QtiShape::CIRCLE, [118, 184, 8])));
         $collection->attach(new HotspotChoice('C', QtiShape::CIRCLE, new QtiCoords(QtiShape::CIRCLE, [150, 235, 8])));
         $collection->attach(new HotspotChoice('D', QtiShape::CIRCLE, new QtiCoords(QtiShape::CIRCLE, [96, 114, 8])));
-        return new HotspotInteraction($responseIdentifier, $imageObject, 0, $collection);
+        return new HotspotInteraction($responseIdentifier, $imageObject, $collection);
     }
 
     public static function buildWithPolyShapesChoices($responseIdentifier)
