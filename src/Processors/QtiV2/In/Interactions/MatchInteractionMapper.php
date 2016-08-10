@@ -44,7 +44,7 @@ class MatchInteractionMapper extends AbstractInteractionMapper
         $uiStyle = new choicematrix_ui_style();
         $uiStyle->set_type('table');
 
-        $isMultipleResponse = $this->isMultipleResponse($interaction->getTargetChoices());
+        $isMultipleResponse = $this->isMultipleResponse($interaction);
         $question = new choicematrix('choicematrix', $options, $stems);
         $question->set_multiple_responses($isMultipleResponse);
         $question->set_stimulus($this->getPrompt());
@@ -55,11 +55,17 @@ class MatchInteractionMapper extends AbstractInteractionMapper
         return $question;
     }
 
-    private function isMultipleResponse(SimpleMatchSet $targetChoices)
+    private function isMultipleResponse(QtiMatchInteraction $interaction)
     {
         // We determine whether the question shall be mapped to `multiple_responses` as true
-        // if any the target choices (options) can be mapped to be more than 1
-        foreach ($targetChoices->getSimpleAssociableChoices() as $choice) {
+        // if any the source choices (stems or options) can be mapped to be more than 1
+        foreach ($interaction->getSourceChoices()->getSimpleAssociableChoices() as $choice) {
+            /** @var SimpleAssociableChoice $choice */
+            if ($choice->getMatchMax() !== 1) {
+                return true;
+            }
+        }
+        foreach ($interaction->getTargetChoices()->getSimpleAssociableChoices() as $choice) {
             /** @var SimpleAssociableChoice $choice */
             if ($choice->getMatchMax() !== 1) {
                 return true;

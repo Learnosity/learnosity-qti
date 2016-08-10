@@ -20,6 +20,12 @@ class ConverterTest extends AbstractTest
         list($item, $questions, $manifest) = Converter::convertQtiItemToLearnosity($xmlString);
     }
 
+    public function testConvertRegularQtiTestXmlToLearnosityJson()
+    {
+        $xmlString = $this->getFixtureFileContents('tests/rtest01.xml');
+        list($activity, $manifest) = Converter::convertQtiTestToLearnosity($xmlString);
+    }
+
     public function testConvertRegularQtiXmlWithCdataToLearnosityJson()
     {
         $xmlString = $this->getFixtureFileContents('otherqtis/withcdata.xml');

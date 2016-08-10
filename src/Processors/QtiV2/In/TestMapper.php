@@ -2,21 +2,12 @@
 
 namespace LearnosityQti\Processors\QtiV2\In;
 
-use LearnosityQti\AppContainer;
 use LearnosityQti\Entities\Activity\activity;
 use LearnosityQti\Entities\Activity\activity_data;
-use LearnosityQti\Entities\Activity\activity_data_sections_item;
-use LearnosityQti\Entities\Activity\activity_data_sections_item_config;
 use LearnosityQti\Exceptions\MappingException;
-use LearnosityQti\Processors\QtiV2\In\Processings\ProcessingInterface;
 use LearnosityQti\Services\LogService;
 use qtism\data\AssessmentItem;
-use qtism\data\AssessmentItemRef;
-use qtism\data\AssessmentSection;
-use qtism\data\AssessmentSectionCollection;
 use qtism\data\AssessmentTest;
-use qtism\data\content\ItemBody;
-use qtism\data\processing\ResponseProcessing;
 use qtism\data\storage\xml\XmlDocument;
 
 class TestMapper
@@ -38,44 +29,20 @@ class TestMapper
             throw new MappingException('XML is not a valid <assessmentItem> document');
         }
 
-        // TODO: Write up the exceptions!
-        return [$this->buildActivity($assessmentTest), []];
-    }
-
-    private function buildActivity(AssessmentTest $assessmentTest)
-    {
-        $data = new activity_data();
-
-        // Support on sections first
-        $sectionCollection = $assessmentTest->getComponentsByClassName('assessmentSection', true);
-        $sections = [];
-        /** @var AssessmentSection $assessmentSection */
-        foreach ($sectionCollection as $assessmentSection) {
-            $references = [];
-
-            // Populate item references
-            $itemRefCollection = $assessmentSection->getComponentsByClassName('assessmentItemRef', true);
-            /** @var AssessmentItemRef $assessmentItemRef */
-            foreach ($itemRefCollection as $assessmentItemRef) {
-                $references[] = $assessmentItemRef->getIdentifier();
-            }
-            $section = new activity_data_sections_item();
-            $section->set_items($references);
-
-            // Set assessment section title if exists
-            if (!empty($assessmentSection->getTitle())) {
-                $sectionConfig = new activity_data_sections_item_config();
-                $sectionConfig->set_subtitle($assessmentSection->getTitle());
-                $section->set_config($sectionConfig);
-            }
-
-            $sections[] = $section;
+        // Ignore `testPart` and `assessmentSection`. Grab every item references and merge in array
+        $itemReferences = [];
+        foreach ($assessmentTest->getComponentsByClassName('assessmentItemRef', true) as $assessmentItemRef) {
+            $itemReferences[] = $assessmentItemRef->getIdentifier();
         }
-        $data->set_sections($sections);
-        $reference = $assessmentTest->getIdentifier();
-        $activity = new activity($reference, $data);
+        LogService::log('Support for mapping is very limited. Elements such `testPart`, `assessmentSections`, `seclection`, `rubricBlock`, '
+            . 'etc are ignored. Please see developer docs for more details');
 
-        // Return dah` activity~!
-        return $activity;
+        $data = new activity_data();
+        $data->set_items($itemReferences);
+        $activity = new activity($assessmentTest->getIdentifier(), $data);
+
+        // Flush out all the error messages stored in this static class, also ensure they are unique
+        $messages = array_values(array_unique(LogService::flush()));
+        return [$activity, $messages];
     }
 }
