@@ -1,7 +1,8 @@
 # Learnosity QTI
 
-Include this package into easily convert QTI Assessment Item to our Item and Question JSON format
-This SDK should run on PHP 5.5+
+The learnosity-qti package converts QTI 2.1 Assessment Items to Learnosity Item and Question JSON.
+
+This should run on PHP 5.5+
 
 Live Demo: [http://docs.learnosity.com/authoring/qti/demo](http://docs.learnosity.com/authoring/qti/demo)
 
@@ -9,18 +10,18 @@ Documentation: [http://docs.learnosity.com/authoring/qti](http://docs.learnosity
 
 ## Installation via Composer
 
-Using Composer is the recommended way to install the Learnosity SDK for PHP. In order to use the SDK with Composer,
+Using Composer is the recommended way to install Learnosity QTI for PHP. In order to use the package with Composer,
 you must add "learnosity/learnosity-qti" as a dependency in your project's composer.json file.
 
 ```
   {
     "require": {
-        "learnosity/learnosity-qti": "x.x.x"
+        "learnosity/learnosity-qti": "0.*"
     }
   }
 ```
 
-Then, install your dependencies 
+Then, install your dependencies
 
 ```
 composer install
@@ -28,7 +29,53 @@ composer install
 
 ## Usage
 
-### Converting Learnosity JSON to QTI XML string
+### Converting QTI to Learnosity JSON
+
+```
+use LearnosityQti\Converter;
+
+$xmlString = '<assessmentItem xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1...> ... </assessmentItem>'
+list($item, $questions, $manifest) = Converter::convertQtiItemToLearnosity($xmlString);
+
+var_dump($item);
+var_dump($questions);
+var_dump($manifest);
+```
+
+
+### Converting QTI Manifest XML string to Learnosity JSON
+
+The result from this function is highly opiniated and might not be what you want.
+
+The `$activity` is generated based on assessmentItem <resources>(s) with item references assumed to be the resource identifier and status set to be `published`. You might want to use the actual assessment item identifier or your custom identifier instead.
+The `$activityTags` is generated based on manifest metadata and the `$itemsTags` is based on the corresponding `resource` metadata. It simply flatten the XML structure with dot notation which you may need to parse it a bit more to suits your preferred Learnosity tags structure, ie.
+
+```
+{
+    "educational": [
+        "intendedEndUserRole:source:IMSGLC_CC_Rolesv1p3",
+        "intendedEndUserRole:source:value:Learner"
+    ],
+    "lifeCycle": [
+        "version:string:Published"
+    ]
+}
+```
+
+Example usage
+
+```
+use LearnosityQti\Converter;
+
+$xmlString = '<?xml version="1.0" encoding="utf-8"?><manifest ...> ... </manifest>'
+list($activity, $activityTags, $itemsTags) = Converter::convertQtiManifestToLearnosity($xmlString);
+
+var_dump($activity);
+var_dump($activityTags);
+var_dump($itemsTags);
+```
+
+### Converting Learnosity JSON to QTI
 
 ie. `item.json`
 ```
@@ -84,51 +131,7 @@ var_dump($xmlString);
 var_dump($manifest);
 ```
 
-### Converting QTI XML string to Learnosity JSON
 
-```
-use LearnosityQti\Converter;
-
-$xmlString = '<assessmentItem xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1...> ... </assessmentItem>'
-list($item, $questions, $manifest) = Converter::convertQtiItemToLearnosity($xmlString);
-
-var_dump($item);
-var_dump($questions);
-var_dump($manifest);
-```
-
-
-### Converting QTI Manifest XML string to Learnosity JSON
-
-The result from this function is highly opiniated and might not be what you want.
-
-The `$activity` is generated based on assessmentItem <resources>(s) with item references assumed to be the resource identifier and status set to be `published`. You might want to use the actual assessment item identifier or your custom identifier instead.
-The `$activityTags` is generated based on manifest metadata and the `$itemsTags` is based on the corresponding `resource` metadata. It simply flatten the XML structure with dot notation which you may need to parse it a bit more to suits your preferred Learnosity tags structure, ie. 
- 
-```
-{
-    "educational": [
-        "intendedEndUserRole:source:IMSGLC_CC_Rolesv1p3",
-        "intendedEndUserRole:source:value:Learner"
-    ],
-    "lifeCycle": [
-        "version:string:Published"
-    ]
-}
-```
-
-Example usage
-
-```
-use LearnosityQti\Converter;
-
-$xmlString = '<?xml version="1.0" encoding="utf-8"?><manifest ...> ... </manifest>'
-list($activity, $activityTags, $itemsTags) = Converter::convertQtiManifestToLearnosity($xmlString);
-
-var_dump($activity);
-var_dump($activityTags);
-var_dump($itemsTags);
-```
 
 ## Development
 
