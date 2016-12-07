@@ -129,3 +129,42 @@ var_dump($activity);
 var_dump($activityTags);
 var_dump($itemsTags);
 ```
+
+## Development
+
+### Running unit tests
+
+You can run unit and integration tests: 
+
+```
+php vendor/bin/phpunit
+```
+
+### Updating schemas 
+
+We relies on JSON schemas to generate entities objects used in this library. From time to time, schemas got updated and we need to update our PHP objects.
+To do this, you will need to go update our schema located at `src/Config/resources/schemas/questions.json` with content from: `http://schemas.learnosity.com/stable/questions/`.
+and run our build script:
+
+```
+php build.php
+```
+
+Running this build script will does 2 things:
+ * Update our PHP entities objects at `src/Entities/*` in accordance to the schemas specified
+ * Update our `documentation.html` according to specification at `src/**/Documentation/*` 
+
+You might need to fix the mapper logic to suits our new schemas or update the tests if tests are failing. 
+
+### Documentations
+
+Documentation is automatically generated based on specifications at `src/**/Documentation/*` and 
+it is located at `documentation.html` via our build script:
+ 
+ ```
+ php build.php
+ ```
+
+It's designed to a single page documentation that summarised the capabilities of this QTI conversion library.
+
+If you do add up new features, or change the logic of mapping implementation, please also update the documentation.

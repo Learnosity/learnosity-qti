@@ -34,13 +34,18 @@ class DocumentationGenerator
 
     public function generateDocumentation()
     {
+        $this->renderFile('documentation.html.twig', $this->documentationPath, $this->generateDocumentationData());
+    }
+
+    public function generateDocumentationData()
+    {
         $learnosityToQtiDocumenation = $this->generateLearnosityToQtiDocumentation();
         $qtiToLearnosityDocumentation = $this->generateQtiToLearnosityDocumentation();
 
-        $this->renderFile('documentation.html.twig', $this->documentationPath, [
+        return [
             'learnosityToQti' => $learnosityToQtiDocumenation,
             'qtiToLearnosity' => $qtiToLearnosityDocumentation
-        ]);
+        ];
     }
 
     private function generateLearnosityToQtiDocumentation()
