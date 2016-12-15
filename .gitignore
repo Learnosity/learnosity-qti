@@ -2,3 +2,4 @@
 .sonar
 vendor
 composer.lock
+reports

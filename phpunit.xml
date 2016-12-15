@@ -1,4 +1,4 @@
-<phpunit bootstrap="vendor/autoload.php">
+<phpunit bootstrap="./bootstrap.php">
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./src</directory>
@@ -10,8 +10,9 @@
         </whitelist>
     </filter>
     <logging>
-        <log type="coverage-clover" target="./tests/coverage.xml"/>
-        <log type="junit" target="./src/Tests/junit.xml" logIncompleteSkipped="false"/>
+        <log type="coverage-clover" target="./reports/coverage/coverage.xml"/>
+        <log type="junit" target="./reports/coverage/junit.xml" logIncompleteSkipped="false"/>
+        <log type="coverage-html" target="./reports/coverage/html" title="Learnosity" charset="UTF-8" yui="true" highlight="true" lowUpperBound="35" highLowerBound="70"/>
     </logging>
     <testsuites>
         <testsuite name="unit">
