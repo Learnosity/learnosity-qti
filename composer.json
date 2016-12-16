@@ -12,11 +12,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "LearnosityQti\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
+            "LearnosityQti\\": "src/",
             "LearnosityQti\\Tests\\": "tests/"
         }
     },
