@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "aa9b86795b162e6a00750d19bb569b24",
-    "content-hash": "a26cd62e6415f57b8632a899895ab9a3",
+    "hash": "b34118859a00a46f7c605115c347aedd",
+    "content-hash": "fc936f7de6961e7bbca73c49468f821e",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -469,16 +469,16 @@
         },
         {
             "name": "qtism/qtism",
-            "version": "4.2.0",
+            "version": "6.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/oat-sa/qti-sdk.git",
-                "reference": "6dada5a4d83aa4cdfbbbb21a6137a385055bcd14"
+                "reference": "5906202cac5ee3e5187e326fde24d196f166a158"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/oat-sa/qti-sdk/zipball/6dada5a4d83aa4cdfbbbb21a6137a385055bcd14",
-                "reference": "6dada5a4d83aa4cdfbbbb21a6137a385055bcd14",
+                "url": "https://api.github.com/repos/oat-sa/qti-sdk/zipball/5906202cac5ee3e5187e326fde24d196f166a158",
+                "reference": "5906202cac5ee3e5187e326fde24d196f166a158",
                 "shasum": ""
             },
             "require": {
@@ -530,7 +530,7 @@
                 "QTI",
                 "TAO"
             ],
-            "time": "2016-08-03 15:33:47"
+            "time": "2016-12-02 15:43:21"
         },
         {
             "name": "symfony/config",
