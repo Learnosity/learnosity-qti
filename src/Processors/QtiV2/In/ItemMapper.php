@@ -2,16 +2,16 @@
 
 namespace LearnosityQti\Processors\QtiV2\In;
 
-use LearnosityQti\AppContainer;
-use LearnosityQti\Exceptions\MappingException;
-use LearnosityQti\Processors\QtiV2\In\Processings\MathsProcessing;
-use LearnosityQti\Processors\QtiV2\In\Processings\ProcessingInterface;
-use LearnosityQti\Processors\QtiV2\In\Processings\RubricsProcessing;
-use LearnosityQti\Services\LogService;
-use qtism\data\AssessmentItem;
-use qtism\data\content\ItemBody;
-use qtism\data\processing\ResponseProcessing;
-use qtism\data\storage\xml\XmlDocument;
+use \LearnosityQti\AppContainer;
+use \LearnosityQti\Exceptions\MappingException;
+use \LearnosityQti\Processors\QtiV2\In\Processings\MathsProcessing;
+use \LearnosityQti\Processors\QtiV2\In\Processings\ProcessingInterface;
+use \LearnosityQti\Processors\QtiV2\In\Processings\RubricsProcessing;
+use \LearnosityQti\Services\LogService;
+use \qtism\data\AssessmentItem;
+use \qtism\data\content\ItemBody;
+use \qtism\data\processing\ResponseProcessing;
+use \qtism\data\storage\xml\XmlDocument;
 
 class ItemMapper
 {
@@ -27,6 +27,9 @@ class ItemMapper
         // TODO: Remove this, and move it higher up
         LogService::flush();
 
+        $xmlString = $this->preprocessXml($xmlString);
+
+        // Load the contents of the XML into a QTI-validated document
         $xmlDocument = new XmlDocument();
         if ($validate === false) {
             LogService::log('QTI pre-validation is turned off, some invalid attributes might be stripped from XML content upon conversion');
@@ -96,6 +99,20 @@ class ItemMapper
         // Flush out all the error messages stored in this static class, also ensure they are unique
         $messages = array_values(array_unique(LogService::flush()));
         return [$item, $questions, $messages];
+    }
+
+    private function preprocessXml($xmlString)
+    {
+        $xmlPreprocessings = [
+            AppContainer::getApplicationContainer()->get('xml_assessment_items_processing'),
+        ];
+
+        /** @var AbstractXmlProcessing $processing */
+        foreach ($xmlPreprocessings as $processing) {
+            $xmlString = $processing->processXml($xmlString);
+        }
+
+        return $xmlString;
     }
 
     private function validateAssessmentItem(AssessmentItem $assessmentItem)
