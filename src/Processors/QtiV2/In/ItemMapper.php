@@ -4,9 +4,11 @@ namespace LearnosityQti\Processors\QtiV2\In;
 
 use \LearnosityQti\AppContainer;
 use \LearnosityQti\Exceptions\MappingException;
+use \LearnosityQti\Processors\QtiV2\In\Processings\AbstractXmlProcessing;
 use \LearnosityQti\Processors\QtiV2\In\Processings\MathsProcessing;
 use \LearnosityQti\Processors\QtiV2\In\Processings\ProcessingInterface;
 use \LearnosityQti\Processors\QtiV2\In\Processings\RubricsProcessing;
+use \LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
 use \LearnosityQti\Services\LogService;
 use \qtism\data\AssessmentItem;
 use \qtism\data\content\ItemBody;
@@ -22,48 +24,88 @@ class ItemMapper
         $this->itemBuilderFactory = $itemBuilderFactory;
     }
 
-    public function parse($xmlString, $validate = true)
+    /**
+     * Parse an XML string representing a QTI-formatted assessment item
+     * into Learnosity item and question data.
+     *
+     * This method attempts to deserialize the XML, and then calls
+     * ItemMapper::parseWithAssessmentItemComponent() to perform the
+     * actual parsing operation.
+     *
+     * The result of a successful parse operation is Learnosity item and
+     * questions data that corresponds to the QTI-formatted input.
+     *
+     * @param  string  $xmlString - XML input to parse
+     * @param  boolean $validateXml - whether to validate the XML
+     *                              before attempting to deserialize it
+     *
+     * @return mixed[] - a tuple containing a Learnosity item as the
+     *                   first element, associated questions as the second, and
+     *                   log messages resulting from the operation as the last element
+     */
+    public function parse($xmlString, $validateXml = true)
     {
         // TODO: Remove this, and move it higher up
         LogService::flush();
 
-        $xmlString = $this->preprocessXml($xmlString);
+        $xmlString = $this->processXml($xmlString, $this->getXmlProcessings());
 
         // Load the contents of the XML into a QTI-validated document
-        $xmlDocument = new XmlDocument();
-        if ($validate === false) {
-            LogService::log('QTI pre-validation is turned off, some invalid attributes might be stripped from XML content upon conversion');
-        }
-        $xmlDocument->loadFromString($xmlString, $validate);
+        /** @var XmlDocument $xmlDocument */
+        $xmlDocument = $this->deserializeXml($xmlString, $validateXml);
 
         /** @var AssessmentItem $assessmentItem */
-        $assessmentItem = $xmlDocument->getDocumentComponent();
-        if (!($assessmentItem instanceof AssessmentItem)) {
-            throw new MappingException('XML is not a valid <assessmentItem> document');
-        }
+        $assessmentItem = $this->getAssessmentItemFromXmlDocument($xmlDocument);
+
+        // Convert the QTI assessment item into Learnosity output
         return $this->parseWithAssessmentItemComponent($assessmentItem);
     }
 
+    /**
+     * Parse a QTI assessment item into Learnosity item and question data.
+     *
+     * @param  \qtism\data\AssessmentItem $assessmentItem - item component to parse
+     *
+     * @return mixed[] - a tuple containing a Learnosity item as the
+     *                   first element, associated questions as the second, and
+     *                   log messages resulting from the operation as the last element
+     */
     public function parseWithAssessmentItemComponent(AssessmentItem $assessmentItem)
     {
         // TODO: Move this logging service upper to converter class level
         // Make sure we clean up the log
         // LogService::flush();
 
-        $processings = [
-            AppContainer::getApplicationContainer()->get('rubrics_processing'),
-            AppContainer::getApplicationContainer()->get('maths_processing'),
-            AppContainer::getApplicationContainer()->get('assets_processing'),
-            AppContainer::getApplicationContainer()->get('identifiers_processing')
-        ];
+        $processings = $this->getConversionProcessings();
 
-        // Pre-processing works
-        /** @var ProcessingInterface $processing */
-        foreach ($processings as $processing) {
-            $assessmentItem = $processing->processAssessmentItem($assessmentItem);
-        }
+        $assessmentItem = $this->processQtiAssessmentItem($assessmentItem, $processings);
 
-        $assessmentItem = $this->validateAssessmentItem($assessmentItem);
+        $assessmentItem = $this->validateQtiAssessmentItem($assessmentItem);
+
+        // Conversion from QTI item to Learnosity item and questions
+        list($item, $questions) = $this->buildLearnosityItemFromQtiAssessmentItem($assessmentItem);
+
+        list($item, $questions) = $this->processLearnosityItem($item, $questions, $processings);
+
+        // Flush out all the error messages stored in this static class, also ensure they are unique
+        $messages = array_values(array_unique(LogService::flush()));
+
+        return [$item, $questions, $messages];
+    }
+
+    /**
+     * Takes a QTI assessment item and generates corresponding
+     * Learnosity item and question data.
+     *
+     * @param  \qtism\data\AssessmentItem $assessmentItem
+     *
+     * @return mixed[] - a tuple containing a Learnosity item as the
+     *                   first element, and associated questions as the second
+     *
+     * @throws \LearnosityQti\Exceptions\MappingException
+     */
+    protected function buildLearnosityItemFromQtiAssessmentItem(AssessmentItem $assessmentItem)
+    {
         $responseProcessingTemplate = $this->getResponseProcessingTemplate($assessmentItem->getResponseProcessing());
 
         /** @var ItemBody $itemBody */
@@ -88,34 +130,126 @@ class ItemMapper
         if ($assessmentItem->getTitle()) {
             $item->set_description($assessmentItem->getTitle());
         }
+
         $questions = $itemBuilder->getQuestions();
 
-        // Post-processing works
+        return [$item, $questions];
+    }
+
+    /**
+     * Deserialize an XML string into a QTI-validated document.
+     *
+     * @param  string $xmlString - the XML content to deserialize
+     * @param  boolean $validateXml - whether to validate the XML
+     *                              before attempting to deserialize it
+     *
+     * @return \qtism\data\storage\xml\XmlDocument
+     */
+    protected function deserializeXml($xmlString, $validateXml)
+    {
+        $xmlDocument = new XmlDocument();
+        if (!$validateXml) {
+            LogService::log('QTI pre-validation is turned off, some invalid attributes might be stripped from XML content upon conversion');
+        }
+        $xmlDocument->loadFromString($xmlString, $validateXml);
+
+        return $xmlDocument;
+    }
+
+    /**
+     * Returns a list of objects that are used for processing the XML.
+     *
+     * @return AbstractXmlProcessing[]
+     */
+    protected function getXmlProcessings()
+    {
+        return [
+            AppContainer::getApplicationContainer()->get('xml_assessment_items_processing'),
+        ];
+    }
+
+    /**
+     * Returns a list of objects that are used for performing
+     * pre- and post-processing on converted assessment items.
+     *
+     * @return ProcessingInterface[]
+     */
+    protected function getConversionProcessings()
+    {
+        return [
+            AppContainer::getApplicationContainer()->get('rubrics_processing'),
+            AppContainer::getApplicationContainer()->get('maths_processing'),
+            AppContainer::getApplicationContainer()->get('assets_processing'),
+            AppContainer::getApplicationContainer()->get('identifiers_processing'),
+        ];
+    }
+
+    /**
+     * Process a Learnosity item following a successful QTI-to-learnosity conversion.
+     *
+     * @param  mixed $item - item to process
+     * @param  mixed $questions - questions to process
+     * @param  ProcessingInterface[] $processings - list of processing tasks
+     *
+     * @return mixed[] - a tuple containing a Learnosity item as the
+     *                   first element, and associated questions as the second
+     */
+    protected function processLearnosityItem($item, $questions, array $processings)
+    {
         /** @var ProcessingInterface $processing */
         foreach ($processings as $processing) {
             list($item, $questions) = $processing->processItemAndQuestions($item, $questions);
         }
 
-        // Flush out all the error messages stored in this static class, also ensure they are unique
-        $messages = array_values(array_unique(LogService::flush()));
-        return [$item, $questions, $messages];
+        return [$item, $questions];
     }
 
-    private function preprocessXml($xmlString)
+    /**
+     * Process a QTI assessment item prior to conversion.
+     *
+     * @param  \qtism\data\AssessmentItem $assessmentItem - item component to process
+     * @param  ProcessingInterface[] $processings - list of processing tasks
+     *
+     * @return \qtism\data\AssessmentItem
+     */
+    protected function processQtiAssessmentItem(AssessmentItem $assessmentItem, array $processings)
     {
-        $xmlPreprocessings = [
-            AppContainer::getApplicationContainer()->get('xml_assessment_items_processing'),
-        ];
+        /** @var ProcessingInterface $processing */
+        foreach ($processings as $processing) {
+            $assessmentItem = $processing->processAssessmentItem($assessmentItem);
+        }
 
+        return $assessmentItem;
+    }
+
+    /**
+     * Process an XML string prior to deserialization.
+     *
+     * @param  string $xmlString - XML content to process
+     * @param  AbstractXmlProcessing[] $processings - list of processing tasks
+     *
+     * @return string
+     */
+    protected function processXml($xmlString, array $processings)
+    {
         /** @var AbstractXmlProcessing $processing */
-        foreach ($xmlPreprocessings as $processing) {
+        foreach ($processings as $processing) {
             $xmlString = $processing->processXml($xmlString);
         }
 
         return $xmlString;
     }
 
-    private function validateAssessmentItem(AssessmentItem $assessmentItem)
+    /**
+     * Validates a QTI assessment item for conversion.
+     *
+     * @param  \qtism\data\AssessmentItem $assessmentItem - item component to validate
+     *
+     * @return \qtism\data\AssessmentItem
+     *
+     * @throws \LearnosityQti\Exceptions\MappingException
+     */
+    private function validateQtiAssessmentItem(AssessmentItem $assessmentItem)
     {
         if ($assessmentItem->getOutcomeDeclarations()->count()) {
             LogService::log('Ignoring <outcomeDeclaration> on <assessmentItem>. Generally we mapped <defaultValue> to 0');
@@ -135,6 +269,35 @@ class ItemMapper
         return $assessmentItem;
     }
 
+    /**
+     * Retrieves the assessment item from a given XML document.
+     *
+     * The assessment item must be the root element of the document.
+     *
+     * @param  \qtism\data\storage\xml\XmlDocument $xmlDocument
+     *
+     * @return \qtism\data\AssessmentItem
+     *
+     * @throws \LearnosityQti\Exceptions\MappingException
+     */
+    private function getAssessmentItemFromXmlDocument(XmlDocument $xmlDocument)
+    {
+        $assessmentItem = $xmlDocument->getDocumentComponent();
+        if (!($assessmentItem instanceof AssessmentItem)) {
+            throw new MappingException('XML is not a valid <assessmentItem> document');
+        }
+
+        return $assessmentItem;
+    }
+
+    /**
+     * Obtains the corresponding Learnosity "response processing template"
+     * for a given QTI ResponseProcessing component.
+     *
+     * @param  \qtism\data\processing\ResponseProcessing $responseProcessing
+     *
+     * @return \LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate
+     */
     private function getResponseProcessingTemplate(ResponseProcessing $responseProcessing = null)
     {
         if ($responseProcessing === null) {
