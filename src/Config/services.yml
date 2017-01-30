@@ -42,4 +42,5 @@ services:
     rubrics_processing:
         class:      LearnosityQti\Processors\QtiV2\In\Processings\RubricsProcessing
 
-
+    xml_assessment_items_processing:
+        class:      LearnosityQti\Processors\QtiV2\In\Processings\QtiV2AssessmentItemProcessing
