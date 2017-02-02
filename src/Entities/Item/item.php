@@ -17,15 +17,21 @@ class item extends BaseEntity
     protected $description;
     protected $metadata;
     protected $workflow;
+    protected $features;
+    protected $questions;
 
     public function __construct(
         $reference,
         array $questionReferences,
-        $content
+        $content,
+        array $questions = [],
+        array $features = []
     ) {
         $this->reference          = $reference;
         $this->questionReferences = $questionReferences;
         $this->content            = $content;
+        $this->questions          = $questions;
+        $this->features           = $features;
     }
 
     /**
@@ -74,6 +80,26 @@ class item extends BaseEntity
     public function set_questionReferences(array $questionReferences)
     {
         $this->questionReferences = $questionReferences;
+    }
+
+    public function get_questions()
+    {
+        return $this->questions;
+    }
+
+    public function set_questions(array $questions)
+    {
+        $this->questions = $questions;
+    }
+
+    public function get_features()
+    {
+        return $this->features;
+    }
+
+    public function set_features(array $features)
+    {
+        $this->features = $features;
     }
 
     /**
@@ -163,7 +189,10 @@ class item extends BaseEntity
      */
     public function set_metadata(array $metadata)
     {
-        $this->metadata = $metadata;
+        // HACK: For the moment, we're coercing to object here
+        // as the serializer doesn't recognize associative arrays automatically.
+        // This warrants some further investigation in case it breaks other behavior.
+        $this->metadata = (object)$metadata;
     }
 
     /**

@@ -24,6 +24,7 @@ class ItemBuilderFactory
 
     protected function createItemBuilderFromQtiInteractions(QtiComponentCollection $interactionComponents)
     {
+        // TODO: Handle cases where there are mixed merged and regular interactions in an item.
         $interactionTypes = $this->getUniqueInteractionTypes($interactionComponents);
         if (count($interactionTypes) === 1 && in_array($interactionTypes[0], Constants::$needMergeInteractionTypes)) {
             return new MergedItemBuilder();

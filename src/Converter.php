@@ -4,6 +4,7 @@ namespace LearnosityQti;
 
 use Exception;
 use LearnosityQti\Entities\Item\item;
+use LearnosityQti\Entities\Question;
 use LearnosityQti\Exceptions\InvalidQtiException;
 use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Processors\IMSCP\In\ManifestMapper;
@@ -11,12 +12,14 @@ use LearnosityQti\Processors\IMSCP\Out\ManifestWriter;
 use LearnosityQti\Processors\Learnosity\In\ItemMapper;
 use LearnosityQti\Processors\Learnosity\In\QuestionMapper;
 use LearnosityQti\Processors\QtiV2\In\TestMapper;
+use LearnosityQti\Processors\QtiV2\In\SharedPassageMapper;
 use LearnosityQti\Processors\QtiV2\Out\ItemWriter;
 use LearnosityQti\Processors\QtiV2\Out\QuestionWriter;
 use LearnosityQti\Services\LearnosityToQtiPreProcessingService;
 use LearnosityQti\Services\LogService;
 use LearnosityQti\Utils\FileSystemUtil;
 use LearnosityQti\Utils\StringUtil;
+use LearnosityQti\Utils\SimpleHtmlDom\SimpleHtmlDom;
 use qtism\data\storage\xml\XmlDocument;
 use qtism\data\storage\xml\XmlStorageException;
 use Symfony\Component\Finder\Finder;
@@ -142,7 +145,39 @@ class Converter
         return [$activityData, $exceptions];
     }
 
-    public static function convertQtiItemToLearnosity($xmlString, $baseAssetsUrl = '', $validate = true)
+    public static function convertQtiPassageToLearnosity($xmlString)
+    {
+        $widgetWriter = AppContainer::getApplicationContainer()->get('learnosity_question_writer');
+        $passageMapper = new SharedPassageMapper();
+
+        $widget = null;
+        // Parse `em
+        try {
+            $result = $passageMapper->parseXml($xmlString);
+            if (!empty($result['features'])) {
+                $widget = array_values($result['features'])[0];
+            }
+        } catch (XmlStorageException $e) {
+            // Check invalid schema error message and intercept to rethrow as known `InvalidQtiException` exception
+            $exceptionMessage = $e->getMessage();
+            if (StringUtil::startsWith($exceptionMessage, 'The document could not be validated with XML Schema')) {
+                $exceptionMessage = preg_replace('/The document could not be validated with schema(.*)/', 'The document could not be validated with standard QTI schema: ', $exceptionMessage);
+                throw new InvalidQtiException($exceptionMessage);
+            } else {
+                throw $e;
+            }
+        }
+
+        // Conversion to JSON
+        $widgetData = [];
+        if ($widget instanceof Question) {
+            $widgetData = $widgetWriter->convert($widget);
+        }
+
+        return [$widgetData, $exceptions];
+    }
+
+    public static function convertQtiItemToLearnosity($xmlString, $baseAssetsUrl = '', $validate = true, $filePath = null)
     {
         $itemMapper = AppContainer::getApplicationContainer()->get('qtiv2_item_mapper');
         $itemWriter = AppContainer::getApplicationContainer()->get('learnosity_item_writer');
@@ -150,7 +185,11 @@ class Converter
 
         // Parse `em
         try {
-            list($item, $questions, $exceptions) = $itemMapper->parse($xmlString, $validate);
+            $sourceDirectoryPath = null;
+            if (isset($filePath)) {
+                $sourceDirectoryPath = dirname($filePath);
+            }
+            list($item, $questions, $features, $exceptions) = $itemMapper->parse($xmlString, $validate, $sourceDirectoryPath);
         } catch (XmlStorageException $e) {
             // Check invalid schema error message and intercept to rethrow as known `InvalidQtiException` exception
             $exceptionMessage = $e->getMessage();
@@ -174,8 +213,14 @@ class Converter
                 $questionsData[] = $questionWriter->convert($question);
             }
         }
+        $featuresData = [];
+        if (is_array($features)) {
+            foreach ($features as $feature) {
+                $featuresData[] = $questionWriter->convert($feature);
+            }
+        }
 
-        return [$itemData, $questionsData, $exceptions];
+        return [$itemData, $questionsData, $featuresData, $exceptions];
     }
 
     public static function convertLearnosityToQtiItem(array $data)

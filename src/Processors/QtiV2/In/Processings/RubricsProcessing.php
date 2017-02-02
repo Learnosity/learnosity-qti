@@ -23,7 +23,8 @@ class RubricsProcessing implements ProcessingInterface
             if (!($component instanceof RubricBlock)) {
                 $newCollection->attach($component);
             } else {
-                LogService::log('Does not support <rubricBlock>. Ignoring <rubricBlock>');
+                // TODO: Do something else here (i.e. process the rubricBlock, or reattach it)
+                // LogService::log('Does not support <rubricBlock>. Ignoring <rubricBlock>');
             }
         }
         $itemBodyNew->setContent($newCollection);

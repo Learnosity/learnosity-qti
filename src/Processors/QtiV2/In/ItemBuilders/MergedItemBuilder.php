@@ -7,6 +7,8 @@ use LearnosityQti\Entities\Question;
 use LearnosityQti\Processors\QtiV2\In\Constants;
 use LearnosityQti\Processors\QtiV2\In\MergedInteractions\AbstractMergedInteractionMapper;
 use LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
+use LearnosityQti\Services\LogService;
+use LearnosityQti\Exceptions\MappingException;
 use qtism\data\content\interactions\Interaction;
 use qtism\data\content\ItemBody;
 use qtism\data\QtiComponentCollection;
@@ -21,7 +23,8 @@ class MergedItemBuilder extends AbstractItemBuilder
         ItemBody $itemBody,
         QtiComponentCollection $interactionComponents,
         QtiComponentCollection $responseDeclarations = null,
-        ResponseProcessingTemplate $responseProcessingTemplate = null
+        ResponseProcessingTemplate $responseProcessingTemplate = null,
+        QtiComponentCollection $rubricBlockComponents = null
     ) {
 
         $mergedInteractionType = $this->getMergedInteractionType($interactionComponents);
@@ -43,6 +46,19 @@ class MergedItemBuilder extends AbstractItemBuilder
         $this->questions[$questionReference] =
             new Question($question->get_type(), $questionReference, $question);
         $this->content = $mapper->getItemContent();
+
+        // Process <rubricBlock> elements
+        // NOTE: This step needs to be done after questions are generated
+        foreach ($rubricBlockComponents as $rubricBlock) {
+            /** @var RubricBlock $rubricBlock */
+            try {
+                $this->processRubricBlock($rubricBlock);
+            } catch (MappingException $e) {
+                // Just log unsupported <rubricBlock> elements
+                LogService::log($e->getMessage());
+            }
+        }
+
         return true;
     }
 

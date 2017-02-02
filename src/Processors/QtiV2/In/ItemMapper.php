@@ -5,15 +5,16 @@ namespace LearnosityQti\Processors\QtiV2\In;
 use \LearnosityQti\AppContainer;
 use \LearnosityQti\Exceptions\MappingException;
 use \LearnosityQti\Processors\QtiV2\In\Processings\AbstractXmlProcessing;
-use \LearnosityQti\Processors\QtiV2\In\Processings\MathsProcessing;
 use \LearnosityQti\Processors\QtiV2\In\Processings\ProcessingInterface;
-use \LearnosityQti\Processors\QtiV2\In\Processings\RubricsProcessing;
 use \LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
 use \LearnosityQti\Services\LogService;
 use \qtism\data\AssessmentItem;
 use \qtism\data\content\ItemBody;
 use \qtism\data\processing\ResponseProcessing;
 use \qtism\data\storage\xml\XmlDocument;
+use qtism\data\content\RubricBlock;
+use qtism\data\content\BlockCollection;
+use qtism\data\QtiComponentCollection;
 
 class ItemMapper
 {
@@ -43,7 +44,7 @@ class ItemMapper
      *                   first element, associated questions as the second, and
      *                   log messages resulting from the operation as the last element
      */
-    public function parse($xmlString, $validateXml = true)
+    public function parse($xmlString, $validateXml = true, $sourceDirectoryPath = null)
     {
         // TODO: Remove this, and move it higher up
         LogService::flush();
@@ -58,7 +59,7 @@ class ItemMapper
         $assessmentItem = $this->getAssessmentItemFromXmlDocument($xmlDocument);
 
         // Convert the QTI assessment item into Learnosity output
-        return $this->parseWithAssessmentItemComponent($assessmentItem);
+        return $this->parseWithAssessmentItemComponent($assessmentItem, $sourceDirectoryPath);
     }
 
     /**
@@ -70,7 +71,7 @@ class ItemMapper
      *                   first element, associated questions as the second, and
      *                   log messages resulting from the operation as the last element
      */
-    public function parseWithAssessmentItemComponent(AssessmentItem $assessmentItem)
+    public function parseWithAssessmentItemComponent(AssessmentItem $assessmentItem, $sourceDirectoryPath = null)
     {
         // TODO: Move this logging service upper to converter class level
         // Make sure we clean up the log
@@ -83,14 +84,14 @@ class ItemMapper
         $assessmentItem = $this->validateQtiAssessmentItem($assessmentItem);
 
         // Conversion from QTI item to Learnosity item and questions
-        list($item, $questions) = $this->buildLearnosityItemFromQtiAssessmentItem($assessmentItem);
+        list($item, $questions, $features) = $this->buildLearnosityItemFromQtiAssessmentItem($assessmentItem, $sourceDirectoryPath);
 
         list($item, $questions) = $this->processLearnosityItem($item, $questions, $processings);
 
         // Flush out all the error messages stored in this static class, also ensure they are unique
         $messages = array_values(array_unique(LogService::flush()));
 
-        return [$item, $questions, $messages];
+        return [$item, $questions, $features, $messages];
     }
 
     /**
@@ -104,12 +105,14 @@ class ItemMapper
      *
      * @throws \LearnosityQti\Exceptions\MappingException
      */
-    protected function buildLearnosityItemFromQtiAssessmentItem(AssessmentItem $assessmentItem)
+    protected function buildLearnosityItemFromQtiAssessmentItem(AssessmentItem $assessmentItem, $sourceDirectoryPath = null)
     {
         $responseProcessingTemplate = $this->getResponseProcessingTemplate($assessmentItem->getResponseProcessing());
 
         /** @var ItemBody $itemBody */
         $itemBody = $assessmentItem->getItemBody();
+
+        list($itemBody, $rubricBlocks) = $this->processQtiItemBodyRubricBlocks($itemBody);
 
         // Mapping interactions
         $interactionComponents = $itemBody->getComponentsByClassName(Constants::$supportedInteractions, true);
@@ -118,12 +121,14 @@ class ItemMapper
         }
         $responseDeclarations = $assessmentItem->getComponentsByClassName('responseDeclaration', true);
         $itemBuilder = $this->itemBuilderFactory->getItemBuilder($assessmentItem);
+        $itemBuilder->setSourceDirectoryPath($sourceDirectoryPath);
         $itemBuilder->map(
             $assessmentItem->getIdentifier(),
             $itemBody,
             $interactionComponents,
             $responseDeclarations,
-            $responseProcessingTemplate
+            $responseProcessingTemplate,
+            $rubricBlocks
         );
 
         $item = $itemBuilder->getItem();
@@ -132,8 +137,9 @@ class ItemMapper
         }
 
         $questions = $itemBuilder->getQuestions();
+        $features = $itemBuilder->getFeatures();
 
-        return [$item, $questions];
+        return [$item, $questions, $features];
     }
 
     /**
@@ -177,7 +183,7 @@ class ItemMapper
     protected function getConversionProcessings()
     {
         return [
-            AppContainer::getApplicationContainer()->get('rubrics_processing'),
+            // AppContainer::getApplicationContainer()->get('rubrics_processing'),
             AppContainer::getApplicationContainer()->get('maths_processing'),
             AppContainer::getApplicationContainer()->get('assets_processing'),
             AppContainer::getApplicationContainer()->get('identifiers_processing'),
@@ -220,6 +226,28 @@ class ItemMapper
         }
 
         return $assessmentItem;
+    }
+
+    protected function processQtiItemBodyRubricBlocks(ItemBody $itemBody)
+    {
+        // TODO: what happens if the rubric is deep inside nested?
+        $rubricBlocks = new QtiComponentCollection();
+        $newCollection = new BlockCollection();
+        $itemBodyNew = new ItemBody();
+
+        // Iterate over components; extract and process any rubricBlock
+        /** @var QtiComponent $component */
+        foreach ($itemBody->getContent() as $key => $component) {
+            // Separate the <rubricBlock> elements from the item body
+            if ($component instanceof RubricBlock) {
+                $rubricBlocks->attach($component);
+            } else {
+                $newCollection->attach($component);
+            }
+        }
+        $itemBodyNew->setContent($newCollection);
+
+        return [$itemBodyNew, $rubricBlocks];
     }
 
     /**
