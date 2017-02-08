@@ -2,6 +2,8 @@
 
 namespace LearnosityQti\Processors\QtiV2\In;
 
+use \qtism\data\processing\ResponseProcessing;
+
 class ResponseProcessingTemplate
 {
     const MATCH_CORRECT = 'match_correct';
@@ -10,6 +12,7 @@ class ResponseProcessingTemplate
     const MAP_RESPONSE_POINT = 'map_response_point';
     const NONE = 'none';
     const UNSUPPORTED = 'unsupported';
+    const BUILTIN = 'builtin';
 
     private $template;
 
@@ -63,8 +66,26 @@ class ResponseProcessingTemplate
         return new self(self::MAP_RESPONSE_POINT);
     }
 
+    public static function builtin(ResponseProcessing $responseProcessing)
+    {
+        $instance = new static(static::BUILTIN);
+        $instance->setBuiltinResponseProcessing($responseProcessing);
+
+        return $instance;
+    }
+
     public function getTemplate()
     {
         return $this->template;
+    }
+
+    public function setBuiltinResponseProcessing(ResponseProcessing $responseProcessing)
+    {
+        $this->responseProcessing = $responseProcessing;
+    }
+
+    public function getBuiltinResponseProcessing()
+    {
+        return $this->responseProcessing;
     }
 }

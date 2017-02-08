@@ -1,23 +1,28 @@
 <?php
 namespace LearnosityQti\Processors\QtiV2\In\Validation;
 
-use LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidationBuilder;
-use LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
-use LearnosityQti\Services\LogService;
-use LearnosityQti\Utils\ArrayUtil;
-use qtism\data\state\MapEntry;
-use qtism\data\state\ResponseDeclaration;
-use qtism\data\state\Value;
+use \LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidationBuilder;
+use \LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
+use \LearnosityQti\Services\LogService;
+use \LearnosityQti\Utils\ArrayUtil;
+use \qtism\data\state\MapEntry;
+use \qtism\data\state\ResponseDeclaration;
+use \qtism\data\state\OutcomeDeclarationCollection;
+use \qtism\data\state\Value;
 
 class TextEntryInteractionValidationBuilder extends BaseInteractionValidationBuilder
 {
     private $isCaseSensitive = false;
     private $responseDeclarations = [];
 
-    public function __construct(array $interactionIdentifiers = [], array $unsortedResponseDeclarations = [])
-    {
+    public function __construct(
+        array $interactionIdentifiers = [],
+        array $unsortedResponseDeclarations = [],
+        ResponseDeclaration $responseDeclaration = null,
+        OutcomeDeclarationCollection $outcomeDeclarations = null
+    ) {
         //TODO: Technically incorrect, but this is simply used to auto-detect response processing template so it doesnt matter much
-        parent::__construct(null);
+        parent::__construct($responseDeclaration, $outcomeDeclarations);
 
         // Need to sort based on interaction identifiers first
         foreach ($interactionIdentifiers as $interactionIdentifier) {
@@ -27,7 +32,7 @@ class TextEntryInteractionValidationBuilder extends BaseInteractionValidationBui
         }
     }
 
-    protected function getMatchCorrectTemplateValidation()
+    protected function getMatchCorrectTemplateValidation(array $scores = null)
     {
         $interactionResponses = [];
         foreach ($this->responseDeclarations as $responseIdentifier => $responseDeclaration) {
@@ -38,10 +43,22 @@ class TextEntryInteractionValidationBuilder extends BaseInteractionValidationBui
                     /** @var Value $value */
                     return new ValidResponse(1, [$value->getValue()]);
                 }, $correctResponses);
-            } else {
-                LogService::log('Response declaration has no correct response values. Thus, validation ignored');
             }
         }
+
+        if (empty($interactionResponses)) {
+            // there was nothing in the response declaration
+            if (!empty($scores['correct'])) {
+                foreach ($scores['correct'] as $correct) {
+                    $interactionResponses[][] = new ValidResponse($correct['score'], [$correct['answer']]);
+                }
+            }
+        }
+
+        if (empty($interactionResponses)) {
+            LogService::log('Response declaration has no correct response values. Thus, validation ignored');
+        }
+
         $responses = ArrayUtil::cartesianProductForResponses($interactionResponses);
         return ValidationBuilder::build('clozetext', 'exactMatch', $responses);
     }

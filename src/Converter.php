@@ -141,7 +141,7 @@ class Converter
         $activityData = $activityWriter->convert($activity);
         return [$activityData, $exceptions];
     }
-    
+
     public static function convertQtiItemToLearnosity($xmlString, $baseAssetsUrl = '', $validate = true)
     {
         $itemMapper = AppContainer::getApplicationContainer()->get('qtiv2_item_mapper');

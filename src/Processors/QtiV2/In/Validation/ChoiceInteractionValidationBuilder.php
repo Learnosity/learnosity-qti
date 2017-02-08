@@ -2,29 +2,44 @@
 
 namespace LearnosityQti\Processors\QtiV2\In\Validation;
 
-use LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidationBuilder;
-use LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
-use LearnosityQti\Services\LogService;
-use LearnosityQti\Utils\ArrayUtil;
-use qtism\common\enums\Cardinality;
-use qtism\data\state\MapEntry;
-use qtism\data\state\ResponseDeclaration;
-use qtism\data\state\Value;
+use \LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidationBuilder;
+use \LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
+use \LearnosityQti\Services\LogService;
+use \LearnosityQti\Utils\ArrayUtil;
+use \qtism\common\enums\Cardinality;
+use \qtism\data\state\MapEntry;
+use \qtism\data\state\ResponseDeclaration;
+use \qtism\data\state\Value;
+use \qtism\data\state\OutcomeDeclarationCollection;
 
 class ChoiceInteractionValidationBuilder extends BaseInteractionValidationBuilder
 {
     private $options;
     private $maxChoices;
 
-    public function __construct(ResponseDeclaration $responseDeclaration = null, array $options, $maxChoices)
-    {
-        parent::__construct($responseDeclaration);
+    public function __construct(
+        ResponseDeclaration $responseDeclaration = null,
+        array $options,
+        $maxChoices,
+        OutcomeDeclarationCollection $outcomeDeclarations = null
+    ) {
+        parent::__construct($responseDeclaration, $outcomeDeclarations);
         $this->options = $options;
         $this->maxChoices = $maxChoices;
     }
 
-    protected function getMatchCorrectTemplateValidation()
+    protected function getMatchCorrectTemplateValidation(array $scores = null)
     {
+        $score = 1;
+        if (!empty($scores['correct'])) {
+            $score = $scores['correct'];
+        }
+
+        $mode = 'exactMatch';
+        if (!empty($scores['scoring_type']) && $scores['scoring_type'] === 'partial') {
+            $mode = 'partialMatch';
+        }
+
         // Build the `value` object for `valid_response`
         $values = [];
         /** @var Value $value */
@@ -36,7 +51,7 @@ class ChoiceInteractionValidationBuilder extends BaseInteractionValidationBuilde
             $values[] = $value->getValue();
         }
 
-        return ValidationBuilder::build('mcq', 'exactMatch', [new ValidResponse(1, $values)]);
+        return ValidationBuilder::build('mcq', $mode, [new ValidResponse($score, $values)]);
     }
 
     protected function getMapResponseTemplateValidation()

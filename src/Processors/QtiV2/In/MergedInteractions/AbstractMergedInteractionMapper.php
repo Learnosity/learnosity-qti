@@ -2,9 +2,10 @@
 
 namespace LearnosityQti\Processors\QtiV2\In\MergedInteractions;
 
-use LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
-use qtism\data\content\ItemBody;
-use qtism\data\QtiComponentCollection;
+use \LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
+use \qtism\data\content\ItemBody;
+use \qtism\data\QtiComponentCollection;
+use \qtism\data\state\OutcomeDeclarationCollection;
 
 abstract class AbstractMergedInteractionMapper
 {
@@ -12,12 +13,14 @@ abstract class AbstractMergedInteractionMapper
     protected $itemBody;
     protected $responseDeclarations = [];
     protected $responseProcessingTemplate;
+    protected $outcomeDeclarations;
 
     public function __construct(
         $questionReference,
         ItemBody $itemBody,
         QtiComponentCollection $responseDeclarations = null,
-        ResponseProcessingTemplate $responseProcessingTemplate = null
+        ResponseProcessingTemplate $responseProcessingTemplate = null,
+        OutcomeDeclarationCollection $outcomeDeclarations = null
     ) {
         $this->questionReference = $questionReference;
         $this->itemBody = $itemBody;
@@ -27,6 +30,8 @@ abstract class AbstractMergedInteractionMapper
                 $this->responseDeclarations[$responseDeclaration->getIdentifier()] = $responseDeclaration;
             }
         }
+
+        $this->outcomeDeclarations = $outcomeDeclarations;
     }
 
     abstract public function getQuestionType();

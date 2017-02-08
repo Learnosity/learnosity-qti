@@ -117,7 +117,7 @@ class ItemMapper
             throw new MappingException('No supported interaction mapper could be found');
         }
         $responseDeclarations = $assessmentItem->getComponentsByClassName('responseDeclaration', true);
-        $itemBuilder = $this->itemBuilderFactory->getItemBuilder($interactionComponents);
+        $itemBuilder = $this->itemBuilderFactory->getItemBuilder($assessmentItem);
         $itemBuilder->map(
             $assessmentItem->getIdentifier(),
             $itemBody,
@@ -304,8 +304,8 @@ class ItemMapper
             return ResponseProcessingTemplate::none();
         }
         if ($responseProcessing->getResponseRules()->count()) {
-            LogService::log('Does not support custom response processing on <responseProcessing>. Ignoring <responseProcessing>');
-            return ResponseProcessingTemplate::unsupported();
+            LogService::log('Use builtin responseProcessing');
+            return ResponseProcessingTemplate::builtin($responseProcessing);
         }
         if (!empty($responseProcessing->getTemplateLocation())) {
             LogService::log('Does not support \'templateLocation\' on <responseProcessing>. Ignoring <responseProcessing>');

@@ -33,7 +33,8 @@ class MergedInlineChoiceInteractionMapper extends AbstractMergedInteractionMappe
 
         $validationBuilder = new InlineChoiceInteractionValidationBuilder(
             $this->responseDeclarations,
-            $possibleResponsesMap
+            $possibleResponsesMap,
+            $this->outcomeDeclarations
         );
 
         // Build `validation`

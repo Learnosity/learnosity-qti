@@ -21,8 +21,19 @@ class MatchInteractionValidationBuilder extends BaseInteractionValidationBuilder
         $this->optionsMapping = $optionsMapping;
     }
 
-    protected function getMatchCorrectTemplateValidation()
+    protected function getMatchCorrectTemplateValidation(array $scores = null)
     {
+        $mode = 'exactMatch';
+        $score = 1;
+
+        if (!empty($scores['scoring_type']) && $scores['scoring_type'] === 'partial') {
+            $mode = 'partialMatch';
+
+            if (!empty($scores['score'])) {
+                $score = floatval($scores['score']);
+            }
+        }
+
         // Build `value` array for a `valid_response` objects
         $values = [];
         foreach ($this->responseDeclaration->getCorrectResponse()->getValues() as $value) {
@@ -51,11 +62,13 @@ class MatchInteractionValidationBuilder extends BaseInteractionValidationBuilder
 
         // Just to make sure we don't screw the order
         ksort($values);
-        return ValidationBuilder::build('choicematrix', 'exactMatch', [new ValidResponse(1, $values)]);
+        return ValidationBuilder::build('choicematrix', $mode, [new ValidResponse(1, $values)]);
     }
 
-    protected function getMapResponseTemplateValidation()
+    protected function getMapResponseTemplateValidation(array $scores = null)
     {
+        $mode = 'exactMatch';
+
         // Build `value` array for a `valid_response` objects
         $values = [];
         $score = 0;
@@ -86,6 +99,14 @@ class MatchInteractionValidationBuilder extends BaseInteractionValidationBuilder
 
         // Just to make sure we don't screw the order
         ksort($values);
-        return ValidationBuilder::build('choicematrix', 'exactMatch', [new ValidResponse($score, $values)]);
+
+        if (!empty($scores['scoring_type']) && $scores['scoring_type'] === 'partial') {
+            $mode = 'partialMatch';
+
+            if (!empty($scores['score'])) {
+                $score = floatval($scores['score']);
+            }
+        }
+        return ValidationBuilder::build('choicematrix', $mode, [new ValidResponse($score, $values)]);
     }
 }

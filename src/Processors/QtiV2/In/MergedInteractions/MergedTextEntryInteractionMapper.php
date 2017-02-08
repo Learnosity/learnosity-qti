@@ -70,7 +70,12 @@ class MergedTextEntryInteractionMapper extends AbstractMergedInteractionMapper
 
     public function buildValidation(array $interactionIdentifiers, &$isCaseSensitive)
     {
-        $validationBuilder = new TextEntryInteractionValidationBuilder($interactionIdentifiers, $this->responseDeclarations);
+        $validationBuilder = new TextEntryInteractionValidationBuilder(
+            $interactionIdentifiers,
+            $this->responseDeclarations,
+            null,
+            $this->outcomeDeclarations
+        );
         $validation = $validationBuilder->buildValidation($this->responseProcessingTemplate);
         $isCaseSensitive = $validationBuilder->isCaseSensitive();
         return $validation;

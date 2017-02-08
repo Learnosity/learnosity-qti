@@ -2,7 +2,6 @@
 
 namespace LearnosityQti\Processors\QtiV2\In\ItemBuilders;
 
-
 use LearnosityQti\Entities\Question;
 use LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
 use LearnosityQti\Utils\QtiMarshallerUtil;
@@ -44,9 +43,10 @@ class RegularItemBuilder extends AbstractItemBuilder
             $responseDeclaration = isset($responseDeclarationsMap[$component->getResponseIdentifier()]) ?
                 $responseDeclarationsMap[$component->getResponseIdentifier()] : null;
 
+            $outcomeDeclaration = $this->assessmentItem->getOutcomeDeclarations();
             $mapper = $this->getMapperInstance(
                 $component->getQtiClassName(),
-                [$component, $responseDeclaration, $responseProcessingTemplate]
+                [$component, $responseDeclaration, $responseProcessingTemplate, $outcomeDeclaration]
             );
             $question = $mapper->getQuestionType();
 
