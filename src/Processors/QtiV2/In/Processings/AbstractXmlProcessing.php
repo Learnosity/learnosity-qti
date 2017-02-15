@@ -35,7 +35,7 @@ abstract class AbstractXmlProcessing
     }
 
     /**
-     * Processes a single element from an XML document.
+     * Processes any single given element from an XML document.
      *
      * NOTE: Subclasses may override this method if they need to process
      * XML at the element level. Default behavior is a no-op.

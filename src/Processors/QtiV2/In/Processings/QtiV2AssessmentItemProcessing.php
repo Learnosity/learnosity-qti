@@ -8,6 +8,7 @@ use \SimpleXMLElement;
 class QtiV2AssessmentItemProcessing extends AbstractXmlProcessing
 {
     const XML_TAG_NAME_ASSESSMENT_ITEM = 'assessmentItem';
+    const XML_TAG_NAME_BASE_VALUE = 'baseValue';
 
     /**
      * @override
@@ -26,6 +27,7 @@ class QtiV2AssessmentItemProcessing extends AbstractXmlProcessing
     protected function processXmlElement(SimpleXMLElement $xmlElement)
     {
         $this->handleAssessmentItemInvalidTitle($xmlElement);
+        $this->handleBaseValue($xmlElement);
     }
 
     /**
@@ -54,6 +56,16 @@ class QtiV2AssessmentItemProcessing extends AbstractXmlProcessing
         }
     }
 
+    protected function handleBaseValue(SimpleXmlElement $xmlElement)
+    {
+        if ($this->isXmlElementBaseValue($xmlElement)) {
+            if ((string) $xmlElement->attributes()['baseType'] === 'float') {
+                // Normalize float value. Invalid values are treated as 0
+                $xmlElement[0] = floatval(str_replace(',', '', $xmlElement[0]));
+            }
+        }
+    }
+
     /**
      * Returns whether a given XML element is a QTI v2 assessment item.
      *
@@ -64,5 +76,10 @@ class QtiV2AssessmentItemProcessing extends AbstractXmlProcessing
     private function isXmlElementAssessmentItem(SimpleXMLElement $xmlElement)
     {
         return $xmlElement->getName() === static::XML_TAG_NAME_ASSESSMENT_ITEM;
+    }
+
+    private function isXmlElementBaseValue(SimpleXMLElement $xmlElement)
+    {
+        return $xmlElement->getName() === static::XML_TAG_NAME_BASE_VALUE;
     }
 }
