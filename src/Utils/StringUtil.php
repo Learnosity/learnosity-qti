@@ -35,7 +35,10 @@ class StringUtil
      */
     public static function matchString($pattern, $str)
     {
-        $pattern = preg_replace('/([^*])/e', 'preg_quote("$1", "/")', $pattern);
+        $pattern = preg_replace_callback('/[^*]/', function ($matches) {
+            return preg_quote($matches[0], '/');
+        }, $pattern);
+
         $pattern = str_replace('*', '(.*)', $pattern);
         $matched = preg_match_all('/^' . $pattern . '$/i', $str, $matches);
         return [(bool) $matched, $matches];
