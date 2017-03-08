@@ -67,7 +67,8 @@ class ChoiceInteractionMapper extends AbstractInteractionMapper
         $validationBuilder = new ChoiceInteractionValidationBuilder(
             $this->responseDeclaration,
             array_column($options, 'label', 'value'),
-            $maxChoices
+            $maxChoices,
+            $this->outcomeDeclarations
         );
         $validation = $validationBuilder->buildValidation($this->responseProcessingTemplate);
         if (!empty($validation)) {

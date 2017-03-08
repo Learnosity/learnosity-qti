@@ -2,16 +2,19 @@
 
 namespace LearnosityQti\Processors\QtiV2\In\ItemBuilders;
 
-use LearnosityQti\Entities\Item\item;
-use LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
-use qtism\data\content\ItemBody;
-use qtism\data\QtiComponentCollection;
+use \LearnosityQti\Entities\Item\item;
+use \LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
+use \LearnosityQti\Processors\QtiV2\In\Constants;
+use \qtism\data\content\ItemBody;
+use \qtism\data\QtiComponentCollection;
+use \qtism\data\AssessmentItem;
 
 abstract class AbstractItemBuilder
 {
     protected $itemReference;
     protected $questions = [];
     protected $content = '';
+    protected $assessmentItem;
 
     public function getItem()
     {
@@ -38,4 +41,9 @@ abstract class AbstractItemBuilder
         QtiComponentCollection $responseDeclarations = null,
         ResponseProcessingTemplate $responseProcessingTemplate = null
     );
+
+    public function setAssessmentItem(AssessmentItem $assessmentItem)
+    {
+        $this->assessmentItem = $assessmentItem;
+    }
 }

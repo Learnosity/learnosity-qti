@@ -2,18 +2,35 @@
 
 namespace LearnosityQti\Processors\QtiV2\In\Validation;
 
-use LearnosityQti\Exceptions\MappingException;
-use LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
-use LearnosityQti\Services\LogService;
-use qtism\data\state\ResponseDeclaration;
+use \LearnosityQti\Exceptions\MappingException;
+use \LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
+use \LearnosityQti\Services\LogService;
+use \qtism\data\state\ResponseDeclaration;
+use \qtism\data\processing\ResponseProcessing;
+use \qtism\data\rules\ResponseCondition;
+use \qtism\data\QtiComponent;
+use \qtism\data\expressions\operators\IsNull;
+use \qtism\data\rules\ResponseRuleCollection;
+use \qtism\data\expressions\operators\Match;
+use \qtism\data\expressions\operators\Equal;
+use \qtism\data\expressions\BaseValue;
+use \qtism\data\expressions\Variable;
+use \qtism\data\state\OutcomeDeclarationCollection;
+use \qtism\data\state\Mapping;
+use \qtism\data\rules\ResponseElse;
+use \qtism\data\expressions\MapResponse;
 
 abstract class BaseInteractionValidationBuilder
 {
     protected $responseDeclaration;
+    protected $outcomeDeclarations;
 
-    public function __construct(ResponseDeclaration $responseDeclaration = null)
-    {
+    public function __construct(
+        ResponseDeclaration $responseDeclaration = null,
+        OutcomeDeclarationCollection $outcomeDeclarations = null
+    ) {
         $this->responseDeclaration = $responseDeclaration;
+        $this->outcomeDeclarations = $outcomeDeclarations;
     }
 
     protected function getMatchCorrectTemplateValidation()
@@ -40,6 +57,37 @@ abstract class BaseInteractionValidationBuilder
         return null;
     }
 
+    /**
+     * Process the built-in responseProcessing rules
+     *
+     * @param \qtism\data\processing\ResponseProcessing
+     * @return array
+     */
+    protected function getBuiltinResponseValidation(ResponseProcessing $responseProcessing = null)
+    {
+        if (empty($responseProcessing)) {
+            return null;
+        }
+
+        $responseRules = $responseProcessing->getResponseRules();
+
+        // step through each ProcessingRule object and parse them
+        foreach ($responseRules as $responseRule) {
+            switch (true) {
+                case $responseRule instanceof ResponseCondition:
+                    return $this->processResponseCondition($responseRule);
+
+                case $responseRule instanceof SetOutcomeValue:
+                    LogService::log('ResponseProcessing: Skipping top level SetOutcomeValue in response processing');
+                    // skipping top level SetOutcomeValue since they are for item-level validation
+                    break;
+
+                default:
+                    LogService::log('ResponseProcessing: Unsupported processing rule: ' . get_class($responseRule));
+            }
+        }
+    }
+
     public function buildValidation(ResponseProcessingTemplate $responseProcessingTemplate)
     {
         try {
@@ -63,12 +111,204 @@ abstract class BaseInteractionValidationBuilder
                         }
                     }
                     return $this->getNoTemplateResponsesValidation();
+
+                case ResponseProcessingTemplate::BUILTIN:
+                    // custom response processing rules
+                    $results = $this->getBuiltinResponseValidation($responseProcessingTemplate->getBuiltinResponseProcessing());
+                    if (!empty ($results['scoring_type']) && in_array($results['scoring_type'], ['match', 'partial'])) {
+                        return $this->getMatchCorrectTemplateValidation($results);
+                    }
+
+                    LogService::log('ResponseProcessing: Unrecognized scoring type: ' . print_r($results, true));
+                    break;
+
                 default:
-                    LogService::log('Unrecognised response processing template. Validation is not available');
+                    LogService::log('ResponseProcessing: Unrecognised response processing template. Validation is not available');
             }
         } catch (MappingException $e) {
             LogService::log('Validation is not available. Critical error: ' . $e->getMessage());
         }
         return null;
+    }
+
+    /**
+     * Process the response condition. A response condition consists of:
+     *  - ResponseIf
+     *  - zero or more ResponseElseIf
+     *  - zero or 1 ResponseElse
+     *
+     * @param \qtism\data\rules\ResponseCondition
+     * @return array
+     */
+    protected function processResponseCondition(ResponseCondition $responseCondition)
+    {
+        // NOTE: turn this into an object
+        $results = [];
+
+        // process the ResponseIf, this object is required
+        $responseIf = $responseCondition->getResponseIf();
+        $results = array_merge($results, $this->processConditionBranch($responseIf));
+
+        // process the ResponseElseIf, optional argument, default to an empty ResponseElseIfCollection
+        $responseElseIfs = $responseCondition->getResponseElseIfs();
+        foreach ($responseElseIfs as $responseElseIf) {
+            $results = array_merge($results, $this->processConditionBranch($responseElseIf));
+        }
+
+        // process the ResponseElse
+        if ($responseCondition->hasResponseElse()) {
+            $responseElse = $responseCondition->getResponseElse();
+            $results = array_merge($results, $this->processConditionBranch($responseElse));
+        }
+
+        return $results;
+    }
+
+    /**
+     * Process a ResponseIf, ResponseElseIf or a ResponseElse object.
+     *
+     * Those conditions are being inherited from QtiComponent, as the parent. While this is a little bit broad,
+     * it is up to the caller to pass in the correct object.
+     *
+     * @param QtiComponent $conditionBranch
+     * @return array
+     */
+    protected function processConditionBranch(QtiComponent $conditionBranch)
+    {
+        $results = [];
+        $expression = null;
+
+        if (!($conditionBranch instanceof ResponseElse)) {
+            // NOTE: the ResponseElse object does not have an expression, thus getExpression doesnt exist
+            $expression = $conditionBranch->getExpression();
+        }
+
+        switch (true) {
+            case $expression instanceof IsNull:
+                // unattempted, get the first response rule as there should only be one.
+                $responseRules = $conditionBranch->getResponseRules();
+
+                if ($responseRules->count() > 1) {
+                    LogService::log('ResponseProcessing: Expecting only one response rule for IsNull expression');
+                }
+
+                $outcomeValues = $this->getOutcomeValuesFromResponseRules($responseRules);
+                $results['unattempted'] = $outcomeValues[0];
+                break;
+
+            case $expression instanceof Match:
+                // correct answer, get the first response rule as there should only be one.
+                $responseRules = $conditionBranch->getResponseRules();
+
+                if ($responseRules->count() > 1) {
+                    LogService::log('ResponseProcessing: Expecting only one response rule for Match expression');
+                }
+
+                $outcomeValues = $this->getOutcomeValuesFromResponseRules($responseRules);
+                $results['correct'] = $outcomeValues[0];
+                $results['scoring_type'] = 'match';
+                break;
+
+            case $expression instanceof Equal:
+                // comparing a response to a value - can assume to be correct
+                $responseRules = $conditionBranch->getResponseRules();
+                $responseId = $expression->getExpressions()[0]->getIdentifier();
+                $correctValue = $expression->getExpressions()[1]->getValue();
+
+                $outcomeValues = $this->getOutcomeValuesFromResponseRules($responseRules);
+                $results['correct'][] = [
+                    'score' => $outcomeValues[0],
+                    'answer' => $correctValue,
+                ];
+                $results['scoring_type'] = 'match';
+                break;
+
+            case is_null($expression):
+                // incorrect answer, get the first response rule, as there should only be one
+                $responseRules = $conditionBranch->getResponseRules();
+
+                $outcomeValues = $this->getOutcomeValuesFromResponseRules($responseRules);
+                if (!empty($outcomeValues['map_response'])) {
+                    $results['scoring_type'] = 'partial';
+                    $results['score'] = $outcomeValues['score'];
+                } else {
+                    $results['incorrect'] = 0;
+                    if (!empty($outcomeValues[0])) {
+                        $results['incorrect'] = $outcomeValues[0];
+                    }
+                }
+                break;
+
+            default:
+                LogService::log('ResponseProcessing: Unsupported expression: ' . get_class($expression));
+        }
+
+        return $results;
+    }
+
+    /**
+     * Get the outcome values from the ResponseRuleCollection
+     *
+     * @param \qtism\data\rules\ResponseRuleCollection
+     * @return array
+     */
+    protected function getOutcomeValuesFromResponseRules(ResponseRuleCollection $responseRules)
+    {
+        $results = [];
+
+        if ($responseRules->count() === 0) {
+            return $results;
+        }
+
+        // NOTE: the response rules elements are SetOutcomeValue objects
+        foreach ($responseRules as $setOutcomeValue) {
+            $expression = $setOutcomeValue->getExpression();
+
+            // the expression here can either be a BaseValue or a Variable object
+            switch (true) {
+                case $expression instanceof BaseValue:
+                    $results[] = $expression->getValue();
+                    break;
+
+                case $expression instanceof Variable:
+                    $id = $expression->getIdentifier();
+
+                    // look up the response declaration to get the base value
+                    if (empty($this->outcomeDeclarations[$id])) {
+                        // no mapping found for the specified identifier
+                        LogService::log("ResponseProcessing: No variable mapping found in outcomeDeclaration block for: $id");
+                        break;
+                    }
+
+                    $defaultValues = $this->outcomeDeclarations[$id]->getDefaultValue();
+
+                    // we only want the first object as as the variable should only map to another, not multiple
+                    $values = $defaultValues->getValues();
+                    $results[] = $values[0]->getValue();
+                    break;
+
+                case $expression instanceof MapResponse:
+                    $responseDeclaration = $this->responseDeclaration;
+                    if (!empty($this->responseDeclarations[$expression->getIdentifier()])) {
+                        $responseDeclaration = $this->responseDeclarations[$expression->getIdentifier()];
+                    }
+
+                    if (empty($responseDeclaration)) {
+                        break;
+                    }
+                    $mapping = $responseDeclaration->getMapping();
+
+                    if ($mapping instanceof Mapping) {
+                        $results['score'] = $mapping->getMapEntries()[0]->getMappedValue();
+                        $results['map_response'] = true;
+                    }
+                    break;
+
+                default:
+                    LogService::log('ResponseProcessing: Unrecognized expression inside SetOutcomeValue: ' . get_class($expression));
+            }
+        }
+
+        return $results;
     }
 }

@@ -34,8 +34,18 @@ class GapMatchInteractionValidationBuilder extends BaseInteractionValidationBuil
         return $this->isDuplicatedResponse;
     }
 
-    protected function getMatchCorrectTemplateValidation()
+    protected function getMatchCorrectTemplateValidation(array $scores = null)
     {
+        $score = 1;
+        $mode = 'exactMatch';
+        if (!empty($scores['scoring_type']) && $scores['scoring_type'] === 'partial') {
+            $mode = 'partialMatch';
+
+            if (!empty($scores['score'])) {
+                $score = floatval($scores['score']);
+            }
+        }
+
         $gapIdentifiersIndexMap = array_flip($this->gapIdentifiers);
         $responses = [];
         $responseIndexSet = [];
@@ -66,21 +76,21 @@ class GapMatchInteractionValidationBuilder extends BaseInteractionValidationBuil
             }
 
             // Build ValidResponse object array in the correct order matching the `gap` elements
-            $responses[$responseIndex][] = new ValidResponse(1, [$responseValue]);
+            $responses[$responseIndex][] = new ValidResponse($score, [$responseValue]);
         }
 
         $this->assertEachGapHasCorrespondingValidResponses($responses);
         $responses = ArrayUtil::cartesianProduct($responses);
-        $responses = array_map(function ($combination) {
+        $responses = array_map(function ($combination) use ($score) {
             $value = [];
             /** @var ValidResponse $response */
             foreach ($combination as $response) {
                 $value = array_merge($value, $response->getValue());
             }
-            return new ValidResponse(1, $value);
+            return new ValidResponse($score, $value);
         }, $responses);
 
-        return ValidationBuilder\ValidationBuilder::build($this->questionTypeName, 'exactMatch', $responses);
+        return ValidationBuilder\ValidationBuilder::build($this->questionTypeName, $mode, $responses);
     }
 
     protected function getMapResponseTemplateValidation()
@@ -122,7 +132,7 @@ class GapMatchInteractionValidationBuilder extends BaseInteractionValidationBuil
 
         $this->assertEachGapHasCorrespondingValidResponses($responses);
         $responses = ArrayUtil::cartesianProductForResponses($responses);
-        return ValidationBuilder\ValidationBuilder::build($this->questionTypeName, 'exactMatch', $responses);
+        return ValidationBuilder\ValidationBuilder::build($this->questionTypeName, $mode, $responses);
     }
 
     private function assertEachGapHasCorrespondingValidResponses(array $responses)

@@ -14,7 +14,7 @@ class InlineChoiceInteractionValidationBuilder extends BaseInteractionValidation
 {
     private $isCaseSensitive = false;
     private $possibleResponses;
-    private $responseDeclarations = [];
+    protected $responseDeclarations = [];
 
     public function __construct(array $unsortedResponseDeclarations = [], array $possibleResponses = [])
     {

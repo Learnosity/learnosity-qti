@@ -2,23 +2,35 @@
 
 namespace LearnosityQti\Processors\QtiV2\In\Interactions;
 
-use LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
-use LearnosityQti\Utils\QtiMarshallerUtil;
-use qtism\data\content\interactions\Interaction;
-use qtism\data\content\interactions\Prompt;
-use qtism\data\state\ResponseDeclaration;
+use \LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
+use \LearnosityQti\Utils\QtiMarshallerUtil;
+use \qtism\data\content\interactions\Interaction;
+use \qtism\data\content\interactions\Prompt;
+use \qtism\data\state\ResponseDeclaration;
+use \qtism\data\state\OutcomeDeclarationCollection;
 
 abstract class AbstractInteractionMapper
 {
     protected $interaction;
     protected $responseDeclaration;
     protected $responseProcessingTemplate;
+    protected $outcomeDeclarations;
 
-    public function __construct(Interaction $interaction, ResponseDeclaration $responseDeclaration = null, ResponseProcessingTemplate $responseProcessingTemplate = null)
-    {
+    public function __construct(
+        Interaction $interaction,
+        ResponseDeclaration $responseDeclaration = null,
+        ResponseProcessingTemplate $responseProcessingTemplate = null,
+        OutcomeDeclarationCollection $outcomeDeclarations = null
+    ) {
         $this->interaction = $interaction;
         $this->responseDeclaration = $responseDeclaration;
-        $this->responseProcessingTemplate = empty($responseProcessingTemplate) ? ResponseProcessingTemplate::none() : $responseProcessingTemplate;
+
+        if (empty($responseDeclaration)) {
+            $responseProcessingTemplate = ResponseProcessingTemplate::none();
+        }
+        $this->responseProcessingTemplate = $responseProcessingTemplate;
+
+        $this->outcomeDeclarations = $outcomeDeclarations;
     }
 
     abstract public function getQuestionType();

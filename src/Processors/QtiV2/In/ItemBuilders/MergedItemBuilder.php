@@ -31,10 +31,11 @@ class MergedItemBuilder extends AbstractItemBuilder
         $this->itemReference = $itemReference;
 
         $questionReference = $this->buildMergedQuestionReference($interactionComponents);
+        $outcomeDeclaration = $this->assessmentItem->getOutcomeDeclarations();
         /** @var AbstractMergedInteractionMapper $mapper */
         $mapper = $this->getMapperInstance(
             $mergedInteractionType,
-            [$questionReference, $itemBody, $responseDeclarations, $responseProcessingTemplate]
+            [$questionReference, $itemBody, $responseDeclarations, $responseProcessingTemplate, $outcomeDeclaration]
         );
 
         /** @var BaseQuestionType $question */
