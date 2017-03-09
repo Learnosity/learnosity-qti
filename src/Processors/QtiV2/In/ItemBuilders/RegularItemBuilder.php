@@ -122,6 +122,13 @@ class RegularItemBuilder extends AbstractItemBuilder
 
                     // Remove the node itself from the stimulus content
                     $newElement->parentNode->removeChild($newElement);
+
+                    // TODO: When looking at siblings and ancestor relatives to keep, we should only keep text nodes and wrapping content
+                    // HACK: Forcefully remove other interactions from this hierarchy
+                    $extraInteractions = $newXPath->query('//'.strtolower($qtiClassName).'[@responseidentifier!="'.$responseIdentifier.'"]');
+                    foreach ($extraInteractions as $interaction) {
+                        $interaction->parentNode->removeChild($interaction);
+                    }
                 }
                 // Remove the whole hierarchy from the remaining itemBody content
                 // TODO: Check if removing interactions while iterating on DOMNodeList causes issues
