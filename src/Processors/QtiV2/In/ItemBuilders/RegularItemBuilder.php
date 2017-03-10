@@ -121,7 +121,10 @@ class RegularItemBuilder extends AbstractItemBuilder
                     }
 
                     // Remove the node itself from the stimulus content
-                    $newElement->parentNode->removeChild($newElement);
+                    // $newElement->parentNode->removeChild($newElement);
+                    // HACK: Put a placeholder so we can pop prompts in place later on.
+                    $placeholderNode = $newDom->createTextNode($questionReference);
+                    $newElement->parentNode->replaceChild($placeholderNode, $newElement);
 
                     // TODO: When looking at siblings and ancestor relatives to keep, we should only keep text nodes and wrapping content
                     // HACK: Forcefully remove other interactions from this hierarchy
@@ -146,11 +149,11 @@ class RegularItemBuilder extends AbstractItemBuilder
         $dom->documentElement->parentNode->replaceChild($fragment, $dom->documentElement);
         $extraContent = $dom->saveHTML();
 
-        // Prepend stimulus content per question
-        // TODO: Implement placeholders for <prompt> stimulus
+        // Inject item content into stimulus per question
         foreach ($questionHtmlContents as $questionReference => $content) {
             $existingStimulus = $this->questions[$questionReference]->get_data()->get_stimulus();
-            $newStimulus = $content . $existingStimulus;
+            // HACK: Replace placeholders in item content with <prompt> stimulus, and inject the whole thing
+            $newStimulus .= str_replace($questionReference, $existingStimulus, $content);
             $this->questions[$questionReference]->get_data()->set_stimulus($newStimulus);
 
             LogService::log('Extra <itemBody> content is prepended to question stimulus and please verify as this `might` break item content structure');
