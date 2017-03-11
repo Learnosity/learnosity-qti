@@ -76,6 +76,7 @@ abstract class AbstractItemBuilder
         $mapper = new RubricBlockMapper($this->sourceDirectoryPath);
         $result = $mapper->parseWithRubricBlockComponent($rubricBlock);
 
+        // Handle additional features generated from <rubricBlock>
         if (!empty($result['features'])) {
             $features = $result['features'];
 
@@ -94,15 +95,17 @@ abstract class AbstractItemBuilder
             $this->features = array_merge($this->features, $features);
         }
 
+        // Handle additional stimulus content generated from <rubricBlock>
         if (!empty($result['stimulus'])) {
-            // Prepend stimulus to the first question
+            // APPEND stimulus content to the first question stimulus
             $firstQuestionReference = key($this->questions);
-            $newStimulus = $result['stimulus'] . $this->questions[$firstQuestionReference]->get_data()->get_stimulus();
+            $newStimulus = $this->questions[$firstQuestionReference]->get_data()->get_stimulus() . $result['stimulus'];
             $this->questions[$firstQuestionReference]->get_data()->set_stimulus($newStimulus);
 
             LogService::log('<rubricBlock> stimulus content is prepended to question stimulus; please verify as this "might" break item content structure');
         }
 
+        // Handle additional item metadata generated from <rubricBlock>
         if (!empty($result['metadata'])) {
             $this->metadata = array_merge_recursive($this->metadata, $result['metadata']);
         }
