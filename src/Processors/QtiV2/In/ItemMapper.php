@@ -84,14 +84,23 @@ class ItemMapper
         $assessmentItem = $this->validateQtiAssessmentItem($assessmentItem);
 
         // Conversion from QTI item to Learnosity item and questions
-        list($item, $questions, $features) = $this->buildLearnosityItemFromQtiAssessmentItem($assessmentItem, $sourceDirectoryPath, $metadata);
+        // TODO: Handle additional (related) items being passed back
+        list($item, $questions, $features, $rubric) = $this->buildLearnosityItemFromQtiAssessmentItem($assessmentItem, $sourceDirectoryPath, $metadata);
 
+        // TODO: Check whether this needs to handle mapping questions to relevant items
         list($item, $questions) = $this->processLearnosityItem($item, $questions, $processings);
 
         // Flush out all the error messages stored in this static class, also ensure they are unique
         $messages = array_values(array_unique(LogService::flush()));
 
-        return [$item, $questions, $features, $messages];
+        // TODO: Support additional (related) items being passed back
+        return [
+            'item'      => $item,
+            'rubric'    => $rubric,
+            'questions' => $questions,
+            'features'  => $features,
+            'messages'  => $messages,
+        ];
     }
 
     /**
@@ -139,11 +148,14 @@ class ItemMapper
         if ($assessmentItem->getTitle()) {
             $item->set_description($assessmentItem->getTitle());
         }
+        // Handle additional (related) items being passed back
+        $rubric = $itemBuilder->getRubricItem();
 
         $questions = $itemBuilder->getQuestions();
         $features = $itemBuilder->getFeatures();
 
-        return [$item, $questions, $features];
+        // Support additional (related) items being passed back
+        return [$item, $questions, $features, $rubric];
     }
 
     /**
