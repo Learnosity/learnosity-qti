@@ -84,6 +84,7 @@ abstract class AbstractItemBuilder
             // feature reference every time. This is so that we can share features that are
             // imported with common content, and to avoid storing duplicate features when
             // importing the same QTI content multiple times.
+            $updatedFeatures = [];
             foreach ($features as $feature) {
                 // Generate a hash for the contents of this feature to use in the reference
                 $featureDataHash = sha1(json_encode($feature->to_array()['data']));
@@ -91,8 +92,9 @@ abstract class AbstractItemBuilder
                 // is desirable to share passages between items, it may not be desirable to
                 // share all types of features between items.
                 $feature->set_reference($featureDataHash);
+                $updatedFeatures[$feature->get_reference()] = $feature;
             }
-            $this->features = array_merge($this->features, $features);
+            $this->features = array_merge($this->features, $updatedFeatures);
         }
 
         // Handle additional stimulus content generated from <rubricBlock>
