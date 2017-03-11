@@ -46,6 +46,11 @@ abstract class AbstractItemBuilder
         return array_values($this->questions);
     }
 
+    protected function addFeatures(array $features)
+    {
+        $this->features = array_merge($this->features, $features);
+    }
+
     protected function getMapperInstance($interactionType, $params)
     {
         $reflectionClass = new \ReflectionClass(static::MAPPER_CLASS_BASE.  ucfirst($interactionType . 'Mapper'));
@@ -66,6 +71,11 @@ abstract class AbstractItemBuilder
         $this->assessmentItem = $assessmentItem;
     }
 
+    protected function setItemMetadata(array $itemMetadata)
+    {
+        $this->metadata = array_merge_recursive($this->metadata, $itemMetadata);
+    }
+
     public function setSourceDirectoryPath($sourceDirectoryPath)
     {
         $this->sourceDirectoryPath = $sourceDirectoryPath;
@@ -76,40 +86,42 @@ abstract class AbstractItemBuilder
         $mapper = new RubricBlockMapper($this->sourceDirectoryPath);
         $result = $mapper->parseWithRubricBlockComponent($rubricBlock);
 
-        // Handle additional features generated from <rubricBlock>
         if (!empty($result['features'])) {
-            $features = $result['features'];
-
-            // Set widget reference to something predictable so we don't create a different
-            // feature reference every time. This is so that we can share features that are
-            // imported with common content, and to avoid storing duplicate features when
-            // importing the same QTI content multiple times.
-            $updatedFeatures = [];
-            foreach ($features as $feature) {
-                // Generate a hash for the contents of this feature to use in the reference
-                $featureDataHash = sha1(json_encode($feature->to_array()['data']));
-                // TODO: Review whether this needs to be deduped by item. Reason - while it
-                // is desirable to share passages between items, it may not be desirable to
-                // share all types of features between items.
-                $feature->set_reference($featureDataHash);
-                $updatedFeatures[$feature->get_reference()] = $feature;
-            }
-            $this->features = array_merge($this->features, $updatedFeatures);
+            $this->processAdditionalFeatures($result['features']);
         }
-
-        // Handle additional stimulus content generated from <rubricBlock>
         if (!empty($result['stimulus'])) {
-            // APPEND stimulus content to the first question stimulus
-            $firstQuestionReference = key($this->questions);
-            $newStimulus = $this->questions[$firstQuestionReference]->get_data()->get_stimulus() . $result['stimulus'];
-            $this->questions[$firstQuestionReference]->get_data()->set_stimulus($newStimulus);
-
-            LogService::log('<rubricBlock> stimulus content is prepended to question stimulus; please verify as this "might" break item content structure');
+            $this->processAdditionalStimulus($result['stimulus']);
         }
-
-        // Handle additional item metadata generated from <rubricBlock>
         if (!empty($result['metadata'])) {
-            $this->metadata = array_merge_recursive($this->metadata, $result['metadata']);
+            $this->setItemMetadata($result['metadata']);
         }
+    }
+
+    private function processAdditionalStimulus($additionalStimulus)
+    {
+        // APPEND stimulus content to the first question stimulus
+        $firstQuestionReference = key($this->questions);
+        $newStimulus = $this->questions[$firstQuestionReference]->get_data()->get_stimulus() . $additionalStimulus;
+        $this->questions[$firstQuestionReference]->get_data()->set_stimulus($newStimulus);
+
+        LogService::log('<rubricBlock> stimulus content is prepended to question stimulus; please verify as this "might" break item content structure');
+    }
+
+    private function processAdditionalFeatures(array $features)
+    {
+        // Set widget reference to something predictable so we don't create a different
+        // feature reference every time. This is so that we can share features that are
+        // imported with common content, and to avoid storing duplicate features when
+        // importing the same QTI content multiple times.
+        $updatedFeatures = [];
+        foreach ($features as $feature) {
+            $featureDataHash = sha1(json_encode($feature->to_array()['data']));
+            // TODO: Review whether this needs to be deduped by item. Reason - while it
+            // is desirable to share passages between items, it may not be desirable to
+            // share all types of features between items.
+            $feature->set_reference($featureDataHash);
+            $updatedFeatures[$feature->get_reference()] = $feature;
+        }
+        $this->addFeatures($updatedFeatures);
     }
 }
