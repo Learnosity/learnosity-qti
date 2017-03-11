@@ -177,7 +177,7 @@ class Converter
         return [$widgetData, $exceptions];
     }
 
-    public static function convertQtiItemToLearnosity($xmlString, $baseAssetsUrl = '', $validate = true, $filePath = null, $customItemReference = null)
+    public static function convertQtiItemToLearnosity($xmlString, $baseAssetsUrl = '', $validate = true, $filePath = null, $customItemReference = null, $metadata = [])
     {
         $itemMapper = AppContainer::getApplicationContainer()->get('qtiv2_item_mapper');
         $itemWriter = AppContainer::getApplicationContainer()->get('learnosity_item_writer');
@@ -189,7 +189,7 @@ class Converter
             if (isset($filePath)) {
                 $sourceDirectoryPath = dirname($filePath);
             }
-            list($item, $questions, $features, $exceptions) = $itemMapper->parse($xmlString, $validate, $sourceDirectoryPath);
+            list($item, $questions, $features, $exceptions) = $itemMapper->parse($xmlString, $validate, $sourceDirectoryPath, $metadata);
 
             if (!empty($customItemReference)) {
                 $item->set_reference($customItemReference);

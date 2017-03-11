@@ -12,6 +12,7 @@ use LearnosityQti\Utils\QtiMarshallerUtil;
 class RubricBlockMapper
 {
     private $sourceDirectoryPath;
+    private $rubricPointValue;
 
     public function __construct($sourceDirectoryPath = null)
     {
@@ -71,7 +72,7 @@ class RubricBlockMapper
             case ($rubricBlock->getClass() === 'DistractorRationale'):
                 if ($views->contains(View::AUTHOR)) {
                     $result = [
-                        'metadata' => [
+                        'question_metadata' => [
                             'distractor_rationale_author' => [
                                 [
                                     'label' => $rubricBlock->getLabel(),
@@ -82,15 +83,26 @@ class RubricBlockMapper
                     ];
                 }
                 break;
+
+            case ($rubricBlock->getClass() === 'ScoringGuidance'):
+                if (!$views->contains(View::CANDIDATE)) {
+                    $result = $this->parseScoringGuidanceWithRubricBlockComponent($rubricBlock);
+                }
+                break;
         }
 
-        if (isset($result)) {
+        if (!empty($result)) {
             return $result;
         } else {
-            // FIXME: Should this throw a mapping exception or just be ignored?
-            $use = $rubricBlock->getUse();
-            throw new MappingException("Could not map <rubricBlock> with use: {$use}");
+            $rubricUse = $rubricBlock->getUse();
+            $rubricClass = $rubricBlock->getClass();
+            throw new MappingException("Could not map <rubricBlock> with use: '{$rubricUse}', class: '{$rubricClass}'");
         }
+    }
+
+    public function setRubricPointValue($rubricPointValue)
+    {
+        $this->rubricPointValue = $rubricPointValue;
     }
 
     /**
@@ -132,5 +144,160 @@ class RubricBlockMapper
         }
 
         return $rubricBlock;
+    }
+
+    private function parseScoringGuidanceWithRubricBlockComponent(RubricBlock $rubricBlock)
+    {
+        $result = [
+            'features'  => [],
+            'questions' => [],
+        ];
+
+        // TODO: Implement creation of all the rubric questions/features
+        // HACK: HACK HACK HACK HACK HACK HACK HACK HACK
+        // Try to parse the rubric content to create an interactable widget for it
+        try {
+            // Prepare the DOM for reading
+            $xml = QtiMarshallerUtil::marshall($rubricBlock);
+            $dom = new \DOMDocument();
+            $dom->preserveWhiteSpace = false;
+            $dom->formatOutput = false;
+            $dom->substituteEntities = false;
+            $dom->loadXML($xml);
+            $xpath = new \DOMXPath($dom);
+
+            // Prepare inner rubric content
+            $fragment = $dom->createDocumentFragment();
+            foreach ($dom->documentElement->childNodes as $node) {
+                $fragment->appendChild($node);
+            }
+            $dom->replaceChild($fragment, $dom->documentElement);
+            $innerHTML = $dom->saveHTML();
+
+            // Make sure we have valid parseable table
+            if ($xpath->query('//table')->length) {
+                // Extract the rows from the content
+                $rows = $xpath->query('//tr');
+                $headerRows = $xpath->query('//thead/tr');
+                $useHeaderInBodyRows = false;
+                if (!($headerRows->length > 0)) {
+                    $useHeaderInBodyRows = true;
+                }
+
+                // Prepare the headers
+                $headers = [];
+                /** @var DOMElement $headerRow */
+                if ($useHeaderInBodyRows) {
+                    $headerRow = $rows->item(0);
+                } else {
+                    $headerRow = $headerRows->item(0);
+                }
+                foreach ($headerRow->childNodes as $headerCell) {
+                    $headers[] = strtolower(trim($headerCell->textContent));
+                }
+
+                // Sanitize alias headers
+                static $aliasColumns = [
+                    'score' => 'value',
+                    'level' => 'value',
+                ];
+                foreach ($headers as $index => $header) {
+                    if (isset($aliasColumns[$header])) {
+                        $headers[$index] = $aliasColumns[$header];
+                    }
+                }
+            } elseif (!isset($this->rubricPointValue)) {
+                throw new MappingException('invalid or unrecognized format in scoring guidance');
+            }
+
+            $ratingQuestion = $this->buildRatingQuestion($headers, $rows, $useHeaderInBodyRows, $innerHTML, $this->rubricPointValue);
+
+            $result['questions'][$ratingQuestion->get_reference()] = $ratingQuestion;
+
+        } catch (MappingException $e) {
+            // NOTE: Instead of an exception, we can create a plain shared passage for the content as a fallback.
+            // throw new MappingException('Could not map <rubricBlock> with class: \'ScoringGuidance\' - '.$e->getMessage(), $e);
+
+            // Fall back to a shared passage with the rubric content in it
+            $mapper = new SharedPassageMapper($this->sourceDirectoryPath);
+            // Use a fragment to eliminate the wrapping <rubricBlock> element
+            // TODO: this is the same logic used above; pull it up for reuse
+            $fragment = $dom->createDocumentFragment();
+            foreach ($dom->documentElement->childNodes as $childNodes) {
+                $fragment->appendChild($childNodes);
+            }
+            $dom->replaceChild($fragment, $dom->documentElement);
+            $result = $mapper->parseHtml($dom->saveHTML());
+        }
+
+        // NOTE: It must be flagged in the result that this is scoring
+        // rubric content, as opposed to regular item or passage content
+        $result['type']  = 'ScoringGuidance';
+        $result['label'] = $rubricBlock->getLabel();
+
+        return $result;
+    }
+
+    private function buildRatingQuestion($headers, $rows, $useHeaderInBodyRows, $innerHTML = null, $defaultPointValue = null)
+    {
+        // Validate for minimum processable headers
+        static $requiredColumns = [
+            'value',
+            'description',
+        ];
+
+        $ratingOptions = [];
+
+        if (empty(array_diff($requiredColumns, $headers))) {
+            // Prepare the rating options using the table information
+            foreach ($rows as $rowIndex => $row) {
+                if ($rowIndex === 0 && $useHeaderInBodyRows) {
+                    continue;
+                }
+                foreach ($row->childNodes as $cellIndex => $cell) {
+                    // HACK: filter out rows that the rating question type won't understand
+                    switch (true) {
+                        // Assume value must be int
+                        case $headers[$cellIndex] === 'value' && !ctype_digit(trim($cell->textContent)):
+                            continue 3;
+                            // FIXME: If value isn't the first column, this still inserts a row. Need to prevent that
+
+                        default:
+                            break;
+                    }
+
+                    // TODO: Consider supporting HTML content in `description` column
+                    // For that, we would need a mini-schema based on `column name` (mapped to the header name) -> type
+                    $ratingOptions[$rowIndex][$headers[$cellIndex]] = $cell->textContent;
+                }
+
+                // If no `label`, set `label` to `value`
+                if (!isset($ratingOptions[$rowIndex]['label'])) {
+                    $ratingOptions[$rowIndex]['label'] = $ratingOptions[$rowIndex]['value'];
+                }
+            }
+        } elseif (isset($defaultPointValue)) {
+            // Prepare the rating options using the default point value
+            for ($n = 1; $n <= $defaultPointValue; $n++) {
+                $ratingOptions[$n]['value']       = $n;
+                $ratingOptions[$n]['description'] = $n;
+                $ratingOptions[$n]['label']       = $n;
+            }
+        } else {
+            throw new MappingException('missing required columns in scoring guidance');
+        }
+
+        // HACK: Sort rating options by value
+        usort($ratingOptions, function($a, $b) {
+            return strcmp($a['value'], $b['value']);
+        });
+
+        // Create a rating question type
+        // FIXME: Need to deal with random reference problem here too (see shared passages)
+        $rating = new \LearnosityQti\Entities\QuestionTypes\rating('rating', $ratingOptions);
+        $rating->set_stimulus($innerHTML);
+        $ratingQuestion = new \LearnosityQti\Entities\Question('rating', \LearnosityQti\Utils\UuidUtil::generate(), $rating);
+
+        return $ratingQuestion;
     }
 }
