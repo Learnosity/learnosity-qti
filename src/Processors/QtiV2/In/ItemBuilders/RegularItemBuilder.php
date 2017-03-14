@@ -153,7 +153,7 @@ class RegularItemBuilder extends AbstractItemBuilder
         foreach ($questionHtmlContents as $questionReference => $content) {
             $existingStimulus = $this->questions[$questionReference]->get_data()->get_stimulus();
             // HACK: Replace placeholders in item content with <prompt> stimulus, and inject the whole thing
-            $newStimulus .= str_replace($questionReference, $existingStimulus, $content);
+            $newStimulus = str_replace($questionReference, $existingStimulus, $content);
             $this->questions[$questionReference]->get_data()->set_stimulus($newStimulus);
 
             LogService::log('Extra <itemBody> content is prepended to question stimulus and please verify as this `might` break item content structure');
