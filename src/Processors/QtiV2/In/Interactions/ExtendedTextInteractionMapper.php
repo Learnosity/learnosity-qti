@@ -13,7 +13,7 @@ class ExtendedTextInteractionMapper extends AbstractInteractionMapper
     {
         /* @var QtiExtendedTextInteraction $interaction */
         $interaction = $this->interaction;
-        $longtext = new longtext('longtext');
+        $longtext = new longtext('longtextV2');
 
         LogService::log(
             'No validation mapping supported for this interaction. Ignoring any ' .
