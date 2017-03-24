@@ -177,7 +177,7 @@ class Converter
         return [$widgetData, $exceptions];
     }
 
-    public static function convertQtiItemToLearnosity($xmlString, $baseAssetsUrl = '', $validate = true, $filePath = null)
+    public static function convertQtiItemToLearnosity($xmlString, $baseAssetsUrl = '', $validate = true, $filePath = null, $customItemReference = null)
     {
         $itemMapper = AppContainer::getApplicationContainer()->get('qtiv2_item_mapper');
         $itemWriter = AppContainer::getApplicationContainer()->get('learnosity_item_writer');
@@ -190,6 +190,10 @@ class Converter
                 $sourceDirectoryPath = dirname($filePath);
             }
             list($item, $questions, $features, $exceptions) = $itemMapper->parse($xmlString, $validate, $sourceDirectoryPath);
+
+            if (!empty($customItemReference)) {
+                $item->set_reference($customItemReference);
+            }
         } catch (XmlStorageException $e) {
             // Check invalid schema error message and intercept to rethrow as known `InvalidQtiException` exception
             $exceptionMessage = $e->getMessage();
