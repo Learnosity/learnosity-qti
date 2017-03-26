@@ -11,6 +11,7 @@ use \qtism\data\AssessmentItem;
 use qtism\data\content\RubricBlock;
 use LearnosityQti\Processors\QtiV2\In\RubricBlockMapper;
 use LearnosityQti\Services\LogService;
+use LearnosityQti\Entities\Question;
 
 abstract class AbstractItemBuilder
 {
@@ -18,6 +19,7 @@ abstract class AbstractItemBuilder
     protected $questions = [];
     protected $features = [];
     protected $metadata = [];
+    protected $questionsMetadata = [];
     protected $content = '';
     protected $assessmentItem;
     protected $sourceDirectoryPath = null;
@@ -43,7 +45,33 @@ abstract class AbstractItemBuilder
 
     public function getQuestions()
     {
+        if (!empty($this->questionsMetadata)) {
+            foreach ($this->questions as $question) {
+                /** @var Question $question */
+                $data = $question->get_data();
+                $metadata = $data->get_metadata();
+
+                if (!isset($metadata)) {
+                    $metadataClass = '\\LearnosityQti\\Entities\\QuestionTypes\\'.$data->get_type().'_metadata';
+                    $metadata = new $metadataClass();
+                    $data->set_metadata($metadata);
+                }
+
+                $this->populateQuestionMetadata($metadata, $this->questionsMetadata);
+            }
+        }
         return array_values($this->questions);
+    }
+
+    protected function populateQuestionMetadata($metadata, array $metadataValues)
+    {
+        foreach ($metadataValues as $key => $value) {
+            switch ($key) {
+                case 'distractor_rationale_author':
+                    $metadata->distractor_rationale_author = $value;
+                    break;
+            }
+        }
     }
 
     protected function addFeatures(array $features)
@@ -76,6 +104,11 @@ abstract class AbstractItemBuilder
         $this->metadata = array_merge_recursive($this->metadata, $itemMetadata);
     }
 
+    public function setQuestionMetadata(array $questionsMetadata)
+    {
+        $this->questionsMetadata = array_merge_recursive($this->questionsMetadata, $questionsMetadata);
+    }
+
     public function setSourceDirectoryPath($sourceDirectoryPath)
     {
         $this->sourceDirectoryPath = $sourceDirectoryPath;
@@ -94,6 +127,9 @@ abstract class AbstractItemBuilder
         }
         if (!empty($result['metadata'])) {
             $this->setItemMetadata($result['metadata']);
+            // HACK: We need this line temporarily for certain properties
+            // that need to be put in question metadata, not item metadata
+            $this->setQuestionMetadata($result['metadata']);
         }
     }
 
