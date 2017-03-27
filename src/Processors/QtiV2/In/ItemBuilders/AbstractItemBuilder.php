@@ -68,7 +68,10 @@ abstract class AbstractItemBuilder
         foreach ($metadataValues as $key => $value) {
             switch ($key) {
                 case 'distractor_rationale_author':
-                    $metadata->distractor_rationale_author = $value;
+                    usort($value, function ($a, $b) {
+                        return strcmp($a['label'], $b['label']);
+                    });
+                    $metadata->distractor_rationale_author = join('', array_column($value, 'content'));
                     break;
             }
         }
