@@ -8,6 +8,7 @@ use qtism\data\View;
 use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Processors\QtiV2\In\SharedPassageMapper;
 use LearnosityQti\Utils\QtiMarshallerUtil;
+use LearnosityQti\Services\LogService;
 
 class RubricBlockMapper
 {
@@ -219,7 +220,13 @@ class RubricBlockMapper
                 throw new MappingException('invalid or unrecognized format in scoring guidance');
             }
 
-            $ratingQuestion = $this->buildRatingQuestion($headers, $rows, $useHeaderInBodyRows, $innerHTML, $rubricPointValue);
+            try {
+                $ratingQuestion = $this->buildRatingQuestion($headers, $rows, $useHeaderInBodyRows, $innerHTML, $rubricPointValue);
+            } catch (MappingException $e) {
+                // HACK: Add some specific logging for failures with building the rating question type
+                LogService::log('<rubricBlock> - Failed to build rating question for 1 or more ScoringGuidance rubrics');
+                throw $e;
+            }
 
             $result['questions'][$ratingQuestion->get_reference()] = $ratingQuestion;
 
@@ -239,6 +246,7 @@ class RubricBlockMapper
             // }
             // $dom->replaceChild($fragment, $dom->documentElement);
 
+            // FIXME: This assumes we have a valid DOM; should handle the other case too
             $result = $mapper->parseHtml($dom->saveHTML());
         }
 
