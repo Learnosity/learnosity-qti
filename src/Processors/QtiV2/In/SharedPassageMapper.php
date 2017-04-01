@@ -150,7 +150,7 @@ class SharedPassageMapper
         $xmlDom->loadXML($xmlString);
 
         $htmlDom = new DOMDocument();
-        $htmlDom->loadHTML('<body></body>');
+        $htmlDom->loadHTML('<body></body>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
         $xmlDom = $htmlDom->importNode($xmlDom->documentElement, true);
         $htmlDom->replaceChild($xmlDom, $htmlDom->documentElement);
 
@@ -180,6 +180,14 @@ class SharedPassageMapper
         $xpath = new \DOMXPath($htmlDom);
         foreach ($xpath->query('//object') as $objectElement) {
             $this->handleObjectElementInDocument($objectElement, $htmlDom);
+        }
+
+        // HACK: Saving exclusively from the documentElement breaks content
+        // with no wrapper element/multiple root elements. So handle it differently
+        // TODO: Check if this logic is even needed; we may not need to save from the documentElement anymore
+        if ($htmlDom->documentElement->nextSibling) {
+            LogService::log('SharedPassageMapper - found passage content with more than one root element; Assume that the content is correct');
+            return $htmlDom->saveHTML();
         }
 
         return $htmlDom->saveHTML($htmlDom->documentElement);

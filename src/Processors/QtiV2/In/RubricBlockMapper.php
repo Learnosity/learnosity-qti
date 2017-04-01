@@ -172,11 +172,14 @@ class RubricBlockMapper
 
             // Prepare inner rubric content
             $fragment = $dom->createDocumentFragment();
-            foreach ($dom->documentElement->childNodes as $node) {
+            $childNodes = $dom->documentElement->childNodes;
+            while (($node = $childNodes->item(0))) {
+                $node->parentNode->removeChild($node);
                 $fragment->appendChild($node);
             }
+            // XXX: The following needs to be done in this order. Need to figure out why
+            $innerHTML = $dom->saveXML($fragment);
             $dom->replaceChild($fragment, $dom->documentElement);
-            $innerHTML = $dom->saveXML($dom->documentElement);
 
             // Make sure we have valid parseable table
             if ($xpath->query('//table')->length) {
