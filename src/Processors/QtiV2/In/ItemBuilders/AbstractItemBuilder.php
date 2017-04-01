@@ -81,6 +81,7 @@ abstract class AbstractItemBuilder
 
     public function getQuestions()
     {
+        // FIXME: Should this be getting set every time on read?
         if (!empty($this->questionsMetadata)) {
             foreach ($this->questions as $question) {
                 /** @var Question $question */
@@ -200,9 +201,7 @@ abstract class AbstractItemBuilder
     protected function processRubricBlock(RubricBlock $rubricBlock)
     {
         $mapper = new RubricBlockMapper($this->sourceDirectoryPath);
-        if (!isset($this->rubricData)) {
-            $mapper->setRubricPointValue($this->itemPointValue);
-        }
+        $mapper->setRubricPointValue($this->itemPointValue);
         $result = $mapper->parseWithRubricBlockComponent($rubricBlock);
 
         if (isset($result['type']) && $result['type'] === 'ScoringGuidance') {
@@ -247,7 +246,7 @@ abstract class AbstractItemBuilder
 
         $widgetsToInsert = [];
         if (!empty($result['questions'])) {
-            $questions = $this->processAdditionalFeatures($result['questions']);
+            $questions = $this->processAdditionalQuestions($result['questions']);
             $widgetsToInsert = array_merge($widgetsToInsert, $questions);
             foreach ($questions as $questionReference => $question) {
                 $this->rubricData['questionReferences'][] = [ 'reference' => $question->get_reference() ];
@@ -288,8 +287,8 @@ abstract class AbstractItemBuilder
         $updatedQuestions = [];
         foreach ($questions as $question) {
             $questionsArray = $question->to_array();
-            unset($questionArray['reference']);
-            $questionHash = sha1(json_encode($questionArray));
+            unset($questionsArray['reference']);
+            $questionHash = sha1(json_encode($questionsArray));
             $question->set_reference($this->itemReference.'_'.$questionHash);
             $updatedQuestions[$question->get_reference()] = $question;
         }
