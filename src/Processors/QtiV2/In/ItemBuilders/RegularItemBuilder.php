@@ -88,7 +88,7 @@ class RegularItemBuilder extends AbstractItemBuilder
         $dom = new DOMDocument();
         $dom->preserveWhitespace = false;
         // NOTE: Make sure we wrap in an <itemBody> so we get the correct DOM structure (and documentElement)
-        $dom->loadHTML('<itemBody>'.$extraContentHtml->save().'</itemBody>', LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
+        $dom->loadHTML('<?xml version="1.0" encoding="UTF-8"><itemBody>'.$extraContentHtml->save().'</itemBody>', LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
         $xpath = new DOMXPath($dom);
 
         $questionHtmlContents = [];
