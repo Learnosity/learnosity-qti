@@ -2,11 +2,12 @@
 
 namespace LearnosityQti\Processors\QtiV2\In;
 
-use DOMElement;
 use DOMDocument;
+use DOMElement;
 use LearnosityQti\Entities\Question;
 use LearnosityQti\Entities\QuestionTypes\sharedpassage;
 use LearnosityQti\Utils\UuidUtil;
+use LearnosityQti\Utils\QtiMarshallerUtil;
 use qtism\data\content\RubricBlock;
 use qtism\data\content\xhtml\Object;
 use qtism\data\QtiComponentCollection;
@@ -16,6 +17,9 @@ use LearnosityQti\Exceptions\MappingException;
 
 class SharedPassageMapper
 {
+    const CONTENT_TYPE_HTML = 'text/html';
+    const CONTENT_TYPE_XML  = 'application/xml';
+
     private $sourceDirectoryPath;
 
     public function __construct($sourceDirectoryPath = null)
@@ -58,14 +62,14 @@ class SharedPassageMapper
         return $results;
     }
 
-    public function parseFile(SplFileInfo $file, $contentType = 'application/xml')
+    public function parseFile(SplFileInfo $file, $contentType = self::CONTENT_TYPE_XML)
     {
         $passageContentString = file_get_contents($file->getRealPath());
         switch ($contentType) {
-            case 'text/html':
+            case static::CONTENT_TYPE_HTML:
                 $result = $this->parseHtml($passageContentString);
                 break;
-            case 'application/xml':
+            case static::CONTENT_TYPE_XML:
                 # Falls through
             default:
                 $result = $this->parseXml($passageContentString);
@@ -77,20 +81,35 @@ class SharedPassageMapper
 
     public function parseWithRubricBlockComponent(RubricBlock $rubricBlock)
     {
-        // TODO: Handle HTML content inside rubricBlock that wraps the object element
         $result = [];
-        $messages = [];
 
-        // Extract the object element (if any)
+        // Extract the object element(s) (if any)
         /** @var QtiComponentCollection $objects */
         $objects = $rubricBlock->getComponentsByClassName('object', true);
         if ($objects->count()) {
-            if ($objects->count() > 1) {
-                LogService::log('<rubricBlock use="context"> - multiple <object> elements found, will use the first only');
-            }
-            $objects->rewind();
+            // TODO: Handle HTML content inside rubricBlock that wraps the object element(s)
+            $result = $this->buildSharedPassagesFromObjects($objects);
+        }
+
+        return $result;
+    }
+
+    protected function buildSharedPassagesFromObjects(QtiComponentCollection $objects)
+    {
+        $allowedObjectContentTypes = [
+            static::CONTENT_TYPE_HTML,
+            static::CONTENT_TYPE_XML,
+        ];
+
+        $result = [];
+
+        if ($objects->count() > 1) {
+            LogService::log('<rubricBlock use="context"> - multiple <object> elements found, will use the first only');
+        }
+        $objects->rewind();
+        $contentType = $objects->current()->getType();
+        if (in_array($contentType, $allowedObjectContentTypes)) {
             $contentRelativePath = $objects->current()->getData();
-            $contentType = $objects->current()->getType();
             $file = new SplFileInfo($this->sourceDirectoryPath.'/'.$contentRelativePath);
             if (!$file->isFile()) {
                 throw new MappingException("Could not process <rubricBlock> - resource file at {$contentRelativePath} not found in directory: '{$this->sourceDirectoryPath}'");
@@ -98,9 +117,6 @@ class SharedPassageMapper
 
             $result = $this->parseFile($file, $contentType);
         }
-
-        // TODO: Fix flush issue with LogService
-        // $messages = array_merge($messages, array_values(array_unique(LogService::flush())));
 
         return $result;
     }
