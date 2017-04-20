@@ -238,18 +238,7 @@ class RubricBlockMapper
 
             // Fall back to a shared passage with the rubric content in it
             $mapper = new SharedPassageMapper($this->sourceDirectoryPath);
-
-            // FIXME: This no longer seems to do the correct thing... not sure why it was applied in the first place?
-            // // Use a fragment to eliminate the wrapping <rubricBlock> element
-            // // TODO: this is the same logic used above; pull it up for reuse
-            // $fragment = $dom->createDocumentFragment();
-            // foreach ($dom->documentElement->childNodes as $childNodes) {
-            //     $fragment->appendChild($childNodes);
-            // }
-            // $dom->replaceChild($fragment, $dom->documentElement);
-
-            // FIXME: This assumes we have a valid DOM; should handle the other case too
-            $result = $mapper->parseHtml($dom->saveHTML());
+            $result = $mapper->parseWithRubricBlockComponent($rubricBlock);
         }
 
         // NOTE: It must be flagged in the result that this is scoring
