@@ -209,12 +209,14 @@ abstract class AbstractItemBuilder
             return;
         }
         if (!empty($result['features'])) {
-            $updatedFeatures = $this->processAdditionalFeatures($result['features']);
-            $this->addFeatures($updatedFeatures);
+            $newFeatures = $this->processAdditionalFeatures($result['features']);
+            // HACK: Quick fix for duplicated feature content (take only new ones)
+            // $newFeatures = array_diff($newFeatures, $this->features);
+            $this->addFeatures($newFeatures);
         }
         if (!empty($result['questions'])) {
-            $updatedQuestions = $this->processAdditionalQuestions($result['questions']);
-            $this->addQuestions($updatedQuestions);
+            $newQuestions = $this->processAdditionalQuestions($result['questions']);
+            $this->addQuestions($newQuestions);
         }
         if (!empty($result['stimulus'])) {
             $this->processAdditionalStimulus($result['stimulus']);
@@ -254,6 +256,10 @@ abstract class AbstractItemBuilder
         }
         if (!empty($result['features'])) {
             $features = $this->processAdditionalFeatures($result['features']);
+            // HACK: Quick fix for duplicated feature content (take only new ones)
+            $features = array_udiff($features, array_filter($this->rubricData['widgets']), function ($el1, $el2) {
+                return $el1->get_reference() !== $el2->get_reference() ? 1 : 0;
+            });
             $widgetsToInsert = array_merge($widgetsToInsert, $features);
             foreach ($features as $featureReference => $feature) {
                 $this->rubricData['featureReferences'][] = [ 'reference' => $feature->get_reference() ];
