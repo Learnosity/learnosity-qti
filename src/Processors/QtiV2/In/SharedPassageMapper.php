@@ -89,6 +89,9 @@ class SharedPassageMapper
         if ($objects->count()) {
             // TODO: Handle HTML content inside rubricBlock that wraps the object element(s)
             $result = $this->buildSharedPassagesFromObjects($objects);
+        } else {
+            // Fall back to using all the content in the <rubricBlock> verbatim
+            $result = $this->parseXml(QtiMarshallerUtil::marshall($rubricBlock));
         }
 
         return $result;
