@@ -201,7 +201,7 @@ class Converter
                 $item->set_reference($customItemReference);
             }
             if (!empty($rubricItem)) {
-                $rubricItem->set_reference($customItemReference.'_rubric');
+                $rubricItem->set_reference($item->get_reference().'_rubric');
                 foreach ($questions as $question) {
                     $questionMetadata = $question->get_data()->get_metadata();
                     if (!empty($questionMetadata)) {
