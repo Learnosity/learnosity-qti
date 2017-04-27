@@ -48,7 +48,7 @@ class RubricBlockMapper
      *
      * @return mixed
      */
-    public function parseWithRubricBlockComponent(RubricBlock $rubricBlock)
+    public function parseWithRubricBlockComponent(RubricBlock $rubricBlock, $foundScoringGuidance = false)
     {
         $result = null;
         /** @var ViewCollection $views */
@@ -90,7 +90,7 @@ class RubricBlockMapper
                 /* falls through */
             case (!$views->contains(View::CANDIDATE)):
                 // Treat as author/scorer rubric content
-                $result = $this->parseRubricContentWithRubricBlockComponent($rubricBlock);
+                $result = $this->parseRubricContentWithRubricBlockComponent($rubricBlock, $foundScoringGuidance);
                 break;
         }
 
@@ -149,11 +149,26 @@ class RubricBlockMapper
         return $rubricBlock;
     }
 
-    private function parseRubricContentWithRubricBlockComponent(RubricBlock $rubricBlock)
+    /**
+     * We determine that a rubric block is a rating question by the following rule
+     *   - isTable OR (isFirst AND hasPointValue)
+     */
+    private function parseRubricContentWithRubricBlockComponent(RubricBlock $rubricBlock, $foundScoringGuidance)
     {
+        $isFirst = !$foundScoringGuidance;
+
+        $rows = null;
+        $headers = [];
+        $useHeaderInBodyRows = false;
+        $rubricPointValue = null;
         $result = [
             'features'  => [],
             'questions' => [],
+        ];
+
+        $aliasColumns = [
+            'score' => 'value',
+            'level' => 'value',
         ];
 
         // TODO: Implement creation of all the rubric questions/features
@@ -189,34 +204,27 @@ class RubricBlockMapper
                 // Extract the rows from the content
                 $rows = $xpath->query('//tr');
                 $headerRows = $xpath->query('//thead/tr');
-                $useHeaderInBodyRows = false;
-                if (!($headerRows->length > 0)) {
-                    $useHeaderInBodyRows = true;
-                }
 
-                // Prepare the headers
-                $headers = [];
+                $useHeaderInBodyRows = ($headerRows->length === 0);
+
                 /** @var DOMElement $headerRow */
                 if ($useHeaderInBodyRows) {
                     $headerRow = $rows->item(0);
                 } else {
                     $headerRow = $headerRows->item(0);
                 }
+
                 foreach ($headerRow->childNodes as $headerCell) {
                     $headers[] = strtolower(trim($headerCell->textContent));
                 }
 
                 // Sanitize alias headers
-                static $aliasColumns = [
-                    'score' => 'value',
-                    'level' => 'value',
-                ];
                 foreach ($headers as $index => $header) {
                     if (isset($aliasColumns[$header])) {
                         $headers[$index] = $aliasColumns[$header];
                     }
                 }
-            } elseif ($this->useRubricPointValueForRubric($rubricBlock)) {
+            } elseif ($isFirst && $this->useRubricPointValueForRubric($rubricBlock)) {
                 $rubricPointValue = $this->rubricPointValue;
             } else {
                 throw new MappingException('invalid or unrecognized format in scoring guidance');
@@ -259,7 +267,7 @@ class RubricBlockMapper
 
         $ratingOptions = [];
 
-        if (isset($headers) && empty(array_diff($requiredColumns, $headers))) {
+        if (isset($headers, $rows) && empty(array_diff($requiredColumns, $headers))) {
             // Prepare the rating options using the table information
             foreach ($rows as $rowIndex => $row) {
                 if ($rowIndex === 0 && $useHeaderInBodyRows) {

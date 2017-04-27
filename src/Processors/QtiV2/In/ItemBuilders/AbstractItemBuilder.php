@@ -27,6 +27,7 @@ abstract class AbstractItemBuilder
 
     // Used to describe the maximum possible score (used for rubrics)
     protected $itemPointValue;
+    protected $foundScoringGuidanceRubric = false;
 
     public function getItem()
     {
@@ -202,7 +203,8 @@ abstract class AbstractItemBuilder
     {
         $mapper = new RubricBlockMapper($this->sourceDirectoryPath);
         $mapper->setRubricPointValue($this->itemPointValue);
-        $result = $mapper->parseWithRubricBlockComponent($rubricBlock);
+
+        $result = $mapper->parseWithRubricBlockComponent($rubricBlock, $this->foundScoringGuidanceRubric);
 
         if (isset($result['type']) && $result['type'] === 'ScoringGuidance') {
             $this->processScoringGuidanceContent($result);
@@ -231,17 +233,22 @@ abstract class AbstractItemBuilder
 
     private function processScoringGuidanceContent(array $result)
     {
+        $this->foundScoringGuidanceRubric = true;
+
         // TODO: Support creation of another item for the case where we get back scoring guidance
         if (!isset($this->rubricData)) {
             $this->rubricData = [
                 'widgets' => [],
             ];
-            $this->setQuestionMetadata([
-                'rubric_reference' => $this->itemReference.'_rubric',
-            ]);
+
+            $rubricMetadata = [
+                'rubric_reference' => $this->getRubricReference(),
+            ];
+            $this->setQuestionMetadata($rubricMetadata);
+            $this->setItemMetadata($rubricMetadata);
         }
 
-        $widgetOffset = $this->rubricData['widgets']->length;
+        $widgetOffset = count($this->rubricData['widgets']);
         if (isset($result['label']) && (int)($result['label']) == $result['label']) {
             $widgetOffset = (int)$result['label'] - 1;
         }
@@ -267,7 +274,7 @@ abstract class AbstractItemBuilder
         }
 
         // HACK: make sure we can insert the arrays in the correct order
-        if ($widgetOffset > $this->rubricData['widgets']->length) {
+        if ($widgetOffset > count($this->rubricData['widgets'])) {
             $this->rubricData['widgets'] = array_pad($this->rubricData['widgets'], $widgetOffset, null);
         }
         // FIXME: This implementation is buggy; it can't handle when there are multiple widgets to insert.
@@ -320,5 +327,10 @@ abstract class AbstractItemBuilder
         }
 
         return $updatedFeatures;
+    }
+
+    protected function getRubricReference()
+    {
+        return "{$this->itemReference}_rubric";
     }
 }

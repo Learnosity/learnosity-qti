@@ -137,6 +137,9 @@ class RegularItemBuilder extends AbstractItemBuilder
                 // TODO: Check if removing interactions while iterating on DOMNodeList causes issues
                 $elementRoot->parentNode->removeChild($elementRoot);
 
+                if (!isset($questionHtmlContents[$questionReference])) {
+                    $questionHtmlContents[$questionReference] = '';
+                }
                 $questionHtmlContents[$questionReference] .= $newDom->saveHTML();
             }
         }
