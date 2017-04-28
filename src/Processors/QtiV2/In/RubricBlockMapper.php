@@ -323,6 +323,7 @@ class RubricBlockMapper
     private function sanitizeXml($xml)
     {
         $dom = new \DOMDocument('1.0', 'UTF-8');
+        libxml_use_internal_errors(true);
 
         // HACK: Pass the version and encoding to prevent libxml from decoding HTML entities (esp. &amp; which libxml borks at)
         $dom->loadHTML('<?xml version="1.0" encoding="UTF-8">'.$xml, LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);

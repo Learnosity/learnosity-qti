@@ -148,6 +148,7 @@ class Converter
 
     public static function convertQtiPassageToLearnosity($xmlString)
     {
+        $exceptions = null;
         $widgetWriter = AppContainer::getApplicationContainer()->get('learnosity_question_writer');
         $passageMapper = new SharedPassageMapper();
 
