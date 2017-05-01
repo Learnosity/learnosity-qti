@@ -182,10 +182,18 @@ class SharedPassageMapper
 
     private function sanitizeXml($xml)
     {
+        $xml = trim($xml);
+
         $dom = new \DOMDocument('1.0', 'UTF-8');
         libxml_use_internal_errors(true);
 
         // HACK: Pass the version and encoding to prevent libxml from decoding HTML entities (esp. &amp; which libxml borks at)
+        // Only do this if it hasnt already been passed along in the xml string. Sometimes, we read from a file, and sometimes
+        // we read from a block inside another file.
+        if (strpos($xml, '<?xml ') === false) {
+            $xml = '<?xml version="1.0" encoding="UTF-8">' . $xml;
+        }
+
         $dom->loadHTML($xml, LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
         $xml = $dom->saveXML($dom->documentElement);
 
