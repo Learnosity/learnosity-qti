@@ -62,7 +62,7 @@ class MatchInteractionValidationBuilder extends BaseInteractionValidationBuilder
 
         // Just to make sure we don't screw the order
         ksort($values);
-        return ValidationBuilder::build('choicematrix', $mode, [new ValidResponse(1, $values)]);
+        return ValidationBuilder::build('choicematrix', $mode, [new ValidResponse($score, $values)]);
     }
 
     protected function getMapResponseTemplateValidation(array $scores = null)
