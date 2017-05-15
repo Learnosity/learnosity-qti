@@ -282,14 +282,22 @@ abstract class AbstractItemBuilder
         array_splice($this->rubricData['widgets'], $widgetOffset, 0, $widgetsToInsert);
     }
 
-    private function processAdditionalStimulus($additionalStimulus)
+    private function processAdditionalStimulus($additionalStimulus, $appendMode = false)
     {
-        // APPEND stimulus content to the first question stimulus
         $firstQuestionReference = key($this->questions);
-        $newStimulus = $this->questions[$firstQuestionReference]->get_data()->get_stimulus() . $additionalStimulus;
+        if ($appendMode) {
+            // APPEND stimulus content to the first question stimulus
+            // NOTE: This is OFF by default (only used on demand); to enable, pass the additional $appendMode argument
+            $newStimulus = $this->questions[$firstQuestionReference]->get_data()->get_stimulus() . $additionalStimulus;
+            $modeMessage = '<rubricBlock> stimulus content is APPENDED to question stimulus';
+        } else {
+            // PREPEND stimulus content to the first question stimulus
+            $newStimulus = $additionalStimulus . $this->questions[$firstQuestionReference]->get_data()->get_stimulus();
+            $modeMessage = '<rubricBlock> stimulus content is PREPENDED to question stimulus';
+        }
         $this->questions[$firstQuestionReference]->get_data()->set_stimulus($newStimulus);
 
-        LogService::log('<rubricBlock> stimulus content is prepended to question stimulus; please verify as this "might" break item content structure');
+        LogService::log($modeMessage.'; please verify as this "might" break item content structure');
     }
 
     private function processAdditionalQuestions(array $questions)
