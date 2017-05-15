@@ -82,20 +82,20 @@ class SharedPassageMapper
 
     public function parseWithRubricBlockComponent(RubricBlock $rubricBlock)
     {
-        $result = [];
+        $results = [];
 
         // Extract the object element(s) (if any)
         /** @var QtiComponentCollection $objects */
         $objects = $rubricBlock->getComponentsByClassName('object', true);
         if ($objects->count()) {
             // TODO: Handle HTML content inside rubricBlock that wraps the object element(s)
-            $result = $this->buildSharedPassagesFromObjects($objects);
+            $results = $this->buildSharedPassagesFromObjects($objects);
         } else {
-            // Fall back to using all the content in the <rubricBlock> verbatim
-            $result = $this->parseXml(QtiMarshallerUtil::marshall($rubricBlock));
+            // Fall back to using all the content in the <rubricBlock> verbatim as a single passage
+            $results = $this->parseXml(QtiMarshallerUtil::marshall($rubricBlock));
         }
 
-        return $result;
+        return $results;
     }
 
     protected function buildSharedPassagesFromObjects(QtiComponentCollection $objects)
@@ -105,24 +105,29 @@ class SharedPassageMapper
             static::CONTENT_TYPE_XML,
         ];
 
-        $result = [];
+        $results = [
+            'features' => [],
+        ];
 
-        if ($objects->count() > 1) {
-            LogService::log('<rubricBlock use="context"> - multiple <object> elements found, will use the first only');
-        }
         $objects->rewind();
-        $contentType = $objects->current()->getType();
-        if (in_array($contentType, $allowedObjectContentTypes)) {
-            $contentRelativePath = $objects->current()->getData();
-            $file = new SplFileInfo($this->sourceDirectoryPath.'/'.$contentRelativePath);
-            if (!$file->isFile()) {
-                throw new MappingException("Could not process <rubricBlock> - resource file at {$contentRelativePath} not found in directory: '{$this->sourceDirectoryPath}'");
-            }
+        // Handle processing multiple passage objects in order
+        foreach ($objects as $object) {
+            $contentType = $object->getType();
+            if (in_array($contentType, $allowedObjectContentTypes)) {
+                $contentRelativePath = $object->getData();
+                $file = new SplFileInfo($this->sourceDirectoryPath.'/'.$contentRelativePath);
+                if (!$file->isFile()) {
+                    throw new MappingException("Could not process <rubricBlock> - resource file at {$contentRelativePath} not found in directory: '{$this->sourceDirectoryPath}'");
+                }
 
-            $result = $this->parseFile($file, $contentType);
+                $fileResult = $this->parseFile($file, $contentType);
+
+                // The `features` array is a map by feature reference; merge new result with existing ones
+                $results['features'] = array_merge($results['features'], $fileResult['features']);
+            }
         }
 
-        return $result;
+        return $results;
     }
 
     protected function buildSharedPassageWithContent($passageContent)
