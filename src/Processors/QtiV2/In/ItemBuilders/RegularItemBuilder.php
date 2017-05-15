@@ -133,12 +133,18 @@ class RegularItemBuilder extends AbstractItemBuilder
         }
 
         // Remove the wrapping <itemBody> before saving
-        $fragment = $dom->createDocumentFragment();
+        // HACK: Instead of replacing with a fragment, replace with a div;
+        // this is so we have a document element to remove the XML declaration with
+        /* @var DOMNode $fragment */
+        $fragment = $dom->createElement('div');
         while ($dom->documentElement->childNodes->length > 0) {
             $fragment->appendChild($dom->documentElement->childNodes->item(0));
         }
         $dom->documentElement->parentNode->replaceChild($fragment, $dom->documentElement);
-        $extraContent = $dom->saveHTML();
+        $extraContent = '';
+        if ($fragment->hasChildNodes()) {
+            $extraContent = $dom->saveHTML($dom->documentElement);
+        }
 
         // Inject item content into stimulus per question
         foreach ($questionHtmlContents as $questionReference => $content) {
