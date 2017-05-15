@@ -65,18 +65,6 @@ class RegularItemBuilder extends AbstractItemBuilder
             ];
         }
 
-        // Process <rubricBlock> elements
-        // NOTE: This step needs to be done after questions are generated
-        foreach ($rubricBlockComponents as $rubricBlock) {
-            /** @var RubricBlock $rubricBlock */
-            try {
-                $this->processRubricBlock($rubricBlock);
-            } catch (MappingException $e) {
-                // Just log unsupported <rubricBlock> elements
-                LogService::log($e->getMessage());
-            }
-        }
-
         // Build item's HTML content
         $extraContentHtml = new SimpleHtmlDom();
         if (!$extraContentHtml->load(QtiMarshallerUtil::marshallCollection($itemBody->getComponents()), false)) {
@@ -172,6 +160,21 @@ class RegularItemBuilder extends AbstractItemBuilder
 
             LogService::log('Extra <itemBody> content is prepended to question stimulus and please verify as this `might` break item content structure');
         }
+
+        // TODO: Confirm that calling processRubricBlock after generating the item content won't break anything
+
+        // Process <rubricBlock> elements
+        // NOTE: This step needs to be done after questions are generated
+        foreach ($rubricBlockComponents as $rubricBlock) {
+            /** @var RubricBlock $rubricBlock */
+            try {
+                $this->processRubricBlock($rubricBlock);
+            } catch (MappingException $e) {
+                // Just log unsupported <rubricBlock> elements
+                LogService::log($e->getMessage());
+            }
+        }
+
         return true;
     }
 
