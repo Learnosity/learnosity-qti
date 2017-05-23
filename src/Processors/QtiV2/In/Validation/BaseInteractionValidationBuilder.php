@@ -69,13 +69,16 @@ abstract class BaseInteractionValidationBuilder
             return null;
         }
 
+        $results = [];
+
         $responseRules = $responseProcessing->getResponseRules();
 
         // step through each ProcessingRule object and parse them
         foreach ($responseRules as $responseRule) {
             switch (true) {
                 case $responseRule instanceof ResponseCondition:
-                    return $this->processResponseCondition($responseRule);
+                    $results = array_merge_recursive($results, $this->processResponseCondition($responseRule));
+                    break;
 
                 case $responseRule instanceof SetOutcomeValue:
                     LogService::log('ResponseProcessing: Skipping top level SetOutcomeValue in response processing');
@@ -86,6 +89,8 @@ abstract class BaseInteractionValidationBuilder
                     LogService::log('ResponseProcessing: Unsupported processing rule: ' . get_class($responseRule));
             }
         }
+
+        return $results;
     }
 
     public function buildValidation(ResponseProcessingTemplate $responseProcessingTemplate)
@@ -114,9 +119,14 @@ abstract class BaseInteractionValidationBuilder
 
                 case ResponseProcessingTemplate::BUILTIN:
                     // custom response processing rules
-                    $results = $this->getBuiltinResponseValidation($responseProcessingTemplate->getBuiltinResponseProcessing());
-                    if (!empty ($results['scoring_type']) && in_array($results['scoring_type'], ['match', 'partial'])) {
-                        return $this->getMatchCorrectTemplateValidation($results);
+                    $responseProcessingScores = $this->getBuiltinResponseValidation($responseProcessingTemplate->getBuiltinResponseProcessing());
+                    $interactionId = $this->responseDeclaration->getIdentifier();
+
+                    if (!empty($responseProcessingScores[$interactionId])) {
+                        $results = $responseProcessingScores[$interactionId];
+                        if (!empty($results['scoring_type']) && in_array($results['scoring_type'], ['match', 'partial'])) {
+                            return $this->getMatchCorrectTemplateValidation($results);
+                        }
                     }
 
                     LogService::log('ResponseProcessing: Unrecognized scoring type: ' . print_r($results, true));
@@ -145,20 +155,58 @@ abstract class BaseInteractionValidationBuilder
         // NOTE: turn this into an object
         $results = [];
 
+        /*
+         * We need to keep track of the interactionId, as we progress through the branches.
+         * There are multiple ways to obtain this Id, and we only know where to look for when
+         * we are inside the condition itself. This is why the processConditionBranch method
+         * needs to return both the id and the scores.
+         *
+         * Usually, the ResponseElse block does not have an Id , so we rely on the value from
+         * previous branches (If/ElseIf) to give us the id.
+         */
+        $interactionId = null;
+
         // process the ResponseIf, this object is required
         $responseIf = $responseCondition->getResponseIf();
-        $results = array_merge($results, $this->processConditionBranch($responseIf));
+        list($interactionId, $conditionResults) = $this->processConditionBranch($responseIf);
+        $results = $this->mergeResponseResults($results, $conditionResults, $interactionId);
 
         // process the ResponseElseIf, optional argument, default to an empty ResponseElseIfCollection
         $responseElseIfs = $responseCondition->getResponseElseIfs();
         foreach ($responseElseIfs as $responseElseIf) {
-            $results = array_merge($results, $this->processConditionBranch($responseElseIf));
+            list($ignore, $conditionResults) = $this->processConditionBranch($responseElseIf);
+            $results = $this->mergeResponseResults($results, $conditionResults, $interactionId);
         }
 
         // process the ResponseElse
         if ($responseCondition->hasResponseElse()) {
             $responseElse = $responseCondition->getResponseElse();
-            $results = array_merge($results, $this->processConditionBranch($responseElse));
+            list($ignore, $conditionResults) = $this->processConditionBranch($responseElse);
+            $results = $this->mergeResponseResults($results, $conditionResults, $interactionId);
+        }
+
+        return $results;
+    }
+
+    /**
+     * Merge the scoring results together, based on whether the interactionId exists or not.
+     *
+     * @param array $results - the overall results
+     * @param array $ConditionResults - the current result set after parsing one condition
+     * @param string $interactionId - the interactionId the current result set is for. Can be null.
+     * @return array
+     */
+    protected function mergeResponseResults(array $results, array $conditionResults, $interactionId)
+    {
+        if (empty($interactionId)) {
+            // we do not have an interactionId, this means the conditionResults belongs to the global scope
+            $results = array_merge($results, $conditionResults);
+        } elseif (isset($results[$interactionId])) {
+            // existing data available for this id, we want to merge to that id
+            $results[$interactionId] = array_merge_recursive($results[$interactionId], $conditionResults);
+        } else {
+            // we have an identifier, but no entry yet, so we create a new entry
+            $results[$interactionId] = $conditionResults;
         }
 
         return $results;
@@ -177,6 +225,7 @@ abstract class BaseInteractionValidationBuilder
     {
         $results = [];
         $expression = null;
+        $responseId = null;
 
         if (!($conditionBranch instanceof ResponseElse)) {
             // NOTE: the ResponseElse object does not have an expression, thus getExpression doesnt exist
@@ -186,6 +235,7 @@ abstract class BaseInteractionValidationBuilder
         switch (true) {
             case $expression instanceof IsNull:
                 // unattempted, get the first response rule as there should only be one.
+                $responseId = $expression->getExpressions()[0]->getIdentifier();
                 $responseRules = $conditionBranch->getResponseRules();
 
                 if ($responseRules->count() > 1) {
@@ -198,6 +248,7 @@ abstract class BaseInteractionValidationBuilder
 
             case $expression instanceof Match:
                 // correct answer, get the first response rule as there should only be one.
+                $responseId = $expression->getExpressions()[0]->getIdentifier();
                 $responseRules = $conditionBranch->getResponseRules();
 
                 if ($responseRules->count() > 1) {
@@ -224,7 +275,6 @@ abstract class BaseInteractionValidationBuilder
                 break;
 
             case is_null($expression):
-                // incorrect answer, get the first response rule, as there should only be one
                 $responseRules = $conditionBranch->getResponseRules();
 
                 $outcomeValues = $this->getOutcomeValuesFromResponseRules($responseRules);
@@ -243,7 +293,7 @@ abstract class BaseInteractionValidationBuilder
                 LogService::log('ResponseProcessing: Unsupported expression: ' . get_class($expression));
         }
 
-        return $results;
+        return [$responseId, $results];
     }
 
     /**
