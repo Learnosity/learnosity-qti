@@ -43,12 +43,15 @@ class ChoiceInteractionValidationBuilder extends BaseInteractionValidationBuilde
         // Build the `value` object for `valid_response`
         $values = [];
         /** @var Value $value */
-        foreach ($this->responseDeclaration->getCorrectResponse()->getValues() as $value) {
-            if (!isset($this->options[$value->getValue()])) {
-                LogService::log('Invalid choice `' . $value->getValue() .  '`');
-                continue;
+        $correctResponseObject = $this->responseDeclaration->getCorrectResponse();
+        if (isset($correctResponseObject)) {
+            foreach ($correctResponseObject->getValues() as $value) {
+                if (!isset($this->options[$value->getValue()])) {
+                    LogService::log('Invalid choice `' . $value->getValue() .  '`');
+                    continue;
+                }
+                $values[] = $value->getValue();
             }
-            $values[] = $value->getValue();
         }
 
         return ValidationBuilder::build('mcq', $mode, [new ValidResponse($score, $values)]);

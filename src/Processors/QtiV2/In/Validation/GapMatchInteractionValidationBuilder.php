@@ -50,45 +50,47 @@ class GapMatchInteractionValidationBuilder extends BaseInteractionValidationBuil
         $responses = [];
         $responseIndexSet = [];
 
-        foreach ($this->responseDeclaration->getCorrectResponse()->getValues() as $value) {
-            /** @var QtiDirectedPair $valuePair */
-            $valuePair = $value->getValue();
+        if (!empty($this->responseDeclaration->getCorrectResponse())) {
+            foreach ($this->responseDeclaration->getCorrectResponse()->getValues() as $value) {
+                /** @var QtiDirectedPair $valuePair */
+                $valuePair = $value->getValue();
 
-            // Map response value and index based from `QtiDirectedPair` Value, try to guess which one is which since they
-            // apparently can swap :(
-            if (isset($this->possibleResponses[$valuePair->getFirst()]) && isset($gapIdentifiersIndexMap[$valuePair->getSecond()])) {
-                $responseValue = $this->possibleResponses[$valuePair->getFirst()];
-                $responseIndex = $gapIdentifiersIndexMap[$valuePair->getSecond()];
-            } else if (isset($this->possibleResponses[$valuePair->getSecond()]) && isset($gapIdentifiersIndexMap[$valuePair->getFirst()])) {
-                $responseValue = $this->possibleResponses[$valuePair->getSecond()];
-                $responseIndex = $gapIdentifiersIndexMap[$valuePair->getFirst()];
-            } else {
-                throw new MappingException('Fail to match identifiers on Value from `correctResponse`');
-            }
-
-            // Check for duplicated response
-            if (!$this->isDuplicatedResponse) {
-                if (!isset($responseIndexSet[$responseValue])) {
-                    $responseIndexSet[$responseValue] = true;
+                // Map response value and index based from `QtiDirectedPair` Value, try to guess which one is which since they
+                // apparently can swap :(
+                if (isset($this->possibleResponses[$valuePair->getFirst()]) && isset($gapIdentifiersIndexMap[$valuePair->getSecond()])) {
+                    $responseValue = $this->possibleResponses[$valuePair->getFirst()];
+                    $responseIndex = $gapIdentifiersIndexMap[$valuePair->getSecond()];
+                } else if (isset($this->possibleResponses[$valuePair->getSecond()]) && isset($gapIdentifiersIndexMap[$valuePair->getFirst()])) {
+                    $responseValue = $this->possibleResponses[$valuePair->getSecond()];
+                    $responseIndex = $gapIdentifiersIndexMap[$valuePair->getFirst()];
                 } else {
-                    $this->isDuplicatedResponse = true;
+                    throw new MappingException('Fail to match identifiers on Value from `correctResponse`');
                 }
+
+                // Check for duplicated response
+                if (!$this->isDuplicatedResponse) {
+                    if (!isset($responseIndexSet[$responseValue])) {
+                        $responseIndexSet[$responseValue] = true;
+                    } else {
+                        $this->isDuplicatedResponse = true;
+                    }
+                }
+
+                // Build ValidResponse object array in the correct order matching the `gap` elements
+                $responses[$responseIndex][] = new ValidResponse($score, [$responseValue]);
             }
 
-            // Build ValidResponse object array in the correct order matching the `gap` elements
-            $responses[$responseIndex][] = new ValidResponse($score, [$responseValue]);
+            $this->assertEachGapHasCorrespondingValidResponses($responses);
+            $responses = ArrayUtil::cartesianProduct($responses);
+            $responses = array_map(function ($combination) use ($score) {
+                $value = [];
+                /** @var ValidResponse $response */
+                foreach ($combination as $response) {
+                    $value = array_merge($value, $response->getValue());
+                }
+                return new ValidResponse($score, $value);
+            }, $responses);
         }
-
-        $this->assertEachGapHasCorrespondingValidResponses($responses);
-        $responses = ArrayUtil::cartesianProduct($responses);
-        $responses = array_map(function ($combination) use ($score) {
-            $value = [];
-            /** @var ValidResponse $response */
-            foreach ($combination as $response) {
-                $value = array_merge($value, $response->getValue());
-            }
-            return new ValidResponse($score, $value);
-        }, $responses);
 
         return ValidationBuilder\ValidationBuilder::build($this->questionTypeName, $mode, $responses);
     }
