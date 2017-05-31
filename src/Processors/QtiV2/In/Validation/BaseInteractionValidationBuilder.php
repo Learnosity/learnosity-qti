@@ -33,7 +33,7 @@ abstract class BaseInteractionValidationBuilder
         $this->outcomeDeclarations = $outcomeDeclarations;
     }
 
-    protected function getMatchCorrectTemplateValidation()
+    protected function getMatchCorrectTemplateValidation(array $scores = null)
     {
         LogService::log(
             'Does not support `match_correct` response processing template for this interaction. ' .
@@ -120,13 +120,8 @@ abstract class BaseInteractionValidationBuilder
                 case ResponseProcessingTemplate::BUILTIN:
                     // custom response processing rules
                     $responseProcessingScores = $this->getBuiltinResponseValidation($responseProcessingTemplate->getBuiltinResponseProcessing());
-                    $interactionId = $this->responseDeclaration->getIdentifier();
-
-                    if (!empty($responseProcessingScores[$interactionId])) {
-                        $results = $responseProcessingScores[$interactionId];
-                        if (!empty($results['scoring_type']) && in_array($results['scoring_type'], ['match', 'partial'])) {
-                            return $this->getMatchCorrectTemplateValidation($results);
-                        }
+                    if (!empty($responseProcessingScores)) {
+                        return $this->getMatchCorrectTemplateValidation($responseProcessingScores);
                     }
 
                     LogService::log('ResponseProcessing: Unrecognized scoring type: ' . print_r($results, true));
@@ -349,7 +344,16 @@ abstract class BaseInteractionValidationBuilder
                     $mapping = $responseDeclaration->getMapping();
 
                     if ($mapping instanceof Mapping) {
-                        $results['score'] = $mapping->getMapEntries()[0]->getMappedValue();
+                        $score = null;
+                        $maps = $mapping->getMapEntries();
+
+                        foreach ($maps as $map) {
+                            $score = $map->getMappedValue();
+                            if ($score > 0) {
+                                break;
+                            }
+                        }
+                        $results['score'] = $score;
                         $results['map_response'] = true;
                     }
                     break;
@@ -360,5 +364,50 @@ abstract class BaseInteractionValidationBuilder
         }
 
         return $results;
+    }
+
+    /**
+     * Return the scoring data for a particular interaction.
+     *
+     * @param array $scores - default null
+     * @return array|null
+     */
+    protected function getScoresForInteraction(array $scores = null)
+    {
+        $result = null;
+
+        if (isset($this->responseDeclaration)) {
+            $interactionId = $this->responseDeclaration->getIdentifier();
+            if (!empty($scores[$interactionId])) {
+                $result = $scores[$interactionId];
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * Extract the scoring data out of the response processing scores.
+     *
+     * @param array $responseScores - the scoring data for a response
+     * @return array
+     *   - score: float - default 1
+     *   - mode: string - default exactMatch
+     */
+    protected function getValidationScoringData(array $responseScores = null)
+    {
+        $score = 1;
+        if (!empty($responseScores['score'])) {
+            $score = floatval($responseScores['score']);
+        }
+        if (!empty($responseScores['correct'])) {
+            $score = floatval($responseScores['correct']);
+        }
+
+        $mode = 'exactMatch';
+        if (!empty($responseScores['scoring_type']) && $responseScores['scoring_type'] === 'partial') {
+            $mode = 'partialMatch';
+        }
+
+        return [$score, $mode];
     }
 }

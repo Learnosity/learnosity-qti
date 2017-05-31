@@ -36,15 +36,8 @@ class GapMatchInteractionValidationBuilder extends BaseInteractionValidationBuil
 
     protected function getMatchCorrectTemplateValidation(array $scores = null)
     {
-        $score = 1;
-        $mode = 'exactMatch';
-        if (!empty($scores['scoring_type']) && $scores['scoring_type'] === 'partial') {
-            $mode = 'partialMatch';
-
-            if (!empty($scores['score'])) {
-                $score = floatval($scores['score']);
-            }
-        }
+        $scores = $this->getScoresForInteraction($scores);
+        list($score, $mode) = $this->getValidationScoringData($scores);
 
         $gapIdentifiersIndexMap = array_flip($this->gapIdentifiers);
         $responses = [];

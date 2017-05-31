@@ -35,17 +35,24 @@ class InlineChoiceInteractionValidationBuilder extends BaseInteractionValidation
         return $this->isCaseSensitive;
     }
 
-    protected function getMatchCorrectTemplateValidation()
+    protected function getMatchCorrectTemplateValidation(array $scores = null)
     {
         $interactionResponses = [];
         foreach ($this->responseDeclarations as $responseIdentifier => $responseDeclaration) {
+            $responseScore = null;
+            if (!empty($scores[$responseIdentifier])) {
+                $responseScore = $scores[$responseIdentifier];
+            }
+
             /** @var ResponseDeclaration $responseDeclaration */
             $correctResponses = $responseDeclaration->getCorrectResponse()->getValues()->getArrayCopy(true);
             $possibleResponses = $this->possibleResponses[$responseIdentifier];
-            $interactionResponses[] = array_map(function ($value) use ($possibleResponses) {
-                /** @var Value $value */
-                return new ValidResponse(1, [$possibleResponses[$value->getValue()]]);
-            }, $correctResponses);
+
+            foreach ($correctResponses as $response) {
+                list($score, $mode) = $this->getValidationScoringData($responseScore);
+
+                $interactionResponses[][] = new ValidResponse($score, [$possibleResponses[$response->getValue()]]);
+            }
         }
         $responses = ArrayUtil::cartesianProductForResponses($interactionResponses);
         return ValidationBuilder::build('clozedropdown', 'exactMatch', $responses);

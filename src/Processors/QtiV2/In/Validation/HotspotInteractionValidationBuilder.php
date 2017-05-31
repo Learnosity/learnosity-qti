@@ -19,8 +19,11 @@ class HotspotInteractionValidationBuilder extends BaseInteractionValidationBuild
         $this->maxChoices = $maxChoices;
     }
 
-    protected function getMatchCorrectTemplateValidation()
+    protected function getMatchCorrectTemplateValidation(array $scores = null)
     {
+        $scores = $this->getScoresForInteraction($scores);
+        list($score, $mode) = $this->getValidationScoringData($scores);
+
         $choicesIndexes = array_flip(array_keys($this->choices));
         $correctResponses = $this->responseDeclaration->getCorrectResponse()->getValues()->getArrayCopy(true);
 
@@ -32,8 +35,8 @@ class HotspotInteractionValidationBuilder extends BaseInteractionValidationBuild
         }
 
         // No alt responses for hotspot interaction
-        return ValidationBuilder::build('hotspot', 'exactMatch', [
-            new ValidResponse(1, $values)
+        return ValidationBuilder::build('hotspot', $mode, [
+            new ValidResponse($score, $values)
         ]);
     }
 }

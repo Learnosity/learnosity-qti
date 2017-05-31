@@ -23,16 +23,8 @@ class MatchInteractionValidationBuilder extends BaseInteractionValidationBuilder
 
     protected function getMatchCorrectTemplateValidation(array $scores = null)
     {
-        $mode = 'exactMatch';
-        $score = 1;
-
-        if (!empty($scores['scoring_type']) && $scores['scoring_type'] === 'partial') {
-            $mode = 'partialMatch';
-
-            if (!empty($scores['score'])) {
-                $score = floatval($scores['score']);
-            }
-        }
+        $scores = $this->getScoresForInteraction($scores);
+        list($score, $mode) = $this->getValidationScoringData($scores);
 
         // Build `value` array for a `valid_response` objects
         $values = [];

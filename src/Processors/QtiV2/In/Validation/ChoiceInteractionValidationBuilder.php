@@ -30,15 +30,8 @@ class ChoiceInteractionValidationBuilder extends BaseInteractionValidationBuilde
 
     protected function getMatchCorrectTemplateValidation(array $scores = null)
     {
-        $score = 1;
-        if (!empty($scores['correct'])) {
-            $score = $scores['correct'];
-        }
-
-        $mode = 'exactMatch';
-        if (!empty($scores['scoring_type']) && $scores['scoring_type'] === 'partial') {
-            $mode = 'partialMatch';
-        }
+        $scores = $this->getScoresForInteraction($scores);
+        list($score, $mode) = $this->getValidationScoringData($scores);
 
         // Build the `value` object for `valid_response`
         $values = [];

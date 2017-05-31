@@ -21,15 +21,18 @@ class HottextInteractionValidationBuilder extends BaseInteractionValidationBuild
         $this->hottextComponents = $hottextComponents;
     }
 
-    protected function getMatchCorrectTemplateValidation()
+    protected function getMatchCorrectTemplateValidation(array $scores = null)
     {
+        $scores = $this->getScoresForInteraction($scores);
+        list($score, $mode) = $this->getValidationScoringData($scores);
+
         $validResponseValues = [];
         foreach ($this->responseDeclaration->getCorrectResponse()->getValues() as $value) {
             /** @var Value $value */
             $hottextIdentifier = $value->getValue();
             $validResponseValues[] = $this->hottextComponents[$hottextIdentifier];
         }
-        return ValidationBuilder::build('tokenhighlight', 'exactMatch', [new ValidResponse(1, $validResponseValues)]);
+        return ValidationBuilder::build('tokenhighlight', $mode, [new ValidResponse($score, $validResponseValues)]);
     }
 
     protected function getMapResponseTemplateValidation()
