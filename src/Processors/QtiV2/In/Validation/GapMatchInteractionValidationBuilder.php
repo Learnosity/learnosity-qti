@@ -5,6 +5,7 @@ namespace LearnosityQti\Processors\QtiV2\In\Validation;
 use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Processors\Learnosity\In\ValidationBuilder;
 use LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
+use LearnosityQti\Services\LogService;
 use LearnosityQti\Utils\ArrayUtil;
 use qtism\common\datatypes\QtiDirectedPair;
 use qtism\data\state\MapEntry;
@@ -79,7 +80,7 @@ class GapMatchInteractionValidationBuilder extends BaseInteractionValidationBuil
             $responses[$responseIndex][] = new ValidResponse($score, [$responseValue]);
         }
 
-        $this->assertEachGapHasCorrespondingValidResponses($responses);
+        $responses = $this->ensureEachGapHasCorrespondingValidResponses($responses);
         $responses = ArrayUtil::cartesianProduct($responses);
         $responses = array_map(function ($combination) use ($score) {
             $value = [];
@@ -130,18 +131,28 @@ class GapMatchInteractionValidationBuilder extends BaseInteractionValidationBuil
             $responses[$responseIndex][] = new ValidResponse($mapEntry->getMappedValue(), [$responseValue]);
         }
 
-        $this->assertEachGapHasCorrespondingValidResponses($responses);
+        $responses = $this->ensureEachGapHasCorrespondingValidResponses($responses);
+
         $responses = ArrayUtil::cartesianProductForResponses($responses);
-        return ValidationBuilder\ValidationBuilder::build($this->questionTypeName, $mode, $responses);
+        return ValidationBuilder\ValidationBuilder::build($this->questionTypeName, 'exactMatch', $responses);
     }
 
-    private function assertEachGapHasCorrespondingValidResponses(array $responses)
+    private function ensureEachGapHasCorrespondingValidResponses(array $responses)
     {
+        // If the amount is not equal, log it
         if (count($this->gapIdentifiers) !== count($responses)) {
-            throw new MappingException(
-                'Amount of gap identifiers ' . count($this->gapIdentifiers) . ' does not match the amount ' .
-                count($responses) . ' for <responseDeclaration>'
-            );
+            LogService::log('Amount of gap identifiers ' . count($this->gapIdentifiers) . ' does not match the amount ' .
+                count($responses) . ' for <responseDeclaration>');
+            // Also, we need to populate its remaining gap identifiers with the only possible answer of being null
+            foreach ($this->gapIdentifiers as $index => $identifier) {
+                if (!isset($responses[$index])) {
+                    $responses[$index] = [];
+                }
+                $responses[$index][] = new ValidResponse(0, [null]);
+            }
+            ksort($responses);
         }
+
+        return $responses;
     }
 }
