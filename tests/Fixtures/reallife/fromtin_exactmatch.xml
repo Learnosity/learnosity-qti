@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<assessmentItem adaptive="false" identifier="ITEM-LOGIC-MP-727" timeDependent="false" title="Drag the arrow that shows the change in temperature to the correct location on the thermometer. Be s" toolName="ItemLogic" toolVersion="2.0.0" xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1  http://www.imsglobal.org/xsd/qti/qtiv2p1/imsqti_v2p1.xsd">
+    <responseDeclaration baseType="directedPair" cardinality="multiple" identifier="RESPONSE684">
+        <correctResponse>
+            <value>GI-11057 HS-11063</value>
+            <value>GI-11051 HS-11071</value>
+        </correctResponse>
+        <mapping defaultValue="-1.00" lowerBound="0.00" upperBound="2.00">
+            <mapEntry mapKey="GI-11057 HS-11063" mappedValue="1.00"/>
+            <mapEntry mapKey="GI-11051 HS-11071" mappedValue="1.00"/>
+        </mapping>
+    </responseDeclaration>
+    <outcomeDeclaration baseType="float" cardinality="single" identifier="SCORE684">
+        <defaultValue>
+            <value>0</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <outcomeDeclaration baseType="float" cardinality="single" identifier="SCORE">
+        <defaultValue>
+            <value>0</value>
+        </defaultValue>
+    </outcomeDeclaration>
+    <stylesheet href="../styles/bundled.css" type="text/css"/>
+    <stylesheet href="../styles/inline.css" type="text/css"/>
+    <itemBody>
+        <rubricBlock use="stimulus" view="candidate author proctor scorer testConstructor tutor">
+            <div>
+                <p>Danica said the temperature outside in the morning was &#x2013;5&#xB0;F. By the afternoon, the temperature had increased 5&#xB0;F.</p>
+            </div>
+        </rubricBlock>
+        <graphicGapMatchInteraction responseIdentifier="RESPONSE684">
+            <prompt>Drag the arrow that shows the change in temperature to the correct location on the thermometer. Be sure to drag only one arrow.<br/> Drag the equation next to the thermometer that represents the temperature in the afternoon. Be sure to drag only one equation.<br/></prompt>
+            <object data="../images/FROERI727_Temperature_stem_01_o_94aefd9d4d.png" height="499" type="image/png" width="266"/>
+            <gapImg identifier="GI-11051" matchMax="1">
+                <object data="../images/FROERI727_Temperature_opt_E01_o_7d0338b7ff.png" height="27" type="image/png" width="136"/>
+            </gapImg>
+            <gapImg identifier="GI-11052" matchMax="1">
+                <object data="../images/FROERI727_Temperature_opt_F01_o_532733599b.png" height="27" type="image/png" width="136"/>
+            </gapImg>
+            <gapImg identifier="GI-11053" matchMax="1">
+                <object data="../images/FROERI727_Temperature_opt_G01_o_9443c5a347.png" height="27" type="image/png" width="136"/>
+            </gapImg>
+            <gapImg identifier="GI-11054" matchMax="1">
+                <object data="../images/FROERI727_Temperature_opt_H01_o_3de45c643f.png" height="27" type="image/png" width="136"/>
+            </gapImg>
+            <gapImg identifier="GI-11055" matchMax="1">
+                <object data="../images/FROERI727_Temperature_opt_a01_o_ecdd9839bc.png" height="38" type="image/png" width="30"/>
+            </gapImg>
+            <gapImg identifier="GI-11056" matchMax="1">
+                <object data="../images/FROERI727_Temperature_opt_b01_o_fa5e8b978a.png" height="38" type="image/png" width="30"/>
+            </gapImg>
+            <gapImg identifier="GI-11057" matchMax="1">
+                <object data="../images/FROERI727_Temperature_opt_c01_o_e111794163.png" height="38" type="image/png" width="30"/>
+            </gapImg>
+            <gapImg identifier="GI-11058" matchMax="1">
+                <object data="../images/FROERI727_Temperature_opt_d01_o_61e05365ca.png" height="38" type="image/png" width="30"/>
+            </gapImg>
+            <associableHotspot coords="7,184,37,222" identifier="HS-11061" matchMax="1" shape="rect"/>
+            <associableHotspot coords="7,222,37,260" identifier="HS-11062" matchMax="1" shape="rect"/>
+            <associableHotspot coords="7,259,37,297" identifier="HS-11063" matchMax="1" shape="rect"/>
+            <associableHotspot coords="7,296,37,334" identifier="HS-11064" matchMax="1" shape="rect"/>
+            <associableHotspot coords="128,209,264,236" identifier="HS-11071" matchMax="1" shape="rect"/>
+        </graphicGapMatchInteraction>
+    </itemBody>
+    <responseProcessing>
+        <responseCondition>
+            <responseIf>
+                <isNull>
+                    <variable identifier="RESPONSE684"/>
+                </isNull>
+                <setOutcomeValue identifier="SCORE684">
+                    <baseValue baseType="float">0.0</baseValue>
+                </setOutcomeValue>
+            </responseIf>
+            <responseElse>
+                <setOutcomeValue identifier="SCORE684">
+                    <mapResponse identifier="RESPONSE684"/>
+                </setOutcomeValue>
+            </responseElse>
+        </responseCondition>
+        <setOutcomeValue identifier="SCORE">
+            <sum>
+                <variable identifier="SCORE684"/>
+            </sum>
+        </setOutcomeValue>
+    </responseProcessing>
+</assessmentItem>
