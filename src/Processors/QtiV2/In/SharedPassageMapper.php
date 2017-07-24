@@ -92,7 +92,10 @@ class SharedPassageMapper
             $results = $this->buildSharedPassagesFromObjects($objects);
         } else {
             // Fall back to using all the content in the <rubricBlock> verbatim as a single passage
-            $results = $this->parseXml(QtiMarshallerUtil::marshall($rubricBlock));
+            $xml          = QtiMarshallerUtil::marshall($rubricBlock);
+            $dom          = $this->getDomForXml($xml);
+            $innerContent = $this->getInnerXmlFragmentFromDom($dom);
+            $results      = $this->parseXml($dom->saveXML($innerContent));
         }
 
         return $results;
@@ -183,6 +186,31 @@ class SharedPassageMapper
         $htmlDom->replaceChild($xmlDom, $htmlDom->documentElement);
 
         return $htmlDom;
+    }
+
+    private function getInnerXmlFragmentFromDom(\DOMDocument $dom)
+    {
+        $fragment = $dom->createDocumentFragment();
+        $childNodes = $dom->documentElement->childNodes;
+        while (($node = $childNodes->item(0))) {
+            $node->parentNode->removeChild($node);
+            $fragment->appendChild($node);
+        }
+
+        return $fragment;
+    }
+
+    private function getDomForXml($xml)
+    {
+        $dom = new \DOMDocument();
+
+        $dom->preserveWhiteSpace = false;
+        $dom->formatOutput       = false;
+        $dom->substituteEntities = false;
+
+        $dom->loadXML($xml);
+
+        return $dom;
     }
 
     private function sanitizeXml($xml)
