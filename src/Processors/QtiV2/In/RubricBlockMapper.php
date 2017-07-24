@@ -13,6 +13,10 @@ use LearnosityQti\Services\LogService;
 
 class RubricBlockMapper
 {
+    protected $useRatingQuestion = true;
+    protected $shouldParseRubricTableContent = false;
+    protected $useStrictRubricLabelOrder = false;
+
     private $sourceDirectoryPath;
     private $rubricPointValue;
 
@@ -128,6 +132,31 @@ class RubricBlockMapper
         return $xmlDocument;
     }
 
+    private function getDomForXml($xml)
+    {
+        $dom = new \DOMDocument();
+
+        $dom->preserveWhiteSpace = false;
+        $dom->formatOutput       = false;
+        $dom->substituteEntities = false;
+
+        $dom->loadXML($xml);
+
+        return $dom;
+    }
+
+    private function getInnerXmlFragmentFromDom(\DOMDocument $dom)
+    {
+        $fragment = $dom->createDocumentFragment();
+        $childNodes = $dom->documentElement->childNodes;
+        while (($node = $childNodes->item(0))) {
+            $node->parentNode->removeChild($node);
+            $fragment->appendChild($node);
+        }
+
+        return $fragment;
+    }
+
     /**
      * Retrieves the rubric block from a given XML document.
      *
@@ -149,9 +178,46 @@ class RubricBlockMapper
         return $rubricBlock;
     }
 
+    private function parseRubricTableContentFromXmlUsingXPath(\DOMXPath $xpath)
+    {
+        $aliasColumns = [
+            'score' => 'value',
+            'level' => 'value',
+        ];
+
+        // Extract the rows from the content
+        $rows = $xpath->query('//tr');
+        $headerRows = $xpath->query('//thead/tr');
+
+        // Use topmost body row as header if there is no dedicated header row
+        $useHeaderInBodyRows = ($headerRows->length === 0);
+
+        /** @var DOMElement $headerRow */
+        if ($useHeaderInBodyRows) {
+            $headerRow = $rows->item(0);
+        } else {
+            $headerRow = $headerRows->item(0);
+        }
+
+        // Obtain the raw header values from the header row nodes
+        $headers = [];
+        foreach ($headerRow->childNodes as $headerCell) {
+            $headers[] = strtolower(trim($headerCell->textContent));
+        }
+
+        // Sanitize alias headers
+        foreach ($headers as $index => $header) {
+            if (isset($aliasColumns[$header])) {
+                $headers[$index] = $aliasColumns[$header];
+            }
+        }
+
+        return [$rows, $headers, $useHeaderInBodyRows];
+    }
+
     /**
      * We determine that a rubric block is a rating question by the following rule
-     *   - isTable OR (isFirst AND hasPointValue)
+     *   - useRating AND ((useTable AND isTable) OR (isFirst AND hasPointValue))
      */
     private function parseRubricContentWithRubricBlockComponent(RubricBlock $rubricBlock, $foundScoringGuidance)
     {
@@ -166,64 +232,32 @@ class RubricBlockMapper
             'questions' => [],
         ];
 
-        $aliasColumns = [
-            'score' => 'value',
-            'level' => 'value',
-        ];
-
         // TODO: Implement creation of all the rubric questions/features
         // HACK: HACK HACK HACK HACK HACK HACK HACK HACK
         // Try to parse the rubric content to create an interactable widget for it
         try {
+            if (!$this->useRatingQuestion) {
+                throw new MappingException('rating question type mapping is disabled');
+            }
+
             // Prepare the DOM for reading
             $xml = QtiMarshallerUtil::marshall($rubricBlock);
 
             // Prevent/handle XML parse errors (from bad XML input)
             $xml = $this->sanitizeXml($xml);
-
-            $dom = new \DOMDocument();
-            $dom->preserveWhiteSpace = false;
-            $dom->formatOutput = false;
-            $dom->substituteEntities = false;
-            $dom->loadXML($xml);
+            $dom = $this->getDomForXml($xml);
             $xpath = new \DOMXPath($dom);
 
             // Prepare inner rubric content
-            $fragment = $dom->createDocumentFragment();
-            $childNodes = $dom->documentElement->childNodes;
-            while (($node = $childNodes->item(0))) {
-                $node->parentNode->removeChild($node);
-                $fragment->appendChild($node);
-            }
+            $innerContentNode = $this->getInnerXmlFragmentFromDom($dom);
             // XXX: The following needs to be done in this order. Need to figure out why
-            $innerHTML = $dom->saveXML($fragment);
-            $dom->replaceChild($fragment, $dom->documentElement);
+            $innerHTML = $dom->saveXML($innerContentNode);
+            $dom->replaceChild($innerContentNode, $dom->documentElement);
 
             // Make sure we have valid parseable table
-            if ($xpath->query('//table')->length) {
-                // Extract the rows from the content
-                $rows = $xpath->query('//tr');
-                $headerRows = $xpath->query('//thead/tr');
-
-                $useHeaderInBodyRows = ($headerRows->length === 0);
-
-                /** @var DOMElement $headerRow */
-                if ($useHeaderInBodyRows) {
-                    $headerRow = $rows->item(0);
-                } else {
-                    $headerRow = $headerRows->item(0);
-                }
-
-                foreach ($headerRow->childNodes as $headerCell) {
-                    $headers[] = strtolower(trim($headerCell->textContent));
-                }
-
-                // Sanitize alias headers
-                foreach ($headers as $index => $header) {
-                    if (isset($aliasColumns[$header])) {
-                        $headers[$index] = $aliasColumns[$header];
-                    }
-                }
+            $hasRubricTableContent = $xpath->query('//table')->length;
+            if ($this->shouldParseRubricTableContent && $hasRubricTableContent) {
+                list($rows, $headers, $useHeaderInBodyRows) = $this->parseRubricTableContentFromXmlUsingXPath($xpath);
             } elseif ($isFirst && $this->useRubricPointValueForRubric($rubricBlock)) {
                 $rubricPointValue = $this->rubricPointValue;
             } else {
@@ -338,6 +372,6 @@ class RubricBlockMapper
     private function useRubricPointValueForRubric(RubricBlock $rubricBlock)
     {
         // FIXME: Need to figure out how to generalize this, so we don't have to depend on a label convention
-        return $rubricBlock->getLabel() === '1' && isset($this->rubricPointValue);
+        return isset($this->rubricPointValue) && (!$this->useStrictRubricLabelOrder || $rubricBlock->getLabel() === '1');
     }
 }
