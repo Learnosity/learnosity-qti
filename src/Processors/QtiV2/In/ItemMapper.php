@@ -298,12 +298,12 @@ class ItemMapper
         if ($assessmentItem->getOutcomeDeclarations()->count()) {
             LogService::log('Ignoring <outcomeDeclaration> on <assessmentItem>. Generally we mapped <defaultValue> to 0');
         }
-        if ($assessmentItem->getTemplateDeclarations()->count()) {
-            throw new MappingException('Does not support <templateDeclaration> on <assessmentItem>. Ignoring <templateDeclaration>');
-        }
-        if (!empty($assessmentItem->getTemplateProcessing())) {
-            throw new MappingException('Does not support <templateProcessing> on <assessmentItem>. Ignoring <templateProcessing>');
-        }
+        // if ($assessmentItem->getTemplateDeclarations()->count()) {
+        //     throw new MappingException('Does not support <templateDeclaration> on <assessmentItem>. Ignoring <templateDeclaration>');
+        // }
+        // if (!empty($assessmentItem->getTemplateProcessing())) {
+        //     throw new MappingException('Does not support <templateProcessing> on <assessmentItem>. Ignoring <templateProcessing>');
+        // }
         if ($assessmentItem->getModalFeedbacks()->count()) {
             LogService::log('Ignoring <modalFeedback> on <assessmentItem>');
         }
