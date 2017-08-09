@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<assessmentItem adaptive="false" identifier="ITEM-LOGIC-CTPT-205217" timeDependent="false" title="Match the&amp;nbsp;cause with its&amp;nbsp;effect." toolName="ItemLogic" toolVersion="2.0.0" xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:pci="http://www.imsglobal.org/xsd/portableCustomInteraction" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1  http://www.imsglobal.org/xsd/qti/qtiv2p1/imsqti_v2p1.xsd">
+  <responseDeclaration baseType="directedPair" cardinality="multiple" identifier="RESPONSE14">
+    <correctResponse>
+      <value>GT-1830212 GAP-1830208</value>
+    </correctResponse>
+  </responseDeclaration>
+  <outcomeDeclaration baseType="float" cardinality="single" identifier="SCORE14">
+    <defaultValue>
+      <value>0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration baseType="float" cardinality="single" identifier="SCORE">
+    <defaultValue>
+      <value>0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <stylesheet href="../styles/bundled.css" type="text/css"/>
+  <stylesheet href="../styles/inline.css" type="text/css"/>
+  <itemBody>
+    <rubricBlock use="context" view="candidate author proctor scorer testConstructor tutor">
+      <div>
+        <object data="../passages/RSC-LOGIC-CTPT-176872.html" type="text/html"/>
+      </div>
+    </rubricBlock>
+    <gapMatchInteraction responseIdentifier="RESPONSE14" shuffle="false">
+      <prompt>Match the cause with its effect.<br/></prompt>
+      <gapText identifier="GT-1830209" matchMax="1">
+        <p>"You are lucky to be reading this!" (paragraph 1)</p>
+      </gapText>
+      <gapText identifier="GT-1830210" matchMax="1">
+        <p>"In the early 1900s, many American kids worked eight or more hours a day, six days a week." (paragraph 1)</p>
+      </gapText>
+      <gapText identifier="GT-1830211" matchMax="1">
+        <p>"The federal government in Washington, D.C., agreed." (paragraph 2)</p>
+      </gapText>
+      <gapText identifier="GT-1830212" matchMax="1">
+        <p>"It made full time work by young children illegal, or against the law." (paragraph 2)</p>
+      </gapText>
+      <div><p><strong>CAUSE:</strong> "But some adults said that education is important." (paragraph 2)</p> <p><strong>EFFECT:</strong> <gap identifier="GAP-1830208"/></p></div>
+    </gapMatchInteraction>
+  </itemBody>
+  <responseProcessing>
+    <responseCondition>
+      <responseIf>
+        <match>
+          <variable identifier="RESPONSE14"/>
+          <correct identifier="RESPONSE14"/>
+        </match>
+        <setOutcomeValue identifier="SCORE14">
+          <baseValue baseType="float">1</baseValue>
+        </setOutcomeValue>
+      </responseIf>
+      <responseElse>
+        <setOutcomeValue identifier="SCORE14">
+          <baseValue baseType="float">0</baseValue>
+        </setOutcomeValue>
+      </responseElse>
+    </responseCondition>
+    <responseCondition>
+      <responseIf>
+        <equal>
+          <variable identifier="SCORE14"/>
+          <baseValue baseType="float">1</baseValue>
+        </equal>
+        <setOutcomeValue identifier="SCORE14">
+          <baseValue baseType="float">2</baseValue>
+        </setOutcomeValue>
+      </responseIf>
+      <responseElseIf>
+        <gte>
+          <variable identifier="SCORE14"/>
+          <baseValue baseType="float">0.5</baseValue>
+        </gte>
+        <setOutcomeValue identifier="SCORE">
+          <baseValue baseType="float">1</baseValue>
+        </setOutcomeValue>
+      </responseElseIf>
+      <responseElse>
+        <setOutcomeValue identifier="SCORE14">
+          <baseValue baseType="float">0</baseValue>
+        </setOutcomeValue>
+      </responseElse>
+    </responseCondition>
+    <setOutcomeValue identifier="SCORE">
+      <sum>
+        <variable identifier="SCORE14"/>
+      </sum>
+    </setOutcomeValue>
+  </responseProcessing>
+</assessmentItem>

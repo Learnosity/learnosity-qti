@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<assessmentItem adaptive="false" identifier="ITEM-LOGIC-CTPT-205209" timeDependent="false" title="What does the illustration show about the actions of Buster Bear?" toolName="ItemLogic" toolVersion="2.0.0" xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:pci="http://www.imsglobal.org/xsd/portableCustomInteraction" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1  http://www.imsglobal.org/xsd/qti/qtiv2p1/imsqti_v2p1.xsd">
+  <responseDeclaration baseType="identifier" cardinality="single" identifier="RESPONSE1">
+    <correctResponse>
+      <value>SC-1830149</value>
+    </correctResponse>
+  </responseDeclaration>
+  <outcomeDeclaration baseType="float" cardinality="single" identifier="SCORE1">
+    <defaultValue>
+      <value>0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration baseType="float" cardinality="single" identifier="SCORE">
+    <defaultValue>
+      <value>0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <stylesheet href="../styles/bundled.css" type="text/css"/>
+  <stylesheet href="../styles/inline.css" type="text/css"/>
+  <itemBody>
+    <rubricBlock use="context" view="candidate author proctor scorer testConstructor tutor">
+      <div>
+        <object data="../passages/RSC-LOGIC-CTPT-204283.html" type="text/html"/>
+      </div>
+    </rubricBlock>
+    <choiceInteraction maxChoices="1" responseIdentifier="RESPONSE1" shuffle="false">
+      <prompt>What does the illustration show about the actions of Buster Bear?<br/></prompt>
+      <simpleChoice fixed="true" identifier="SC-1830146">
+        <p>Buster Bear is curious.</p>
+      </simpleChoice>
+      <simpleChoice fixed="true" identifier="SC-1830147">
+        <p>Buster Bear is afraid.</p>
+      </simpleChoice>
+      <simpleChoice fixed="true" identifier="SC-1830148">
+        <p>Buster Bear is being friendly.</p>
+      </simpleChoice>
+      <simpleChoice fixed="true" identifier="SC-1830149">
+        <p>Buster Bear is being mean.</p>
+      </simpleChoice>
+    </choiceInteraction>
+  </itemBody>
+  <responseProcessing>
+    <responseCondition>
+      <responseIf>
+        <match>
+          <variable identifier="RESPONSE1"/>
+          <correct identifier="RESPONSE1"/>
+        </match>
+        <setOutcomeValue identifier="SCORE1">
+          <baseValue baseType="float">1</baseValue>
+        </setOutcomeValue>
+      </responseIf>
+      <responseElse>
+        <setOutcomeValue identifier="SCORE1">
+          <baseValue baseType="float">0</baseValue>
+        </setOutcomeValue>
+      </responseElse>
+    </responseCondition>
+    <responseCondition>
+      <responseIf>
+        <equal>
+          <variable identifier="SCORE1"/>
+          <baseValue baseType="float">1</baseValue>
+        </equal>
+        <setOutcomeValue identifier="SCORE1">
+          <baseValue baseType="float">2</baseValue>
+        </setOutcomeValue>
+      </responseIf>
+      <responseElseIf>
+        <gte>
+          <variable identifier="SCORE1"/>
+          <baseValue baseType="float">0.5</baseValue>
+        </gte>
+        <setOutcomeValue identifier="SCORE">
+          <baseValue baseType="float">1</baseValue>
+        </setOutcomeValue>
+      </responseElseIf>
+      <responseElse>
+        <setOutcomeValue identifier="SCORE1">
+          <baseValue baseType="float">0</baseValue>
+        </setOutcomeValue>
+      </responseElse>
+    </responseCondition>
+    <setOutcomeValue identifier="SCORE">
+      <sum>
+        <variable identifier="SCORE1"/>
+      </sum>
+    </setOutcomeValue>
+  </responseProcessing>
+</assessmentItem>

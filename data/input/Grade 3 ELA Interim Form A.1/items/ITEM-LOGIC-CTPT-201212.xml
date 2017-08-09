@@ -1,0 +1,136 @@
+<?xml version="1.0"?>
+<assessmentItem adaptive="false" identifier="ITEM-LOGIC-CTPT-201212" timeDependent="false" title="Part A In paragraph 1, what does the author mean when he uses the phrase&amp;nbsp;You are lucky?" toolName="ItemLogic" toolVersion="2.0.0" xmlns="http://www.imsglobal.org/xsd/imsqti_v2p1" xmlns:m="http://www.w3.org/1998/Math/MathML" xmlns:pci="http://www.imsglobal.org/xsd/portableCustomInteraction" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/imsqti_v2p1  http://www.imsglobal.org/xsd/qti/qtiv2p1/imsqti_v2p1.xsd">
+  <responseDeclaration baseType="identifier" cardinality="single" identifier="RESPONSE12">
+    <correctResponse>
+      <value>SC-1793386</value>
+    </correctResponse>
+  </responseDeclaration>
+  <responseDeclaration baseType="identifier" cardinality="single" identifier="RESPONSE13">
+    <correctResponse>
+      <value>SC-1793391</value>
+    </correctResponse>
+  </responseDeclaration>
+  <outcomeDeclaration baseType="float" cardinality="single" identifier="SCORE12">
+    <defaultValue>
+      <value>0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration baseType="float" cardinality="single" identifier="SCORE13">
+    <defaultValue>
+      <value>0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <outcomeDeclaration baseType="float" cardinality="single" identifier="SCORE">
+    <defaultValue>
+      <value>0</value>
+    </defaultValue>
+  </outcomeDeclaration>
+  <stylesheet href="../styles/bundled.css" type="text/css"/>
+  <stylesheet href="../styles/inline.css" type="text/css"/>
+  <itemBody>
+    <rubricBlock use="context" view="candidate author proctor scorer testConstructor tutor">
+      <div>
+        <object data="../passages/RSC-LOGIC-CTPT-176872.html" type="text/html"/>
+      </div>
+    </rubricBlock>
+    <choiceInteraction maxChoices="1" responseIdentifier="RESPONSE12" shuffle="false">
+      <prompt><strong>Part A</strong><br/> In paragraph 1, what does the author mean when he uses the phrase <strong>You are lucky</strong>?<br/></prompt>
+      <simpleChoice fixed="true" identifier="SC-1793380">
+        <p>The reader will be successful in learning about government.</p>
+      </simpleChoice>
+      <simpleChoice fixed="true" identifier="SC-1793381">
+        <p>The reader has won the chance to read the article about government.</p>
+      </simpleChoice>
+      <simpleChoice fixed="true" identifier="SC-1793386">
+        <p>The reader has freedoms other children might not have.</p>
+      </simpleChoice>
+      <simpleChoice fixed="true" identifier="SC-1793387">
+        <p>The reader will understand how the government makes laws.</p>
+      </simpleChoice>
+    </choiceInteraction>
+    <choiceInteraction maxChoices="1" responseIdentifier="RESPONSE13" shuffle="false">
+      <prompt><strong>Part B</strong><br/> Which sentence <strong>best</strong> helps the reader understand the meaning of the phrase <strong>You are lucky</strong>?<br/></prompt>
+      <simpleChoice fixed="true" identifier="SC-1793389">
+        <p>"It also provides services for its citizens." (introduction)</p>
+      </simpleChoice>
+      <simpleChoice fixed="true" identifier="SC-1793390">
+        <p>"In the early 1900s, many American kids worked eight or more hours a day, six days a week." (paragraph 1)</p>
+      </simpleChoice>
+      <simpleChoice fixed="true" identifier="SC-1793391">
+        <p>"They couldn't go to school." (paragraph 1)</p>
+      </simpleChoice>
+      <simpleChoice fixed="true" identifier="SC-1793392">
+        <p>"But some adults said that education is important." (paragraph 2)</p>
+      </simpleChoice>
+    </choiceInteraction>
+  </itemBody>
+  <responseProcessing>
+    <responseCondition>
+      <responseIf>
+        <match>
+          <variable identifier="RESPONSE12"/>
+          <correct identifier="RESPONSE12"/>
+        </match>
+        <setOutcomeValue identifier="SCORE12">
+          <baseValue baseType="float">1</baseValue>
+        </setOutcomeValue>
+      </responseIf>
+      <responseElse>
+        <setOutcomeValue identifier="SCORE12">
+          <baseValue baseType="float">0</baseValue>
+        </setOutcomeValue>
+      </responseElse>
+    </responseCondition>
+    <responseCondition>
+      <responseIf>
+        <match>
+          <variable identifier="RESPONSE13"/>
+          <correct identifier="RESPONSE13"/>
+        </match>
+        <setOutcomeValue identifier="SCORE13">
+          <baseValue baseType="float">1</baseValue>
+        </setOutcomeValue>
+      </responseIf>
+      <responseElse>
+        <setOutcomeValue identifier="SCORE13">
+          <baseValue baseType="float">0</baseValue>
+        </setOutcomeValue>
+      </responseElse>
+    </responseCondition>
+    <responseCondition>
+      <responseIf>
+        <not>
+          <equal toleranceMode="exact">
+            <variable identifier="SCORE12"/>
+            <baseValue baseType="float">1</baseValue>
+          </equal>
+        </not>
+        <setOutcomeValue identifier="SCORE">
+          <baseValue baseType="float">0</baseValue>
+        </setOutcomeValue>
+      </responseIf>
+      <responseElse>
+        <setOutcomeValue identifier="SCORE">
+          <sum>
+            <variable identifier="SCORE"/>
+            <baseValue baseType="float">1</baseValue>
+          </sum>
+        </setOutcomeValue>
+        <responseCondition>
+          <responseIf>
+            <equal toleranceMode="exact">
+              <variable identifier="SCORE13"/>
+              <baseValue baseType="float">1</baseValue>
+            </equal>
+            <setOutcomeValue identifier="SCORE">
+              <sum>
+                <variable identifier="SCORE"/>
+                <baseValue baseType="float">1</baseValue>
+              </sum>
+            </setOutcomeValue>
+          </responseIf>
+        </responseCondition>
+      </responseElse>
+    </responseCondition>
+  <!--PARCC Scoring Profile--></responseProcessing>
+</assessmentItem>
