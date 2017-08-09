@@ -505,11 +505,11 @@ class ConvertToLearnosityService
         $manifest['info']['item_scoring_types_counts']['none'] = $manifest['info']['item_count'] - array_sum($manifest['info']['item_scoring_types_counts']);
 
         if ($this->shouldAppendLogs) {
-            $manifestFileBasename = 'logs_'.date('m-d-y-His');
+            $manifestFileBasename = 'convert_log_' . date('m-d-y-His');
         } else {
-            $manifestFileBasename = 'logs';
+            $manifestFileBasename = 'convert_log';
         }
-        $this->writeJsonToFile($manifest, $manifestFileBasename.'.json');
+        $this->writeJsonToFile($manifest, $manifestFileBasename . '.json');
     }
 
     /**

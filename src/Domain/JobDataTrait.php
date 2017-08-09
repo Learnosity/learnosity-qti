@@ -83,7 +83,7 @@ trait JobDataTrait
     {
         if (count($array)) {
             if (!file_put_contents(
-                $this->outputPath . $filename,
+                rtrim($this->outputPath, '/') . '/' . $filename,
                 json_encode($array, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT),
                 $flags
             )) {
