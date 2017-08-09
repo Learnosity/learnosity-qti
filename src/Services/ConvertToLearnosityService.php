@@ -8,11 +8,15 @@ use LearnosityQti\Domain\JobDataTrait;
 use LearnosityQti\Utils\AssetsFixer;
 use LearnosityQti\Utils\AssumptionHandler;
 use LearnosityQti\Utils\CheckValidQti;
+use LearnosityQti\Utils\ResponseProcessingHandler;
+use LearnosityQti\Utils\General\FileSystemHelper;
 use LearnosityQti\Utils\General\StringHelper;
 use LearnosityQti\Exceptions\MappingException;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use qtism\data\AssessmentItem;
+use qtism\data\content\ItemBody;
 use qtism\data\storage\xml\XmlDocument;
 
 class ConvertToLearnosityService
@@ -20,6 +24,7 @@ class ConvertToLearnosityService
     use JobDataTrait;
 
     const RESOURCE_TYPE_ITEM = 'imsqti_item_xmlv2p1';
+    const INFO_OUTPUT_PREFIX = '↳ ';
 
     protected $inputPath;
     protected $outputPath;
@@ -94,7 +99,7 @@ class ConvertToLearnosityService
             }
 
             $this->updateJobManifest($finalManifest, $results);
-            $this->persistResultsFile($results, $targetDirectory . '/' . $dirName);
+            $this->persistResultsFile($results, realpath($this->outputPath) . '/' . $dirName);
         }
         $this->flushJobManifest($finalManifest);
 
@@ -182,7 +187,7 @@ class ConvertToLearnosityService
             $relativeDir  = rtrim($relativeSourceDirectoryPath.'/'.$manifestFile->getRelativePath(), '/');
             $relativePath = rtrim($relativeSourceDirectoryPath.'/'.$manifestFile->getRelativePathname(), '/');
 
-            $this->output->writeln("<info>Processing manifest file: {$relativePath} </info>");
+            $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Processing manifest file: {$relativePath} </info>");
 
             // build the DOMDocument object
             $manifestDoc = new \DOMDocument();
@@ -288,7 +293,7 @@ class ConvertToLearnosityService
             $xmlString = $contents;
             // Check that we're on an <assessmentItem>
             if (!CheckValidQti::isAssessmentItem($xmlString)) {
-                $this->output->writeln("<info>Not an <assessmentItem>, moving on...</info>");
+                $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Not an <assessmentItem>, moving on...</info>");
                 return $results;
             }
 
@@ -489,7 +494,7 @@ class ConvertToLearnosityService
         if ($this->dryRun) {
             return;
         }
-        $this->output->writeln('<info>Writing job manifest to file...</info>');
+        $this->output->writeln('<info>' . static::INFO_OUTPUT_PREFIX . 'riting job manifest to file...</info>');
         $manifest['info']['question_types'] = array_values(array_unique($manifest['info']['question_types']));
         $manifest['imported_rubrics'] = array_values(array_unique($manifest['imported_rubrics']));
         $manifest['imported_items'] = array_values(array_unique($manifest['imported_items']));
@@ -536,7 +541,7 @@ class ConvertToLearnosityService
         if ($this->dryRun) {
             return;
         }
-        $this->output->writeln('<info>Writing job results to file...</info>');
+        $this->output->writeln('<info>' . static::INFO_OUTPUT_PREFIX . 'Writing job results to file...</info>');
         $innerPath = explode('/', $outputFilePath);
         array_pop($innerPath);
         FileSystemHelper::createDirIfNotExists(implode('/', $innerPath));

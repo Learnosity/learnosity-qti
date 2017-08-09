@@ -1,0 +1,41 @@
+{
+    "info": {
+        "question_types": [
+            "mcq",
+            "tokenhighlight",
+            "longtextV2",
+            "clozeassociation",
+            "choicematrix"
+        ],
+        "item_scoring_types_counts": {
+            "per-question": 6,
+            "dependent": 6,
+            "none": 0
+        },
+        "rubric_count": 1,
+        "item_count": 12
+    },
+    "imported_rubrics": [
+        "ITEM-LOGIC-CTPT-205213_rubric"
+    ],
+    "imported_items": [
+        "ITEM-LOGIC-CTPT-205209",
+        "ITEM-LOGIC-CTPT-205210",
+        "ITEM-LOGIC-CTPT-202504",
+        "ITEM-LOGIC-CTPT-199577",
+        "ITEM-LOGIC-CTPT-205214",
+        "ITEM-LOGIC-CTPT-205212",
+        "ITEM-LOGIC-CTPT-205213",
+        "ITEM-LOGIC-CTPT-201212",
+        "ITEM-LOGIC-CTPT-205217",
+        "ITEM-LOGIC-CTPT-205218",
+        "ITEM-LOGIC-CTPT-201221",
+        "ITEM-LOGIC-CTPT-201215"
+    ],
+    "ignored_items": [],
+    "warnings": {
+        "ITEM-LOGIC-CTPT-205213": [
+            "Empty response processing."
+        ]
+    }
+}
