@@ -1,0 +1,74 @@
+<?php
+
+namespace LearnosityQti\Utils;
+
+use LearnosityQti\Utils\General\HtmlHelper;
+use LearnosityQti\Utils\General\StringHelper;
+use LearnositySdk\Utils\Json;
+
+class AssetsFixer
+{
+    private $urlMap = [];
+    private $organisationId;
+
+    public function __construct($organisationId)
+    {
+        $this->organisationId = $organisationId;
+    }
+
+    public function fix(array $array)
+    {
+        $encodedArray = Json::encode($array);
+        // Replace HTML Urls
+        $urls = $this->parseAssetsUrls($encodedArray);
+        foreach ($urls as $url) {
+            // Ignore stupid base64
+            if (!StringHelper::contains($url, 'base64')) {
+                $filename = StringHelper::contains($url, '.svgz') ? basename($url, '.svgz') . '.svg' : basename($url);
+                $replacement = '//dw6y82u65ww8h.cloudfront.net/organisations/' . $this->organisationId . '/' . $filename;
+                $encodedArray = str_replace($url, $replacement, $encodedArray);
+                $this->urlMap[$url] = $replacement;
+            }
+        }
+        // Replace non-HTML Urls, ie. data['image']['src']
+        // TODO actually support things like data['image']['src'] in the conversion lib
+        $encodedArray = str_replace('"assets/', '"//dw6y82u65ww8h.cloudfront.net/organisations/' . $this->organisationId . '/', $encodedArray, $count1);
+        $encodedArray = str_replace('"../images/', '"//dw6y82u65ww8h.cloudfront.net/organisations/' . $this->organisationId . '/', $encodedArray, $count1);
+        $encodedArray = str_replace('"../Content/Images/', '"//dw6y82u65ww8h.cloudfront.net/organisations/' . $this->organisationId . '/', $encodedArray, $count1);
+        $encodedArray = str_replace('.svgz"', '.svg"', $encodedArray, $count2);
+
+        // TODO: This is a hack because those audio/video files are not enclosed in proper folders
+//        $encodedArray = preg_replace('/"([^"]+)(.m4a)/', '"//dw6y82u65ww8h.cloudfront.net/organisations/' . $this->organisationId . '/$1.mp3', $encodedArray);
+//        $encodedArray = preg_replace('/"([^"]+)(.mp4)/', '"//dw6y82u65ww8h.cloudfront.net/organisations/' . $this->organisationId . '/$1.mp4', $encodedArray);
+
+        // Encode
+        $result = json_decode($encodedArray, true);
+        if (empty($result)) {
+            throw new \Exception('Image replacement fails :(');
+        }
+        return $result;
+    }
+
+    private function parseAssetsUrls($content)
+    {
+        // Check for URLs surrounded by double quotes
+        preg_match_all(
+            '/<(img|audio)[^>]*src=\\\"([^"]*)\\\"/i',
+            $content,
+            $urls
+        );
+
+        // Merge the result
+        $uris = array_unique($urls[2]);
+
+        // Remove trailing '\' character if exist upon returning
+        return array_map(function ($uri) {
+            return rtrim($uri, "\\");
+        }, $uris);
+    }
+
+    public function getUrlMap()
+    {
+        return $this->urlMap;
+    }
+}

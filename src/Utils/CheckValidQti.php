@@ -62,34 +62,6 @@ class CheckValidQti
 
     public static function postProcessing($item, array $questions, $itemTags, $convertClozeTextToClozeFormula = null)
     {
-        // We have a hack here for math fluency items which assumed always to have number results
-        if (StringHelper::startsWith($item['reference'], 'MF')) {
-            foreach ($questions as &$question) {
-                if ($question['type'] != 'clozetext') {
-                    echo 'Ummm.. assumption for clozetext is incorrect! Please take a look';
-                    die;
-                }
-                // Assumed always clozetext and always has number as response
-                $question['data']['response_container']['input_type'] = 'number';
-            }
-        }
-
-        // All K–2 item MCQs should be block ui
-        // 19th August 2016 - because we couldn't target certain
-        // items we're reverting this change
-        // if (count($itemTags) && isset($itemTags['tags']['Grade'])) {
-        //     foreach ($itemTags['tags']['Grade'] as $grade) {
-        //         if (in_array($grade, ['K', '1', '2'])) {
-        //             foreach ($questions as &$question) {
-        //                 if ($question['type'] === 'mcq') {
-        //                     $question['data']['ui_style']['type'] = 'block';
-        //                     $question['data']['ui_style']['choice_label'] = 'upper-alpha';
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
-
         // Convert `clozetext` to `clozeformula`
         foreach ($questions as &$question) {
             if ($question['type'] === 'clozetext' &&
@@ -142,7 +114,7 @@ class CheckValidQti
             }
         }
 
-        // Return the hacked item and questions
+        // Return the updated item and questions
         return [$item, $questions];
     }
 }

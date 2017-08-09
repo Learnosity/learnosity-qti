@@ -2,13 +2,18 @@
 
 namespace LearnosityQti\Services;
 
+use LearnosityQti\AppContainer;
 use LearnosityQti\Converter;
 use LearnosityQti\Domain\JobDataTrait;
+use LearnosityQti\Utils\AssetsFixer;
 use LearnosityQti\Utils\AssumptionHandler;
 use LearnosityQti\Utils\CheckValidQti;
+use LearnosityQti\Utils\General\StringHelper;
+use LearnosityQti\Exceptions\MappingException;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use qtism\data\storage\xml\XmlDocument;
 
 class ConvertToLearnosityService
 {
@@ -19,6 +24,7 @@ class ConvertToLearnosityService
     protected $inputPath;
     protected $outputPath;
     protected $output;
+    protected $organisationId;
 
     /* Runtime options */
     protected $dryRun                     = false;
@@ -34,11 +40,14 @@ class ConvertToLearnosityService
     // Resource identifiers sometimes (but not always) match the assessmentItem identifier, so this can be useful
     protected $useResourceIdentifier      = false;
 
-    public function __construct($inputPath, $outputPath, OutputInterface $output)
+    private $assetsFixer;
+
+    public function __construct($inputPath, $outputPath, OutputInterface $output, $organisationId = null)
     {
-        $this->inputPath = $inputPath;
-        $this->outputPath = $outputPath;
-        $this->output = $output;
+        $this->inputPath      = $inputPath;
+        $this->outputPath     = $outputPath;
+        $this->output         = $output;
+        $this->organisationId = $organisationId;
     }
 
     public function process()
@@ -55,7 +64,13 @@ class ConvertToLearnosityService
             return $result;
         }
 
+        // TODO - fix magic number
+        $this->organisationId = 1;
+        $this->assetsFixer = new AssetsFixer($this->organisationId);
+
         $result = $this->parseContentPackage();
+
+        $this->tearDown();
 
         return $result;
     }
@@ -283,7 +298,7 @@ class ConvertToLearnosityService
             $message        = $e->getMessage();
             $results        = [ 'exception' => $targetFilename . '-' . $message ];
             if (!StringHelper::contains($message, 'This is intro or outro')) {
-                $this->output->writeln('<error>EXCEPTION with item ' . str_replace($this->directory, '', $file->getPathname()) . ' : ' . $message . '</error>');
+                $this->output->writeln('<error>EXCEPTION with item ' . str_replace($currentDir, '', $resourceHref) . ' : ' . $message . '</error>');
             }
         }
 
@@ -318,7 +333,7 @@ class ConvertToLearnosityService
         $features = !empty($features) ? $this->assetsFixer->fix($features) : $features;
 
         // Return those results!
-        list($item, $questions) = CheckValidQti::postProcessing($item, $questions, $itemTags);
+        list($item, $questions) = CheckValidQti::postProcessing($item, $questions, []);
 
         if ($this->shouldGuessItemScoringType) {
             list($assumedItemScoringType, $scoringTypeManifest) = $this->getItemScoringTypeFromResponseProcessing($xmlString);
@@ -383,6 +398,38 @@ class ConvertToLearnosityService
         }
 
         return $itemReference;
+    }
+
+    /**
+     * Tries to determine item scoring information based on response
+     * processing rules in the given XML string.
+     *
+     * @param  string $xmlString
+     *
+     * @return <string, array> - the item scoring type if found as the first arg;
+     *                         the list of log messages as the second arg
+     */
+    private function getItemScoringTypeFromResponseProcessing($xmlString)
+    {
+        $xmlString = AppContainer::getApplicationContainer()->get('xml_assessment_items_processing')->processXml($xmlString);
+        $xmlDocument = new XmlDocument();
+        $xmlDocument->loadFromString($xmlString);
+        // $xmlDocument->getDomDocument()->documentURI = $file->getPathname();
+        // $xmlDocument->xInclude();
+
+        /** @var AssessmentItem $assessmentItem */
+        $assessmentItem = $xmlDocument->getDocumentComponent();
+        if (!($assessmentItem instanceof AssessmentItem)) {
+            throw new MappingException('XML is not a valid <assessmentItem> document');
+        }
+
+        // Handle response processing
+        list($responseProcessing, $assumedItemScoringType, $messages) = ResponseProcessingHandler::handle($assessmentItem, $xmlString);
+        if (empty($messages)) {
+            $messages = [];
+        }
+
+        return [$assumedItemScoringType, $messages];
     }
 
     private function getPointValueFromResource(\DOMNode $resource)
@@ -537,15 +584,7 @@ class ConvertToLearnosityService
 
     private function tearDown()
     {
-        if (!$this->doConversion) {
-            $this->output->writeln('<comment>No conversion run</comment>');
-        }
-        if (!$this->copySourceImages) {
-            $this->output->writeln('<comment>No assets copied</comment>');
-        }
-        if (!$this->doImport) {
-            $this->output->writeln('<comment>No import run, are you happy with the JSON? If so set, `$this->doImport = true`</comment>');
-        }
+
     }
 
     private function validate()
