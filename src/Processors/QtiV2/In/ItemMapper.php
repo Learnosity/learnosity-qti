@@ -126,7 +126,14 @@ class ItemMapper
         // Mapping interactions
         $interactionComponents = $itemBody->getComponentsByClassName(Constants::$supportedInteractions, true);
         if (!$interactionComponents || count($interactionComponents) === 0) {
-            throw new MappingException('No supported interaction mapper could be found');
+            $checkInteractionComponents = $itemBody->getComponentsByClassName(Constants::$unsupportedInteractions, true);
+            if (count($checkInteractionComponents)) {
+                foreach ($checkInteractionComponents as $c) {
+                    throw new MappingException('Unsupported interaction ' . $c->getQtiClassName());
+                }
+            } else {
+                throw new MappingException('No interaction mapper found');
+            }
         }
         $responseDeclarations = $assessmentItem->getComponentsByClassName('responseDeclaration', true);
         $itemBuilder = $this->itemBuilderFactory->getItemBuilder($assessmentItem);

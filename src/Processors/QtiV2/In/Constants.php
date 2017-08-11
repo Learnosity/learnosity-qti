@@ -21,4 +21,8 @@ class Constants
         'textEntryInteraction',
         'inlineChoiceInteraction'
     ];
+
+    public static $unsupportedInteractions = [
+        'drawingInteraction'
+    ];
 }
