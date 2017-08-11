@@ -400,7 +400,11 @@ abstract class BaseInteractionValidationBuilder
             $score = floatval($responseScores['score']);
         }
         if (!empty($responseScores['correct'])) {
-            $score = floatval($responseScores['correct']);
+            if (is_array($responseScores['correct']) && count($responseScores['correct']) === 1) {
+                $score = floatval($responseScores['correct']);
+            } else {
+                $core = $responseScores['correct'];
+            }
         }
 
         $mode = 'exactMatch';
