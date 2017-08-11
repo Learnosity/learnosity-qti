@@ -24,7 +24,8 @@ class ConvertToLearnosityService
     use JobDataTrait;
 
     const RESOURCE_TYPE_ITEM = 'imsqti_item_xmlv2p1';
-    const INFO_OUTPUT_PREFIX = '↳ ';
+    const INFO_OUTPUT_PREFIX = '';
+    const CONVERT_LOG_FILENAME = 'convert_log';
 
     protected $inputPath;
     protected $outputPath;
@@ -215,7 +216,7 @@ class ConvertToLearnosityService
                     $metadata['point_value'] = $itemPointValue;
                 }
 
-                $this->output->writeln("<comment>Converting item ({$totalItemCount}:{$itemCount}) reference [{$itemReference}]: $relativeDir/$resourceHref</comment>");
+                $this->output->writeln("<comment>Converting assessment item {$itemReference}: $relativeDir/$resourceHref</comment>");
                 $convertedContent = $this->convertAssessmentItemInFile($assessmentItemContents, $itemReference, $metadata, $currentDir, $resourceHref);
                 if (!empty($convertedContent)) {
                     $results['qtiitems'][basename($relativeDir).'/'.$resourceHref] = $convertedContent;
@@ -256,6 +257,37 @@ class ConvertToLearnosityService
         }
 
         return $itemResources;
+    }
+
+    /**
+     * Gets the general identifier for this resource from its Learning Object Metadata
+     * component, if it exists.
+     *
+     * @param  DOMNode $resource
+     *
+     * @return string|null - the identifier
+     */
+    private function getIdentifierFromResourceMetadata(\DOMNode $resource)
+    {
+        $identifier = null;
+        $xpath = $this->getXPathForQtiDocument($resource->ownerDocument);
+
+        $lomIdentifier = null;
+        $searchResult = $xpath->query('.//qti:metadata/lom:lom/lom:general/lom:identifier', $resource);
+        if ($searchResult->length > 0) {
+            // Assume (as per the LOM/QTI specs) that there is only one case identifier
+            $lomIdentifier = $searchResult->item(0);
+        }
+
+        // Extract a valid identifier string if exists
+        if (isset($lomIdentifier)) {
+            $entries = $xpath->query('./lom:entry/text()', $lomIdentifier);
+            if ($entries->length > 0) {
+                $identifier = $entries->item(0)->nodeValue;
+            }
+        }
+
+        return $identifier;
     }
 
     /**
@@ -303,7 +335,7 @@ class ConvertToLearnosityService
             $message        = $e->getMessage();
             $results        = [ 'exception' => $targetFilename . '-' . $message ];
             if (!StringHelper::contains($message, 'This is intro or outro')) {
-                $this->output->writeln('<error>EXCEPTION with item ' . str_replace($currentDir, '', $resourceHref) . ' : ' . $message . '</error>');
+                $this->output->writeln('  <error>EXCEPTION with item ' . str_replace($currentDir, '', $resourceHref) . ' : ' . $message . '</error>');
             }
         }
 
@@ -505,9 +537,9 @@ class ConvertToLearnosityService
         $manifest['info']['item_scoring_types_counts']['none'] = $manifest['info']['item_count'] - array_sum($manifest['info']['item_scoring_types_counts']);
 
         if ($this->shouldAppendLogs) {
-            $manifestFileBasename = 'convert_log_' . date('m-d-y-His');
+            $manifestFileBasename = static::CONVERT_LOG_FILENAME . '_' . date('m-d-y-His');
         } else {
-            $manifestFileBasename = 'convert_log';
+            $manifestFileBasename = static::CONVERT_LOG_FILENAME;
         }
         $this->writeJsonToFile($manifest, $manifestFileBasename . '.json');
     }
@@ -541,7 +573,7 @@ class ConvertToLearnosityService
         if ($this->dryRun) {
             return;
         }
-        $this->output->writeln('<info>' . static::INFO_OUTPUT_PREFIX . 'Writing job results to file...</info>');
+        $this->output->writeln('<info>' . static::INFO_OUTPUT_PREFIX . "Writing job results to file...\n</info>");
         $innerPath = explode('/', $outputFilePath);
         array_pop($innerPath);
         FileSystemHelper::createDirIfNotExists(implode('/', $innerPath));
@@ -573,7 +605,13 @@ class ConvertToLearnosityService
             }
 
             // Log item scoring type
+            // if (isset($itemResult['item']['metadata']['scoring_type'])) {
+            //     ++$manifest['info']['item_scoring_types_counts'][$itemResult['item']['metadata']['scoring_type']];
+            // }
             if (isset($itemResult['item']['metadata']['scoring_type'])) {
+                if (!isset($manifest['info']['item_scoring_types_counts'][$itemResult['item']['metadata']['scoring_type']])) {
+                    $manifest['info']['item_scoring_types_counts'][$itemResult['item']['metadata']['scoring_type']] = 0;
+                }
                 ++$manifest['info']['item_scoring_types_counts'][$itemResult['item']['metadata']['scoring_type']];
             }
             foreach ($itemResult['questions'] as &$question) {
@@ -589,7 +627,6 @@ class ConvertToLearnosityService
 
     private function tearDown()
     {
-
     }
 
     private function validate()

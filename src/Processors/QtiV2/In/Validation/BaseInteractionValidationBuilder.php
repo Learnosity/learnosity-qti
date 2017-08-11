@@ -14,6 +14,7 @@ use \qtism\data\rules\ResponseRuleCollection;
 use \qtism\data\expressions\operators\Match;
 use \qtism\data\expressions\operators\Equal;
 use \qtism\data\expressions\BaseValue;
+use \qtism\data\expressions\ExpressionCollection;
 use \qtism\data\expressions\Variable;
 use \qtism\data\state\OutcomeDeclarationCollection;
 use \qtism\data\state\Mapping;
@@ -339,6 +340,8 @@ abstract class BaseInteractionValidationBuilder
         // NOTE: sometimes the response rules elements are NOT SetOutcomeValue objects
         // NOTE: sometimes the response rules are ResponseCondition objects
         foreach ($responseRules as $setOutcomeValue) {
+            LogService::flush();
+
             if (!($setOutcomeValue instanceof SetOutcomeValue)) {
                 throw new MappingException('Cannot parse complex nested response rules');
             }
@@ -398,6 +401,11 @@ abstract class BaseInteractionValidationBuilder
             }
         }
 
+        // Print log message
+        foreach (LogService::read() as $message) {
+            echo "  " . $message . "\n";
+        }
+
         return $results;
     }
 
@@ -434,11 +442,14 @@ abstract class BaseInteractionValidationBuilder
         if (!empty($responseScores['score'])) {
             $score = floatval($responseScores['score']);
         }
+        // if (!empty($responseScores['correct'])) {
+        //     $score = floatval($responseScores['correct']);
+        // }
         if (!empty($responseScores['correct'])) {
             if (is_array($responseScores['correct']) && count($responseScores['correct']) === 1) {
                 $score = floatval($responseScores['correct']);
             } else {
-                $core = $responseScores['correct'];
+                $score = $responseScores['correct'];
             }
         }
 
