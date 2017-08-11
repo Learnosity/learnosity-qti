@@ -37,7 +37,12 @@ class ResponseProcessingHandler
 
         if (!isset($responseProcessing)) {
             // No response processing, skip
-            return [];
+            // MS: could be something like extended response
+            return [
+                [],
+                null,
+                null
+            ];
         }
 
         // Check known template location
