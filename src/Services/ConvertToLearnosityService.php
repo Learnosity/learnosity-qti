@@ -70,8 +70,8 @@ class ConvertToLearnosityService
             return $result;
         }
 
-        // TODO - fix magic number
-        $this->organisationId = 1;
+// TODO - fix magic number
+$this->organisationId = 1;
         $this->assetsFixer = new AssetsFixer($this->organisationId);
 
         $result = $this->parseContentPackage();
@@ -87,13 +87,13 @@ class ConvertToLearnosityService
      */
     private function parseContentPackage()
     {
+        $manifestFolders = $this->parseInputFolders();
         $finalManifest = $this->getJobManifestTemplate();
 
-        $finder = new Finder();
-        foreach ($finder->directories()->in($this->inputPath)->depth(0) as $dir) {
-            $dirName = $dir->getRelativePathname();
-
-            $results = $this->convertQtiContentPackagesInDirectory($dir->getPathname(), $dirName);
+        foreach ($manifestFolders as $dir) {
+            $tempDirectoryParts = explode('/', dirname($dir));
+            $dirName = $tempDirectoryParts[count($tempDirectoryParts)-1];
+            $results = $this->convertQtiContentPackagesInDirectory(dirname($dir), $dirName);
 
             if (!isset($results['qtiitems'])) {
                 continue;
@@ -102,67 +102,22 @@ class ConvertToLearnosityService
             $this->updateJobManifest($finalManifest, $results);
             $this->persistResultsFile($results, realpath($this->outputPath) . '/' . $dirName);
         }
+
         $this->flushJobManifest($finalManifest);
+    }
 
+    private function parseInputFolders()
+    {
+        $folders = [];
 
+        // Look for the manifest in the current path
+        $finder = new Finder();
+        $finder->files()->in($this->inputPath)->name('imsmanifest.xml');
+        foreach ($finder as $manifest) {
+            $folders[] = $manifest->getRealPath();
+        }
 
-
-        // ✘ ✔
-        // $finder = new Finder();
-        // $manifest = $finder->files()->in($this->inputPath)->name('imsmanifest.xml');
-
-        // foreach ($manifest as $file) {
-        //     /** @var SplFileInfo $file */
-        //     $currentDir   = realpath($file->getPath());
-        //     $fullFilePath = realpath($file->getPathname());
-
-        //     $this->output->writeln("<info>Parsing manifest file\t✔</info>");
-
-        //     // build the DOMDocument object
-        //     $manifestDoc = new \DOMDocument();
-        //     $manifestDoc->load($fullFilePath);
-
-        //     $itemResources = $this->getItemResourcesByHrefFromDocument($manifestDoc);
-
-        //     $itemFinder = (new Finder())->in($currentDir)->name('*.xml')->notName('imsmanifest.xml');
-        //     $itemFinder = $this->applyFilteringToFinder($itemFinder);
-        //     $itemFinder = $itemFinder->filter(function (SplFileInfo $file) use ($itemResources) {
-        //         return isset($itemResources[$file->getRelativePathname()]);
-        //     });
-        //     $itemFinder = $itemFinder->filter(function (SplFileInfo $file) {
-        //         return !$this->containsPath($file, [
-        //             '======= PUT BLACKLIST ITEMS HERE =======',
-        //             'ITEM-LOGIC-CTPT-190716', // 'Parcc'
-        //         ]);
-        //     });
-
-        //     $itemCount = 0;
-        //     foreach ($itemFinder as $itemFile) {
-        //         /** @var SplFileInfo $itemFile */
-        //         $itemCount++;
-        //         $totalItemCount++;
-        //         $resourceHref    = $itemFile->getRelativePathname();
-        //         $relatedResource = $itemResources[$resourceHref];
-        //         $itemReference   = $this->getItemReferenceFromResource(
-        //             $relatedResource,
-        //             $this->useMetadataIdentifier,
-        //             $this->useResourceIdentifier,
-        //             $this->useFileNameAsIdentifier
-        //         );
-
-        //         $metadata = [];
-        //         $itemPointValue = $this->getPointValueFromResource($relatedResource);
-        //         if (isset($itemPointValue)) {
-        //             $metadata['point_value'] = $itemPointValue;
-        //         }
-
-        //         $this->output->writeln("<comment>Converting item ({$totalItemCount}:{$itemCount}) reference [{$itemReference}]: $relativeDir/$resourceHref</comment>");
-        //         $convertedContent = $this->convertAssessmentItemInFile($itemFile, $itemReference, $metadata);
-        //         if (!empty($convertedContent)) {
-        //             $results['qtiitems'][basename($relativeDir).'/'.$resourceHref] = $convertedContent;
-        //         }
-        //     }
-        // }
+        return $folders;
     }
 
     /**
@@ -526,7 +481,7 @@ class ConvertToLearnosityService
         if ($this->dryRun) {
             return;
         }
-        $this->output->writeln('<info>' . static::INFO_OUTPUT_PREFIX . 'riting job manifest to file...</info>');
+        $this->output->writeln('<info>' . static::INFO_OUTPUT_PREFIX . 'Writing job manifest to file...</info>');
         $manifest['info']['question_types'] = array_values(array_unique($manifest['info']['question_types']));
         $manifest['imported_rubrics'] = array_values(array_unique($manifest['imported_rubrics']));
         $manifest['imported_items'] = array_values(array_unique($manifest['imported_items']));
