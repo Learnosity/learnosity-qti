@@ -25,7 +25,7 @@ class ConvertToLearnosityService
 
     const RESOURCE_TYPE_ITEM = 'imsqti_item_xmlv2p1';
     const INFO_OUTPUT_PREFIX = '';
-    const CONVERT_LOG_FILENAME = 'convert_log';
+    const CONVERT_LOG_FILENAME = 'convert:to:learnosity.log';
 
     protected $inputPath;
     protected $outputPath;
@@ -482,7 +482,6 @@ $this->organisationId = 1;
         if ($this->dryRun) {
             return;
         }
-        $this->output->writeln('<info>' . static::INFO_OUTPUT_PREFIX . 'Writing job manifest to file...</info>');
         $manifest['info']['question_types'] = array_values(array_unique($manifest['info']['question_types']));
         $manifest['imported_rubrics'] = array_values(array_unique($manifest['imported_rubrics']));
         $manifest['imported_items'] = array_values(array_unique($manifest['imported_items']));
@@ -497,6 +496,7 @@ $this->organisationId = 1;
         } else {
             $manifestFileBasename = static::CONVERT_LOG_FILENAME;
         }
+        $this->output->writeln('<info>' . static::INFO_OUTPUT_PREFIX . 'Writing manifest: ' . $this->outputPath . '/' . $manifestFileBasename . '.json</info>');
         $this->writeJsonToFile($manifest, $this->outputPath . '/' . $manifestFileBasename . '.json');
     }
 
@@ -529,7 +529,7 @@ $this->organisationId = 1;
         if ($this->dryRun) {
             return;
         }
-        $this->output->writeln('<info>' . static::INFO_OUTPUT_PREFIX . "Writing job results to file...\n</info>");
+        $this->output->writeln('<info>' . static::INFO_OUTPUT_PREFIX . "Writing conversion results: " . $outputFilePath . '.json' . "</info>\n");
         $innerPath = explode('/', $outputFilePath);
         array_pop($innerPath);
         FileSystemHelper::createDirIfNotExists(implode('/', $innerPath));

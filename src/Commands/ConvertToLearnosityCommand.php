@@ -76,15 +76,12 @@ class ConvertToLearnosityCommand extends Command
         } else {
             $Convert = new ConvertToLearnosityService($inputPath, $outputPath, $output);
             $result = $Convert->process();
-            if (!$result['status']) {
+            if ($result['status'] === false) {
                 $output->writeln('<error>Error running job</error>');
-            } else {
-                $output->writeln('<info>Completed job</info>');
+                foreach ($result['message'] as $m) {
+                    $output->writeln($m);
+                }
             }
-            foreach ($result['message'] as $m) {
-                $output->writeln($m);
-            }
-            // var_dump($result);
         }
     }
 }
