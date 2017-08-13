@@ -21,14 +21,14 @@ class ConvertToLearnosityCommand extends Command
                 'i',
                 InputOption::VALUE_REQUIRED,
                 'The input path to your QTI content',
-                null
+                './data/input'
             )
             ->addOption(
                 'output',
                 'o',
                 InputOption::VALUE_REQUIRED,
                 'An output path where the Learnosity JSON will be saved',
-                null
+                './data/output'
             )
         ;
     }
@@ -41,30 +41,29 @@ class ConvertToLearnosityCommand extends Command
 
         // Validate the required options
         if (empty($inputPath) || empty($outputPath)) {
-            array_push($validationErrors, "  The <info>input</info> and <info>output</info> options are required. Eg:");
+            array_push($validationErrors, "The <info>input</info> and <info>output</info> options are required. Eg:");
         }
 
         // Make sure we can read the input folder, and write to the output folder
-        if (!is_dir($inputPath)) {
+        if (!empty($inputPath) && !is_dir($inputPath)) {
             $output->writeln([
-                "  Input path isn't a directory (<info>$inputPath</info>)"
+                "Input path isn't a directory (<info>$inputPath</info>)"
             ]);
         }
-        if (!is_dir($outputPath)) {
+        if (!empty($outputPath) && !is_dir($outputPath)) {
             $output->writeln([
-                "  Output path isn't a directory (<info>$outputPath</info>)"
+                "Output path isn't a directory (<info>$outputPath</info>)"
             ]);
-        }
-        if (!is_writable($outputPath)) {
+        } elseif (!empty($outputPath) && !is_writable($outputPath)) {
             $output->writeln([
-                "  Output path isn't writable (<info>$outputPath</info>)"
+                "Output path isn't writable (<info>$outputPath</info>)"
             ]);
         }
 
         if (count($validationErrors)) {
             $output->writeln([
                 '',
-                "<error>Validation error:</error>"
+                "<error>Validation error</error>"
             ]);
 
             foreach ($validationErrors as $error) {
@@ -72,12 +71,20 @@ class ConvertToLearnosityCommand extends Command
             }
 
             $output->writeln([
-                "    <info>mo convert:to:learnosity -i /path/to/qti -o /path/to/save/folder</info>"
+                "  <info>mo convert:to:learnosity -i /path/to/qti -o /path/to/save/folder</info>"
             ]);
         } else {
             $Convert = new ConvertToLearnosityService($inputPath, $outputPath, $output);
             $result = $Convert->process();
-            var_dump($result);
+            if (!$result['status']) {
+                $output->writeln('<error>Error running job</error>');
+            } else {
+                $output->writeln('<info>Completed job</info>');
+            }
+            foreach ($result['message'] as $m) {
+                $output->writeln($m);
+            }
+            // var_dump($result);
         }
     }
 }

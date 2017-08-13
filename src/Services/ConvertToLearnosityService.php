@@ -5,13 +5,13 @@ namespace LearnosityQti\Services;
 use LearnosityQti\AppContainer;
 use LearnosityQti\Converter;
 use LearnosityQti\Domain\JobDataTrait;
+use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Utils\AssetsFixer;
 use LearnosityQti\Utils\AssumptionHandler;
 use LearnosityQti\Utils\CheckValidQti;
 use LearnosityQti\Utils\ResponseProcessingHandler;
 use LearnosityQti\Utils\General\FileSystemHelper;
 use LearnosityQti\Utils\General\StringHelper;
-use LearnosityQti\Exceptions\MappingException;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -65,7 +65,7 @@ class ConvertToLearnosityService
         ];
 
         if (count($errors)) {
-            $result['status'] = 'false';
+            $result['status'] = false;
             $result['message'] = $errors;
             return $result;
         }
@@ -95,9 +95,9 @@ $this->organisationId = 1;
             $dirName = $tempDirectoryParts[count($tempDirectoryParts)-1];
             $results = $this->convertQtiContentPackagesInDirectory(dirname($dir), $dirName);
 
-            if (!isset($results['qtiitems'])) {
-                continue;
-            }
+            // if (!isset($results['qtiitems'])) {
+            //     continue;
+            // }
 
             $this->updateJobManifest($finalManifest, $results);
             $this->persistResultsFile($results, realpath($this->outputPath) . '/' . $dirName);
@@ -106,6 +106,7 @@ $this->organisationId = 1;
         $this->flushJobManifest($finalManifest);
     }
 
+    // Traverse the -i option and find all paths with an imsmanifest.xml
     private function parseInputFolders()
     {
         $folders = [];
@@ -496,7 +497,7 @@ $this->organisationId = 1;
         } else {
             $manifestFileBasename = static::CONVERT_LOG_FILENAME;
         }
-        $this->writeJsonToFile($manifest, $manifestFileBasename . '.json');
+        $this->writeJsonToFile($manifest, $this->outputPath . '/' . $manifestFileBasename . '.json');
     }
 
     /**
@@ -587,16 +588,10 @@ $this->organisationId = 1;
     private function validate()
     {
         $errors = [];
-        $finder = new Finder();
-        $manifest = $finder->files()->in($this->inputPath)->name('imsmanifest.xml');
+        $manifestFolders = $this->parseInputFolders();
 
-        if ($manifest->count()) {
-            foreach ($manifest as $file) {
-                if (empty($file->getRealPath())) {
-                }
-            }
-        } else {
-            array_push($errors, 'Manifest not found');
+        if (!count($manifestFolders)) {
+            array_push($errors, 'No manifest(s) found in ' . $this->inputPath);
         }
 
         return $errors;

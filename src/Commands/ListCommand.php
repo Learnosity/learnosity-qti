@@ -13,7 +13,7 @@ class ListCommand extends Command
         $this
             ->setName('list')
             ->setDescription('Lists tasks available in Learnosity QTI.')
-            ->setHelp('This command allows you to convert Learnosity JSON to QTI...')
+            ->setHelp('This command prints all available commands to run')
         ;
     }
 
@@ -25,11 +25,10 @@ class ListCommand extends Command
             '',
             '<comment>Flags:</comment>',
             "  <info>--help</info>\t\t\tPrint the applications help",
-            "  <info>--version</info>\t\t\tPrint the applications version number",
             '',
             '<comment>Commands:</comment>',
-            "  <info>convert:from:learnosity</info>\tConverts Learnosity JSON to QTI v2.1",
-            "  <info>convert:to:learnosity</info>\t\tConverts QTI v2.1 to Learnosity JSON",
+            "  <info>convert:from-learnosity</info>\tConverts Learnosity JSON to QTI v2.1",
+            "  <info>convert:to-learnosity</info>\t\tConverts QTI v2.1 to Learnosity JSON",
             "  <info>list</info>\t\t\t\tLists all commands available",
             '',
         ]);
