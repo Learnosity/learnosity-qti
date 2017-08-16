@@ -65,18 +65,6 @@ class RegularItemBuilder extends AbstractItemBuilder
             ];
         }
 
-        // Process <rubricBlock> elements
-        // NOTE: This step needs to be done after questions are generated
-        foreach ($rubricBlockComponents as $rubricBlock) {
-            /** @var RubricBlock $rubricBlock */
-            try {
-                $this->processRubricBlock($rubricBlock);
-            } catch (MappingException $e) {
-                // Just log unsupported <rubricBlock> elements
-                LogService::log($e->getMessage());
-            }
-        }
-
         // Build item's HTML content
         $extraContentHtml = new SimpleHtmlDom();
         if (!$extraContentHtml->load(QtiMarshallerUtil::marshallCollection($itemBody->getComponents()), false)) {
@@ -88,7 +76,7 @@ class RegularItemBuilder extends AbstractItemBuilder
         $dom = new DOMDocument();
         $dom->preserveWhitespace = false;
         // NOTE: Make sure we wrap in an <itemBody> so we get the correct DOM structure (and documentElement)
-        $dom->loadHTML('<itemBody>'.$extraContentHtml->save().'</itemBody>', LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
+        $dom->loadHTML('<?xml version="1.0" encoding="UTF-8"><itemBody>'.$extraContentHtml->save().'</itemBody>', LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
         $xpath = new DOMXPath($dom);
 
         $questionHtmlContents = [];
@@ -137,17 +125,26 @@ class RegularItemBuilder extends AbstractItemBuilder
                 // TODO: Check if removing interactions while iterating on DOMNodeList causes issues
                 $elementRoot->parentNode->removeChild($elementRoot);
 
+                if (!isset($questionHtmlContents[$questionReference])) {
+                    $questionHtmlContents[$questionReference] = '';
+                }
                 $questionHtmlContents[$questionReference] .= $newDom->saveHTML();
             }
         }
 
         // Remove the wrapping <itemBody> before saving
-        $fragment = $dom->createDocumentFragment();
+        // HACK: Instead of replacing with a fragment, replace with a div;
+        // this is so we have a document element to remove the XML declaration with
+        /* @var DOMNode $fragment */
+        $fragment = $dom->createElement('div');
         while ($dom->documentElement->childNodes->length > 0) {
             $fragment->appendChild($dom->documentElement->childNodes->item(0));
         }
         $dom->documentElement->parentNode->replaceChild($fragment, $dom->documentElement);
-        $extraContent = $dom->saveHTML();
+        $extraContent = '';
+        if ($fragment->hasChildNodes()) {
+            $extraContent = $dom->saveHTML($dom->documentElement);
+        }
 
         // Inject item content into stimulus per question
         foreach ($questionHtmlContents as $questionReference => $content) {
@@ -169,6 +166,21 @@ class RegularItemBuilder extends AbstractItemBuilder
 
             LogService::log('Extra <itemBody> content is prepended to question stimulus and please verify as this `might` break item content structure');
         }
+
+        // TODO: Confirm that calling processRubricBlock after generating the item content won't break anything
+
+        // Process <rubricBlock> elements
+        // NOTE: This step needs to be done after questions are generated
+        foreach ($rubricBlockComponents as $rubricBlock) {
+            /** @var RubricBlock $rubricBlock */
+            try {
+                $this->processRubricBlock($rubricBlock);
+            } catch (MappingException $e) {
+                // Just log unsupported <rubricBlock> elements
+                LogService::log($e->getMessage());
+            }
+        }
+
         return true;
     }
 

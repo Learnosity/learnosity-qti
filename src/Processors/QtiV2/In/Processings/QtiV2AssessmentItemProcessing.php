@@ -3,12 +3,17 @@
 namespace LearnosityQti\Processors\QtiV2\In\Processings;
 
 use \LearnosityQti\Processors\QtiV2\In\Processings\AbstractXmlProcessing;
+use \LearnosityQti\Services\LogService;
 use \SimpleXMLElement;
 
 class QtiV2AssessmentItemProcessing extends AbstractXmlProcessing
 {
-    const XML_TAG_NAME_ASSESSMENT_ITEM = 'assessmentItem';
-    const XML_TAG_NAME_BASE_VALUE = 'baseValue';
+    const XML_TAG_NAME_ASSESSMENT_ITEM  = 'assessmentItem';
+    const XML_TAG_NAME_BASE_VALUE       = 'baseValue';
+    const XML_TAG_NAME_CORRECT_RESPONSE = 'correctResponse';
+    const XML_TAG_NAME_GAP_TEXT         = 'gapText';
+
+    private $elementsMarkedForRemoval = [];
 
     /**
      * @override
@@ -17,6 +22,15 @@ class QtiV2AssessmentItemProcessing extends AbstractXmlProcessing
     {
         $xmlDocument = $this->getXmlIterator($xmlString);
         $this->processAllXmlElements($xmlDocument);
+
+        // Process late removals that need to be performed after iteration
+        if (!empty($this->elementsMarkedForRemoval)) {
+            foreach ($this->elementsMarkedForRemoval as &$xmlElement) {
+                unset($xmlElement[0]);
+                $xmlElement = null;
+            }
+            $this->elementsMarkedForRemoval = array_values(array_filter($this->elementsMarkedForRemoval));
+        }
 
         return $xmlDocument->asXML();
     }
@@ -27,7 +41,9 @@ class QtiV2AssessmentItemProcessing extends AbstractXmlProcessing
     protected function processXmlElement(SimpleXMLElement $xmlElement)
     {
         $this->handleAssessmentItemInvalidTitle($xmlElement);
+        $this->handleGapTextHtmlContent($xmlElement);
         $this->handleBaseValue($xmlElement);
+        $this->handleInvalidCorrectResponse($xmlElement);
     }
 
     /**
@@ -50,8 +66,10 @@ class QtiV2AssessmentItemProcessing extends AbstractXmlProcessing
 
             if (!isset($nodeAttributes['title'])) {
                 $xmlElement->addAttribute('title', $identifierAttribute);
+                LogService::log('Assessment item preprocessing - <assessmentItem> missing title; using identifier as the title attribute');
             } elseif (empty($nodeAttributes['title'])) {
                 $nodeAttributes['title'] = (string) $identifierAttribute;
+                LogService::log('Assessment item preprocessing - <assessmentItem> missing title; using identifier as the title attribute');
             }
         }
     }
@@ -61,7 +79,26 @@ class QtiV2AssessmentItemProcessing extends AbstractXmlProcessing
         if ($this->isXmlElementBaseValue($xmlElement)) {
             if ((string) $xmlElement->attributes()['baseType'] === 'float') {
                 // Normalize float value. Invalid values are treated as 0
+                // TODO: Add a log entry for invalid values that will be coerced to zero
                 $xmlElement[0] = floatval(str_replace(',', '', $xmlElement[0]));
+            }
+        }
+    }
+
+    protected function handleGapTextHtmlContent(SimpleXmlElement $xmlElement)
+    {
+        if ($this->isXmlElementGapText($xmlElement)) {
+            $xmlElement[0] = trim(strip_tags($xmlElement->asXML()));
+        }
+    }
+
+    protected function handleInvalidCorrectResponse(SimpleXmlElement $xmlElement)
+    {
+        if ($this->isXmlElementCorrectResponse($xmlElement)) {
+            // Remove the element completely if it does not have at least 1 <value> child
+            if (empty($xmlElement[0]->value)) {
+                $this->markElementForRemoval($xmlElement);
+                LogService::log('Assessment item preprocessing - Empty <correctResponse> found; removing <correctResponse>');
             }
         }
     }
@@ -81,5 +118,20 @@ class QtiV2AssessmentItemProcessing extends AbstractXmlProcessing
     private function isXmlElementBaseValue(SimpleXMLElement $xmlElement)
     {
         return $xmlElement->getName() === static::XML_TAG_NAME_BASE_VALUE;
+    }
+
+    private function isXmlElementCorrectResponse(SimpleXmlElement $xmlElement)
+    {
+        return $xmlElement->getName() === static::XML_TAG_NAME_CORRECT_RESPONSE;
+    }
+
+    private function isXmlElementGapText(SimpleXmlElement $xmlElement)
+    {
+        return $xmlElement->getName() === static::XML_TAG_NAME_GAP_TEXT;
+    }
+
+    private function markElementForRemoval(SimpleXmlElement $xmlElement)
+    {
+        $this->elementsMarkedForRemoval[] = $xmlElement;
     }
 }

@@ -30,25 +30,21 @@ class ChoiceInteractionValidationBuilder extends BaseInteractionValidationBuilde
 
     protected function getMatchCorrectTemplateValidation(array $scores = null)
     {
-        $score = 1;
-        if (!empty($scores['correct'])) {
-            $score = $scores['correct'];
-        }
-
-        $mode = 'exactMatch';
-        if (!empty($scores['scoring_type']) && $scores['scoring_type'] === 'partial') {
-            $mode = 'partialMatch';
-        }
+        $scores = $this->getScoresForInteraction($scores);
+        list($score, $mode) = $this->getValidationScoringData($scores);
 
         // Build the `value` object for `valid_response`
         $values = [];
         /** @var Value $value */
-        foreach ($this->responseDeclaration->getCorrectResponse()->getValues() as $value) {
-            if (!isset($this->options[$value->getValue()])) {
-                LogService::log('Invalid choice `' . $value->getValue() .  '`');
-                continue;
+        $correctResponseObject = $this->responseDeclaration->getCorrectResponse();
+        if (isset($correctResponseObject)) {
+            foreach ($correctResponseObject->getValues() as $value) {
+                if (!isset($this->options[$value->getValue()])) {
+                    LogService::log('Invalid choice `' . $value->getValue() .  '`');
+                    continue;
+                }
+                $values[] = $value->getValue();
             }
-            $values[] = $value->getValue();
         }
 
         return ValidationBuilder::build('mcq', $mode, [new ValidResponse($score, $values)]);

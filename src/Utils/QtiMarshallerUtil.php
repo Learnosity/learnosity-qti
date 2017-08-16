@@ -20,9 +20,6 @@ class QtiMarshallerUtil
             $dom = new DOMDocument('1.0', 'UTF-8');
             $dom->formatOutput = true;
 
-            // TODO: Try to clean as much as I can blah
-            $string = html_entity_decode($string, ENT_XHTML);
-
             // TODO: Can only unmarshall nice stuff, doesnt work with dodgy or invalid HTML
             if (!$dom->loadXML("<body>$string</body>", LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD)) {
                 $errors = libxml_get_errors();
