@@ -84,7 +84,7 @@ class ChoiceInteractionMapper extends AbstractInteractionMapper
         foreach ($simpleChoices as $key => $choice) {
             // Store 'SimpleChoice' identifier to key for validation purposes
             $options[] = [
-                'label' => QtiMarshallerUtil::marshallCollection($choice->getContent()),
+                'label' => trim(QtiMarshallerUtil::marshallCollection($choice->getContent())),
                 'value' => $choice->getIdentifier()
             ];
         }

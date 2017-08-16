@@ -51,6 +51,11 @@ class SharedPassageMapper
             'features' => [],
         ];
 
+        // Check for empty XML elements (no body)
+        if (empty($xmlString)) {
+            return $results;
+        }
+
         $passageContent = $this->parsePassageContentFromXml($xmlString);
 
         $widget = $this->buildSharedPassageWithContent($passageContent);
@@ -109,6 +114,9 @@ class SharedPassageMapper
                 $dom          = $this->getDomForXml($xml);
                 $innerContent = $this->getInnerXmlFragmentFromDom($dom);
                 $results      = $this->parseXml($dom->saveXML($innerContent));
+                if (empty($results['features'])) {
+                    throw new \Exception("Could not process <rubricBlock> passage");
+                }
             } elseif ($this->isEmptyAllowed()) {
                 $results      = $this->parseXml($xml);
             } else {

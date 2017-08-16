@@ -370,12 +370,17 @@ $this->organisationId = 1;
                 $item['definition']['widgets'][] = [
                     'reference' => $feature['reference']
                 ];
+                if (!array_key_exists('features', $item) || !count($item['features'])) {
+                    $item['features'][] = [
+                        'reference' => $feature['reference']
+                    ];
+                }
             }
         }
 
         unset($item['adaptive']);
-        // unset($item['content']);
-        // unset($item['questionReferences']);
+        unset($item['content']);
+        unset($item['questionReferences']);
 
         return $item;
     }
