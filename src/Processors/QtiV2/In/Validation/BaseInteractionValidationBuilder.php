@@ -18,6 +18,7 @@ use \qtism\data\expressions\Variable;
 use \qtism\data\state\OutcomeDeclarationCollection;
 use \qtism\data\state\Mapping;
 use \qtism\data\rules\ResponseElse;
+use \qtism\data\rules\SetOutcomeValue;
 use \qtism\data\expressions\MapResponse;
 
 abstract class BaseInteractionValidationBuilder
@@ -118,6 +119,9 @@ abstract class BaseInteractionValidationBuilder
                     return $this->getNoTemplateResponsesValidation();
 
                 case ResponseProcessingTemplate::BUILTIN:
+                    if (empty($this->responseDeclaration)) {
+                        throw new MappingException('ResponseDeclaration is required when using built-in response processing');
+                    }
                     // custom response processing rules
                     $responseProcessingScores = $this->getBuiltinResponseValidation($responseProcessingTemplate->getBuiltinResponseProcessing());
                     if (!empty($responseProcessingScores)) {
@@ -131,7 +135,7 @@ abstract class BaseInteractionValidationBuilder
                     LogService::log('ResponseProcessing: Unrecognised response processing template. Validation is not available');
             }
         } catch (MappingException $e) {
-            LogService::log('Validation is not available. Critical error: ' . $e->getMessage());
+            LogService::log('ResponseProcessing: Validation is not available. Critical error: ' . $e->getMessage());
         }
         return null;
     }
@@ -307,6 +311,9 @@ abstract class BaseInteractionValidationBuilder
 
         // NOTE: the response rules elements are SetOutcomeValue objects
         foreach ($responseRules as $setOutcomeValue) {
+            if (!($setOutcomeValue instanceof SetOutcomeValue)) {
+                throw new MappingException('Cannot parse complex nested response rules');
+            }
             $expression = $setOutcomeValue->getExpression();
 
             // the expression here can either be a BaseValue or a Variable object
