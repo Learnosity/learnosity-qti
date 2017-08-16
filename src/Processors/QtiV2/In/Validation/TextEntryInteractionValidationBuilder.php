@@ -41,7 +41,7 @@ class TextEntryInteractionValidationBuilder extends BaseInteractionValidationBui
                 $correctResponses = $responseDeclaration->getCorrectResponse()->getValues()->getArrayCopy(true);
                 $interactionResponses[] = array_map(function ($value) {
                     /** @var Value $value */
-                    return new ValidResponse(1, [$value->getValue()]);
+                    return new ValidResponse(1, [(string)$value->getValue()]);
                 }, $correctResponses);
             }
         }
@@ -50,7 +50,7 @@ class TextEntryInteractionValidationBuilder extends BaseInteractionValidationBui
             // there was nothing in the response declaration
             if (!empty($scores['correct'])) {
                 foreach ($scores['correct'] as $correct) {
-                    $interactionResponses[][] = new ValidResponse($correct['score'], [$correct['answer']]);
+                    $interactionResponses[][] = new ValidResponse($correct['score'], [(string)$correct['answer']]);
                 }
             }
         }
@@ -73,7 +73,7 @@ class TextEntryInteractionValidationBuilder extends BaseInteractionValidationBui
                 /** @var MapEntry $mapEntry */
                 $responses[] = new ValidResponse(
                     $mapEntry->getMappedValue(),
-                    [$mapEntry->getMapKey()]
+                    [(string)$mapEntry->getMapKey()]
                 );
                 // Find out if one of them is case sensitive
                 if ($mapEntry->isCaseSensitive()) {

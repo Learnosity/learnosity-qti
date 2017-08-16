@@ -17,10 +17,13 @@ class MathsProcessing implements ProcessingInterface
         $itemBody = $assessmentItem->getItemBody();
         foreach ($itemBody->getIterator() as $component) {
             if ($component instanceof Math) {
+                /** @var DOMElement */
                 $element = $component->getXml()->documentElement;
                 // Remove prefix if exists for conversion
                 // ie. <m:math> to just <math>
                 $element->removeAttributeNS($element->namespaceURI, $element->prefix);
+                // Handle default namespace too, if exists
+                $element->removeAttributeNS($element->lookupNamespaceUri(null), null);
                 $component->setXmlString($element->ownerDocument->saveXML());
                 // Remove MathML namespace declaration
                 $component->setTargetNamespace('');
