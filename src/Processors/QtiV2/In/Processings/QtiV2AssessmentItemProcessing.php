@@ -4,6 +4,7 @@ namespace LearnosityQti\Processors\QtiV2\In\Processings;
 
 use \LearnosityQti\Processors\QtiV2\In\Processings\AbstractXmlProcessing;
 use \LearnosityQti\Services\LogService;
+use \qtism\common\utils\Format;
 use \SimpleXMLElement;
 
 class QtiV2AssessmentItemProcessing extends AbstractXmlProcessing
@@ -12,6 +13,8 @@ class QtiV2AssessmentItemProcessing extends AbstractXmlProcessing
     const XML_TAG_NAME_BASE_VALUE       = 'baseValue';
     const XML_TAG_NAME_CORRECT_RESPONSE = 'correctResponse';
     const XML_TAG_NAME_GAP_TEXT         = 'gapText';
+
+    const VALID_IDENTIFIER_PREFIX_DEFAULT = 'LRN-';
 
     private $elementsMarkedForRemoval = [];
 
@@ -41,9 +44,51 @@ class QtiV2AssessmentItemProcessing extends AbstractXmlProcessing
     protected function processXmlElement(SimpleXMLElement $xmlElement)
     {
         $this->handleAssessmentItemInvalidTitle($xmlElement);
+        $this->handleAssessmentItemInvalidIdentifier($xmlElement);
         $this->handleGapTextHtmlContent($xmlElement);
         $this->handleBaseValue($xmlElement);
         $this->handleInvalidCorrectResponse($xmlElement);
+    }
+
+    /**
+     * Modifies invalid "identifier" attribute on assessment item elements
+     * to be valid, if possible.
+     *
+     * The "identifier" attribute is specified as invalid when it begins with a
+     * forbidden character, contains any forbidden characters, is zero-length
+     * or is not set.
+     *
+     * Currently, this method only modifies the identifier if it has an
+     * incorrect format.
+     *
+     * This mutates the identifier attribute in-place, which will affect
+     * anything that reads it after this operation takes place.
+     *
+     * @param  SimpleXMLElement $xmlElement
+     */
+    protected function handleAssessmentItemInvalidIdentifier(SimpleXMLElement $xmlElement)
+    {
+        if ($this->isXmlElementAssessmentItem($xmlElement)) {
+            $nodeAttributes = $xmlElement->attributes();
+
+            if (!isset($nodeAttributes['identifier'])) {
+                LogService::log('Assessment item preprocessing - <assessmentItem> missing identifier attribute');
+                return;
+            }
+
+            $identifier = (string) $nodeAttributes['identifier'];
+            if (!Format::isIdentifier($identifier, false)) {
+                $newIdentifier = null;
+                if (!empty($identifier)) {
+                    $newIdentifier = static::VALID_IDENTIFIER_PREFIX_DEFAULT . $identifier;
+                }
+
+                if (Format::isIdentifier($newIdentifier, false)) {
+                    $nodeAttributes['identifier'] = $newIdentifier;
+                    LogService::log('Assessment item preprocessing - <assessmentItem> invalid identifier attribute; using modified identifier value');
+                }
+            }
+        }
     }
 
     /**

@@ -21,11 +21,23 @@ class SharedPassageMapper
     const CONTENT_TYPE_HTML = 'text/html';
     const CONTENT_TYPE_XML  = 'application/xml';
 
+    protected $emptyAllowed = true;
+
     private $sourceDirectoryPath;
 
     public function __construct($sourceDirectoryPath = null)
     {
         $this->sourceDirectoryPath = $sourceDirectoryPath;
+    }
+
+    public function isEmptyAllowed()
+    {
+        return $this->emptyAllowed;
+    }
+
+    public function setEmptyAllowed($emptyAllowed)
+    {
+        $this->emptyAllowed = boolval($emptyAllowed);
     }
 
     public function parse($xmlString)
@@ -92,10 +104,16 @@ class SharedPassageMapper
             $results = $this->buildSharedPassagesFromObjects($objects);
         } else {
             // Fall back to using all the content in the <rubricBlock> verbatim as a single passage
-            $xml          = QtiMarshallerUtil::marshall($rubricBlock);
-            $dom          = $this->getDomForXml($xml);
-            $innerContent = $this->getInnerXmlFragmentFromDom($dom);
-            $results      = $this->parseXml($dom->saveXML($innerContent));
+            $xml = QtiMarshallerUtil::marshall($rubricBlock);
+            if (strlen(trim($xml)) > 0) {
+                $dom          = $this->getDomForXml($xml);
+                $innerContent = $this->getInnerXmlFragmentFromDom($dom);
+                $results      = $this->parseXml($dom->saveXML($innerContent));
+            } elseif ($this->isEmptyAllowed()) {
+                $results      = $this->parseXml($xml);
+            } else {
+                throw new MappingException('No content found; cannot create sharedpassage (isEmptyAllowed=false)');
+            }
         }
 
         return $results;
@@ -178,7 +196,11 @@ class SharedPassageMapper
 
         // HACK: Load as XML in one DOM and transfer it to another DOM as HTML for modification
         $xmlDom = new DOMDocument();
-        $xmlDom->loadXML($xmlString);
+        $isValid = $xmlDom->loadXML($xmlString);
+
+        if (!$isValid) {
+            throw new MappingException('Invalid XML; Failed to parse DOM for sharedpassage content');
+        }
 
         $htmlDom = new DOMDocument();
         $htmlDom->loadHTML('<body></body>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
@@ -208,7 +230,11 @@ class SharedPassageMapper
         $dom->formatOutput       = false;
         $dom->substituteEntities = false;
 
-        $dom->loadXML($xml);
+        $isValid = $dom->loadXML($xml);
+
+        if (!$isValid) {
+            throw new MappingException('Invalid XML; Failed to parse DOM for sharedpassage content');
+        }
 
         return $dom;
     }
@@ -218,7 +244,7 @@ class SharedPassageMapper
         $xml = trim($xml);
 
         $dom = new \DOMDocument('1.0', 'UTF-8');
-        libxml_use_internal_errors(true);
+        $previousLibXmlSetting = libxml_use_internal_errors(true);
 
         // HACK: Pass the version and encoding to prevent libxml from decoding HTML entities (esp. &amp; which libxml borks at)
         // Only do this if it hasnt already been passed along in the xml string. Sometimes, we read from a file, and sometimes
@@ -232,6 +258,9 @@ class SharedPassageMapper
 
         // HACK: Handle the fact that XML can't handle named entities (and HTML5 has no DTD for it)
         $xml = XmlEntityUtil::convertNamedEntitiesToHexInString($xml);
+
+        libxml_clear_errors();
+        libxml_use_internal_errors($previousLibXmlSetting);
 
         return $xml;
     }
