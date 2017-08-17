@@ -261,9 +261,35 @@ abstract class BaseInteractionValidationBuilder
 
             case $expression instanceof Equal:
                 // comparing a response to a value - can assume to be correct
+                // NOTE: sometimes this isn't comparing a response to a value
+                // NOTE: sometimes this compares a response to some default
                 $responseRules = $conditionBranch->getResponseRules();
-                $responseId = $expression->getExpressions()[0]->getIdentifier();
-                $correctValue = $expression->getExpressions()[1]->getValue();
+
+                // FIXME: The following code to process the sub-expressions are order dependent; they should not be.
+
+                // HACK: This assumes the first sub-expression is a variable (i.e. identifiable)
+                $identifiableExpression = $expression->getExpressions()[0];
+                if ($identifiableExpression instanceof Variable) {
+                    $responseId = $identifiableExpression->getIdentifier();
+                } else {
+                    throw new MappingException(
+                        '<responseProcessing> - Equal expression uses unsupported sub-expressions;'.
+                        ' only BaseValue/Variable is supported as an operand;'.
+                        ' found '.(get_class($identifiableExpression) ?: gettype($identifiableExpression))
+                    );
+                }
+
+                // HACK: This assumes the second sub-expression is a value
+                $valueExpression = $expression->getExpressions()[1];
+                if ($valueExpression instanceof BaseValue) {
+                    $correctValue = $valueExpression->getValue();
+                } else {
+                    throw new MappingException(
+                        '<responseProcessing> - Equal expression uses unsupported sub-expressions;'.
+                        ' only BaseValue/Variable is supported as an operand;'.
+                        ' found '.(get_class($valueExpression) ?: gettype($valueExpression))
+                    );
+                }
 
                 $outcomeValues = $this->getOutcomeValuesFromResponseRules($responseRules);
                 $results['correct'][] = [
@@ -310,6 +336,8 @@ abstract class BaseInteractionValidationBuilder
         }
 
         // NOTE: the response rules elements are SetOutcomeValue objects
+        // NOTE: sometimes the response rules elements are NOT SetOutcomeValue objects
+        // NOTE: sometimes the response rules are ResponseCondition objects
         foreach ($responseRules as $setOutcomeValue) {
             if (!($setOutcomeValue instanceof SetOutcomeValue)) {
                 throw new MappingException('Cannot parse complex nested response rules');
