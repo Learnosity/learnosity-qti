@@ -77,7 +77,7 @@ class QtiMarshallerUtil
 
         // TODO: Decode html entitfy back here, this is a hack until I can figure out
         // TODO: how to not do that with DomDocument.saveXML();
-        return html_entity_decode($string);
+        return $string;
     }
 
     public static function marshallValidQti(QtiComponent $component)
