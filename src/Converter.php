@@ -62,6 +62,7 @@ class Converter
             $resultPath = $learnosityJsonDirectory . '/' . basename($filename, '.xml') . '.json';
             try {
                 // Write the JSON result to a folder named with its original XML filename
+                // FIXME: This will fail now that the signature of the following method has changed significantly
                 list($item, $questions, $manifest) = self::convertQtiItemToLearnosity($file->getContents(), $baseAssetsUrl, $validate);
                 $result = [
                     'meta' => [
@@ -147,6 +148,7 @@ class Converter
 
     public static function convertQtiPassageToLearnosity($xmlString)
     {
+        $exceptions = null;
         $widgetWriter = AppContainer::getApplicationContainer()->get('learnosity_question_writer');
         $passageMapper = new SharedPassageMapper();
 
@@ -177,7 +179,7 @@ class Converter
         return [$widgetData, $exceptions];
     }
 
-    public static function convertQtiItemToLearnosity($xmlString, $baseAssetsUrl = '', $validate = true, $filePath = null, $customItemReference = null)
+    public static function convertQtiItemToLearnosity($xmlString, $baseAssetsUrl = '', $validate = true, $filePath = null, $customItemReference = null, $metadata = [])
     {
         $itemMapper = AppContainer::getApplicationContainer()->get('qtiv2_item_mapper');
         $itemWriter = AppContainer::getApplicationContainer()->get('learnosity_item_writer');
@@ -189,10 +191,24 @@ class Converter
             if (isset($filePath)) {
                 $sourceDirectoryPath = dirname($filePath);
             }
-            list($item, $questions, $features, $exceptions) = $itemMapper->parse($xmlString, $validate, $sourceDirectoryPath);
-
+            // TODO: Handle additional (related) items being passed back
+            $result = $itemMapper->parse($xmlString, $validate, $sourceDirectoryPath, $metadata);
+            $item = $result['item'];
+            $questions = $result['questions'];
+            $features = $result['features'];
+            $messages = $result['messages'];
+            $rubricItem = isset($result['rubric']) ? $result['rubric'] : null;
             if (!empty($customItemReference)) {
                 $item->set_reference($customItemReference);
+            }
+            if (!empty($rubricItem)) {
+                $rubricItem->set_reference($item->get_reference().'_rubric');
+                foreach ($questions as $question) {
+                    $questionMetadata = $question->get_data()->get_metadata();
+                    if (!empty($questionMetadata)) {
+                        $questionMetadata->set_rubric_reference($rubricItem->get_reference());
+                    }
+                }
             }
         } catch (XmlStorageException $e) {
             // Check invalid schema error message and intercept to rethrow as known `InvalidQtiException` exception
@@ -211,6 +227,12 @@ class Converter
             $itemData = $itemWriter->convert($item);
         }
 
+        // Support additional (related) items being passed back
+        $rubricItemData = [];
+        if ($rubricItem instanceof item) {
+            $rubricItemData = $itemWriter->convert($rubricItem);
+        }
+
         $questionsData = [];
         if (is_array($questions)) {
             foreach ($questions as $question) {
@@ -224,7 +246,13 @@ class Converter
             }
         }
 
-        return [$itemData, $questionsData, $featuresData, $exceptions];
+        return [
+            'item' => $itemData,
+            'questions' => $questionsData,
+            'features' => $featuresData,
+            'messages' => $messages,
+            'rubric' => $rubricItemData,
+        ];
     }
 
     public static function convertLearnosityToQtiItem(array $data)

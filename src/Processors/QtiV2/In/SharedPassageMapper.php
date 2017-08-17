@@ -2,11 +2,13 @@
 
 namespace LearnosityQti\Processors\QtiV2\In;
 
-use DOMElement;
 use DOMDocument;
+use DOMElement;
 use LearnosityQti\Entities\Question;
 use LearnosityQti\Entities\QuestionTypes\sharedpassage;
 use LearnosityQti\Utils\UuidUtil;
+use LearnosityQti\Utils\QtiMarshallerUtil;
+use LearnosityQti\Utils\Xml\EntityUtil as XmlEntityUtil;
 use qtism\data\content\RubricBlock;
 use qtism\data\content\xhtml\Object;
 use qtism\data\QtiComponentCollection;
@@ -16,11 +18,26 @@ use LearnosityQti\Exceptions\MappingException;
 
 class SharedPassageMapper
 {
+    const CONTENT_TYPE_HTML = 'text/html';
+    const CONTENT_TYPE_XML  = 'application/xml';
+
+    protected $emptyAllowed = true;
+
     private $sourceDirectoryPath;
 
     public function __construct($sourceDirectoryPath = null)
     {
         $this->sourceDirectoryPath = $sourceDirectoryPath;
+    }
+
+    public function isEmptyAllowed()
+    {
+        return $this->emptyAllowed;
+    }
+
+    public function setEmptyAllowed($emptyAllowed)
+    {
+        $this->emptyAllowed = boolval($emptyAllowed);
     }
 
     public function parse($xmlString)
@@ -58,14 +75,14 @@ class SharedPassageMapper
         return $results;
     }
 
-    public function parseFile(SplFileInfo $file, $contentType = 'application/xml')
+    public function parseFile(SplFileInfo $file, $contentType = self::CONTENT_TYPE_XML)
     {
         $passageContentString = file_get_contents($file->getRealPath());
         switch ($contentType) {
-            case 'text/html':
+            case static::CONTENT_TYPE_HTML:
                 $result = $this->parseHtml($passageContentString);
                 break;
-            case 'application/xml':
+            case static::CONTENT_TYPE_XML:
                 # Falls through
             default:
                 $result = $this->parseXml($passageContentString);
@@ -77,32 +94,61 @@ class SharedPassageMapper
 
     public function parseWithRubricBlockComponent(RubricBlock $rubricBlock)
     {
-        // TODO: Handle HTML content inside rubricBlock that wraps the object element
-        $result = [];
-        $messages = [];
+        $results = [];
 
-        // Extract the object element (if any)
+        // Extract the object element(s) (if any)
         /** @var QtiComponentCollection $objects */
         $objects = $rubricBlock->getComponentsByClassName('object', true);
         if ($objects->count()) {
-            if ($objects->count() > 1) {
-                LogService::log('<rubricBlock use="context"> - multiple <object> elements found, will use the first only');
+            // TODO: Handle HTML content inside rubricBlock that wraps the object element(s)
+            $results = $this->buildSharedPassagesFromObjects($objects);
+        } else {
+            // Fall back to using all the content in the <rubricBlock> verbatim as a single passage
+            $xml = QtiMarshallerUtil::marshall($rubricBlock);
+            if (strlen(trim($xml)) > 0) {
+                $dom          = $this->getDomForXml($xml);
+                $innerContent = $this->getInnerXmlFragmentFromDom($dom);
+                $results      = $this->parseXml($dom->saveXML($innerContent));
+            } elseif ($this->isEmptyAllowed()) {
+                $results      = $this->parseXml($xml);
+            } else {
+                throw new MappingException('No content found; cannot create sharedpassage (isEmptyAllowed=false)');
             }
-            $objects->rewind();
-            $contentRelativePath = $objects->current()->getData();
-            $contentType = $objects->current()->getType();
-            $file = new SplFileInfo($this->sourceDirectoryPath.'/'.$contentRelativePath);
-            if (!$file->isFile()) {
-                throw new MappingException("Could not process <rubricBlock> - resource file at {$contentRelativePath} not found in directory: '{$this->sourceDirectoryPath}'");
-            }
-
-            $result = $this->parseFile($file, $contentType);
         }
 
-        // TODO: Fix flush issue with LogService
-        // $messages = array_merge($messages, array_values(array_unique(LogService::flush())));
+        return $results;
+    }
 
-        return $result;
+    protected function buildSharedPassagesFromObjects(QtiComponentCollection $objects)
+    {
+        $allowedObjectContentTypes = [
+            static::CONTENT_TYPE_HTML,
+            static::CONTENT_TYPE_XML,
+        ];
+
+        $results = [
+            'features' => [],
+        ];
+
+        $objects->rewind();
+        // Handle processing multiple passage objects in order
+        foreach ($objects as $object) {
+            $contentType = $object->getType();
+            if (in_array($contentType, $allowedObjectContentTypes)) {
+                $contentRelativePath = $object->getData();
+                $file = new SplFileInfo($this->sourceDirectoryPath.'/'.$contentRelativePath);
+                if (!$file->isFile()) {
+                    throw new MappingException("Could not process <rubricBlock> - resource file at {$contentRelativePath} not found in directory: '{$this->sourceDirectoryPath}'");
+                }
+
+                $fileResult = $this->parseFile($file, $contentType);
+
+                // The `features` array is a map by feature reference; merge new result with existing ones
+                $results['features'] = array_merge($results['features'], $fileResult['features']);
+            }
+        }
+
+        return $results;
     }
 
     protected function buildSharedPassageWithContent($passageContent)
@@ -145,16 +191,78 @@ class SharedPassageMapper
 
     private function loadXmlAsHtmlDocument($xmlString)
     {
+        // Sanitize the XML for DOMDocument usage
+        $xmlString = $this->sanitizeXml($xmlString);
+
         // HACK: Load as XML in one DOM and transfer it to another DOM as HTML for modification
         $xmlDom = new DOMDocument();
-        $xmlDom->loadXML($xmlString);
+        $isValid = $xmlDom->loadXML($xmlString);
+
+        if (!$isValid) {
+            throw new MappingException('Invalid XML; Failed to parse DOM for sharedpassage content');
+        }
 
         $htmlDom = new DOMDocument();
-        $htmlDom->loadHTML('<body></body>');
+        $htmlDom->loadHTML('<body></body>', LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
         $xmlDom = $htmlDom->importNode($xmlDom->documentElement, true);
         $htmlDom->replaceChild($xmlDom, $htmlDom->documentElement);
 
         return $htmlDom;
+    }
+
+    private function getInnerXmlFragmentFromDom(\DOMDocument $dom)
+    {
+        $fragment = $dom->createDocumentFragment();
+        $childNodes = $dom->documentElement->childNodes;
+        while (($node = $childNodes->item(0))) {
+            $node->parentNode->removeChild($node);
+            $fragment->appendChild($node);
+        }
+
+        return $fragment;
+    }
+
+    private function getDomForXml($xml)
+    {
+        $dom = new \DOMDocument();
+
+        $dom->preserveWhiteSpace = false;
+        $dom->formatOutput       = false;
+        $dom->substituteEntities = false;
+
+        $isValid = $dom->loadXML($xml);
+
+        if (!$isValid) {
+            throw new MappingException('Invalid XML; Failed to parse DOM for sharedpassage content');
+        }
+
+        return $dom;
+    }
+
+    private function sanitizeXml($xml)
+    {
+        $xml = trim($xml);
+
+        $dom = new \DOMDocument('1.0', 'UTF-8');
+        $previousLibXmlSetting = libxml_use_internal_errors(true);
+
+        // HACK: Pass the version and encoding to prevent libxml from decoding HTML entities (esp. &amp; which libxml borks at)
+        // Only do this if it hasnt already been passed along in the xml string. Sometimes, we read from a file, and sometimes
+        // we read from a block inside another file.
+        if (strpos($xml, '<?xml ') === false) {
+            $xml = '<?xml version="1.0" encoding="UTF-8">' . $xml;
+        }
+
+        $dom->loadHTML($xml, LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
+        $xml = $dom->saveXML($dom->documentElement);
+
+        // HACK: Handle the fact that XML can't handle named entities (and HTML5 has no DTD for it)
+        $xml = XmlEntityUtil::convertNamedEntitiesToHexInString($xml);
+
+        libxml_clear_errors();
+        libxml_use_internal_errors($previousLibXmlSetting);
+
+        return $xml;
     }
 
     private function parsePassageContentFromDom(DOMDocument $htmlDom)
@@ -180,6 +288,14 @@ class SharedPassageMapper
         $xpath = new \DOMXPath($htmlDom);
         foreach ($xpath->query('//object') as $objectElement) {
             $this->handleObjectElementInDocument($objectElement, $htmlDom);
+        }
+
+        // HACK: Saving exclusively from the documentElement breaks content
+        // with no wrapper element/multiple root elements. So handle it differently
+        // TODO: Check if this logic is even needed; we may not need to save from the documentElement anymore
+        if ($htmlDom->documentElement->nextSibling) {
+            LogService::log('SharedPassageMapper - found passage content with more than one root element; Assume that the content is correct');
+            return $htmlDom->saveHTML();
         }
 
         return $htmlDom->saveHTML($htmlDom->documentElement);

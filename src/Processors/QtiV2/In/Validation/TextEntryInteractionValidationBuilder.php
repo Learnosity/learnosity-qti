@@ -49,14 +49,16 @@ class TextEntryInteractionValidationBuilder extends BaseInteractionValidationBui
         if (empty($interactionResponses)) {
             // there was nothing in the response declaration
             if (!empty($scores['correct'])) {
-                foreach ($scores['correct'] as $correct) {
-                    $interactionResponses[][] = new ValidResponse($correct['score'], [(string)$correct['answer']]);
+                if (is_array($scores['correct'])) {
+                    foreach ($scores['correct'] as $correct) {
+                        $interactionResponses[][] = new ValidResponse($correct['score'], [(string)$correct['answer']]);
+                    }
                 }
             }
         }
 
         if (empty($interactionResponses)) {
-            LogService::log('Response declaration has no correct response values. Thus, validation ignored');
+            LogService::log('Response declaration has no valid correct response values. Thus, validation ignored');
         }
 
         $responses = ArrayUtil::cartesianProductForResponses($interactionResponses);

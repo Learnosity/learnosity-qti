@@ -18,8 +18,11 @@ class OrderInteractionValidationBuilder extends BaseInteractionValidationBuilder
         $this->orderMapping = $orderMapping;
     }
 
-    protected function getMatchCorrectTemplateValidation()
+    protected function getMatchCorrectTemplateValidation(array $scores = null)
     {
+        $scores = $this->getScoresForInteraction($scores);
+        list($score, $mode) = $this->getValidationScoringData($scores);
+
         // TODO: Validate against mismatch possible responses and correct response
         // Build the `value` object on `valid_response`
         $values = [];
@@ -32,6 +35,6 @@ class OrderInteractionValidationBuilder extends BaseInteractionValidationBuilder
             }
             $values[] = $this->orderMapping[$value];
         }
-        return ValidationBuilder::build('orderlist', 'exactMatch', [new ValidResponse(1, $values)]);
+        return ValidationBuilder::build('orderlist', $mode, [new ValidResponse($score, $values)]);
     }
 }

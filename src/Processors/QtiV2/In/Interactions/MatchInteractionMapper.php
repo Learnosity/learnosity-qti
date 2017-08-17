@@ -65,12 +65,6 @@ class MatchInteractionMapper extends AbstractInteractionMapper
                 return true;
             }
         }
-        foreach ($interaction->getTargetChoices()->getSimpleAssociableChoices() as $choice) {
-            /** @var SimpleAssociableChoice $choice */
-            if ($choice->getMatchMax() !== 1) {
-                return true;
-            }
-        }
         return false;
     }
 

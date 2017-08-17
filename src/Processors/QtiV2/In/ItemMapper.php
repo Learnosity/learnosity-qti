@@ -44,7 +44,7 @@ class ItemMapper
      *                   first element, associated questions as the second, and
      *                   log messages resulting from the operation as the last element
      */
-    public function parse($xmlString, $validateXml = true, $sourceDirectoryPath = null)
+    public function parse($xmlString, $validateXml = true, $sourceDirectoryPath = null, $metadata = [])
     {
         // TODO: Remove this, and move it higher up
         LogService::flush();
@@ -59,7 +59,7 @@ class ItemMapper
         $assessmentItem = $this->getAssessmentItemFromXmlDocument($xmlDocument);
 
         // Convert the QTI assessment item into Learnosity output
-        return $this->parseWithAssessmentItemComponent($assessmentItem, $sourceDirectoryPath);
+        return $this->parseWithAssessmentItemComponent($assessmentItem, $sourceDirectoryPath, $metadata);
     }
 
     /**
@@ -71,7 +71,7 @@ class ItemMapper
      *                   first element, associated questions as the second, and
      *                   log messages resulting from the operation as the last element
      */
-    public function parseWithAssessmentItemComponent(AssessmentItem $assessmentItem, $sourceDirectoryPath = null)
+    public function parseWithAssessmentItemComponent(AssessmentItem $assessmentItem, $sourceDirectoryPath = null, $metadata = [])
     {
         // TODO: Move this logging service upper to converter class level
         // Make sure we clean up the log
@@ -84,14 +84,23 @@ class ItemMapper
         $assessmentItem = $this->validateQtiAssessmentItem($assessmentItem);
 
         // Conversion from QTI item to Learnosity item and questions
-        list($item, $questions, $features) = $this->buildLearnosityItemFromQtiAssessmentItem($assessmentItem, $sourceDirectoryPath);
+        // TODO: Handle additional (related) items being passed back
+        list($item, $questions, $features, $rubric) = $this->buildLearnosityItemFromQtiAssessmentItem($assessmentItem, $sourceDirectoryPath, $metadata);
 
+        // TODO: Check whether this needs to handle mapping questions to relevant items
         list($item, $questions) = $this->processLearnosityItem($item, $questions, $processings);
 
         // Flush out all the error messages stored in this static class, also ensure they are unique
         $messages = array_values(array_unique(LogService::flush()));
 
-        return [$item, $questions, $features, $messages];
+        // TODO: Support additional (related) items being passed back
+        return [
+            'item'      => $item,
+            'rubric'    => $rubric,
+            'questions' => $questions,
+            'features'  => $features,
+            'messages'  => $messages,
+        ];
     }
 
     /**
@@ -105,7 +114,7 @@ class ItemMapper
      *
      * @throws \LearnosityQti\Exceptions\MappingException
      */
-    protected function buildLearnosityItemFromQtiAssessmentItem(AssessmentItem $assessmentItem, $sourceDirectoryPath = null)
+    protected function buildLearnosityItemFromQtiAssessmentItem(AssessmentItem $assessmentItem, $sourceDirectoryPath = null, $metadata = [])
     {
         $responseProcessingTemplate = $this->getResponseProcessingTemplate($assessmentItem->getResponseProcessing());
 
@@ -122,6 +131,10 @@ class ItemMapper
         $responseDeclarations = $assessmentItem->getComponentsByClassName('responseDeclaration', true);
         $itemBuilder = $this->itemBuilderFactory->getItemBuilder($assessmentItem);
         $itemBuilder->setSourceDirectoryPath($sourceDirectoryPath);
+        if (isset($metadata['point_value'])) {
+            $itemBuilder->setItemPointValue($metadata['point_value']);
+        }
+
         $itemBuilder->map(
             $assessmentItem->getIdentifier(),
             $itemBody,
@@ -135,11 +148,14 @@ class ItemMapper
         if ($assessmentItem->getTitle()) {
             $item->set_description($assessmentItem->getTitle());
         }
+        // Handle additional (related) items being passed back
+        $rubric = $itemBuilder->getRubricItem();
 
         $questions = $itemBuilder->getQuestions();
         $features = $itemBuilder->getFeatures();
 
-        return [$item, $questions, $features];
+        // Support additional (related) items being passed back
+        return [$item, $questions, $features, $rubric];
     }
 
     /**
