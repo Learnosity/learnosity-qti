@@ -114,14 +114,15 @@ class SharedPassageMapper
                 $dom          = $this->getDomForXml($xml);
                 $innerContent = $this->getInnerXmlFragmentFromDom($dom);
                 $results      = $this->parseXml($dom->saveXML($innerContent));
-                if (empty($results['features'])) {
-                    throw new \Exception("Could not process <rubricBlock> passage");
-                }
             } elseif ($this->isEmptyAllowed()) {
                 $results      = $this->parseXml($xml);
             } else {
                 throw new MappingException('No content found; cannot create sharedpassage (isEmptyAllowed=false)');
             }
+        }
+
+        if (empty($results['features'])) {
+            throw new MappingException("Could not process <rubricBlock> passage");
         }
 
         return $results;
