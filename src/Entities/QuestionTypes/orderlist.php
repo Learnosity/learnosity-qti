@@ -5,15 +5,15 @@ namespace LearnosityQti\Entities\QuestionTypes;
 use LearnosityQti\Entities\BaseQuestionType;
 
 /**
- * This class is auto-generated based on Schemas API and you should not modify its content
- * Metadata: {"responses":"v2.86.0","feedback":"v2.71.0","features":"v2.84.0"}
- */
-class orderlist extends BaseQuestionType
-{
+* This class is auto-generated based on Schemas API and you should not modify its content
+* Metadata: {"responses":"v2.107.0","feedback":"v2.71.0","features":"v2.107.0"}
+*/
+class orderlist extends BaseQuestionType {
     protected $is_math;
     protected $metadata;
     protected $stimulus;
     protected $stimulus_review;
+    protected $instructor_stimulus;
     protected $type;
     protected $ui_style;
     protected $feedback_attempts;
@@ -21,277 +21,270 @@ class orderlist extends BaseQuestionType
     protected $validation;
     protected $description;
     protected $list;
-
+    protected $shuffle_options;
+    
     public function __construct(
-        $type,
-        array $list
-    ) {
-        $this->type = $type;
-        $this->list = $list;
-    }
+                    $type,
+                                array $list
+                        )
+    {
+                $this->type = $type;
+                $this->list = $list;
+            }
 
     /**
-     * Get Has Mathematical Formulas \
-     * Set to <strong>true</strong> to have LaTeX or MathML contents to be rendered with mathjax. \
-     *
-     * @return boolean $is_math \
-     */
-    public function get_is_math()
-    {
+    * Get Contains math \
+    * Set to <strong>true</strong> to have LaTeX or MathML contents to be rendered with mathjax. \
+    * @return boolean $is_math \
+    */
+    public function get_is_math() {
         return $this->is_math;
     }
 
     /**
-     * Set Has Mathematical Formulas \
-     * Set to <strong>true</strong> to have LaTeX or MathML contents to be rendered with mathjax. \
-     *
-     * @param boolean $is_math \
-     */
-    public function set_is_math($is_math)
-    {
+    * Set Contains math \
+    * Set to <strong>true</strong> to have LaTeX or MathML contents to be rendered with mathjax. \
+    * @param boolean $is_math \
+    */
+    public function set_is_math ($is_math) {
         $this->is_math = $is_math;
     }
 
     /**
-     * Get metadata \
-     *  \
-     *
-     * @return orderlist_metadata $metadata \
-     */
-    public function get_metadata()
-    {
+    * Get metadata \
+    *  \
+    * @return orderlist_metadata $metadata \
+    */
+    public function get_metadata() {
         return $this->metadata;
     }
 
     /**
-     * Set metadata \
-     *  \
-     *
-     * @param orderlist_metadata $metadata \
-     */
-    public function set_metadata(orderlist_metadata $metadata)
-    {
+    * Set metadata \
+    *  \
+    * @param orderlist_metadata $metadata \
+    */
+    public function set_metadata (orderlist_metadata $metadata) {
         $this->metadata = $metadata;
     }
 
     /**
-     * Get Stimulus \
-     * <a data-toggle="modal" href="#supportedTags">HTML</a>/Text content displayed in all states (initial, resume, review) ren
-     * dered <strong>above</strong> the response area. Supports embedded <a href="http://docs.learnosity.com/questionsapi/featu
-     * retypes.php" target="_blank">Feature &lt;span&gt; tags</a>. \
-     *
-     * @return string $stimulus \
-     */
-    public function get_stimulus()
-    {
+    * Get Stimulus \
+    * The question stimulus. Can include text, tables, images. \
+    * @return string $stimulus \
+    */
+    public function get_stimulus() {
         return $this->stimulus;
     }
 
     /**
-     * Set Stimulus \
-     * <a data-toggle="modal" href="#supportedTags">HTML</a>/Text content displayed in all states (initial, resume, review) ren
-     * dered <strong>above</strong> the response area. Supports embedded <a href="http://docs.learnosity.com/questionsapi/featu
-     * retypes.php" target="_blank">Feature &lt;span&gt; tags</a>. \
-     *
-     * @param string $stimulus \
-     */
-    public function set_stimulus($stimulus)
-    {
+    * Set Stimulus \
+    * The question stimulus. Can include text, tables, images. \
+    * @param string $stimulus \
+    */
+    public function set_stimulus ($stimulus) {
         $this->stimulus = $stimulus;
     }
 
     /**
-     * Get Stimulus in review \
-     * <a data-toggle="modal" href="#supportedTags">HTML</a>/Text content displayed <strong>only</strong> in review state rende
-     * red <strong>above</strong> the response area. Supports embedded <a href="http://docs.learnosity.com/questionsapi/feature
-     * types.php" target="_blank">Feature &lt;span&gt; tags</a>. Will override stimulus in review state. \
-     *
-     * @return string $stimulus_review \
-     */
-    public function get_stimulus_review()
-    {
+    * Get Stimulus (review only) \
+    * <a data-toggle="modal" href="#supportedTags">HTML</a>/Text content displayed <strong>only</strong> in review state rende
+	red <strong>above</strong> the response area. Supports embedded <a href="http://docs.learnosity.com/questionsapi/feature
+	types.php" target="_blank">Feature &lt;span&gt; tags</a>. Will override stimulus in review state. \
+    * @return string $stimulus_review \
+    */
+    public function get_stimulus_review() {
         return $this->stimulus_review;
     }
 
     /**
-     * Set Stimulus in review \
-     * <a data-toggle="modal" href="#supportedTags">HTML</a>/Text content displayed <strong>only</strong> in review state rende
-     * red <strong>above</strong> the response area. Supports embedded <a href="http://docs.learnosity.com/questionsapi/feature
-     * types.php" target="_blank">Feature &lt;span&gt; tags</a>. Will override stimulus in review state. \
-     *
-     * @param string $stimulus_review \
-     */
-    public function set_stimulus_review($stimulus_review)
-    {
+    * Set Stimulus (review only) \
+    * <a data-toggle="modal" href="#supportedTags">HTML</a>/Text content displayed <strong>only</strong> in review state rende
+	red <strong>above</strong> the response area. Supports embedded <a href="http://docs.learnosity.com/questionsapi/feature
+	types.php" target="_blank">Feature &lt;span&gt; tags</a>. Will override stimulus in review state. \
+    * @param string $stimulus_review \
+    */
+    public function set_stimulus_review ($stimulus_review) {
         $this->stimulus_review = $stimulus_review;
     }
 
     /**
-     * Get Question Type \
-     *  \
-     *
-     * @return string $type \
-     */
-    public function get_type()
-    {
+    * Get Instructor stimulus \
+    * <a data-toggle="modal" href="#supportedTags">HTML</a>/Text content displayed when <code>showInstructorStimulus</code> is
+	 set to <code>true</code> on the activity. Supports embedded <a href="http://docs.learnosity.com/questionsapi/featuretyp
+	es.php" target="_blank">Feature &lt;span&gt; tags</a>. \
+    * @return string $instructor_stimulus \
+    */
+    public function get_instructor_stimulus() {
+        return $this->instructor_stimulus;
+    }
+
+    /**
+    * Set Instructor stimulus \
+    * <a data-toggle="modal" href="#supportedTags">HTML</a>/Text content displayed when <code>showInstructorStimulus</code> is
+	 set to <code>true</code> on the activity. Supports embedded <a href="http://docs.learnosity.com/questionsapi/featuretyp
+	es.php" target="_blank">Feature &lt;span&gt; tags</a>. \
+    * @param string $instructor_stimulus \
+    */
+    public function set_instructor_stimulus ($instructor_stimulus) {
+        $this->instructor_stimulus = $instructor_stimulus;
+    }
+
+    /**
+    * Get Question type \
+    *  \
+    * @return string $type \
+    */
+    public function get_type() {
         return $this->type;
     }
 
     /**
-     * Set Question Type \
-     *  \
-     *
-     * @param string $type \
-     */
-    public function set_type($type)
-    {
+    * Set Question type \
+    *  \
+    * @param string $type \
+    */
+    public function set_type ($type) {
         $this->type = $type;
     }
 
     /**
-     * Get UI style \
-     * Object used to control different aspects of the UI \
-     *
-     * @return orderlist_ui_style $ui_style \
-     */
-    public function get_ui_style()
-    {
+    * Get UI style \
+    * Object used to control different aspects of the UI \
+    * @return orderlist_ui_style $ui_style \
+    */
+    public function get_ui_style() {
         return $this->ui_style;
     }
 
     /**
-     * Set UI style \
-     * Object used to control different aspects of the UI \
-     *
-     * @param orderlist_ui_style $ui_style \
-     */
-    public function set_ui_style(orderlist_ui_style $ui_style)
-    {
+    * Set UI style \
+    * Object used to control different aspects of the UI \
+    * @param orderlist_ui_style $ui_style \
+    */
+    public function set_ui_style (orderlist_ui_style $ui_style) {
         $this->ui_style = $ui_style;
     }
 
     /**
-     * Get Number of feedback attempts allowed \
-     * If instant_feedback is true, this field determines how many times the user can click on the 'Check Answer' button, with
-     * 0 being unlimited. \
-     *
-     * @return number $feedback_attempts \
-     */
-    public function get_feedback_attempts()
-    {
+    * Get Check answer attempts \
+    * If instant_feedback is true, this field determines how many times the user can click on the 'Check Answer' button. 0 mea
+	ns unlimited. \
+    * @return number $feedback_attempts \
+    */
+    public function get_feedback_attempts() {
         return $this->feedback_attempts;
     }
 
     /**
-     * Set Number of feedback attempts allowed \
-     * If instant_feedback is true, this field determines how many times the user can click on the 'Check Answer' button, with
-     * 0 being unlimited. \
-     *
-     * @param number $feedback_attempts \
-     */
-    public function set_feedback_attempts($feedback_attempts)
-    {
+    * Set Check answer attempts \
+    * If instant_feedback is true, this field determines how many times the user can click on the 'Check Answer' button. 0 mea
+	ns unlimited. \
+    * @param number $feedback_attempts \
+    */
+    public function set_feedback_attempts ($feedback_attempts) {
         $this->feedback_attempts = $feedback_attempts;
     }
 
     /**
-     * Get Provide instant feedback \
-     * Flag to determine whether to display a 'Check Answer' button to provide instant feedback to the user. \
-     *
-     * @return boolean $instant_feedback \
-     */
-    public function get_instant_feedback()
-    {
+    * Get Provide instant feedback \
+    * Flag to determine whether to display a 'Check Answer' button to provide instant feedback to the user. \
+    * @return boolean $instant_feedback \
+    */
+    public function get_instant_feedback() {
         return $this->instant_feedback;
     }
 
     /**
-     * Set Provide instant feedback \
-     * Flag to determine whether to display a 'Check Answer' button to provide instant feedback to the user. \
-     *
-     * @param boolean $instant_feedback \
-     */
-    public function set_instant_feedback($instant_feedback)
-    {
+    * Set Provide instant feedback \
+    * Flag to determine whether to display a 'Check Answer' button to provide instant feedback to the user. \
+    * @param boolean $instant_feedback \
+    */
+    public function set_instant_feedback ($instant_feedback) {
         $this->instant_feedback = $instant_feedback;
     }
 
     /**
-     * Get validation \
-     * Validation object that includes options on how this question will be automarked \
-     *
-     * @return orderlist_validation $validation \
-     */
-    public function get_validation()
-    {
+    * Get Set correct answer(s) \
+    * In this section, configure the correct answer(s) for the question. \
+    * @return orderlist_validation $validation \
+    */
+    public function get_validation() {
         return $this->validation;
     }
 
     /**
-     * Set validation \
-     * Validation object that includes options on how this question will be automarked \
-     *
-     * @param orderlist_validation $validation \
-     */
-    public function set_validation(orderlist_validation $validation)
-    {
+    * Set Set correct answer(s) \
+    * In this section, configure the correct answer(s) for the question. \
+    * @param orderlist_validation $validation \
+    */
+    public function set_validation (orderlist_validation $validation) {
         $this->validation = $validation;
     }
 
     /**
-     * Get Description (deprecated) \
-     * <span class="label label-danger">Deprecated</span> See <em>stimulus_review</em>. <br />
-     * Description of the question and
-     * its context to be displayed.
-     * It <a data-toggle="modal" href="#supportedTags">supports HTML entities</a>. \
-     *
-     * @return string $description \
-     */
-    public function get_description()
-    {
+    * Get Description (deprecated) \
+    * <span class="label label-danger">Deprecated</span> See <em>stimulus_review</em>. <br />
+Description of the question and
+	 its context to be displayed. 
+It <a data-toggle="modal" href="#supportedTags">supports HTML entities</a>. \
+    * @return string $description \
+    */
+    public function get_description() {
         return $this->description;
     }
 
     /**
-     * Set Description (deprecated) \
-     * <span class="label label-danger">Deprecated</span> See <em>stimulus_review</em>. <br />
-     * Description of the question and
-     * its context to be displayed.
-     * It <a data-toggle="modal" href="#supportedTags">supports HTML entities</a>. \
-     *
-     * @param string $description \
-     */
-    public function set_description($description)
-    {
+    * Set Description (deprecated) \
+    * <span class="label label-danger">Deprecated</span> See <em>stimulus_review</em>. <br />
+Description of the question and
+	 its context to be displayed. 
+It <a data-toggle="modal" href="#supportedTags">supports HTML entities</a>. \
+    * @param string $description \
+    */
+    public function set_description ($description) {
         $this->description = $description;
     }
 
     /**
-     * Get List \
-     * Array of strings that represent the unordered stimulus list for the question. \
-     *
-     * @return array $list \
-     */
-    public function get_list()
-    {
+    * Get List \
+    * An unordered list of statements that the student must place in the correct order. \
+    * @return array $list \
+    */
+    public function get_list() {
         return $this->list;
     }
 
     /**
-     * Set List \
-     * Array of strings that represent the unordered stimulus list for the question. \
-     *
-     * @param array $list \
-     */
-    public function set_list(array $list)
-    {
+    * Set List \
+    * An unordered list of statements that the student must place in the correct order. \
+    * @param array $list \
+    */
+    public function set_list (array $list) {
         $this->list = $list;
     }
 
+    /**
+    * Get Shuffle options \
+    *  \
+    * @return boolean $shuffle_options \
+    */
+    public function get_shuffle_options() {
+        return $this->shuffle_options;
+    }
 
-    public function get_widget_type()
-    {
-        return 'response';
+    /**
+    * Set Shuffle options \
+    *  \
+    * @param boolean $shuffle_options \
+    */
+    public function set_shuffle_options ($shuffle_options) {
+        $this->shuffle_options = $shuffle_options;
+    }
+
+    
+    public function get_widget_type() {
+    return 'response';
     }
 }
 
