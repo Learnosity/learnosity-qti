@@ -15,7 +15,7 @@ class ConvertToLearnosityCommand extends Command
         $this
             ->setName('convert:to:learnosity')
             ->setDescription('Converts Learnosity JSON to QTI v2.1')
-            ->setHelp('Converts Learnosity JSON to QTI v2.1, expects to run on a folder with an imsmanifest.xml file')
+            ->setHelp('Converts QTI v2.1 to Learnosity JSON, expects to run on folder(s) with a imsmanifest.xml file')
             ->addOption(
                 'input',
                 'i',

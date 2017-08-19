@@ -20,6 +20,7 @@ class ListCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln([
+            '',
             '<comment>Usage:</comment>',
             '  <info>mo [command] [options] [--help]</info>',
             '',
