@@ -48,8 +48,9 @@ Flags:
   --help 					Print the applications help
 
 Commands:
-  convert:from:learnosity	Converts Learnosity JSON to QTI v2.1
   convert:to:learnosity		Converts QTI v2.1 to Learnosity JSON
+  convert:to:qti			Converts Learnosity JSON to QTI v2.1
+
   list						Lists all commands available
 ```
 
@@ -89,3 +90,43 @@ Options:
 Help:
   Converts QTI v2.1 to Learnosity JSON, expects to run on folder(s) with a imsmanifest.xml file
 ```
+
+
+### Converting Learnosity JSON to QTI
+
+To convert Learnosity JSON to QTI 2.1, run the following:
+
+```
+mo convert:to:qti
+```
+
+By default this will look for content packages inside the `./data/input` directory, and output results (and log files) to `./data/output`. If you want to use different input and/or output paths you can use options:
+
+```
+mo convert:to:qti -i /my/path/to/json -o /my/path/to/output/folder
+```
+
+Remember you can ask for `help`:
+
+```
+$ mo convert:to:qti --help
+
+Usage:
+  convert:to:qti [options]
+
+Options:
+  -i, --input=INPUT     The input path to your Learnosity content [default: "./data/input"]
+  -o, --output=OUTPUT   An output path where the QTI will be saved [default: "./data/output"]
+  -h, --help            Display this help message
+  -q, --quiet           Do not output any message
+  -V, --version         Display this application version
+      --ansi            Force ANSI output
+      --no-ansi         Disable ANSI output
+  -n, --no-interaction  Do not ask any interactive question
+  -v|vv|vvv, --verbose  Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug
+
+Help:
+  Converts Learnosity JSON to QTI v2.1
+```
+
+Only supports Question JSON today.

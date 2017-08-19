@@ -263,10 +263,10 @@ class Converter
         if ($jsonType === self::LEARNOSITY_DATA_ITEM) {
             list($xmlString, $messages) = self::convertLearnosityItem($data);
         // Handle if just question
-        } else if ($jsonType === self::LEARNOSITY_DATA_QUESTION) {
+        } elseif ($jsonType === self::LEARNOSITY_DATA_QUESTION) {
             list($xmlString, $messages) = self::convertLearnosityQuestion($data);
         // Handle if just question data
-        } else if ($jsonType === self::LEARNOSITY_DATA_QUESTION_DATA) {
+        } elseif ($jsonType === self::LEARNOSITY_DATA_QUESTION_DATA) {
             list($xmlString, $messages) = self::convertLearnosityQuestionData($data);
         } else {
             throw new \Exception('Unknown JSON format');

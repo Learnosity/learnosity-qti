@@ -32,6 +32,9 @@ class ClozeassociationMapper extends AbstractQuestionTypeMapper
             $index++;
             return $replacement;
         }, $question->get_template());
+        if (substr($template, 0, 3) !== '<p>') {
+            $template = '<p>' . $template . '</p>';
+        }
         $content = ContentCollectionBuilder::buildBlockStaticCollectionContent(QtiMarshallerUtil::unmarshallElement($template));
 
         // Map `possible_responses` to gaps

@@ -9,6 +9,7 @@ class Constants
         'shorttext',
         'orderlist',
         'longtext',
+        'longtextV2',
         'plaintext',
         'choicematrix',
         'tokenhighlight',
