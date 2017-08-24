@@ -1,10 +1,10 @@
 {
     "meta": {
         "status": true,
-        "timestamp": 1503123627,
-        "request_version": "v2.107.0",
+        "timestamp": 1503525329,
+        "request_version": "v2.108.0",
         "schema_version": {
-            "responses": "v2.107.0",
+            "responses": "v2.108.0",
             "feedback": "v2.71.0",
             "features": "v2.107.0"
         },
@@ -4118,6 +4118,13 @@
                         "name": "Duplicate responses",
                         "required": false,
                         "group": "basic"
+                    },
+                    "shuffle_options": {
+                        "default": false,
+                        "name": "Shuffle options",
+                        "required": false,
+                        "type": "boolean",
+                        "group": "advanced"
                     }
                 },
                 "conditional_attributes": [
@@ -4621,6 +4628,13 @@
                         },
                         "required": true,
                         "group": "basic"
+                    },
+                    "shuffle_options": {
+                        "default": false,
+                        "name": "Shuffle options",
+                        "required": false,
+                        "type": "boolean",
+                        "group": "advanced"
                     }
                 },
                 "conditional_attributes": {
@@ -19102,6 +19116,13 @@
                         "name": "Duplicate responses",
                         "required": false,
                         "group": "basic"
+                    },
+                    "shuffle_options": {
+                        "default": false,
+                        "name": "Shuffle options",
+                        "required": false,
+                        "type": "boolean",
+                        "group": "advanced"
                     }
                 },
                 "conditional_attributes": [
@@ -19656,6 +19677,13 @@
                         },
                         "required": true,
                         "group": "basic"
+                    },
+                    "shuffle_options": {
+                        "default": false,
+                        "name": "Shuffle options",
+                        "required": false,
+                        "type": "boolean",
+                        "group": "advanced"
                     }
                 },
                 "conditional_attributes": {

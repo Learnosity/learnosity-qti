@@ -7,34 +7,44 @@
                     "type": "string",
                     "description": "A unique item identifier across Itembank. It has a limitation of maximum of 150 characters and must only contain ASCII printable characters, except for double quotes, single quotes and accent."
                 },
-                "questionReferences": {
+                "definition": {
                     "required": true,
-                    "type": "array",
-                    "description": "An array of question references. Like item reference, it has a limitation of maximum of 150 characters and must only contain ASCII printable characters, except for double quotes, single quotes and accent. ie. `questionReferenceOne`"
+                    "type": "object",
+                    "description": "An object defining the layout of the item wrapper."
                 },
-                "content": {
-                    "required": true,
-                    "type": "string",
-                    "description": "A valid HTML string that may contains the structure that holds Questions. It shall include questions placeholder set in `questionReferences`, ie. <span class=\"learnosity-response question-questionReferenceOne\"></span>"
+                "questions": {
+                    "required": false,
+                    "type": "array"
+                },
+                "features": {
+                    "required": false,
+                    "type": "array"
+                },
+                "metadata": {
+                    "required": false,
+                    "type": "object",
+                    "description": "An object containing optional metadata like `scoring_type`."
                 },
                 "status": {
                     "required": false,
                     "type": "string",
                     "options": [
-                        {"value": "unpublished"},
-                        {"value": "published"},
-                        {"value": "deleted"}
+                        {
+                            "value": "unpublished"
+                        },
+                        {
+                            "value": "published"
+                        },
+                        {
+                            "value": "archived"
+                        }
                     ],
                     "default": "unpublished",
-                    "description": "ie. `published`, `unpublished`, and `deleted`"
+                    "description": "ie. `published`, `unpublished`, and `archived`"
                 },
                 "description": {
                     "required": false,
                     "type": "string"
-                },
-                "metadata": {
-                    "required": false,
-                    "type": "array"
                 },
                 "workflow": {
                     "required": false,
