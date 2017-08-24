@@ -62,15 +62,17 @@ class FileSystemUtil
 
     public static function removeDir($path)
     {
-        $dir = new DirectoryIterator($path);
-        foreach ($dir as $item) {
-            if ($item->isFile()) {
-                unlink($item->getRealPath());
-            } elseif (!$item->isDot() && $item->isDir()) {
-                self::removeDir($item->getRealPath());
+        if (is_dir($path)) {
+            $dir = new DirectoryIterator($path);
+            foreach ($dir as $item) {
+                if ($item->isFile()) {
+                    unlink($item->getRealPath());
+                } elseif (!$item->isDot() && $item->isDir()) {
+                    self::removeDir($item->getRealPath());
+                }
             }
+            rmdir($path);
         }
-        rmdir($path);
     }
 
     public static function writeJsonToFile($array, $pathname)
