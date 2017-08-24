@@ -45,13 +45,13 @@ Usage:
   mo [command] [options] [--help]
 
 Flags:
-  --help 					Print the applications help
+  --help                    Print the applications help
 
 Commands:
-  convert:to:learnosity		Converts QTI v2.1 to Learnosity JSON
-  convert:to:qti			Converts Learnosity JSON to QTI v2.1
+  convert:to:learnosity     Converts QTI v2.1 to Learnosity JSON
+  convert:to:qti            Converts Learnosity JSON to QTI v2.1
 
-  list						Lists all commands available
+  list                      Lists all commands available
 ```
 
 ### Converting QTI to Learnosity JSON
