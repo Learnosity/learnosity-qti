@@ -6,7 +6,7 @@ use LearnosityQti\Entities\BaseQuestionType;
 
 /**
 * This class is auto-generated based on Schemas API and you should not modify its content
-* Metadata: {"responses":"v2.107.0","feedback":"v2.71.0","features":"v2.107.0"}
+* Metadata: {"responses":"v2.108.0","feedback":"v2.71.0","features":"v2.107.0"}
 */
 class imageclozeassociation extends BaseQuestionType {
     protected $is_math;
@@ -27,6 +27,7 @@ class imageclozeassociation extends BaseQuestionType {
     protected $group_possible_responses;
     protected $img_src;
     protected $duplicate_responses;
+    protected $shuffle_options;
     
     public function __construct(
                     $type,
@@ -375,6 +376,24 @@ class imageclozeassociation extends BaseQuestionType {
     */
     public function set_duplicate_responses ($duplicate_responses) {
         $this->duplicate_responses = $duplicate_responses;
+    }
+
+    /**
+    * Get Shuffle options \
+    *  \
+    * @return boolean $shuffle_options \
+    */
+    public function get_shuffle_options() {
+        return $this->shuffle_options;
+    }
+
+    /**
+    * Set Shuffle options \
+    *  \
+    * @param boolean $shuffle_options \
+    */
+    public function set_shuffle_options ($shuffle_options) {
+        $this->shuffle_options = $shuffle_options;
     }
 
     

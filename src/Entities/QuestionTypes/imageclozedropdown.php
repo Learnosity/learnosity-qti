@@ -6,7 +6,7 @@ use LearnosityQti\Entities\BaseQuestionType;
 
 /**
 * This class is auto-generated based on Schemas API and you should not modify its content
-* Metadata: {"responses":"v2.107.0","feedback":"v2.71.0","features":"v2.107.0"}
+* Metadata: {"responses":"v2.108.0","feedback":"v2.71.0","features":"v2.107.0"}
 */
 class imageclozedropdown extends BaseQuestionType {
     protected $is_math;
@@ -26,6 +26,7 @@ class imageclozedropdown extends BaseQuestionType {
     protected $aria_labels;
     protected $img_src;
     protected $possible_responses;
+    protected $shuffle_options;
     
     public function __construct(
                     $type,
@@ -360,6 +361,24 @@ class imageclozedropdown extends BaseQuestionType {
     */
     public function set_possible_responses (array $possible_responses) {
         $this->possible_responses = $possible_responses;
+    }
+
+    /**
+    * Get Shuffle options \
+    *  \
+    * @return boolean $shuffle_options \
+    */
+    public function get_shuffle_options() {
+        return $this->shuffle_options;
+    }
+
+    /**
+    * Set Shuffle options \
+    *  \
+    * @param boolean $shuffle_options \
+    */
+    public function set_shuffle_options ($shuffle_options) {
+        $this->shuffle_options = $shuffle_options;
     }
 
     
