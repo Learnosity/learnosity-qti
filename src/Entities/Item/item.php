@@ -6,26 +6,25 @@ use LearnosityQti\Entities\BaseEntity;
 
 /**
 * This class is auto-generated based on Schemas API and you should not modify its content
-* Metadata: {"responses":"v2.107.0","feedback":"v2.71.0","features":"v2.107.0"}
+* Metadata: {"responses":"v2.108.0","feedback":"v2.71.0","features":"v2.107.0"}
 */
 class item extends BaseEntity {
     protected $reference;
-    protected $questionReferences;
-    protected $content;
+    protected $definition;
+    protected $questions;
+    protected $features;
+    protected $metadata;
     protected $status;
     protected $description;
-    protected $metadata;
     protected $workflow;
     
     public function __construct(
                     $reference,
-                                array $questionReferences,
-                                $content
+                                $definition
                         )
     {
                 $this->reference = $reference;
-                $this->questionReferences = $questionReferences;
-                $this->content = $content;
+                $this->definition = $definition;
             }
 
     /**
@@ -49,49 +48,81 @@ class item extends BaseEntity {
     }
 
     /**
-    * Get questionReferences \
-    * An array of question references. Like item reference, it has a limitation of maximum of 150 characters and must only con
-	tain ASCII printable characters, except for double quotes, single quotes and accent. ie. `questionReferenceOne` \
-    * @return array $questionReferences \
+    * Get definition \
+    * An object defining the layout of the item wrapper. \
+    * @return object $definition \
     */
-    public function get_questionReferences() {
-        return $this->questionReferences;
+    public function get_definition() {
+        return $this->definition;
     }
 
     /**
-    * Set questionReferences \
-    * An array of question references. Like item reference, it has a limitation of maximum of 150 characters and must only con
-	tain ASCII printable characters, except for double quotes, single quotes and accent. ie. `questionReferenceOne` \
-    * @param array $questionReferences \
+    * Set definition \
+    * An object defining the layout of the item wrapper. \
+    * @param object $definition \
     */
-    public function set_questionReferences (array $questionReferences) {
-        $this->questionReferences = $questionReferences;
+    public function set_definition ($definition) {
+        $this->definition = $definition;
     }
 
     /**
-    * Get content \
-    * A valid HTML string that may contains the structure that holds Questions. It shall include questions placeholder set in 
-	`questionReferences`, ie. <span class="learnosity-response question-questionReferenceOne"></span> \
-    * @return string $content \
+    * Get questions \
+    *  \
+    * @return array $questions \
     */
-    public function get_content() {
-        return $this->content;
+    public function get_questions() {
+        return $this->questions;
     }
 
     /**
-    * Set content \
-    * A valid HTML string that may contains the structure that holds Questions. It shall include questions placeholder set in 
-	`questionReferences`, ie. <span class="learnosity-response question-questionReferenceOne"></span> \
-    * @param string $content \
+    * Set questions \
+    *  \
+    * @param array $questions \
     */
-    public function set_content ($content) {
-        $this->content = $content;
+    public function set_questions (array $questions) {
+        $this->questions = $questions;
+    }
+
+    /**
+    * Get features \
+    *  \
+    * @return array $features \
+    */
+    public function get_features() {
+        return $this->features;
+    }
+
+    /**
+    * Set features \
+    *  \
+    * @param array $features \
+    */
+    public function set_features (array $features) {
+        $this->features = $features;
+    }
+
+    /**
+    * Get metadata \
+    * An object containing optional metadata like `scoring_type`. \
+    * @return object $metadata \
+    */
+    public function get_metadata() {
+        return $this->metadata;
+    }
+
+    /**
+    * Set metadata \
+    * An object containing optional metadata like `scoring_type`. \
+    * @param object $metadata \
+    */
+    public function set_metadata ($metadata) {
+        $this->metadata = $metadata;
     }
 
     /**
     * Get status \
-    * ie. `published`, `unpublished`, and `deleted` \
-    * @return string $status ie. unpublished, published, deleted  \
+    * ie. `published`, `unpublished`, and `archived` \
+    * @return string $status ie. unpublished, published, archived  \
     */
     public function get_status() {
         return $this->status;
@@ -99,8 +130,8 @@ class item extends BaseEntity {
 
     /**
     * Set status \
-    * ie. `published`, `unpublished`, and `deleted` \
-    * @param string $status ie. unpublished, published, deleted  \
+    * ie. `published`, `unpublished`, and `archived` \
+    * @param string $status ie. unpublished, published, archived  \
     */
     public function set_status ($status) {
         $this->status = $status;
@@ -122,24 +153,6 @@ class item extends BaseEntity {
     */
     public function set_description ($description) {
         $this->description = $description;
-    }
-
-    /**
-    * Get metadata \
-    *  \
-    * @return array $metadata \
-    */
-    public function get_metadata() {
-        return $this->metadata;
-    }
-
-    /**
-    * Set metadata \
-    *  \
-    * @param array $metadata \
-    */
-    public function set_metadata (array $metadata) {
-        $this->metadata = $metadata;
     }
 
     /**
