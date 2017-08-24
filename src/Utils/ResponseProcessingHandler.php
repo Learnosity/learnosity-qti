@@ -87,7 +87,7 @@ class ResponseProcessingHandler
         if ($hasCorrectResponse) {
             $responseProcessing->setTemplate("http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct");
         } elseif ($hasMapping) {
-            echo ' - Map response only ??? Boo' . PHP_EOL;
+            echo ' - Map response template used' . PHP_EOL;
             $responseProcessing->setTemplate("http://www.imsglobal.org/question/qti_v2p1/rptemplates/map_response");
         } else {
             // No validation rule? Dont worry about this! ~
