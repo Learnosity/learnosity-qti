@@ -6463,6 +6463,7 @@ e=n.propHooks[b]),void 0!==c?e&&"set"in e&&void 0!==(d=e.set(a,c,b))?d:a[b]=c:e&
             <li><a href="#clozedropdown">clozedropdown</a></li>
             <li><a href="#hotspot">hotspot</a></li>
             <li><a href="#imageclozeassociation">imageclozeassociation</a></li>
+            <li><a href="#longtextV2">longtextV2</a></li>
             <li><a href="#longtext">longtext</a></li>
             <li><a href="#orderlist">orderlist</a></li>
             <li><a href="#plaintext">plaintext</a></li>
@@ -6494,7 +6495,6 @@ e=n.propHooks[b]),void 0!==c?e&&"set"in e&&void 0!==(d=e.set(a,c,b))?d:a[b]=c:e&
     <span class="secondary label">imageclozechemistry</span>
     <span class="secondary label">imageclozetext</span>
     <span class="secondary label">imageupload</span>
-    <span class="secondary label">longtextV2</span>
     <span class="secondary label">numberline</span>
     <span class="secondary label">numberlineplot</span>
     <span class="secondary label">sortlist</span>
@@ -7122,6 +7122,11 @@ e=n.propHooks[b]),void 0!==c?e&&"set"in e&&void 0!==(d=e.set(a,c,b))?d:a[b]=c:e&
                     <td class="support-status support-status-no">NO</td>
                     <td class="description"></td>
                 </tr>
+                            <tr>
+                    <td class="name">shuffle_options</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
                     </table>
     
     <hr/>
@@ -7269,6 +7274,11 @@ e=n.propHooks[b]),void 0!==c?e&&"set"in e&&void 0!==(d=e.set(a,c,b))?d:a[b]=c:e&
                 </tr>
                             <tr>
                     <td class="name">possible_responses</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">shuffle_options</td>
                     <td class="support-status support-status-no">NO</td>
                     <td class="description"></td>
                 </tr>
@@ -7664,6 +7674,141 @@ e=n.propHooks[b]),void 0!==c?e&&"set"in e&&void 0!==(d=e.set(a,c,b))?d:a[b]=c:e&
                 </tr>
                             <tr>
                     <td class="name">duplicate_responses</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">shuffle_options</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                    </table>
+    
+    <hr/>
+    <h4 style="display: inline-block" id="longtextV2">longtextV2</h4>
+    <a style="display: inline-block" href="http://docs.learnosity.com/assessment/questions/questiontypes#longtextV2" target="_blank">(documentation)</a>
+    <a style="display: inline-block; float: right; margin-top: 10px;" href="#mapping-question-types">Back to Top</a>
+
+            <div class="panel">This question type is mapped to &lt;extendedTextEntryInteraction&gt; with `&lt;strong&gt;format&lt;/strong&gt;` attribute as `xhtml`. Both the interaction attribute `minString` and `maxString` is mapped to 1.Validation is not supported thus &lt;responseProcessing&gt; and &lt;responseDeclaration&gt; won&#039;t be populated.</div>
+    
+                <table class="doc-table">
+            <tr>
+                <th></th>
+                <th>Support</th>
+                <th>Description</th>
+            </tr>
+                            <tr>
+                    <td class="name">stimulus</td>
+                    <td class="support-status support-status-yes">YES</td>
+                    <td class="description">This is mapped to `prompt`</td>
+                </tr>
+                            <tr>
+                    <td class="name">placeholder</td>
+                    <td class="support-status support-status-yes">YES</td>
+                    <td class="description">This is mapped to the interaction `placeholder` attribute</td>
+                </tr>
+                            <tr>
+                    <td class="name">is_math</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">metadata</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">metadata.distractor_rationale</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">metadata.rubric_reference</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">metadata.sample_answer</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">metadata.acknowledgements</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">stimulus_review</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">instructor_stimulus</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">type</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">ui_style</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">ui_style.fontsize</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">ui_style.min_height</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">ui_style.max_height</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">description</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">formatting_options</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">max_length</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">character_map</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">spellcheck</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">submit_over_limit</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">show_word_limit</td>
+                    <td class="support-status support-status-no">NO</td>
+                    <td class="description"></td>
+                </tr>
+                            <tr>
+                    <td class="name">show_word_count</td>
                     <td class="support-status support-status-no">NO</td>
                     <td class="description"></td>
                 </tr>
@@ -8300,33 +8445,39 @@ e=n.propHooks[b]),void 0!==c?e&&"set"in e&&void 0!==(d=e.set(a,c,b))?d:a[b]=c:e&
             <td>A unique item identifier across Itembank. It has a limitation of maximum of 150 characters and must only contain ASCII printable characters, except for double quotes, single quotes and accent.</td>
         </tr>
             <tr>
-            <td><pre>questionReferences</pre></td>
+            <td><pre>definition</pre></td>
             <td><pre>Y</pre></td>
+            <td><pre>object</pre></td>
+            <td>An object defining the layout of the item wrapper.</td>
+        </tr>
+            <tr>
+            <td><pre>questions</pre></td>
+            <td><pre>N</pre></td>
             <td><pre>array</pre></td>
-            <td>An array of question references. Like item reference, it has a limitation of maximum of 150 characters and must only contain ASCII printable characters, except for double quotes, single quotes and accent. ie. `questionReferenceOne`</td>
+            <td></td>
         </tr>
             <tr>
-            <td><pre>content</pre></td>
-            <td><pre>Y</pre></td>
-            <td><pre>string</pre></td>
-            <td>A valid HTML string that may contains the structure that holds Questions. It shall include questions placeholder set in `questionReferences`, ie. &lt;span class=&quot;learnosity-response question-questionReferenceOne&quot;&gt;&lt;/span&gt;</td>
-        </tr>
-            <tr>
-            <td><pre>status</pre></td>
+            <td><pre>features</pre></td>
             <td><pre>N</pre></td>
-            <td><pre>string</pre></td>
-            <td>ie. `published`, `unpublished`, and `deleted`</td>
-        </tr>
-            <tr>
-            <td><pre>description</pre></td>
-            <td><pre>N</pre></td>
-            <td><pre>string</pre></td>
+            <td><pre>array</pre></td>
             <td></td>
         </tr>
             <tr>
             <td><pre>metadata</pre></td>
             <td><pre>N</pre></td>
-            <td><pre>array</pre></td>
+            <td><pre>object</pre></td>
+            <td>An object containing optional metadata like `scoring_type`.</td>
+        </tr>
+            <tr>
+            <td><pre>status</pre></td>
+            <td><pre>N</pre></td>
+            <td><pre>string</pre></td>
+            <td>ie. `published`, `unpublished`, and `archived`</td>
+        </tr>
+            <tr>
+            <td><pre>description</pre></td>
+            <td><pre>N</pre></td>
+            <td><pre>string</pre></td>
             <td></td>
         </tr>
             <tr>

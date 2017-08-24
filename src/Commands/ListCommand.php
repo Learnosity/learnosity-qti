@@ -29,7 +29,7 @@ class ListCommand extends Command
             '',
             '<comment>Commands:</comment>',
             "  <info>convert:to:learnosity</info>\t\tConverts QTI v2.1 to Learnosity JSON",
-            "  <info>convert:to:qti</info>\tConverts Learnosity JSON to QTI v2.1",
+            "  <info>convert:to:qti</info>\t\tConverts Learnosity JSON to QTI v2.1",
             "  <info>list</info>\t\t\t\tLists all commands available",
             '',
         ]);
