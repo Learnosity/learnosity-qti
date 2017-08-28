@@ -7,10 +7,14 @@
                     "type": "string",
                     "description": "A unique item identifier across Itembank. It has a limitation of maximum of 150 characters and must only contain ASCII printable characters, except for double quotes, single quotes and accent."
                 },
-                "definition": {
-                    "required": true,
-                    "type": "object",
-                    "description": "An object defining the layout of the item wrapper."
+                "content": {
+                    "required": false,
+                    "type": "string",
+                    "description": ""
+                },
+                "questionReferences": {
+                    "required": false,
+                    "type": "array"
                 },
                 "questions": {
                     "required": false,

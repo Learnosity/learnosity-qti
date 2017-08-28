@@ -15,6 +15,7 @@ class sharedpassage extends BaseQuestionType {
     protected $paginated_content;
     protected $is_math;
     protected $instructor_stimulus;
+    protected $content;
     
     public function __construct(
                     $type
@@ -129,6 +130,24 @@ class sharedpassage extends BaseQuestionType {
     */
     public function set_instructor_stimulus ($instructor_stimulus) {
         $this->instructor_stimulus = $instructor_stimulus;
+    }
+
+    /**
+    * Get Content \
+    * Manually entered into Schemas because entity generator doesn't support conditionals today... \
+    * @return string $content \
+    */
+    public function get_content() {
+        return $this->content;
+    }
+
+    /**
+    * Set Content \
+    * Manually entered into Schemas because entity generator doesn't support conditionals today... \
+    * @param string $content \
+    */
+    public function set_content ($content) {
+        $this->content = $content;
     }
 
     

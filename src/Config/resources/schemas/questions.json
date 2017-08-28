@@ -29307,6 +29307,12 @@
                         "required": false,
                         "description": "It will be displayed above the sharedpassage's heading.",
                         "type": "string"
+                    },
+                    "content": {
+                        "name": "Content",
+                        "required": false,
+                        "description": "Manually entered into Schemas because entity generator doesn't support conditionals today...",
+                        "type": "string"
                     }
                 },
                 "type": "feature",

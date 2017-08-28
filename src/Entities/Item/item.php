@@ -10,7 +10,8 @@ use LearnosityQti\Entities\BaseEntity;
 */
 class item extends BaseEntity {
     protected $reference;
-    protected $definition;
+    protected $content;
+    protected $questionReferences;
     protected $questions;
     protected $features;
     protected $metadata;
@@ -19,12 +20,10 @@ class item extends BaseEntity {
     protected $workflow;
     
     public function __construct(
-                    $reference,
-                                $definition
+                    $reference
                         )
     {
                 $this->reference = $reference;
-                $this->definition = $definition;
             }
 
     /**
@@ -48,21 +47,39 @@ class item extends BaseEntity {
     }
 
     /**
-    * Get definition \
-    * An object defining the layout of the item wrapper. \
-    * @return object $definition \
+    * Get content \
+    *  \
+    * @return string $content \
     */
-    public function get_definition() {
-        return $this->definition;
+    public function get_content() {
+        return $this->content;
     }
 
     /**
-    * Set definition \
-    * An object defining the layout of the item wrapper. \
-    * @param object $definition \
+    * Set content \
+    *  \
+    * @param string $content \
     */
-    public function set_definition ($definition) {
-        $this->definition = $definition;
+    public function set_content ($content) {
+        $this->content = $content;
+    }
+
+    /**
+    * Get questionReferences \
+    *  \
+    * @return array $questionReferences \
+    */
+    public function get_questionReferences() {
+        return $this->questionReferences;
+    }
+
+    /**
+    * Set questionReferences \
+    *  \
+    * @param array $questionReferences \
+    */
+    public function set_questionReferences (array $questionReferences) {
+        $this->questionReferences = $questionReferences;
     }
 
     /**
