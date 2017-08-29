@@ -162,7 +162,9 @@ class SharedPassageMapper
 
     protected function buildSharedPassageWithContent($passageContent)
     {
-        return new Question('sharedpassage', UuidUtil::generate(), new sharedpassage('sharedpassage', $passageContent));
+        $passage = new sharedpassage('sharedpassage');
+        $passage->set_content($passageContent);
+        return new Question('sharedpassage', UuidUtil::generate(), $passage);
     }
 
     protected function parsePassageContentFromHtml($htmlString)
