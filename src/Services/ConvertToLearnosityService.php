@@ -285,7 +285,8 @@ $this->organisationId = 1;
                 return $results;
             }
 
-            $results = $this->convertAssessmentItem($xmlString, $itemReference, $currentDir, $metadata);
+            $resourcePath = $currentDir . '/' . $resourceHref;
+            $results      = $this->convertAssessmentItem($xmlString, $itemReference, $resourcePath, $metadata);
         } catch (\Exception $e) {
             $targetFilename = $resourceHref;
             $message        = $e->getMessage();
