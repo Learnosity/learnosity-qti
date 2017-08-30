@@ -5,6 +5,7 @@ namespace LearnosityQti\Services;
 use LearnosityQti\AppContainer;
 use LearnosityQti\Converter;
 use LearnosityQti\Domain\JobDataTrait;
+use LearnosityQti\Services\ItemLayoutService;
 use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Utils\AssetsFixer;
 use LearnosityQti\Utils\AssumptionHandler;
@@ -75,6 +76,10 @@ $this->organisationId = 1;
         $this->assetsFixer = new AssetsFixer($this->organisationId);
 
         $result = $this->parseContentPackage();
+
+        // Convert the item format (columns etc)
+        $ItemLayout = new ItemLayoutService();
+        $ItemLayout->execute($this->outputPath, $this->outputPath . '/../final', $this->output);
 
         $this->tearDown();
 
@@ -536,8 +541,8 @@ $this->organisationId = 1;
         } else {
             $manifestFileBasename = static::CONVERT_LOG_FILENAME;
         }
-        $this->output->writeln('<info>' . static::INFO_OUTPUT_PREFIX . 'Writing manifest: ' . $this->outputPath . '/' . $manifestFileBasename . '.json</info>');
-        $this->writeJsonToFile($manifest, $this->outputPath . '/' . $manifestFileBasename . '.json');
+        $this->output->writeln('<info>' . static::INFO_OUTPUT_PREFIX . 'Writing manifest: ' . $this->outputPath . '/' . $manifestFileBasename . ".json</info>\n");
+        $this->writeJsonToFile($manifest, $this->outputPath . '/../' . $manifestFileBasename . '.json');
     }
 
     /**
@@ -569,7 +574,7 @@ $this->organisationId = 1;
         if ($this->dryRun) {
             return;
         }
-        $this->output->writeln('<info>' . static::INFO_OUTPUT_PREFIX . "Writing conversion results: " . $outputFilePath . '.json' . "</info>\n");
+        $this->output->writeln('<info>' . static::INFO_OUTPUT_PREFIX . "Writing conversion results: " . $outputFilePath . '.json' . "</info>");
         $innerPath = explode('/', $outputFilePath);
         array_pop($innerPath);
         FileSystemHelper::createDirIfNotExists(implode('/', $innerPath));

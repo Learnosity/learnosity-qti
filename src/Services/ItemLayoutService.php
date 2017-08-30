@@ -38,7 +38,7 @@ class ItemLayoutService
         // Process an item batch at a time
         foreach ($fileFinder->files()->in($inputDirectory)->name('*.json') as $inputFile) {
             /** @var \SplFileInfo $inputFile */
-            $this->output->writeln("<info>Migrating batch file {$inputFile->getRelativePathname()} ⟶  {$fileFinder->count()} files</info>");
+            $this->output->writeln("<info>Setting item layouts from conversion file: {$inputFile->getRelativePathname()}</info>");
 
             $json = $inputFile->getContents();
             $encodedResult = $this->migrateBatchItemsJson($json);
@@ -46,6 +46,8 @@ class ItemLayoutService
             $inputDirPath = $inputFile->getRelativePath() . '/' . $inputFile->getBasename('.json');
             $this->persistResultsFile(json_decode($encodedResult, true), $outputDirectory . '/' . $inputDirPath);
         }
+
+        $this->output->writeln('<info>Writing item JSON: ' . realpath($outputDirectory) . "</info>");
     }
 
     /**
@@ -74,8 +76,7 @@ class ItemLayoutService
         foreach ($batchItems['qtiitems'] as $fileKey => &$qtiItem) {
             $itemIndex++;
             $this->output->writeln(
-                "<comment>Migrating item ({$itemIndex}/{$totalItemsCount}): ".
-                "[{$qtiItem['item']['reference']}] {$fileKey}</comment>"
+                "<comment>Setting layout for ({$itemIndex}/{$totalItemsCount}): {$fileKey}</comment>"
             );
 
             // Get the widgets JSON related to the item first before performing the migration
