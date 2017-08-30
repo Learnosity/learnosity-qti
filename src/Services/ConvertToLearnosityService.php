@@ -55,6 +55,9 @@ class ConvertToLearnosityService
         $this->outputPath     = $outputPath;
         $this->output         = $output;
         $this->organisationId = $organisationId;
+        $this->finalPath      = 'final';
+        $this->logPath        = 'log';
+        $this->rawPath        = 'raw';
     }
 
     public function process()
@@ -71,6 +74,11 @@ class ConvertToLearnosityService
             return $result;
         }
 
+        // Setup output (or -o) subdirectories
+        FileSystemHelper::createDirIfNotExists($this->outputPath . '/' . $this->finalPath);
+        FileSystemHelper::createDirIfNotExists($this->outputPath . '/' . $this->logPath);
+        FileSystemHelper::createDirIfNotExists($this->outputPath . '/' . $this->rawPath);
+
 // TODO - fix magic number
 $this->organisationId = 1;
         $this->assetsFixer = new AssetsFixer($this->organisationId);
@@ -79,7 +87,7 @@ $this->organisationId = 1;
 
         // Convert the item format (columns etc)
         $ItemLayout = new ItemLayoutService();
-        $ItemLayout->execute($this->outputPath, $this->outputPath . '/../final', $this->output);
+        $ItemLayout->execute($this->outputPath . '/' . $this->rawPath . '/', $this->outputPath . '/' . $this->finalPath, $this->output);
 
         $this->tearDown();
 
@@ -105,7 +113,7 @@ $this->organisationId = 1;
             // }
 
             $this->updateJobManifest($finalManifest, $results);
-            $this->persistResultsFile($results, realpath($this->outputPath) . '/' . $dirName);
+            $this->persistResultsFile($results, realpath($this->outputPath) . '/' . $this->rawPath . '/' . $dirName);
         }
 
         $this->flushJobManifest($finalManifest);
@@ -541,8 +549,8 @@ $this->organisationId = 1;
         } else {
             $manifestFileBasename = static::CONVERT_LOG_FILENAME;
         }
-        $this->output->writeln('<info>' . static::INFO_OUTPUT_PREFIX . 'Writing manifest: ' . $this->outputPath . '/' . $manifestFileBasename . ".json</info>\n");
-        $this->writeJsonToFile($manifest, $this->outputPath . '/../' . $manifestFileBasename . '.json');
+        $this->output->writeln('<info>' . static::INFO_OUTPUT_PREFIX . 'Writing manifest: ' . $this->outputPath . '/' . $this->logPath . '/' . $manifestFileBasename . ".json</info>\n");
+        $this->writeJsonToFile($manifest, $this->outputPath . '/' . $this->logPath . '/' . $manifestFileBasename . '.json');
     }
 
     /**
@@ -577,7 +585,6 @@ $this->organisationId = 1;
         $this->output->writeln('<info>' . static::INFO_OUTPUT_PREFIX . "Writing conversion results: " . $outputFilePath . '.json' . "</info>");
         $innerPath = explode('/', $outputFilePath);
         array_pop($innerPath);
-        FileSystemHelper::createDirIfNotExists(implode('/', $innerPath));
         file_put_contents($outputFilePath . '.json', json_encode($results));
     }
 

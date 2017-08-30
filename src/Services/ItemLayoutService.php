@@ -47,7 +47,7 @@ class ItemLayoutService
             $this->persistResultsFile(json_decode($encodedResult, true), $outputDirectory . '/' . $inputDirPath);
         }
 
-        $this->output->writeln('<info>Writing item JSON: ' . realpath($outputDirectory) . "</info>");
+        $this->output->writeln('<info>Writing item JSON: ' . realpath($outputDirectory) . $inputDirPath . ".json</info>");
     }
 
     /**
