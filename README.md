@@ -62,7 +62,9 @@ To convert QTI 2.1 to Learnosity JSON, run the following:
 mo convert:to:learnosity
 ```
 
-By default this will look for content packages inside the `./data/input` directory, and output results (and log files) to `./data/output`. If you want to use different input and/or output paths you can use options:
+By default this will look for content packages inside the `./data/input` directory, and output raw results to `./data/output` and final item JSON to `./data/final`. A manifest file will be written one directory up from `output`. 
+
+If you want to use different input and/or output paths you can use options:
 
 ```
 mo convert:to:learnosity -i /my/path/to/qti -o /my/path/to/output/folder
@@ -90,6 +92,14 @@ Options:
 Help:
   Converts QTI v2.1 to Learnosity JSON, expects to run on folder(s) with a imsmanifest.xml file
 ```
+
+
+#### Next steps
+Once you have Learnosity JSON, you can use the Data API to import into your Learnosity hosted item bank.
+
+ * [Import questions](https://docs.learnosity.com/analytics/data/endpoints/itembank_endpoints#setQuestions)
+ * [Import features](https://docs.learnosity.com/analytics/data/endpoints/itembank_endpoints#setFeatures)
+ * [Import items](https://docs.learnosity.com/analytics/data/endpoints/itembank_endpoints#setItems)
 
 
 ### Converting Learnosity JSON to QTI
