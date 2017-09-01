@@ -350,8 +350,6 @@ $this->organisationId = 1;
             $manifest = array_merge($manifest, $scoringTypeManifest);
         }
 
-        $item = $this->convertLearnosityJsonToV2($item, $questions, $features);
-
         return [
             'item'        => $item,
             'questions'   => $questions,
@@ -360,43 +358,6 @@ $this->organisationId = 1;
             'rubric'      => $rubricItem,
             'assumptions' => AssumptionHandler::flush()
         ];
-    }
-
-    // Converts v1 item to v2
-    private function convertLearnosityJsonToV2($item, $questions, $features)
-    {
-        if (!array_key_exists('definition', $item)) {
-            $item['definition'] = [
-                'widgets' => []
-            ];
-        }
-
-        if (array_key_exists('questionReferences', $item)) {
-            foreach ($item['questionReferences'] as $ref) {
-                $item['definition']['widgets'][] = [
-                    'reference' => $ref
-                ];
-            }
-        }
-
-        if (count($features)) {
-            foreach ($features as $feature) {
-                $item['definition']['widgets'][] = [
-                    'reference' => $feature['reference']
-                ];
-                if (!array_key_exists('features', $item) || !count($item['features'])) {
-                    $item['features'][] = [
-                        'reference' => $feature['reference']
-                    ];
-                }
-            }
-        }
-
-        unset($item['adaptive']);
-        unset($item['content']);
-        unset($item['questionReferences']);
-
-        return $item;
     }
 
     /**
