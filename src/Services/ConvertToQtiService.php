@@ -55,6 +55,9 @@ class ConvertToQtiService
         $this->outputPath     = $outputPath;
         $this->output         = $output;
         $this->organisationId = $organisationId;
+        $this->finalPath      = 'final';
+        $this->logPath        = 'log';
+        $this->rawPath        = 'raw';
     }
 
     public function process()
@@ -70,6 +73,11 @@ class ConvertToQtiService
             $result['message'] = $errors;
             return $result;
         }
+
+        // Setup output (or -o) subdirectories
+        FileSystemHelper::createDirIfNotExists($this->outputPath . '/' . $this->finalPath);
+        FileSystemHelper::createDirIfNotExists($this->outputPath . '/' . $this->logPath);
+        FileSystemHelper::createDirIfNotExists($this->outputPath . '/' . $this->rawPath);
 
         $result = $this->parseContent();
 
@@ -98,7 +106,7 @@ class ConvertToQtiService
         }
 
         $this->updateJobManifest($finalManifest, $results);
-        $this->persistResultsFile($results, realpath($this->outputPath));
+        $this->persistResultsFile($results, realpath($this->outputPath) . '/' . $this->rawPath . '/');
         $this->flushJobManifest($finalManifest);
     }
 
@@ -197,7 +205,7 @@ class ConvertToQtiService
         }
 
         $this->output->writeln('<info>' . static::INFO_OUTPUT_PREFIX . 'Writing manifest: ' . $this->outputPath . '/' . $manifestFileBasename . '.json</info>');
-        $this->writeJsonToFile($manifest, $this->outputPath . '/' . $manifestFileBasename . '.json');
+        $this->writeJsonToFile($manifest, $this->outputPath . '/' . $this->logPath . '/' . $manifestFileBasename . '.json');
     }
 
     /**

@@ -62,7 +62,7 @@ To convert QTI 2.1 to Learnosity JSON, run the following:
 mo convert:to:learnosity
 ```
 
-By default this will look for content packages inside the `./data/input` directory, and output raw results to `./data/output` and final item JSON to `./data/final`. A manifest file will be written one directory up from `output`. 
+By default this will look for content packages inside the `./data/input` directory, and output raw results to `./data/output/raw` and final item JSON to `./data/output/final`. A manifest file will be written to `./data/output/log`. 
 
 If you want to use different input and/or output paths you can use options:
 
@@ -93,9 +93,12 @@ Help:
   Converts QTI v2.1 to Learnosity JSON, expects to run on folder(s) with a imsmanifest.xml file
 ```
 
+#### TODO
+* Support `organisation_id` in asset CDN path (using `1` today)
+
 
 #### Next steps
-Once you have Learnosity JSON, you can use the Data API to import into your Learnosity hosted item bank.
+Once you have Learnosity JSON (the `final` folder), you can use the Data API to import into your Learnosity hosted item bank.
 
  * [Import questions](https://docs.learnosity.com/analytics/data/endpoints/itembank_endpoints#setQuestions)
  * [Import features](https://docs.learnosity.com/analytics/data/endpoints/itembank_endpoints#setFeatures)
@@ -139,4 +142,8 @@ Help:
   Converts Learnosity JSON to QTI v2.1
 ```
 
-Only supports Question JSON today.
+#### TODO
+* Support Learnosity item JSON (only supports question JSON today)
+* Support pulling down assets to local passage (linked to Learnosity CDN today)
+* Support more QTI-compatible interactions
+* Support imsmanifest.xml and content package generation (today individual `<assessmentItem>` files are created only)
