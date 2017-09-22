@@ -10,6 +10,12 @@ use qtism\data\content\ItemBody;
 
 class MergedTextEntryInteractionMapper extends AbstractMergedInteractionMapper
 {
+    const MAX_CHAR_LIMIT         = 250;
+    const CHAR_LIMIT_DEFAULT     = self::MAX_CHAR_LIMIT;
+    const RESPONSE_WIDTH_DEFAULT = '150px';
+
+    protected $options = [];
+
     private $interactionComponents;
 
     public function getQuestionType()
@@ -23,20 +29,121 @@ class MergedTextEntryInteractionMapper extends AbstractMergedInteractionMapper
             $interactionXmls[] = QtiMarshallerUtil::marshall($component);
             $interactionIdentifiers[] = $component->getResponseIdentifier();
         }
-        $validation = $this->buildValidation($interactionIdentifiers, $isCaseSensitive);
+
         $closetext = new clozetext('clozetext', $this->buildTemplate($this->itemBody, $interactionXmls));
+
+        // Build validation rules if relevant
+        $validation = $this->buildValidation($interactionIdentifiers, $isCaseSensitive);
         if ($validation) {
             $closetext->set_validation($validation);
         }
-        $isMultiLine = false;
-        $maxLength = $this->getExpectedLength($isMultiLine);
-        $closetext->set_max_length($maxLength);
-        $closetext->set_multiple_line($isMultiLine);
+
+        // Respect the case sensitivity determined from the validation
         $closetext->set_case_sensitive($isCaseSensitive);
+
+        // Define a sane character limit for the text entry box
+        $charLimit = $this->getCharacterLimit();
+        $closetext->set_max_length($charLimit);
+
+        // Configure multiline if the character limit exceeds the base character limit
+        if ($charLimit > static::CHAR_LIMIT_DEFAULT) {
+            $closetext->set_multiple_line(true);
+        }
+
+        // Try to calculate the global response box width based on expected length
+        $clozeResponseContainer = new clozetext_response_container();
+        $clozeResponseContainer->set_width($this->getResponseWidth());
+        $closetext->set_response_container($clozeResponseContainer);
+
+
         return $closetext;
     }
 
-    private function getExpectedLength(&$isMultiLine)
+    /**
+     * Sets all the configuration options defined in the given key-value
+     * array at once.
+     *
+     * @param array $options - options to set
+     */
+    public function setOptions(array $options)
+    {
+        $this->options = array_merge($this->options, $options);
+    }
+
+    /**
+     * Returns the response character limit used for the resulting question.
+     *
+     * @return int
+     */
+    protected function getCharacterLimit()
+    {
+        $charLimit = static::CHAR_LIMIT_DEFAULT;
+        if ($this->isUsingExpectedLengthAsMaxCharLimit()) {
+            $charLimit = $this->getExpectedLength();
+        }
+        $charLimit = min(static::MAX_CHAR_LIMIT, $charLimit);
+
+        return $charLimit;
+    }
+
+    /**
+     * Get a configuration option defined using setOptions($opts).
+     *
+     * @param  string $key          - Key for the value to get
+     * @param  mixed  $defaultValue - Optional value to return if nothing is set
+     *
+     * @return mixed
+     */
+    protected function getOption($key, $defaultValue = null)
+    {
+        $value = $defaultValue;
+        if (isset($this->options[$key])) {
+            $value = $this->options[$key];
+        }
+
+        return $value;
+    }
+
+    /**
+     * Returns the width used for response containers in the resulting
+     * question, as a string described in pixels.
+     *
+     * @return string
+     */
+    protected function getResponseWidth()
+    {
+        $responseWidth = static::RESPONSE_WIDTH_DEFAULT;
+        $expectedLength = $this->getExpectedLength();
+        if ($expectedLength > 0 && $this->isUsingExpectedLengthAsResponseWidth()) {
+            $responseWidth = (ceil($expectedLength) * 10) . 'px';
+        }
+
+        return $responseWidth;
+    }
+
+    /**
+     * @return boolean true if expected length will determine response char limit
+     */
+    protected function isUsingExpectedLengthAsMaxCharLimit()
+    {
+        return (bool)$this->getOption('expected_length_as_max_char_limit', false);
+    }
+
+    /**
+     * @return boolean true if expected length will determine response container width
+     */
+    protected function isUsingExpectedLengthAsResponseWidth()
+    {
+        return (bool)$this->getOption('expected_length_as_response_width', true);
+    }
+
+    /**
+     * Retrieves the maximum expected length of the text entry interaction(s)
+     * to be mapped.
+     *
+     * @return int the max expected length of all interactions, or -1 if none defined
+     */
+    private function getExpectedLength()
     {
         $maxExpectedLength = -1;
         /** @var TextEntryInteraction $component */
@@ -46,10 +153,7 @@ class MergedTextEntryInteractionMapper extends AbstractMergedInteractionMapper
                 $maxExpectedLength = $length;
             }
         }
-        if ($maxExpectedLength > 250) {
-            $maxExpectedLength = 250;
-            $isMultiLine = true;
-        }
+
         return $maxExpectedLength;
     }
 
