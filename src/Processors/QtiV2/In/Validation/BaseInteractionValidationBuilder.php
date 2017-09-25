@@ -21,6 +21,7 @@ use \qtism\data\state\Mapping;
 use \qtism\data\rules\ResponseElse;
 use \qtism\data\rules\SetOutcomeValue;
 use \qtism\data\expressions\MapResponse;
+use \qtism\data\expressions\operators\StringMatch;
 
 abstract class BaseInteractionValidationBuilder
 {
@@ -300,6 +301,22 @@ abstract class BaseInteractionValidationBuilder
                 $results['scoring_type'] = 'match';
                 break;
 
+            case $expression instanceof StringMatch:
+                $responseRules = $conditionBranch->getResponseRules();
+                $caseSensitive = $expression->isCaseSensitive();
+                $subExpressions = $expression->getExpressions();
+
+                // here we expects subExpressions[0] to be a Variable and [1] to be a BaseValue
+                $responseId = $subExpressions[0]->getIdentifier();
+                $correctValue = $subExpressions[1]->getValue();
+                $outcomeValues = $this->getOutcomeValuesFromResponseRules($responseRules);
+                $results['correct'][] = [
+                    'score' => $outcomeValues[0],
+                    'answer' => $correctValue,
+                    'caseSensitive' => $caseSensitive,
+                ];
+                break;
+
             case is_null($expression):
                 $responseRules = $conditionBranch->getResponseRules();
 
@@ -441,16 +458,6 @@ abstract class BaseInteractionValidationBuilder
         $score = 1;
         if (!empty($responseScores['score'])) {
             $score = floatval($responseScores['score']);
-        }
-        // if (!empty($responseScores['correct'])) {
-        //     $score = floatval($responseScores['correct']);
-        // }
-        if (!empty($responseScores['correct'])) {
-            if (is_array($responseScores['correct']) && count($responseScores['correct']) === 1) {
-                $score = floatval($responseScores['correct']);
-            } else {
-                $score = $responseScores['correct'];
-            }
         }
 
         $mode = 'exactMatch';
