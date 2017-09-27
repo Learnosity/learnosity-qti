@@ -121,9 +121,6 @@ abstract class BaseInteractionValidationBuilder
                     return $this->getNoTemplateResponsesValidation();
 
                 case ResponseProcessingTemplate::BUILTIN:
-                    if (empty($this->responseDeclaration)) {
-                        throw new MappingException('ResponseDeclaration is required when using built-in response processing');
-                    }
                     // custom response processing rules
                     $responseProcessingScores = $this->getBuiltinResponseValidation($responseProcessingTemplate->getBuiltinResponseProcessing());
                     if (!empty($responseProcessingScores)) {
@@ -304,11 +301,11 @@ abstract class BaseInteractionValidationBuilder
             case $expression instanceof StringMatch:
                 $responseRules = $conditionBranch->getResponseRules();
                 $caseSensitive = $expression->isCaseSensitive();
-                $subExpressions = $expression->getExpressions();
 
-                // here we expects subExpressions[0] to be a Variable and [1] to be a BaseValue
+                $subExpressions = $this->getVariableBaseValueOrderedPair($expression->getExpressions());
                 $responseId = $subExpressions[0]->getIdentifier();
                 $correctValue = $subExpressions[1]->getValue();
+
                 $outcomeValues = $this->getOutcomeValuesFromResponseRules($responseRules);
                 $results['correct'][] = [
                     'score' => $outcomeValues[0],
@@ -466,5 +463,48 @@ abstract class BaseInteractionValidationBuilder
         }
 
         return [$score, $mode];
+    }
+
+    /**
+     * Extract the Variable object which contains the identifier and the BaseValue object
+     * from the ExpressionCollection.
+     *
+     * NOTE: The collection is expected to contain 2 entries. The order can be mixed up, so
+     * we will look at both and return the correct order for these objects, ie
+     *   - 0: Variable
+     *   - 1: BaseValue
+     *
+     * @param \qtism\data\expressions\ExpressionCollection
+     * @return arrray
+     * @throws \LearnosityQti\Exceptions\MappingException
+     */
+    private function getVariableBaseValueOrderedPair(ExpressionCollection $collection)
+    {
+        $variableObject = null;
+        $baseValueObject = null;
+
+        foreach ($collection as $element) {
+            if ($element instanceof Variable) {
+                $variableObject = $element;
+            } elseif ($element instanceof BaseValue) {
+                $baseValueObject = $element;
+            }
+        }
+
+        $error = '';
+        if (empty($variableObject)) {
+            $error .= 'Missing Variable expression' . PHP_EOL;
+        }
+        if (empty($baseValueObject)) {
+            $error .= 'Missing BaseValue expression' . PHP_EOL;
+        }
+
+        if (!empty($error)) {
+            throw new MappingException(
+                "<responseProcessing> - Expecting a Variable and a BaseValue for this operand;\n {$error}"
+            );
+        }
+
+        return [$variableObject, $baseValueObject];
     }
 }

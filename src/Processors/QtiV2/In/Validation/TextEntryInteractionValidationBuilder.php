@@ -59,14 +59,15 @@ class TextEntryInteractionValidationBuilder extends BaseInteractionValidationBui
             }
         }
 
-        if (empty($interactionResponses)) {
+        if (!empty($interactionResponses)) {
+            // get the catesian of the valid responses
+            // NOTE: this is just to flatten the responses array and we extract that flatterned array
+            $interactionResponses = ArrayUtil::cartesianProduct($interactionResponses)[0];
+        } else {
             LogService::log('Response declaration has no valid correct response values. Thus, validation ignored');
         }
 
-        // get the catesian of the valid responses
-        // NOTE: this is just to flatten the responses array
-        $responses = ArrayUtil::cartesianProduct($interactionResponses)[0];
-        return ValidationBuilder::build('clozetext', 'exactMatch', $responses);
+        return ValidationBuilder::build('clozetext', 'exactMatch', $interactionResponses);
     }
 
     protected function getMapResponseTemplateValidation()
