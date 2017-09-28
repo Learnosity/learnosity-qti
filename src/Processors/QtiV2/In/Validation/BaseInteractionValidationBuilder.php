@@ -21,6 +21,7 @@ use \qtism\data\state\Mapping;
 use \qtism\data\rules\ResponseElse;
 use \qtism\data\rules\SetOutcomeValue;
 use \qtism\data\expressions\MapResponse;
+use \qtism\data\expressions\operators\StringMatch;
 
 abstract class BaseInteractionValidationBuilder
 {
@@ -120,9 +121,6 @@ abstract class BaseInteractionValidationBuilder
                     return $this->getNoTemplateResponsesValidation();
 
                 case ResponseProcessingTemplate::BUILTIN:
-                    if (empty($this->responseDeclaration)) {
-                        throw new MappingException('ResponseDeclaration is required when using built-in response processing');
-                    }
                     // custom response processing rules
                     $responseProcessingScores = $this->getBuiltinResponseValidation($responseProcessingTemplate->getBuiltinResponseProcessing());
                     if (!empty($responseProcessingScores)) {
@@ -300,6 +298,22 @@ abstract class BaseInteractionValidationBuilder
                 $results['scoring_type'] = 'match';
                 break;
 
+            case $expression instanceof StringMatch:
+                $responseRules = $conditionBranch->getResponseRules();
+                $caseSensitive = $expression->isCaseSensitive();
+
+                $subExpressions = $this->getVariableBaseValueOrderedPair($expression->getExpressions());
+                $responseId = $subExpressions[0]->getIdentifier();
+                $correctValue = $subExpressions[1]->getValue();
+
+                $outcomeValues = $this->getOutcomeValuesFromResponseRules($responseRules);
+                $results['correct'][] = [
+                    'score' => $outcomeValues[0],
+                    'answer' => $correctValue,
+                    'caseSensitive' => $caseSensitive,
+                ];
+                break;
+
             case is_null($expression):
                 $responseRules = $conditionBranch->getResponseRules();
 
@@ -442,16 +456,6 @@ abstract class BaseInteractionValidationBuilder
         if (!empty($responseScores['score'])) {
             $score = floatval($responseScores['score']);
         }
-        // if (!empty($responseScores['correct'])) {
-        //     $score = floatval($responseScores['correct']);
-        // }
-        if (!empty($responseScores['correct'])) {
-            if (is_array($responseScores['correct']) && count($responseScores['correct']) === 1) {
-                $score = floatval($responseScores['correct']);
-            } else {
-                $score = $responseScores['correct'];
-            }
-        }
 
         $mode = 'exactMatch';
         if (!empty($responseScores['scoring_type']) && $responseScores['scoring_type'] === 'partial') {
@@ -459,5 +463,48 @@ abstract class BaseInteractionValidationBuilder
         }
 
         return [$score, $mode];
+    }
+
+    /**
+     * Extract the Variable object which contains the identifier and the BaseValue object
+     * from the ExpressionCollection.
+     *
+     * NOTE: The collection is expected to contain 2 entries. The order can be mixed up, so
+     * we will look at both and return the correct order for these objects, ie
+     *   - 0: Variable
+     *   - 1: BaseValue
+     *
+     * @param \qtism\data\expressions\ExpressionCollection
+     * @return arrray
+     * @throws \LearnosityQti\Exceptions\MappingException
+     */
+    private function getVariableBaseValueOrderedPair(ExpressionCollection $collection)
+    {
+        $variableObject = null;
+        $baseValueObject = null;
+
+        foreach ($collection as $element) {
+            if ($element instanceof Variable) {
+                $variableObject = $element;
+            } elseif ($element instanceof BaseValue) {
+                $baseValueObject = $element;
+            }
+        }
+
+        $error = '';
+        if (empty($variableObject)) {
+            $error .= 'Missing Variable expression' . PHP_EOL;
+        }
+        if (empty($baseValueObject)) {
+            $error .= 'Missing BaseValue expression' . PHP_EOL;
+        }
+
+        if (!empty($error)) {
+            throw new MappingException(
+                "<responseProcessing> - Expecting a Variable and a BaseValue for this operand;\n {$error}"
+            );
+        }
+
+        return [$variableObject, $baseValueObject];
     }
 }

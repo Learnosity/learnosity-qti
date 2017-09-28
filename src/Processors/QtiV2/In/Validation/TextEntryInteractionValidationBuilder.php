@@ -43,26 +43,31 @@ class TextEntryInteractionValidationBuilder extends BaseInteractionValidationBui
                     /** @var Value $value */
                     return new ValidResponse(1, [(string)$value->getValue()]);
                 }, $correctResponses);
-            }
-        }
+            } elseif (!empty($scores[$responseIdentifier])) {
+                $responseScores = $scores[$responseIdentifier];
 
-        if (empty($interactionResponses)) {
-            // there was nothing in the response declaration
-            if (!empty($scores['correct'])) {
-                if (is_array($scores['correct'])) {
-                    foreach ($scores['correct'] as $correct) {
-                        $interactionResponses[][] = new ValidResponse($correct['score'], [(string)$correct['answer']]);
+                // process the response processing rules
+                if (empty($responseScores['correct'])) {
+                    continue;
+                }
+                foreach ($responseScores['correct'] as $correct) {
+                    $interactionResponses[][] = new ValidResponse($correct['score'], [(string)$correct['answer']]);
+                    if (isset($correct['caseSensitive'])) {
+                        $this->isCaseSensitive = $correct['caseSensitive'];
                     }
                 }
             }
         }
 
-        if (empty($interactionResponses)) {
+        if (!empty($interactionResponses)) {
+            // get the catesian of the valid responses
+            // NOTE: this is just to flatten the responses array and we extract that flatterned array
+            $interactionResponses = ArrayUtil::cartesianProduct($interactionResponses)[0];
+        } else {
             LogService::log('Response declaration has no valid correct response values. Thus, validation ignored');
         }
 
-        $responses = ArrayUtil::cartesianProductForResponses($interactionResponses);
-        return ValidationBuilder::build('clozetext', 'exactMatch', $responses);
+        return ValidationBuilder::build('clozetext', 'exactMatch', $interactionResponses);
     }
 
     protected function getMapResponseTemplateValidation()
