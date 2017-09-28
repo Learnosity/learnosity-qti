@@ -39,7 +39,7 @@ abstract class AbstractItemBuilder
         $item->set_features(array_map(function ($widgetReference) {
             return [ 'reference' => $widgetReference ];
         }, array_keys($this->features)));
-        $item->set_metadata($this->metadata);
+        $item->set_metadata((object)$this->metadata);
         return $item;
     }
 

@@ -34,7 +34,7 @@
                 },
                 "metadata": {
                     "required": false,
-                    "type": "array"
+                    "type": "object"
                 },
                 "workflow": {
                     "required": false,
