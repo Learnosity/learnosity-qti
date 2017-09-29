@@ -51,7 +51,7 @@ abstract class AbstractItemBuilder
             $rubricContent = '';
             foreach (array_filter($this->rubricData['widgets']) as $widget) {
                 $widgetType = $widget->get_data()->get_widget_type();
-                if ($widgetType === 'feedback') {
+                if (in_array($widgetType, ['response', 'feedback'])) {
                     $widgetType = 'question';
                 }
                 $featureOrResponse = $widgetType === 'feature' ? $widgetType : 'response';
@@ -122,7 +122,7 @@ abstract class AbstractItemBuilder
         if (!empty($this->rubricData['widgets'])) {
             $rubricQuestions = array_filter(array_filter($this->rubricData['widgets']), function ($widget) use ($targetWidgetType) {
                 $widgetType = $widget->get_data()->get_widget_type();
-                if ($widgetType === 'feedback') {
+                if (in_array($widgetType, ['response', 'feedback'])) {
                     $widgetType = 'question';
                 }
                 return $widgetType === $targetWidgetType;
