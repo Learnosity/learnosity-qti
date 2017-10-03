@@ -25,21 +25,21 @@ class AssetsFixer
             // Ignore stupid base64
             if (!StringHelper::contains($url, 'base64')) {
                 $filename = StringHelper::contains($url, '.svgz') ? basename($url, '.svgz') . '.svg' : basename($url);
-                $replacement = '//assets.learnosity.com/organisations/' . $this->organisationId . '/' . $filename;
+                $replacement = 'https://assets.learnosity.com/organisations/' . $this->organisationId . '/' . $filename;
                 $encodedArray = str_replace($url, $replacement, $encodedArray);
                 $this->urlMap[$url] = $replacement;
             }
         }
         // Replace non-HTML Urls, ie. data['image']['src']
         // TODO actually support things like data['image']['src'] in the conversion lib
-        $encodedArray = str_replace('"assets/', '"//assets.learnosity.com/organisations/' . $this->organisationId . '/', $encodedArray, $count1);
-        $encodedArray = str_replace('"../images/', '"//assets.learnosity.com/organisations/' . $this->organisationId . '/', $encodedArray, $count1);
-        $encodedArray = str_replace('"../Content/Images/', '"//assets.learnosity.com/organisations/' . $this->organisationId . '/', $encodedArray, $count1);
+        $encodedArray = str_replace('"assets/', '"https://assets.learnosity.com/organisations/' . $this->organisationId . '/', $encodedArray, $count1);
+        $encodedArray = str_replace('"../images/', '"https://assets.learnosity.com/organisations/' . $this->organisationId . '/', $encodedArray, $count1);
+        $encodedArray = str_replace('"../Content/Images/', '"https://assets.learnosity.com/organisations/' . $this->organisationId . '/', $encodedArray, $count1);
         $encodedArray = str_replace('.svgz"', '.svg"', $encodedArray, $count2);
 
         // TODO: This is a hack because those audio/video files are not enclosed in proper folders
-//        $encodedArray = preg_replace('/"([^"]+)(.m4a)/', '"//assets.learnosity.com/organisations/' . $this->organisationId . '/$1.mp3', $encodedArray);
-//        $encodedArray = preg_replace('/"([^"]+)(.mp4)/', '"//assets.learnosity.com/organisations/' . $this->organisationId . '/$1.mp4', $encodedArray);
+//        $encodedArray = preg_replace('/"([^"]+)(.m4a)/', '"https://assets.learnosity.com/organisations/' . $this->organisationId . '/$1.mp3', $encodedArray);
+//        $encodedArray = preg_replace('/"([^"]+)(.mp4)/', '"https://assets.learnosity.com/organisations/' . $this->organisationId . '/$1.mp4', $encodedArray);
 
         // Encode
         $result = json_decode($encodedArray, true);
