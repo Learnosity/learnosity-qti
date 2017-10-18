@@ -260,12 +260,13 @@ class SharedPassageMapper
         // HACK: Pass the version and encoding to prevent libxml from decoding HTML entities (esp. &amp; which libxml borks at)
         // Only do this if it hasnt already been passed along in the xml string. Sometimes, we read from a file, and sometimes
         // we read from a block inside another file.
-        if (strpos($xml, '<?xml ') === false) {
-            $xml = '<?xml version="1.0" encoding="UTF-8">' . $xml;
+        if (strpos($xml, '<?xml ') !== false) {
+            $xml = substr($xml, strpos($xml, '>') + 1);
         }
+        $xml = '<?xml version="1.0" encoding="UTF-8">' . "<div>$xml</div>";
 
         $dom->loadHTML($xml, LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
-        $xml = $dom->saveXML($dom->documentElement);
+        $xml = $dom->saveXML($this->getFragmentWrapperDocumentElementForDom($dom));
 
         // HACK: Handle the fact that XML can't handle named entities (and HTML5 has no DTD for it)
         $xml = XmlEntityUtil::convertNamedEntitiesToHexInString($xml);
@@ -274,6 +275,21 @@ class SharedPassageMapper
         libxml_use_internal_errors($previousLibXmlSetting);
 
         return $xml;
+    }
+
+    private function getFragmentWrapperDocumentElementForDom(\DOMDocument $dom)
+    {
+        /** @var DOMDocument $dom */
+        $fragmentWrapper = $dom->createDocumentFragment();
+
+        while ($dom->childNodes->length > 0) {
+            /** @var DOMNode $childNode */
+            $fragmentWrapper->appendChild($dom->childNodes->item(0));
+        }
+
+        $dom->replaceChild($fragmentWrapper, $dom);
+
+        return $fragmentWrapper;
     }
 
     private function parsePassageContentFromDom(DOMDocument $htmlDom)
