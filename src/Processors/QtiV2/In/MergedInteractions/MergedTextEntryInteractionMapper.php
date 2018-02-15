@@ -3,6 +3,7 @@
 namespace LearnosityQti\Processors\QtiV2\In\MergedInteractions;
 
 use LearnosityQti\Entities\QuestionTypes\clozetext;
+use LearnosityQti\Entities\QuestionTypes\clozetext_response_container;
 use LearnosityQti\Utils\QtiMarshallerUtil;
 use LearnosityQti\Processors\QtiV2\In\Validation\TextEntryInteractionValidationBuilder;
 use qtism\data\content\interactions\TextEntryInteraction;
