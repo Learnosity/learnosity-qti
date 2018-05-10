@@ -187,8 +187,12 @@ class ItemScoringGuesser
                 $responseValue = new QtiString($correctResponseValues[0]->getValue());
             } else if ($baseType === BaseType::FLOAT) {
                 $responseValue = new QtiFloat($correctResponseValues[0]->getValue());
+            } else if ($baseType === BaseType::DIRECTED_PAIR) {
+                // Doing whatever is needed to get it in the output logs...
+                LogService::log('A baseType of directedPair, when cardinality is single, isn\'t supported');
+                AssumptionHandler::log('A baseType of directedPair, when cardinality is single, isn\'t supported');
             } else {
-                echo 'Implement this base type handler with cardinality single!';
+                echo 'Base type not supported - see enums/BaseType.php for the constant (' . $baseType . ')';
                 die;
             }
         } elseif ($cardinality === Cardinality::MULTIPLE) {
