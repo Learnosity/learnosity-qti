@@ -4,6 +4,7 @@ namespace LearnosityQti\Commands;
 
 use LearnosityQti\Services\ConvertToLearnosityService;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -30,6 +31,13 @@ class ConvertToLearnosityCommand extends Command
                 'An output path where the Learnosity JSON will be saved',
                 './data/output'
             )
+            ->addOption(
+                'organisation_id',
+                '',
+                InputOption::VALUE_REQUIRED,
+                'The identifier of the item bank you want to import content into',
+                ''
+            )
         ;
     }
 
@@ -38,6 +46,7 @@ class ConvertToLearnosityCommand extends Command
         $validationErrors = [];
         $inputPath = $input->getOption('input');
         $outputPath = $input->getOption('output');
+        $organisationId = $input->getOption('organisation_id');
 
         // Validate the required options
         if (empty($inputPath) || empty($outputPath)) {
@@ -60,6 +69,10 @@ class ConvertToLearnosityCommand extends Command
             ]);
         }
 
+        if (empty($organisationId)) {
+            array_push($validationErrors, "The <info>organisation_id</info> option is required for asset uploads.");
+        }
+
         if (count($validationErrors)) {
             $output->writeln([
                 '',
@@ -71,10 +84,10 @@ class ConvertToLearnosityCommand extends Command
             }
 
             $output->writeln([
-                "  <info>mo convert:to:learnosity -i /path/to/qti -o /path/to/save/folder</info>"
+                "  <info>mo convert:to:learnosity -i /path/to/qti -o /path/to/save/folder -org [integer]</info>"
             ]);
         } else {
-            $Convert = new ConvertToLearnosityService($inputPath, $outputPath, $output);
+            $Convert = new ConvertToLearnosityService($inputPath, $outputPath, $output, $organisationId);
             $result = $Convert->process();
             if ($result['status'] === false) {
                 $output->writeln('<error>Error running job</error>');

@@ -62,12 +62,12 @@ To convert QTI 2.1 to Learnosity JSON, run the following:
 mo convert:to:learnosity
 ```
 
-By default this will look for content packages inside the `./data/input` directory, and output raw results to `./data/output/raw` and final item JSON to `./data/output/final`. A manifest file will be written to `./data/output/log`. 
+By default this will look for content packages inside the `./data/input` directory, and output raw results to `./data/output/raw` and final item JSON to `./data/output/final`. A manifest file will be written to `./data/output/log`.
 
 If you want to use different input and/or output paths you can use options:
 
 ```
-mo convert:to:learnosity -i /my/path/to/qti -o /my/path/to/output/folder
+mo convert:to:learnosity -i /my/path/to/qti -o /my/path/to/output/folder --organisation_id [integer]
 ```
 
 Remember you can ask for `help`:
@@ -81,6 +81,7 @@ Usage:
 Options:
   -i, --input=INPUT     The input path to your QTI content [default: "./data/input"]
   -o, --output=OUTPUT   An output path where the Learnosity JSON will be saved [default: "./data/output"]
+      --organisation_id=ORGANISATION_ID  The identifier of the item bank you want to import content into [default: ""]
   -h, --help            Display this help message
   -q, --quiet           Do not output any message
   -V, --version         Display this application version
@@ -92,10 +93,6 @@ Options:
 Help:
   Converts QTI v2.1 to Learnosity JSON, expects to run on folder(s) with a imsmanifest.xml file
 ```
-
-#### TODO
-* Support `organisation_id` in asset CDN path (using `1` today)
-
 
 #### Next steps
 Once you have Learnosity JSON (the `final` folder), you can use the Data API to import into your Learnosity hosted item bank.

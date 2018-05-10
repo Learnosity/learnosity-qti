@@ -49,7 +49,7 @@ class ConvertToLearnosityService
 
     private $assetsFixer;
 
-    public function __construct($inputPath, $outputPath, OutputInterface $output, $organisationId = null)
+    public function __construct($inputPath, $outputPath, OutputInterface $output, $organisationId)
     {
         $this->inputPath      = $inputPath;
         $this->outputPath     = $outputPath;
@@ -79,8 +79,6 @@ class ConvertToLearnosityService
         FileSystemHelper::createDirIfNotExists($this->outputPath . '/' . $this->logPath);
         FileSystemHelper::createDirIfNotExists($this->outputPath . '/' . $this->rawPath);
 
-// TODO - fix magic number
-$this->organisationId = 1;
         $this->assetsFixer = new AssetsFixer($this->organisationId);
 
         $result = $this->parseContentPackage();
