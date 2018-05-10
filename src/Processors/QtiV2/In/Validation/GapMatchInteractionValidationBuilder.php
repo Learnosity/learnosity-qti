@@ -9,6 +9,7 @@ use LearnosityQti\Utils\ArrayUtil;
 use qtism\common\datatypes\QtiDirectedPair;
 use qtism\data\state\MapEntry;
 use qtism\data\state\ResponseDeclaration;
+use \qtism\data\state\OutcomeDeclarationCollection;
 
 class GapMatchInteractionValidationBuilder extends BaseInteractionValidationBuilder
 {
@@ -21,9 +22,10 @@ class GapMatchInteractionValidationBuilder extends BaseInteractionValidationBuil
         $questionTypeName,
         array $gapIdentifiers,
         array $possibleResponses,
-        ResponseDeclaration $responseDeclaration = null
+        ResponseDeclaration $responseDeclaration = null,
+        OutcomeDeclarationCollection $outcomeDeclarations = null
     ) {
-        parent::__construct($responseDeclaration);
+        parent::__construct($responseDeclaration, $outcomeDeclarations);
         $this->questionTypeName = $questionTypeName;
         $this->gapIdentifiers = $gapIdentifiers;
         $this->possibleResponses = $possibleResponses;

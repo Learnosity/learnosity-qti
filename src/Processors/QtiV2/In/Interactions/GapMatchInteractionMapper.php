@@ -34,7 +34,8 @@ class GapMatchInteractionMapper extends AbstractInteractionMapper
             'clozeassociation',
             $gapIdentifiers,
             $possibleResponseMapping,
-            $this->responseDeclaration
+            $this->responseDeclaration,
+            $this->outcomeDeclarations
         );
         $validation = $validationBuilder->buildValidation($this->responseProcessingTemplate);
 
