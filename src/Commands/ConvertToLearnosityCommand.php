@@ -84,7 +84,7 @@ class ConvertToLearnosityCommand extends Command
             }
 
             $output->writeln([
-                "  <info>mo convert:to:learnosity -i /path/to/qti -o /path/to/save/folder -org [integer]</info>"
+                "  <info>mo convert:to:learnosity --input /path/to/qti --output /path/to/save/folder --organisation_id [integer]</info>"
             ]);
         } else {
             $Convert = new ConvertToLearnosityService($inputPath, $outputPath, $output, $organisationId);

@@ -67,7 +67,7 @@ By default this will look for content packages inside the `./data/input` directo
 If you want to use different input and/or output paths you can use options:
 
 ```
-mo convert:to:learnosity -i /my/path/to/qti -o /my/path/to/output/folder --organisation_id [integer]
+mo convert:to:learnosity --input /my/path/to/qti --output /my/path/to/output/folder --organisation_id [integer]
 ```
 
 Remember you can ask for `help`:
