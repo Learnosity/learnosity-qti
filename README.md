@@ -13,7 +13,7 @@ you must add "learnosity/learnosity-qti" as a dependency in your project's compo
 ```
 {
     "require": {
-        "learnosity/learnosity-qti": "0.*"
+        "learnosity/learnosity-qti": "1.*"
     }
 }
 ```
