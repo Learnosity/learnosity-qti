@@ -10,7 +10,7 @@ use LearnosityQti\Utils\UuidUtil;
 use LearnosityQti\Utils\QtiMarshallerUtil;
 use LearnosityQti\Utils\Xml\EntityUtil as XmlEntityUtil;
 use qtism\data\content\RubricBlock;
-use qtism\data\content\xhtml\Object;
+use qtism\data\content\xhtml\ObjectElement;
 use qtism\data\QtiComponentCollection;
 use SplFileInfo;
 use LearnosityQti\Services\LogService;

@@ -19,7 +19,7 @@ use qtism\data\content\interactions\GapImgCollection;
 use qtism\data\content\interactions\GraphicGapMatchInteraction;
 use qtism\data\content\ObjectFlowCollection;
 use qtism\data\content\TextRun;
-use qtism\data\content\xhtml\Object;
+use qtism\data\content\xhtml\ObjectElement;
 
 class ImageclozeassociationMapper extends AbstractQuestionTypeMapper
 {

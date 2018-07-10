@@ -13,7 +13,7 @@ use qtism\common\datatypes\QtiShape;
 use qtism\data\content\interactions\HotspotChoice;
 use qtism\data\content\interactions\HotspotChoiceCollection;
 use qtism\data\content\interactions\HotspotInteraction;
-use qtism\data\content\xhtml\Object;
+use qtism\data\content\xhtml\ObjectElement;
 
 class HotspotMapper extends AbstractQuestionTypeMapper
 {
