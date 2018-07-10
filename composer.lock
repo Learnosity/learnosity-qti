@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e35131eba2bebe69be3502f1e3a167b7",
+    "content-hash": "58b478d49540b90a6f042f3a5e3efff7",
     "packages": [
         {
             "name": "doctrine/annotations",
@@ -514,16 +514,16 @@
         },
         {
             "name": "qtism/qtism",
-            "version": "7.0.0",
+            "version": "10.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/oat-sa/qti-sdk.git",
-                "reference": "06bcd15d2dd67bc6c0cdfe191a654da12634aac5"
+                "reference": "fc3568d2a293ae6dbfe9f400dad2b94a0033ddb2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/oat-sa/qti-sdk/zipball/06bcd15d2dd67bc6c0cdfe191a654da12634aac5",
-                "reference": "06bcd15d2dd67bc6c0cdfe191a654da12634aac5",
+                "url": "https://api.github.com/repos/oat-sa/qti-sdk/zipball/fc3568d2a293ae6dbfe9f400dad2b94a0033ddb2",
+                "reference": "fc3568d2a293ae6dbfe9f400dad2b94a0033ddb2",
                 "shasum": ""
             },
             "require": {
@@ -535,8 +535,8 @@
                 "wp-cli/php-cli-tools": "0.10.3"
             },
             "require-dev": {
-                "phpunit/phpunit": ">=3.7.20",
-                "satooshi/php-coveralls": "dev-master"
+                "phpunit/phpunit": "~5.0",
+                "satooshi/php-coveralls": "~v2.0.0"
             },
             "bin": [
                 "bin/qtisdk"
@@ -549,7 +549,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "GPL-2.0"
+                "GPL-2.0-only"
             ],
             "authors": [
                 {
@@ -575,7 +575,7 @@
                 "QTI",
                 "TAO"
             ],
-            "time": "2017-01-17T10:40:51+00:00"
+            "time": "2018-07-24T14:27:10+00:00"
         },
         {
             "name": "symfony/config",
@@ -2786,6 +2786,7 @@
                 "mock",
                 "xunit"
             ],
+            "abandoned": true,
             "time": "2015-10-02T06:51:40+00:00"
         },
         {
@@ -3214,7 +3215,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": [],
-    "prefer-stable": false,
+    "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": ">=5.5"
