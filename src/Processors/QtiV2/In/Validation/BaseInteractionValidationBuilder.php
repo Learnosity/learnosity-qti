@@ -127,7 +127,7 @@ abstract class BaseInteractionValidationBuilder
                         return $this->getMatchCorrectTemplateValidation($responseProcessingScores);
                     }
 
-                    LogService::log('ResponseProcessing: Unrecognized scoring type: ' . print_r($results, true));
+                    LogService::log('ResponseProcessing: Built-in response processing used, but no response processing scores found');
                     break;
 
                 default:
