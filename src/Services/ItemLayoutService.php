@@ -146,7 +146,10 @@ class ItemLayoutService
             unset($item['content']);
         }
         if ($this->shouldRemoveItemMetadata) {
-            unset($item['metadata']);
+            unset($item['metadata']['authoring']);
+            if (empty($item['metadata'])) {
+                unset($item['metadata']);
+            }
         }
 
         return $item;
