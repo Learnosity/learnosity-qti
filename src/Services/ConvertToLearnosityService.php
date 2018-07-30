@@ -605,6 +605,10 @@ class ConvertToLearnosityService
      */
     private function updateJobManifest(array &$manifest, array $results)
     {
+        if (empty($results['qtiitems'])) {
+            return;
+        }
+
         foreach ($results['qtiitems'] as &$itemResult) {
             // Log ignored items
             if (!isset($itemResult['item'])) {

@@ -71,6 +71,10 @@ class ItemLayoutService
      */
     protected function migrateBatchItems(array $batchItems)
     {
+        if (empty($batchItems['qtiitems'])) {
+            return $batchItems;
+        }
+
         $itemIndex = 0;
         $totalItemsCount = count($batchItems['qtiitems']);
         foreach ($batchItems['qtiitems'] as $fileKey => &$qtiItem) {
