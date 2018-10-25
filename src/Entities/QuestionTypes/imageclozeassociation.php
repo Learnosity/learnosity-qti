@@ -25,6 +25,7 @@ class imageclozeassociation extends BaseQuestionType {
     protected $response_positions;
     protected $aria_labels;
     protected $group_possible_responses;
+    protected $possible_responses;
     protected $img_src;
     protected $duplicate_responses;
     protected $shuffle_options;
@@ -322,6 +323,14 @@ class imageclozeassociation extends BaseQuestionType {
     */
     public function set_aria_labels (array $aria_labels) {
         $this->aria_labels = $aria_labels;
+    }
+
+    public function get_possible_responses() {
+        return $this->possible_responses;
+    }
+
+    public function set_possible_responses (array $possible_responses) {
+        $this->possible_responses = $possible_responses;
     }
 
     /**
