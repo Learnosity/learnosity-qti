@@ -59,8 +59,8 @@ class ChoiceInteractionValidationBuilder extends BaseInteractionValidationBuilde
                 LogService::log('Invalid choice `' . $mapEntry->getMapKey() .  '`');
                 continue;
             }
-            if ($mapEntry->getMappedValue() < 0) {
-                LogService::log('Invalid score ` ' . $mapEntry->getMappedValue() . ' `. Negative score is ignored');
+            if ($mapEntry->getMappedValue() <= 0) {
+                LogService::log('Invalid score ` ' . $mapEntry->getMappedValue() . ' `. Negative (or zero) scores are ignored');
                 continue;
             }
             $validResponses[] = new ValidResponse($mapEntry->getMappedValue(), [$mapEntry->getMapKey()]);
