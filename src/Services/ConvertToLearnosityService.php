@@ -48,9 +48,12 @@ class ConvertToLearnosityService
     protected $useResourceIdentifier      = false;
 
     private $assetsFixer;
+    
+    public static $inputDir;
 
     public function __construct($inputPath, $outputPath, OutputInterface $output, $organisationId)
     {
+        self::$inputDir       = $inputPath;
         $this->inputPath      = $inputPath;
         $this->outputPath     = $outputPath;
         $this->output         = $output;

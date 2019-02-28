@@ -5,6 +5,8 @@ namespace LearnosityQti\Utils;
 use DOMDocument;
 use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Processors\QtiV2\Marshallers\LearnosityMarshallerFactory;
+use LearnosityQti\Services\ConvertToLearnosityService;
+use LearnosityQti\Utils\HtmlExtractorUtil;
 use qtism\data\content\TextRun;
 use qtism\data\QtiComponent;
 use qtism\data\QtiComponentCollection;
@@ -37,6 +39,7 @@ class QtiMarshallerUtil
                 }
                 $components->attach($component);
             }
+            
             return $components;
         } catch (\Exception $e) {
             throw new MappingException('[Unable to transform to QTI] ' . $e->getMessage());
@@ -55,10 +58,22 @@ class QtiMarshallerUtil
     public static function marshallCollection(QtiComponentCollection $collection)
     {
         $results = [];
-        foreach ($collection as $component) {
-            $results[] = self::marshall($component);
+        foreach ($collection as $component){
+            $html = '';
+            $class = new \ReflectionClass(get_class($component));
+            if(property_exists($component, 'data')){
+                $property = $class->getProperty('data');
+                $property->setAccessible(true);
+                $file = ConvertToLearnosityService::$inputDir.'/'.$property->getValue($component);
+                if(file_exists($file)){
+                   $html = HtmlExtractorUtil::getHtmlData(realpath($file));
+                }else{
+                    echo 'File not found: '.$file."\n";
+                }
+                continue;
+            }
         }
-        return implode('', $results);
+        return $html;
     }
 
     public static function marshall(QtiComponent $component)
@@ -74,7 +89,7 @@ class QtiMarshallerUtil
         $node = $dom->importNode($element, true);
 
         $string = $dom->saveXML($node);
-
+        
         // TODO: Decode html entitfy back here, this is a hack until I can figure out
         // TODO: how to not do that with DomDocument.saveXML();
         return $string;

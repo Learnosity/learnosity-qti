@@ -4,6 +4,9 @@ namespace LearnosityQti\Processors\QtiV2\In\Interactions;
 
 use LearnosityQti\Entities\QuestionTypes\mcq;
 use LearnosityQti\Entities\QuestionTypes\mcq_ui_style;
+use LearnosityQti\Entities\QuestionTypes\mcq_metadata;
+use LearnosityQti\Services\ConvertToLearnosityService;
+use LearnosityQti\Utils\HtmlExtractorUtil;
 use LearnosityQti\Utils\QtiMarshallerUtil;
 use LearnosityQti\Processors\QtiV2\In\Validation\ChoiceInteractionValidationBuilder;
 use LearnosityQti\Services\LogService;
@@ -21,7 +24,13 @@ class ChoiceInteractionMapper extends AbstractInteractionMapper
         $interaction = $this->interaction;
 
         $options = $this->buildOptions($interaction->getSimpleChoices());
+        $metadata = $this->buildFeedbackMetadata($interaction->getSimpleChoices());
         $mcq = new mcq('mcq', $options);
+
+        // Support for @mcq-metadata
+        $metaData = new mcq_metadata();
+        $metaData->set_distractor_rationale_response_level($metadata);
+        $mcq->set_metadata($metaData);
 
         // Support for @shuffle
         $mustShuffle = $interaction->mustShuffle();
@@ -90,4 +99,31 @@ class ChoiceInteractionMapper extends AbstractInteractionMapper
         }
         return $options;
     }
+
+    private function buildFeedbackMetadata(SimpleChoiceCollection $simpleChoices)
+    {
+        /* @var $choice SimpleChoice */
+        $metadata = [];
+        foreach ($simpleChoices as $key => $choice) {
+            $flow = $choice->getContent();
+            $class = new \ReflectionClass(get_class($flow));
+            if(property_exists($flow,'dataPlaceHolder')){
+                $property = $class->getProperty('dataPlaceHolder');
+                $property->setAccessible(true);
+                $feed = $property->getValue($flow);
+                $feedArray = array_values((array) $feed);
+                if(sizeof($feedArray)==2){
+                    $feeddataArray = array_values((array) $feedArray[0]);
+                    $feedarr = array_values((array) $feeddataArray[3][0]);
+                    if($feedarr[2]=='text/html'){
+                        $htmlfile = ConvertToLearnosityService::$inputDir.'/'.$feedarr[1];
+                        $metadata[] = HtmlExtractorUtil::getHtmlData(realpath($htmlfile));
+                    }
+                }else{
+                    $metadata[] = "";
+                }
+            }
+        }
+        return $metadata;
+    }    
 }
