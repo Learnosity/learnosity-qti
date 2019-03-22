@@ -68,7 +68,7 @@ class ConvertToQtiService
             'message' => []
         ];
 
-        if (count($errors)) {
+        if (!empty($errors)) {
             $result['status'] = false;
             $result['message'] = $errors;
             return $result;
@@ -266,7 +266,7 @@ class ConvertToQtiService
         $errors = [];
         $jsonFolders = $this->parseInputFolders();
 
-        if (!count($jsonFolders)) {
+        if (empty($jsonFolders)) {
             array_push($errors, 'No files found in ' . $this->inputPath);
         }
 

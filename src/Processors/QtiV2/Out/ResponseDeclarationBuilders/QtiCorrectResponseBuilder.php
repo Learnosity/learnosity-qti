@@ -34,7 +34,7 @@ class QtiCorrectResponseBuilder
         $values = $this->buildValues($validation->get_valid_response()->get_value());
 
         // Handle `alt_responses`
-        if (count($validation->get_alt_responses()) >= 1) {
+        if (!empty($validation->get_alt_responses())) {
             foreach ($validation->get_alt_responses() as $alt) {
                 $values = array_merge($values, $this->buildValues($alt->get_value()));
             }

@@ -73,7 +73,7 @@ class ConvertToLearnosityCommand extends Command
             array_push($validationErrors, "The <info>organisation_id</info> option is required for asset uploads.");
         }
 
-        if (count($validationErrors)) {
+        if (!empty($validationErrors)) {
             $output->writeln([
                 '',
                 "<error>Validation error</error>"

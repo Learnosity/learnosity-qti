@@ -34,7 +34,7 @@ class ResourcesMapper
 
             // Mapping its metadata
             $metadataListElements = Marshaller::getChildElementsByTagName($resourceElement, 'metadata');
-            if (count($metadataListElements) > 0) {
+            if (!empty($metadataListElements)) {
                 $metadataMapper = new MetadataMapper();
                 $flattenedMetadatas = $metadataMapper->map($metadataListElements[0]);
                 $resource->setMetadata($flattenedMetadatas);

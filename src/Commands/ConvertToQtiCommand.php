@@ -60,7 +60,7 @@ class ConvertToQtiCommand extends Command
             ]);
         }
 
-        if (count($validationErrors)) {
+        if (!empty($validationErrors)) {
             $output->writeln([
                 '',
                 "<error>Validation error</error>"
