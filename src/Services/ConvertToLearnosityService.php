@@ -142,7 +142,9 @@ class ConvertToLearnosityService
      */
     private function convertQtiContentPackagesInDirectory($sourceDirectory, $relativeSourceDirectoryPath)
     {
-        $results = [];
+        $results = [
+            'qtiitems' => [],
+        ];
 
         $manifestFinder = new Finder();
         $manifestFinderPath = $manifestFinder->files()->in($sourceDirectory)->name('imsmanifest.xml');
