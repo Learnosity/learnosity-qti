@@ -9,7 +9,7 @@ use qtism\data\content\interactions\AssociableHotspotCollection;
 use qtism\data\content\interactions\GapImg;
 use qtism\data\content\interactions\GapImgCollection;
 use qtism\data\content\interactions\GraphicGapMatchInteraction;
-use qtism\data\content\xhtml\Object;
+use qtism\data\content\xhtml\ObjectElement;
 
 class GraphicGapInteractionBuilder
 {
@@ -18,7 +18,7 @@ class GraphicGapInteractionBuilder
         $gapImgCollection = new GapImgCollection();
 
         foreach ($gapImgs as $id => $data) {
-            $obj = new Object($data, 'image/png');
+            $obj = new ObjectElement($data, 'image/png');
             $gapImg = new GapImg($id, 1, $obj);
             $gapImgCollection->attach($gapImg);
         }

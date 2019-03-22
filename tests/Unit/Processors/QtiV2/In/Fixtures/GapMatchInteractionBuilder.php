@@ -12,7 +12,7 @@ use qtism\data\content\interactions\GapMatchInteraction;
 use qtism\data\content\interactions\GapText;
 use qtism\data\content\TextOrVariableCollection;
 use qtism\data\content\TextRun;
-use qtism\data\content\xhtml\Object;
+use qtism\data\content\xhtml\ObjectElement;
 use qtism\data\content\xhtml\text\P;
 
 class GapMatchInteractionBuilder
@@ -30,7 +30,7 @@ class GapMatchInteractionBuilder
         }
 
         foreach ($gapImgList as $identifier => $imagedURL) {
-            $obj = new Object($imagedURL, 'image/png');
+            $obj = new ObjectElement($imagedURL, 'image/png');
             $gapImg = new GapImg($identifier, 1, $obj);
             $gapChoiceCollection->attach($gapImg);
         }

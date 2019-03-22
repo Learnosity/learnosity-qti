@@ -7,13 +7,13 @@ use qtism\common\datatypes\QtiShape;
 use qtism\data\content\interactions\HotspotChoice;
 use qtism\data\content\interactions\HotspotChoiceCollection;
 use qtism\data\content\interactions\HotspotInteraction;
-use qtism\data\content\xhtml\Object;
+use qtism\data\content\xhtml\ObjectElement;
 
 class HotspotInteractionBuilder
 {
     public static function buildWithRectShapesChoices($responseIdentifier)
     {
-        $imageObject = new Object('http://anyurl.com', 'image/png');
+        $imageObject = new ObjectElement('http://anyurl.com', 'image/png');
         $imageObject->setWidth(131);
         $imageObject->setHeight(37);
         $collection = self::buildRectShapesChoices();
@@ -22,10 +22,10 @@ class HotspotInteractionBuilder
 
     public static function buildWithCircleShapesChoices($responseIdentifier)
     {
-        $imageObject = new Object('http://anyurl.com', 'image/png');
+        $imageObject = new ObjectElement('http://anyurl.com', 'image/png');
         $imageObject->setWidth(206);
         $imageObject->setHeight(280);
-        
+
         $collection = new HotspotChoiceCollection();
         $collection->attach(new HotspotChoice('A', QtiShape::CIRCLE, new QtiCoords(QtiShape::CIRCLE, [77, 115, 8])));
         $collection->attach(new HotspotChoice('B', QtiShape::CIRCLE, new QtiCoords(QtiShape::CIRCLE, [118, 184, 8])));
@@ -36,7 +36,7 @@ class HotspotInteractionBuilder
 
     public static function buildWithPolyShapesChoices($responseIdentifier)
     {
-        $imageObject = new Object('http://anyurl.com', 'image/png');
+        $imageObject = new ObjectElement('http://anyurl.com', 'image/png');
         $imageObject->setWidth(131);
         $imageObject->setHeight(37);
         $collection = new HotspotChoiceCollection();
