@@ -5,7 +5,7 @@ namespace LearnosityQti\Processors\QtiV2\Marshallers;
 use LearnosityQti\Processors\QtiV2\Out\ContentCollectionBuilder;
 use LearnosityQti\Services\LogService;
 use LearnosityQti\Utils\QtiMarshallerUtil;
-use qtism\data\content\xhtml\Object;
+use qtism\data\content\xhtml\ObjectElement;
 use qtism\data\QtiComponent;
 use qtism\data\storage\xml\marshalling\ObjectMarshaller;
 

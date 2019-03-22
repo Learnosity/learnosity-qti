@@ -8,11 +8,11 @@ use LearnosityQti\Entities\BaseQuestionTypeAttribute;
 * This class is auto-generated based on Schemas API and you should not modify its content
 * Metadata: {"responses":"v2.108.0","feedback":"v2.71.0","features":"v2.107.0"}
 */
-class test-slowscorer_validation extends BaseQuestionTypeAttribute {
+class test_slowscorer_validation extends BaseQuestionTypeAttribute {
     protected $max_score;
     protected $min_score_if_attempted;
     protected $unscored;
-    
+
     public function __construct(
             )
     {
@@ -72,6 +72,5 @@ class test-slowscorer_validation extends BaseQuestionTypeAttribute {
         $this->unscored = $unscored;
     }
 
-    
-}
 
+}

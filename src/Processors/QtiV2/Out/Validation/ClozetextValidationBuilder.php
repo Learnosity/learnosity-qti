@@ -44,7 +44,7 @@ class ClozetextValidationBuilder extends AbstractQuestionValidationBuilder
             $mapEntriesCollection = new MapEntryCollection();
             $mapEntriesCollection->attach(new MapEntry($value, $validResponseScore, $this->isCaseSensitive));
 
-            if (count($validation->get_alt_responses()) > 0) {
+            if (!empty($validation->get_alt_responses())) {
                 /** @var clozetext_validation_alt_responses_item $alt */
                 foreach ($validation->get_alt_responses() as $alt) {
                     // Assuming

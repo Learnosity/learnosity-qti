@@ -68,7 +68,7 @@ class ConvertToLearnosityService
             'message' => []
         ];
 
-        if (count($errors)) {
+        if (!empty($errors)) {
             $result['status'] = false;
             $result['message'] = $errors;
             return $result;
@@ -142,7 +142,9 @@ class ConvertToLearnosityService
      */
     private function convertQtiContentPackagesInDirectory($sourceDirectory, $relativeSourceDirectoryPath)
     {
-        $results = [];
+        $results = [
+            'qtiitems' => [],
+        ];
 
         $manifestFinder = new Finder();
         $manifestFinderPath = $manifestFinder->files()->in($sourceDirectory)->name('imsmanifest.xml');
@@ -601,7 +603,7 @@ class ConvertToLearnosityService
         $errors = [];
         $manifestFolders = $this->parseInputFolders();
 
-        if (!count($manifestFolders)) {
+        if (empty($manifestFolders)) {
             array_push($errors, 'No manifest(s) found in ' . $this->inputPath);
         }
 

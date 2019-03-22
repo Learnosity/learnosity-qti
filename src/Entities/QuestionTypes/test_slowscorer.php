@@ -8,7 +8,7 @@ use LearnosityQti\Entities\BaseQuestionType;
 * This class is auto-generated based on Schemas API and you should not modify its content
 * Metadata: {"responses":"v2.108.0","feedback":"v2.71.0","features":"v2.107.0"}
 */
-class test-slowscorer extends BaseQuestionType {
+class test_slowscorer extends BaseQuestionType {
     protected $is_math;
     protected $metadata;
     protected $stimulus;
@@ -17,7 +17,7 @@ class test-slowscorer extends BaseQuestionType {
     protected $type;
     protected $ui_style;
     protected $validation;
-    
+
     public function __construct(
                     $type
                         )
@@ -46,7 +46,7 @@ class test-slowscorer extends BaseQuestionType {
     /**
     * Get metadata \
     *  \
-    * @return test-slowscorer_metadata $metadata \
+    * @return test_slowscorer_metadata $metadata \
     */
     public function get_metadata() {
         return $this->metadata;
@@ -55,9 +55,9 @@ class test-slowscorer extends BaseQuestionType {
     /**
     * Set metadata \
     *  \
-    * @param test-slowscorer_metadata $metadata \
+    * @param test_slowscorer_metadata $metadata \
     */
-    public function set_metadata (test-slowscorer_metadata $metadata) {
+    public function set_metadata (test_slowscorer_metadata $metadata) {
         $this->metadata = $metadata;
     }
 
@@ -144,7 +144,7 @@ class test-slowscorer extends BaseQuestionType {
     /**
     * Get ui_style \
     *  \
-    * @return test-slowscorer_ui_style $ui_style \
+    * @return test_slowscorer_ui_style $ui_style \
     */
     public function get_ui_style() {
         return $this->ui_style;
@@ -153,16 +153,16 @@ class test-slowscorer extends BaseQuestionType {
     /**
     * Set ui_style \
     *  \
-    * @param test-slowscorer_ui_style $ui_style \
+    * @param test_slowscorer_ui_style $ui_style \
     */
-    public function set_ui_style (test-slowscorer_ui_style $ui_style) {
+    public function set_ui_style (test_slowscorer_ui_style $ui_style) {
         $this->ui_style = $ui_style;
     }
 
     /**
     * Get Validation \
     * In this section, configure the correct answer(s) for the question. \
-    * @return test-slowscorer_validation $validation \
+    * @return test_slowscorer_validation $validation \
     */
     public function get_validation() {
         return $this->validation;
@@ -171,15 +171,14 @@ class test-slowscorer extends BaseQuestionType {
     /**
     * Set Validation \
     * In this section, configure the correct answer(s) for the question. \
-    * @param test-slowscorer_validation $validation \
+    * @param test_slowscorer_validation $validation \
     */
-    public function set_validation (test-slowscorer_validation $validation) {
+    public function set_validation (test_slowscorer_validation $validation) {
         $this->validation = $validation;
     }
 
-    
+
     public function get_widget_type() {
     return 'response';
     }
 }
-

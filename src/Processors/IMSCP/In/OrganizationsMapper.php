@@ -17,7 +17,7 @@ class OrganizationsMapper
             $organisation->setStructure(Marshaller::getDOMElementAttributeAs($organisationElement, 'structure'));
 
             $titleElements = Marshaller::getChildElementsByTagName($organisationElement, 'title');
-            if (count($titleElements) >= 1) {
+            if (!empty($titleElements)) {
                 $organisation->setTitle($titleElements[0]->nodeValue);
             }
             $itemElements = Marshaller::getChildElementsByTagName($organisationElement, 'item');

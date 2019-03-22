@@ -49,7 +49,7 @@ class HottextInteractionValidationBuilder extends BaseInteractionValidationBuild
         $combinations = ArrayUtil::combinations($mapEntryValueMap);
         $correctResponses = [];
         foreach ($combinations as $combination) {
-            if (count($combination) > 0 && count($combination) <= $this->maxChoices) {
+            if (!empty($combination) && count($combination) <= $this->maxChoices) {
                 $score = array_sum(array_column($combination, 'score'));
                 $value = array_column($combination, 'key');
                 $correctResponses[] = new ValidResponse($score, $value);

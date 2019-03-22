@@ -127,7 +127,7 @@ class ItemMapper
         $interactionComponents = $itemBody->getComponentsByClassName(Constants::$supportedInteractions, true);
         if (!$interactionComponents || count($interactionComponents) === 0) {
             $checkInteractionComponents = $itemBody->getComponentsByClassName(Constants::$unsupportedInteractions, true);
-            if (count($checkInteractionComponents)) {
+            if (!empty($checkInteractionComponents)) {
                 foreach ($checkInteractionComponents as $c) {
                     throw new MappingException('Unsupported interaction ' . $c->getQtiClassName());
                 }

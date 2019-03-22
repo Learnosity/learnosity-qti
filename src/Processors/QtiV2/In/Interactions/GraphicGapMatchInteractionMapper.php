@@ -12,7 +12,7 @@ use LearnosityQti\Utils\QtiMarshallerUtil;
 use qtism\data\content\interactions\AssociableHotspot;
 use qtism\data\content\interactions\GapChoice;
 use qtism\data\content\interactions\GraphicGapMatchInteraction as QtiGraphicGapMatchInteraction;
-use qtism\data\content\xhtml\Object;
+use qtism\data\content\xhtml\ObjectElement;
 
 class GraphicGapMatchInteractionMapper extends AbstractInteractionMapper
 {

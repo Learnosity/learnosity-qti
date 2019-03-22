@@ -1,7 +1,6 @@
 .idea
 .sonar
 vendor
-composer.lock
 reports
 .DS_Store
 _vault

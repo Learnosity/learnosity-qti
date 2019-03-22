@@ -7,7 +7,7 @@ use LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
 use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\HotspotInteractionBuilder;
 use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
 use qtism\data\content\interactions\HotspotInteraction;
-use qtism\data\content\xhtml\Object;
+use qtism\data\content\xhtml\ObjectElement;
 
 class HotspotInteractionTest extends AbstractInteractionTest
 {
@@ -15,7 +15,7 @@ class HotspotInteractionTest extends AbstractInteractionTest
     {
         $this->setExpectedException('LearnosityQti\Exceptions\MappingException');
 
-        $imageObject = new Object('http://anyurl.com', 'image/png');
+        $imageObject = new ObjectElement('http://anyurl.com', 'image/png');
         $collection = HotspotInteractionBuilder::buildRectShapesChoices();
         $interaction = new HotspotInteraction('thisJustWontWork', $imageObject, $collection);
 
@@ -24,7 +24,7 @@ class HotspotInteractionTest extends AbstractInteractionTest
         $mapper = new HotspotInteractionMapper($interaction, $responseDeclaration, $responseProcessingTemplate);
         $question = $mapper->getQuestionType();
     }
-    
+
     public function testHotspotWithRectShape()
     {
         $interaction = HotspotInteractionBuilder::buildWithRectShapesChoices('testIdentifier');

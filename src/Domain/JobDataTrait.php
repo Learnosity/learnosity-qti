@@ -81,7 +81,7 @@ trait JobDataTrait
 
     protected function writeJsonToFile(array $array, $filename, $flags = null)
     {
-        if (count($array)) {
+        if (!empty($array)) {
             if (!file_put_contents(
                 $filename,
                 json_encode($array, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT),
@@ -126,7 +126,7 @@ trait JobDataTrait
     {
         $config = [];
 
-        if (count($arguments)) {
+        if (!empty($arguments)) {
             foreach ($arguments as $arg) {
                 $config[$this->readInputArgumentType($arg)] = $this->readInputArgumentValue($arg);
             }

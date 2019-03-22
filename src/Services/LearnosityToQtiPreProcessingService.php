@@ -8,7 +8,7 @@ use LearnosityQti\Utils\MimeUtil;
 use LearnosityQti\Utils\QtiMarshallerUtil;
 use LearnosityQti\Utils\SimpleHtmlDom\SimpleHtmlDom;
 use LearnosityQti\Utils\StringUtil;
-use qtism\data\content\xhtml\Object;
+use qtism\data\content\xhtml\ObjectElement;
 
 class LearnosityToQtiPreProcessingService
 {

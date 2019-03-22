@@ -12,7 +12,7 @@ use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\GraphicGapInteractionB
 use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
 use LearnosityQti\Utils\StringUtil;
 use qtism\common\datatypes\QtiDirectedPair;
-use qtism\data\content\xhtml\Object;
+use qtism\data\content\xhtml\ObjectElement;
 
 class GraphicGapMatchInteractionTest extends AbstractInteractionTest
 {
@@ -20,7 +20,7 @@ class GraphicGapMatchInteractionTest extends AbstractInteractionTest
     {
         $this->setExpectedException('LearnosityQti\Exceptions\MappingException');
 
-        $bgObject = new Object('http://img.png', 'image/png');
+        $bgObject = new ObjectElement('http://img.png', 'image/png');
         $testInteraction = GraphicGapInteractionBuilder::build(
             'testInteraction',
             $bgObject,
@@ -36,10 +36,10 @@ class GraphicGapMatchInteractionTest extends AbstractInteractionTest
         $mapper = new GraphicGapMatchInteractionMapper($testInteraction, $responseDeclaration, $responseProcessingTemplate);
         $question = $mapper->getQuestionType();
     }
-    
+
     public function testWithMapResponseValidationMissingAssociableIdentifier()
     {
-        $bgObject = new Object('http://img.png', 'image/png');
+        $bgObject = new ObjectElement('http://img.png', 'image/png');
         $bgObject->setWidth(100);
         $bgObject->setHeight(200);
         $testInteraction = GraphicGapInteractionBuilder::build(
@@ -81,7 +81,7 @@ class GraphicGapMatchInteractionTest extends AbstractInteractionTest
 
     public function testMapResponseValidation()
     {
-        $bgObject = new Object('http://img.png', 'image/png');
+        $bgObject = new ObjectElement('http://img.png', 'image/png');
         $bgObject->setWidth(100);
         $bgObject->setHeight(200);
         $testInteraction = GraphicGapInteractionBuilder::build(
@@ -151,7 +151,7 @@ class GraphicGapMatchInteractionTest extends AbstractInteractionTest
 
     public function testMatchCorrectValidation()
     {
-        $bgObject = new Object('http://img.png', 'image/png');
+        $bgObject = new ObjectElement('http://img.png', 'image/png');
         $bgObject->setWidth(100);
         $bgObject->setHeight(200);
         $testInteraction = GraphicGapInteractionBuilder::build(

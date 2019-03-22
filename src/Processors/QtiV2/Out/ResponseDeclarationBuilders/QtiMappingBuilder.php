@@ -45,7 +45,7 @@ class QtiMappingBuilder
         $scores[] = floatval($validation->get_valid_response()->get_score());
 
         // Also, grab scores `alt_responses`
-        if (count($validation->get_alt_responses()) > 0) {
+        if (!empty($validation->get_alt_responses())) {
             foreach ($validation->get_alt_responses() as $alt) {
                 $scores[] = floatval($alt->get_score());
              }
@@ -61,7 +61,7 @@ class QtiMappingBuilder
         $mapEntries = $this->buildMapEntries($validation->get_valid_response());
 
         // Handle `alt_responses`
-        if (count($validation->get_alt_responses()) > 0) {
+        if (!empty($validation->get_alt_responses())) {
             foreach ($validation->get_alt_responses() as $alt) {
                 $mapEntries = array_merge($mapEntries, $this->buildMapEntries($alt));
             }
