@@ -9,110 +9,109 @@ use LearnosityQti\Entities\BaseQuestionType;
 * Metadata: {"responses":"v2.108.0","feedback":"v2.71.0","features":"v2.107.0"}
 */
 class scrollablepassage extends BaseQuestionType {
-    protected $data-type;
-    protected $data-width;
-    protected $data-height;
-    protected $data-border;
-    protected $data-subtract-height;
-    
+    protected $data_type;
+    protected $data_width;
+    protected $data_height;
+    protected $data_border;
+    protected $data_subtract_height;
+
     public function __construct(
             )
     {
             }
 
     /**
-    * Get data-type \
+    * Get data_type \
     * Use the value 'scrollablepassage' for this field. \
-    * @return string $data-type \
+    * @return string $data_type \
     */
-    public function get_data-type() {
-        return $this->data-type;
+    public function get_data_type() {
+        return $this->data_type;
     }
 
     /**
-    * Set data-type \
+    * Set data_type \
     * Use the value 'scrollablepassage' for this field. \
-    * @param string $data-type \
+    * @param string $data_type \
     */
-    public function set_data-type ($data-type) {
-        $this->data-type = $data-type;
+    public function set_data_type ($data_type) {
+        $this->data_type = $data_type;
     }
 
     /**
-    * Get data-width \
+    * Get data_width \
     * Width of the scrollable passage container in pixels or percentage. \
-    * @return string $data-width \
+    * @return string $data_width \
     */
-    public function get_data-width() {
-        return $this->data-width;
+    public function get_data_width() {
+        return $this->data_width;
     }
 
     /**
-    * Set data-width \
+    * Set data_width \
     * Width of the scrollable passage container in pixels or percentage. \
-    * @param string $data-width \
+    * @param string $data_width \
     */
-    public function set_data-width ($data-width) {
-        $this->data-width = $data-width;
+    public function set_data_width ($data_width) {
+        $this->data_width = $data_width;
     }
 
     /**
-    * Get data-height \
+    * Get data_height \
     * Height of the scrollable passage container in pixels or percentage. \
-    * @return string $data-height \
+    * @return string $data_height \
     */
-    public function get_data-height() {
-        return $this->data-height;
+    public function get_data_height() {
+        return $this->data_height;
     }
 
     /**
-    * Set data-height \
+    * Set data_height \
     * Height of the scrollable passage container in pixels or percentage. \
-    * @param string $data-height \
+    * @param string $data_height \
     */
-    public function set_data-height ($data-height) {
-        $this->data-height = $data-height;
+    public function set_data_height ($data_height) {
+        $this->data_height = $data_height;
     }
 
     /**
-    * Get data-border \
+    * Get data_border \
     * Whether to display a wrapper around the scrollable passage container. \
-    * @return boolean $data-border \
+    * @return boolean $data_border \
     */
-    public function get_data-border() {
-        return $this->data-border;
+    public function get_data_border() {
+        return $this->data_border;
     }
 
     /**
-    * Set data-border \
+    * Set data_border \
     * Whether to display a wrapper around the scrollable passage container. \
-    * @param boolean $data-border \
+    * @param boolean $data_border \
     */
-    public function set_data-border ($data-border) {
-        $this->data-border = $data-border;
+    public function set_data_border ($data_border) {
+        $this->data_border = $data_border;
     }
 
     /**
-    * Get data-subtract-height \
+    * Get data_subtract_height \
     * A value which reduces the height of the passage container. \
-    * @return string $data-subtract-height \
+    * @return string $data_subtract_height \
     */
-    public function get_data-subtract-height() {
-        return $this->data-subtract-height;
+    public function get_data_subtract_height() {
+        return $this->data_subtract_height;
     }
 
     /**
-    * Set data-subtract-height \
+    * Set data_subtract_height \
     * A value which reduces the height of the passage container. \
-    * @param string $data-subtract-height \
+    * @param string $data_subtract_height \
     */
-    public function set_data-subtract-height ($data-subtract-height) {
-        $this->data-subtract-height = $data-subtract-height;
+    public function set_data_subtract_height ($data_subtract_height) {
+        $this->data_subtract_height = $data_subtract_height;
     }
 
-    
+
     public function get_widget_type() {
     return 'feature';
     }
 }
-
