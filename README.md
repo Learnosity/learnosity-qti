@@ -97,6 +97,24 @@ Help:
 #### Next steps
 Once you have Learnosity JSON (the `final` folder), you can use the Data API to import into your Learnosity hosted item bank.
 
+Example of the output format is:
+```
+{
+    "qtiitems": {
+        "[item-reference]": {
+            "item": {},
+            "questions": [],
+            "features": [],
+            "manifest": [],
+            "rubric": null,
+            "assumptions": []
+        }
+    }
+}
+```
+Loop over all item objects inside "qtiitems".
+Inside each item object, import the questions (setQuestions) and features (setFeatures) first, then the item (setItems).
+
  * [Import questions](https://docs.learnosity.com/analytics/data/endpoints/itembank_endpoints#setQuestions)
  * [Import features](https://docs.learnosity.com/analytics/data/endpoints/itembank_endpoints#setFeatures)
  * [Import items](https://docs.learnosity.com/analytics/data/endpoints/itembank_endpoints#setItems)
