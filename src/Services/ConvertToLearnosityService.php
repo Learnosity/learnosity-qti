@@ -395,7 +395,7 @@ class ConvertToLearnosityService
         }
 
         if ($useResourceIdentifier) {
-            $itemReference = $this->getAttribute('identifier');
+            $itemReference = $resource->getAttribute('identifier');
         }
 
         if ($useFileNameAsIdentifier) {
