@@ -29,6 +29,8 @@ class AssessmentItemBuilder
     public function __construct()
     {
         $this->itemBodyBuilder = new ItemBodyBuilder();
+        // to add multiple outcomedeclaration in case of feedback
+        $this->outcomeDeclarationCollection = new OutcomeDeclarationCollection();
     }
 
     public function build($itemIdentifier, $itemLabel, array $questions, $content = '')
@@ -36,7 +38,7 @@ class AssessmentItemBuilder
         // Initialise our <assessmentItem>
         $assessmentItem = new AssessmentItem($itemIdentifier, $itemIdentifier, false);
         $assessmentItem->setLabel($itemLabel);
-        $assessmentItem->setOutcomeDeclarations($this->buildOutcomeDeclarations());
+        //$assessmentItem->setOutcomeDeclarations($this->buildOutcomeDeclarations());
         $assessmentItem->setToolName('Learnosity');
 
         // Store interactions on this array to later be placed on <itemBody>
@@ -44,6 +46,15 @@ class AssessmentItemBuilder
         $responseDeclarationCollection = new ResponseDeclarationCollection();
         $responseProcessingTemplates = [];
         foreach ($questions as $question) {
+
+            $questionData = $question->to_array(); 
+            $score = $questionData['data']['validation']['valid_response']['score']; 
+            $assessmentItem->setOutcomeDeclarations($this->buildOutcomeDeclarations($score));
+
+            if(isset($questionData['data']['metadata']['distractor_rationale_response_level'])){
+                $assessmentItem->setOutcomeDeclarations($this->buildFeedbackOutcomeDeclarations());
+            }
+
             /** @var Question $question */
             // Map the `questions` and its validation objects to be placed at <itemBody>
             // The extraContent usually comes from `stimulus` of item that mapped to inline interaction and has no `prompt`
@@ -99,12 +110,13 @@ class AssessmentItemBuilder
         // Otherwise, generate an alternative identifier and store the original reference as `label` to be passed in
         $questionReference = $question->get_reference();
         $interactionIdentifier = Format::isIdentifier($questionReference, false) ? $questionReference : strtoupper($type)  . '_' . StringUtil::generateRandomString(12);
-        if ($interactionIdentifier !== $questionReference) {
+        /* if ($interactionIdentifier !== $questionReference) {
             LogService::log(
                 "The question `reference` ($questionReference) is not a valid identifier. " .
                 "Replaced it with randomly generated `$interactionIdentifier` and stored the original `reference` as `label` attribute"
             );
-        }
+        } */
+        $interactionIdentifier = 'RESPONSE';
         $result = $questionTypeMapper->convert($question->get_data(), $interactionIdentifier, $questionReference);
         $result[] = $questionTypeMapper->getExtraContent();
         return $result;
@@ -117,7 +129,17 @@ class AssessmentItemBuilder
         $valueCollection = new ValueCollection();
         $valueCollection->attach(new Value(0));
         $outcomeDeclaration->setDefaultValue(new DefaultValue($valueCollection));
-        $outcomeDeclarationCollection = new OutcomeDeclarationCollection();
+        //$outcomeDeclarationCollection = new OutcomeDeclarationCollection();
+        $outcomeDeclarationCollection = $this->outcomeDeclarationCollection;
+        $outcomeDeclarationCollection->attach($outcomeDeclaration);
+        return $outcomeDeclarationCollection;
+    }
+
+    private function buildFeedbackOutcomeDeclarations()
+    {
+        // Set <outcomeDeclaration> with  FEEDBACK identifier 
+        $outcomeDeclaration = new OutcomeDeclaration('FEEDBACK', BaseType::IDENTIFIER);
+        $outcomeDeclarationCollection = $this->outcomeDeclarationCollection;
         $outcomeDeclarationCollection->attach($outcomeDeclaration);
         return $outcomeDeclarationCollection;
     }

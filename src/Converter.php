@@ -307,7 +307,8 @@ class Converter
     private static function convertLearnosityItem(array $itemJson)
     {
         // Separate question(s) and item
-        $itemJson['questionReferences'] = array_column($itemJson['questions'], 'reference');
+        //$itemJson['questionReferences'] = array_column($itemJson['questions'], 'reference');
+        $itemJson['questionReferences'] = array_column($itemJson['questions'], 'response_id');
         $questionsJson = $itemJson['questions'];
         unset($itemJson['questions']);
 
@@ -322,7 +323,9 @@ class Converter
         $item = $itemMapper->parse($itemJson);
         $questions = [];
         foreach ($questionsJson as $question) {
-            if (!in_array($question['data']['type'], ['audioplayer', 'videoplayer', 'sharedpassage'])) {
+            $question['reference'] = $question['response_id'];
+            
+            if (!in_array($question['type'],['audioplayer','videoplayer','sharedpassage'])) {
                 $questions[] = $questionMapper->parse($question);
             }
         }

@@ -9,12 +9,22 @@ use LearnosityQti\Entities\QuestionTypes\mcq;
 use LearnosityQti\Entities\QuestionTypes\mcq_options_item;
 use LearnosityQti\Services\LogService;
 use LearnosityQti\Utils\QtiMarshallerUtil;
+use qtism\common\utils\Version;
 use qtism\common\utils\Format;
 use qtism\data\content\FlowStaticCollection;
+use qtism\data\content\FeedbackInline;
+use qtism\data\content\InlineCollection;
+use qtism\data\content\SimpleInline;
+use qtism\data\content\TextRun;
 use qtism\data\content\interactions\ChoiceInteraction;
 use qtism\data\content\interactions\Orientation;
 use qtism\data\content\interactions\SimpleChoice;
 use qtism\data\content\interactions\SimpleChoiceCollection;
+use qtism\data\storage\xml\marshalling\Qti20MarshallerFactory;
+use qtism\data\storage\xml\marshalling\Qti21MarshallerFactory;
+use qtism\data\storage\xml\marshalling\Qti211MarshallerFactory;
+use qtism\data\storage\xml\marshalling\Qti22MarshallerFactory;
+use qtism\data\storage\xml\marshalling\Qti30MarshallerFactory;
 
 class McqMapper extends AbstractQuestionTypeMapper
 {
@@ -26,11 +36,31 @@ class McqMapper extends AbstractQuestionTypeMapper
         // Build <choiceInteraction>
         $valueIdentifierMap = [];
         $simpleChoiceCollection = new SimpleChoiceCollection();
+        $inlineCollection = new InlineCollection();
+
+        $metadata = $question->get_metadata();
+        if(!empty($metadata->get_distractor_rationale_response_level())){
+            foreach($metadata->get_distractor_rationale_response_level() as $feed):
+                $feedbackOptions[] = $feed;
+            endforeach;
+        }
+        $i = 0;
+
         foreach ($question->get_options() as $index => $option) {
             /** @var mcq_options_item $option */
             $choiceContent = new FlowStaticCollection();
             foreach (QtiMarshallerUtil::unmarshallElement($option->get_label()) as $component) {
+                
                 $choiceContent->attach($component);
+                /* Edit block by pooja chaudhary build feedbackInline start */
+                if(isset($feedbackOptions) && $feedbackOptions[$i]!=''){
+                    
+                    $content = new InlineCollection(array(new TextRun($feedbackOptions[$i])));
+                    $feedback = new FeedbackInline('FEEDBACK','CHOICE_'.$option->get_value(),'true');
+                    $feedback->setContent($content);
+                    $choiceContent->attach($feedback);
+                }
+                $i++;
             }
 
             // Use option['value'] as choice `identifier` if it has the correct format,
@@ -72,8 +102,25 @@ class McqMapper extends AbstractQuestionTypeMapper
         }
 
         $builder = new McqValidationBuilder($question->get_multiple_responses(), $valueIdentifierMap);
-        list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation());
-
+        if(isset($feedbackOptions)){
+            list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation(),$feedbackOptions);
+        }else{
+            list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation());
+        }
         return [$interaction, $responseDeclaration, $responseProcessing];
     }
+
+    public function getMarshallerFactory($version = '2.1') {
+	    if (Version::compare($version, '2.0.0', '==') === true) {
+	        return new Qti20MarshallerFactory();
+	    } elseif (Version::compare($version, '2.1.1', '==') === true) {
+	        return new Qti211MarshallerFactory();
+	    } elseif (Version::compare($version, '2.2.0', '==') === true) {
+	        return new Qti22MarshallerFactory();
+	    } elseif (Version::compare($version, '3.0.0', '==') === true) {
+	       return new Qti30MarshallerFactory();
+        } else {
+	        return new Qti21MarshallerFactory();
+	    }
+	}
 }

@@ -169,17 +169,23 @@ class ConvertToQtiService
     {
         $result = [];
 
-        if (in_array($json['type'], LearnosityExportConstant::$supportedQuestionTypes)) {
-            $result = Converter::convertLearnosityToQtiItem($json);
-        } else {
-            $result = [
-                '',
-                [
-                    'Ignoring ' . $json['type'] . ' , currently unsupported'
-                ]
-            ];
-            $this->output->writeln("  <error>Question type `{$json['type']}` not yet supported, ignoring</error>");
-        }
+        foreach($json['data']['items'] as $item):
+            
+            foreach($item['questions'] as $question):
+            if (in_array($question['type'], LearnosityExportConstant::$supportedQuestionTypes)) {
+                $result = Converter::convertLearnosityToQtiItem($item);
+            } else {
+                $result = [
+                    '',
+                    [
+                        'Ignoring' . $question['type'] . ' , currently unsupported'
+                    ]
+                ];
+                $this->output->writeln("<error>Question type `{$question['type']}` not yet supported, ignoring</error>");
+            }
+            endforeach;
+
+        endforeach;
 
         return [
             'qti' => $result,
@@ -233,8 +239,12 @@ class ConvertToQtiService
         $this->output->writeln("\n<info>" . static::INFO_OUTPUT_PREFIX . "Writing conversion results: " . $outputFilePath . '.json' . "</info>\n");
 
         foreach ($results as $result) {
-            if (!empty($result['qti'])) {
-                file_put_contents($outputFilePath . '/' . $result['json']['reference'] . '.xml', $result['qti'][0]);
+
+            foreach($result['json']['data']['items'][0]['questions'] as $question){
+
+                if (!empty($result['qti'])) {
+                    file_put_contents($outputFilePath . '/' . $question['response_id'] . '.xml', $result['qti'][0]);
+                }
             }
         }
     }
@@ -250,9 +260,11 @@ class ConvertToQtiService
     {
         foreach ($results as $result) {
             if (!empty($result['qti'][1])) {
-                $manifest[] = [
-                    $result['json']['reference'] => $result['qti'][1]
-                ];
+                foreach($result['json']['data']['items'] as $item){
+                    $manifest[] = [
+                        $item['reference'] => $result['qti'][1]
+                    ];
+                }
             }
         }
     }
