@@ -52,7 +52,7 @@ class McqMapper extends AbstractQuestionTypeMapper
             foreach (QtiMarshallerUtil::unmarshallElement($option->get_label()) as $component) {
                 
                 $choiceContent->attach($component);
-                /* Edit block by pooja chaudhary build feedbackInline start */
+                
                 if(isset($feedbackOptions) && $feedbackOptions[$i]!=''){
                     
                     $content = new InlineCollection(array(new TextRun($feedbackOptions[$i])));
