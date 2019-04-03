@@ -96,16 +96,14 @@ class ConvertToQtiService
         $jsonFiles = $this->parseInputFolders();
         
         $finalManifest = $this->getJobManifestTemplate();
-
         $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Processing JSON directory: {$this->inputPath} </info>");
 
         foreach ($jsonFiles as $file) {
             $tempDirectoryParts = explode('/', dirname($file));
             $fileName = $tempDirectoryParts[count($tempDirectoryParts)-1];
-
             $results[] = $this->convertLearnosityInDirectory($file);
         }
-
+        
         $this->updateJobManifest($finalManifest, $results);
         $this->persistResultsFile($results, realpath($this->outputPath) . '/' . $this->rawPath . '/');
         $this->flushJobManifest($finalManifest);
@@ -151,10 +149,20 @@ class ConvertToQtiService
         $finder = new Finder();
         $finder->files()->in($this->inputPath.'/activities');
         foreach ($finder as $json) {
+            $activityJson = json_decode(file_get_contents($json));
+            $itemReferences = $activityJson->data->items;
             
-            $folders[] = $json->getRealPath();
+            if(!empty($itemReferences)){
+                foreach($itemReferences as $itemref){
+                    $itemFile = $this->inputPath.'/items/'.md5($itemref).'.json';
+                    if(file_exists($itemFile)){
+                        $folders[] = $itemFile;
+                    }
+                }
+            }else{
+                $this->output->writeln("<error>Error converting : No item refrences found in the activity json</error>");
+            }
         }
-       
         return $folders;
     }
 
@@ -171,7 +179,6 @@ class ConvertToQtiService
     {
         $result = [];
         
-        //foreach($json['data']['items'] as $item):
         foreach($json['questions'] as $question):
             
             if (in_array($question['data']['type'], LearnosityExportConstant::$supportedQuestionTypes)) {
@@ -186,9 +193,6 @@ class ConvertToQtiService
                 $this->output->writeln("<error>Question type `{$question['data']['type']}` not yet supported, ignoring</error>");
             }
         endforeach;
-
-        //endforeach;
-
         return [
             'qti' => $result,
             'json' => $json
@@ -239,7 +243,7 @@ class ConvertToQtiService
         }
 
         $this->output->writeln("\n<info>" . static::INFO_OUTPUT_PREFIX . "Writing conversion results: " . $outputFilePath . '.json' . "</info>\n");
-
+        
         foreach ($results as $result) {
             
             foreach($result['json']['questions'] as $question){

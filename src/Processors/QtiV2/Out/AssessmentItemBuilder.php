@@ -47,9 +47,13 @@ class AssessmentItemBuilder
         $responseProcessingTemplates = [];
         foreach ($questions as $question) {
 
-            $questionData = $question->to_array(); 
-            $score = $questionData['data']['validation']['valid_response']['score']; 
-            $assessmentItem->setOutcomeDeclarations($this->buildOutcomeDeclarations($score));
+            $questionData = $question->to_array();
+            if(isset($questionData['data']['validation']['valid_response']['score'])){  
+                $score = $questionData['data']['validation']['valid_response']['score']; 
+                $assessmentItem->setOutcomeDeclarations($this->buildOutcomeDeclarations($score));
+            }else{
+                $assessmentItem->setOutcomeDeclarations($this->buildOutcomeDeclarations(0));
+            }
 
             if(isset($questionData['data']['metadata']['distractor_rationale_response_level'])){
                 $assessmentItem->setOutcomeDeclarations($this->buildFeedbackOutcomeDeclarations());
@@ -80,7 +84,7 @@ class AssessmentItemBuilder
                 $interactions[$question->get_reference()]['extraContent'] = $extraContent;
             }
         }
-
+        
         // Build <itemBody>
         $assessmentItem->setItemBody($this->itemBodyBuilder->buildItemBody($interactions, $content));
 
