@@ -259,7 +259,7 @@ class Converter
     public static function convertLearnosityToQtiItem(array $data)
     {
         $jsonType = self::guessLearnosityJsonDataType($data);
-
+        
         // Handle `item` which contains both a single item and one or more questions/features
         if ($jsonType === self::LEARNOSITY_DATA_ITEM) {
             list($xmlString, $messages) = self::convertLearnosityItem($data);
@@ -308,9 +308,9 @@ class Converter
     {
         // Separate question(s) and item
         //$itemJson['questionReferences'] = array_column($itemJson['questions'], 'reference');
-        $itemJson['questionReferences'] = array_column($itemJson['questions'], 'response_id');
+        //$itemJson['questionReferences'] = array_column($itemJson['questions'], 'response_id');
         $questionsJson = $itemJson['questions'];
-        unset($itemJson['questions']);
+        //unset($itemJson['questions']);
 
         // Pre-process these JSON
         $preprocessingService = new LearnosityToQtiPreProcessingService($questionsJson);
@@ -323,9 +323,8 @@ class Converter
         $item = $itemMapper->parse($itemJson);
         $questions = [];
         foreach ($questionsJson as $question) {
-            $question['reference'] = $question['response_id'];
             
-            if (!in_array($question['type'],['audioplayer','videoplayer','sharedpassage'])) {
+            if (!in_array($question['data']['type'],['audioplayer','videoplayer','sharedpassage'])) {
                 $questions[] = $questionMapper->parse($question);
             }
         }

@@ -5,6 +5,7 @@ namespace LearnosityQti\Processors\Learnosity\In;
 use LearnosityQti\Entities\BaseQuestionType;
 use LearnosityQti\Entities\Question;
 use LearnosityQti\Utils\UuidUtil;
+use LearnosityQti\Processors\Learnosity\In\EntityBuilder;
 
 class QuestionMapper
 {
@@ -13,11 +14,11 @@ class QuestionMapper
         // TODO: Some validation to check all the required keys exists
         // TODO: Type and data should definitely exists
         // Map the `data` attribute
-        $questionTypeClassName = 'LearnosityQti\Entities\QuestionTypes\\' . $questionJson['type'];
+        $questionTypeClassName = 'LearnosityQti\Entities\QuestionTypes\\' . $questionJson['data']['type'];
 
         /** @var BaseQuestionType $questionType */
-        $questionType = EntityBuilder::build($questionTypeClassName, $questionJson);
-        return new Question($questionJson['type'], $questionJson['reference'], $questionType);
+        $questionType = EntityBuilder::build($questionTypeClassName, $questionJson['data']);
+        return new Question($questionJson['data']['type'], $questionJson['reference'], $questionType);
     }
 
     public function parseDataOnly(array $questionDataJson)

@@ -1,0 +1,7 @@
+[
+    {
+        "accessibility-audit-sample13": [
+            "Interactions are failed to be mapped with `item` content: FlowCollection objects only accept to store Flow objects.. Thus, interactions are separated from its actual `item` content and appended in the bottom"
+        ]
+    }
+]

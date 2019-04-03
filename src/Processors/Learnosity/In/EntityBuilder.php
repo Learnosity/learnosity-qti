@@ -9,6 +9,7 @@ class EntityBuilder
 {
     public static function build($className, array $json)
     {
+        //print_r($json); die;
         $clazz = new \ReflectionClass($className);
         $parameters = [];
         foreach ($clazz->getConstructor()->getParameters() as $parameter) {

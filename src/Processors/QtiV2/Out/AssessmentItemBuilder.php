@@ -68,9 +68,12 @@ class AssessmentItemBuilder
                     $responseDeclarationCollection->attach($responseDeclaration);
                 }
             }
+            
             if (!empty($responseProcessing)) {
+                
                 /** @var ResponseProcessing $responseProcessing */
                 $responseProcessingTemplates[] = $responseProcessing->getTemplate();
+                
             }
             $interactions[$question->get_reference()]['interaction'] = $interaction;
             if (!empty($extraContent)) {
@@ -88,11 +91,17 @@ class AssessmentItemBuilder
         // Map <responseProcessing> - combine response processing from questions
         // TODO: Tidy up this stuff
         if (!empty($responseProcessingTemplates)) {
-            $templates = array_unique($responseProcessingTemplates);
-            $isOnlyMatchCorrect = count($templates) === 1 && $templates[0] === Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT;
-            $responseProcessing = new ResponseProcessing();
-            $responseProcessing->setTemplate($isOnlyMatchCorrect ? Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT : Constants::RESPONSE_PROCESSING_TEMPLATE_MAP_RESPONSE);
-            $assessmentItem->setResponseProcessing($responseProcessing);
+            if(!empty($responseProcessingTemplates[0])){
+                $templates = array_unique($responseProcessingTemplates);
+                $isOnlyMatchCorrect = count($templates) === 1 && $templates[0] === Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT;
+                $responseProcessing = new ResponseProcessing();
+                $responseProcessing->setTemplate($isOnlyMatchCorrect ? Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT : Constants::RESPONSE_PROCESSING_TEMPLATE_MAP_RESPONSE);
+                $assessmentItem->setResponseProcessing($responseProcessing);
+            }else{
+                //$responseProcess = new ResponseProcessing();
+                //$responseProcess->setResponseRules($responseProcessing);
+                $assessmentItem->setResponseProcessing($responseProcessing);
+            }
         }
         return $assessmentItem;
     }
@@ -122,12 +131,12 @@ class AssessmentItemBuilder
         return $result;
     }
 
-    private function buildOutcomeDeclarations()
+    private function buildOutcomeDeclarations($score)
     {
         // Set <outcomeDeclaration> with assumption default value is always 0
-        $outcomeDeclaration = new OutcomeDeclaration('SCORE', BaseType::INTEGER);
+        $outcomeDeclaration = new OutcomeDeclaration('SCORE', BaseType::FLOAT);
         $valueCollection = new ValueCollection();
-        $valueCollection->attach(new Value(0));
+        $valueCollection->attach(new Value($score));
         $outcomeDeclaration->setDefaultValue(new DefaultValue($valueCollection));
         //$outcomeDeclarationCollection = new OutcomeDeclarationCollection();
         $outcomeDeclarationCollection = $this->outcomeDeclarationCollection;

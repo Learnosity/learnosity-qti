@@ -94,6 +94,7 @@ class ConvertToQtiService
     {
         $results = [];
         $jsonFiles = $this->parseInputFolders();
+        
         $finalManifest = $this->getJobManifestTemplate();
 
         $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Processing JSON directory: {$this->inputPath} </info>");
@@ -148,11 +149,11 @@ class ConvertToQtiService
 
         // Look for json files in the current path
         $finder = new Finder();
-        $finder->files()->in($this->inputPath);
+        $finder->files()->in($this->inputPath.'/items');
         foreach ($finder as $json) {
             $folders[] = $json->getRealPath();
         }
-
+       
         return $folders;
     }
 
@@ -168,24 +169,24 @@ class ConvertToQtiService
     private function convertAssessmentItem($json)
     {
         $result = [];
-
-        foreach($json['data']['items'] as $item):
+        
+        //foreach($json['data']['items'] as $item):
+        foreach($json['questions'] as $question):
             
-            foreach($item['questions'] as $question):
-            if (in_array($question['type'], LearnosityExportConstant::$supportedQuestionTypes)) {
-                $result = Converter::convertLearnosityToQtiItem($item);
+            if (in_array($question['data']['type'], LearnosityExportConstant::$supportedQuestionTypes)) {
+                $result = Converter::convertLearnosityToQtiItem($json);
             } else {
                 $result = [
                     '',
                     [
-                        'Ignoring' . $question['type'] . ' , currently unsupported'
+                        'Ignoring' . $question['data']['type'] . ' , currently unsupported'
                     ]
                 ];
-                $this->output->writeln("<error>Question type `{$question['type']}` not yet supported, ignoring</error>");
+                $this->output->writeln("<error>Question type `{$question['data']['type']}` not yet supported, ignoring</error>");
             }
-            endforeach;
-
         endforeach;
+
+        //endforeach;
 
         return [
             'qti' => $result,
@@ -239,11 +240,11 @@ class ConvertToQtiService
         $this->output->writeln("\n<info>" . static::INFO_OUTPUT_PREFIX . "Writing conversion results: " . $outputFilePath . '.json' . "</info>\n");
 
         foreach ($results as $result) {
-
-            foreach($result['json']['data']['items'][0]['questions'] as $question){
+            
+            foreach($result['json']['questions'] as $question){
 
                 if (!empty($result['qti'])) {
-                    file_put_contents($outputFilePath . '/' . $question['response_id'] . '.xml', $result['qti'][0]);
+                    file_put_contents($outputFilePath . '/' . $question['reference'] . '.xml', $result['qti'][0]);
                 }
             }
         }
@@ -260,11 +261,9 @@ class ConvertToQtiService
     {
         foreach ($results as $result) {
             if (!empty($result['qti'][1])) {
-                foreach($result['json']['data']['items'] as $item){
-                    $manifest[] = [
-                        $item['reference'] => $result['qti'][1]
+                $manifest[] = [
+                        $result['json']['reference'] => $result['qti'][1]
                     ];
-                }
             }
         }
     }

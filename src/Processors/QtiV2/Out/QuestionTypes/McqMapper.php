@@ -20,11 +20,7 @@ use qtism\data\content\interactions\ChoiceInteraction;
 use qtism\data\content\interactions\Orientation;
 use qtism\data\content\interactions\SimpleChoice;
 use qtism\data\content\interactions\SimpleChoiceCollection;
-use qtism\data\storage\xml\marshalling\Qti20MarshallerFactory;
-use qtism\data\storage\xml\marshalling\Qti21MarshallerFactory;
-use qtism\data\storage\xml\marshalling\Qti211MarshallerFactory;
-use qtism\data\storage\xml\marshalling\Qti22MarshallerFactory;
-use qtism\data\storage\xml\marshalling\Qti30MarshallerFactory;
+
 
 class McqMapper extends AbstractQuestionTypeMapper
 {
@@ -39,7 +35,8 @@ class McqMapper extends AbstractQuestionTypeMapper
         $inlineCollection = new InlineCollection();
 
         $metadata = $question->get_metadata();
-        if(!empty($metadata->get_distractor_rationale_response_level())){
+        //print_r($metadata); die;
+        if(isset($metadata) && !empty($metadata->get_distractor_rationale_response_level())){
             foreach($metadata->get_distractor_rationale_response_level() as $feed):
                 $feedbackOptions[] = $feed;
             endforeach;
@@ -52,9 +49,9 @@ class McqMapper extends AbstractQuestionTypeMapper
             foreach (QtiMarshallerUtil::unmarshallElement($option->get_label()) as $component) {
                 
                 $choiceContent->attach($component);
-                
+
+                // attach feedbackInline to simpleChoice
                 if(isset($feedbackOptions) && $feedbackOptions[$i]!=''){
-                    
                     $content = new InlineCollection(array(new TextRun($feedbackOptions[$i])));
                     $feedback = new FeedbackInline('FEEDBACK','CHOICE_'.$option->get_value(),'true');
                     $feedback->setContent($content);
@@ -107,20 +104,7 @@ class McqMapper extends AbstractQuestionTypeMapper
         }else{
             list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation());
         }
+        
         return [$interaction, $responseDeclaration, $responseProcessing];
     }
-
-    public function getMarshallerFactory($version = '2.1') {
-	    if (Version::compare($version, '2.0.0', '==') === true) {
-	        return new Qti20MarshallerFactory();
-	    } elseif (Version::compare($version, '2.1.1', '==') === true) {
-	        return new Qti211MarshallerFactory();
-	    } elseif (Version::compare($version, '2.2.0', '==') === true) {
-	        return new Qti22MarshallerFactory();
-	    } elseif (Version::compare($version, '3.0.0', '==') === true) {
-	       return new Qti30MarshallerFactory();
-        } else {
-	        return new Qti21MarshallerFactory();
-	    }
-	}
 }

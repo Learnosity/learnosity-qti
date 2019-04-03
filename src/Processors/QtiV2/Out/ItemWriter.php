@@ -28,7 +28,7 @@ class ItemWriter
 
         $builder = new AssessmentItemBuilder();
         $assessmentItem = $builder->build($itemIdentifier, $itemReference, $questions, $item->get_content());
-
+        
         $xml = new XmlDocument();
         $xml->setDocumentComponent($assessmentItem);
 
