@@ -149,8 +149,9 @@ class ConvertToQtiService
 
         // Look for json files in the current path
         $finder = new Finder();
-        $finder->files()->in($this->inputPath.'/items');
+        $finder->files()->in($this->inputPath.'/activities');
         foreach ($finder as $json) {
+            
             $folders[] = $json->getRealPath();
         }
        

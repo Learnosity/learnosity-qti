@@ -35,8 +35,9 @@ class McqMapper extends AbstractQuestionTypeMapper
         $inlineCollection = new InlineCollection();
 
         $metadata = $question->get_metadata();
-        //print_r($metadata); die;
+        
         if(isset($metadata) && !empty($metadata->get_distractor_rationale_response_level())){
+            $feedbackOptions = [];
             foreach($metadata->get_distractor_rationale_response_level() as $feed):
                 $feedbackOptions[] = $feed;
             endforeach;
@@ -99,10 +100,10 @@ class McqMapper extends AbstractQuestionTypeMapper
         }
 
         $builder = new McqValidationBuilder($question->get_multiple_responses(), $valueIdentifierMap);
-        if(isset($feedbackOptions)){
+        if(isset($feedbackOptions) && !empty($feedbackOptions)){
             list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation(),$feedbackOptions);
         }else{
-            list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation());
+            list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation(),[]);
         }
         
         return [$interaction, $responseDeclaration, $responseProcessing];

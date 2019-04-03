@@ -15,6 +15,7 @@ abstract class AbstractQuestionValidationBuilder
     
     public function buildValidation($responseIdentifier, $validation,$distractor_rationale_response_level = array() ,$isCaseSensitive = true)
     {
+        
         // Some basic validation on the `validation` object
         if (empty($validation)) {
             return [null, null];
@@ -31,8 +32,8 @@ abstract class AbstractQuestionValidationBuilder
             return [null, null];
         }
         
-        // if found distractor_rationale_response_level generate response processing
-        if(!empty($distractor_rationale_response_level)){
+        // if found distractor_rationale_response_level generate response processing with setoutcome value FEEDBACK
+        if(!empty($distractor_rationale_response_level) && is_array($distractor_rationale_response_level)){
             $score = $validation->get_valid_response()->get_score(); 
             $responseProcessing = QtiResponseProcessingBuilder::build($score);
         }else{ 
@@ -75,17 +76,4 @@ abstract class AbstractQuestionValidationBuilder
         return $responseProcessing;
     }
 
-    public function getMarshallerFactory($version = '2.1') {
-	    if (Version::compare($version, '2.0.0', '==') === true) {
-	        return new Qti20MarshallerFactory();
-	    } elseif (Version::compare($version, '2.1.1', '==') === true) {
-	        return new Qti211MarshallerFactory();
-	    } elseif (Version::compare($version, '2.2.0', '==') === true) {
-	        return new Qti22MarshallerFactory();
-	    } elseif (Version::compare($version, '3.0.0', '==') === true) {
-	       return new Qti30MarshallerFactory();
-        } else {
-	        return new Qti21MarshallerFactory();
-	    }
-	}
 }
