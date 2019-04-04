@@ -14,6 +14,7 @@ use LearnosityQti\Processors\IMSCP\Entities\Resource;
 use LearnosityQti\Processors\QtiV2\Out\Constants as LearnosityExportConstant;
 use LearnosityQti\Utils\General\FileSystemHelper;
 use LearnosityQti\Utils\UuidUtil;
+use LearnosityQti\Utils\General\CopyDirectoreyHelper;
 use RecursiveIteratorIterator;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
@@ -29,6 +30,7 @@ class ConvertToQtiService
     const INFO_OUTPUT_PREFIX = '';
     const CONVERT_LOG_FILENAME = 'converttoqti.log';
     const MANIFEST_FILE_NAME = 'imsmanifest.xml';
+    const IMS_CONTENT_PACKAGE_NAME = 'qti.zip';
 
     protected $inputPath;
     protected $outputPath;
@@ -132,6 +134,7 @@ class ConvertToQtiService
         $finalManifest->setResources($resourceInfo);
         $this->persistResultsFile($results, realpath($this->outputPath) . '/' . $this->rawPath . '/');
         $this->flushJobManifest($finalManifest, $results);
+        CopyDirectoreyHelper::copyFiles(realpath($this->inputPath) . '/assets', realpath($this->outputPath) . '/' . $this->rawPath . '/assets');
         $this->createIMSContntPackage(realpath($this->outputPath) . '/' . $this->rawPath . '/');
     }
 
@@ -244,7 +247,7 @@ class ConvertToQtiService
         
         // Initialize archive object
         $zip = new ZipArchive();
-        $zip->open($contentDirPath.'/qti.zip', ZipArchive::CREATE | ZipArchive::OVERWRITE);
+        $zip->open($contentDirPath.'/'. self::IMS_CONTENT_PACKAGE_NAME, ZipArchive::CREATE | ZipArchive::OVERWRITE);
 
         // Create recursive directory iterator
         /** @var SplFileInfo[] $files */
@@ -255,9 +258,9 @@ class ConvertToQtiService
             if (!$file->isDir()) {
                 // Get real and relative path for currentI file
                 $filePath = $file->getRealPath();
-                $relativePath = substr($filePath, strlen($rootPath) + 1);
-
-                // Add current file to archive
+                $relativePath = substr($filePath, strlen($rootPath));
+                
+      			// Add current file to archive
                 $zip->addFile($filePath, $relativePath);
             }
         }
