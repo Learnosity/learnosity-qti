@@ -30,7 +30,7 @@ class ConvertToQtiService
     const INFO_OUTPUT_PREFIX = '';
     const CONVERT_LOG_FILENAME = 'converttoqti.log';
     const MANIFEST_FILE_NAME = 'imsmanifest.xml';
-    const IMS_CONTENT_PACKAGE_NAME = 'qti.zip';
+    const IMS_CONTENT_PACKAGE_NAME = 'imsqti.zip';
 
     protected $inputPath;
     protected $outputPath;
