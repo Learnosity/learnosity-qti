@@ -20,7 +20,7 @@ class GraphicGapMatchInteractionMapper extends AbstractInteractionMapper
     {
         /** @var QtiGraphicGapMatchInteraction $interaction */
         $interaction = $this->interaction;
-        /** @var Object $imageObject */
+        /** @var ObjectElement $imageObject */
         $imageObject = $interaction->getObject();
 
         // Yes, width and height is necessary unfortunately
@@ -84,7 +84,7 @@ class GraphicGapMatchInteractionMapper extends AbstractInteractionMapper
         return $possibleResponseMapping;
     }
 
-    protected function buildTemplate(QtiGraphicGapMatchInteraction $interaction, Object $object)
+    protected function buildTemplate(QtiGraphicGapMatchInteraction $interaction, ObjectElement $object)
     {
         $associableHotspots = [];
         foreach ($interaction->getAssociableHotspots() as $associableHotspot) {
