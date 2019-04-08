@@ -41,11 +41,11 @@ class ConvertToLearnosityService
 
     /* Job-specific configurations */
     // Overrides identifiers to be the same as the filename
-    protected $useFileNameAsIdentifier    = false;
+    public $useFileNameAsIdentifier       = false;
     // Uses the identifier found in learning object metadata if available
-    protected $useMetadataIdentifier      = true;
+    public $useMetadataIdentifier         = true;
     // Resource identifiers sometimes (but not always) match the assessmentItem identifier, so this can be useful
-    protected $useResourceIdentifier      = false;
+    public $useResourceIdentifier         = false;
 
     private $assetsFixer;
 
@@ -185,7 +185,11 @@ class ConvertToLearnosityService
                     $metadata['point_value'] = $itemPointValue;
                 }
 
-                $this->output->writeln("<comment>Converting assessment item {$itemReference}: $relativeDir/$resourceHref</comment>");
+                if (isset($itemReference)) {
+                    $this->output->writeln("<comment>Converting assessment item {$itemReference}: $relativeDir/$resourceHref</comment>");
+                } else {
+                    $this->output->writeln("<comment>Converting assessment item {$itemCount}: $relativeDir/$resourceHref</comment>");
+                }
                 $convertedContent = $this->convertAssessmentItemInFile($assessmentItemContents, $itemReference, $metadata, $currentDir, $resourceHref);
                 if (!empty($convertedContent)) {
                     $results['qtiitems'][basename($relativeDir).'/'.$resourceHref] = $convertedContent;
@@ -405,6 +409,18 @@ class ConvertToLearnosityService
         }
 
         return $itemReference;
+    }
+
+    /**
+     * Takes the resource href and extracts the file name out of it.
+     * @example items/My-File.xml will return My-File
+     *
+     * @param string $resourceHref
+     * @return string
+     */
+    private function getIdentifierFromResourceHref($resourceHref, $suffix = '.xml')
+    {
+        return basename($resourceHref, $suffix);
     }
 
     /**
