@@ -48,9 +48,9 @@ class GraphicGapMatchInteractionMapper extends AbstractInteractionMapper
         }
 
         $question = new imageclozeassociation(
+            'imageclozeassociation',
             $image,
             $responsePosition,
-            'imageclozeassociation',
             array_values($possibleResponseMapping)
         );
         $question->set_response_containers($responseContainers);
