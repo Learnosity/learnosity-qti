@@ -247,6 +247,9 @@ class Converter
             }
         }
 
+        $layoutService = new \LearnosityQti\Services\ItemLayoutService();
+        $itemData = $layoutService->migrateItem($itemData, array_merge($questionsData, $featuresData));
+
         return [
             'item' => $itemData,
             'questions' => $questionsData,
