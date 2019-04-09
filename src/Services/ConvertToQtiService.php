@@ -36,6 +36,7 @@ class ConvertToQtiService
     protected $outputPath;
     protected $output;
     protected $organisationId;
+    protected $itemReference;
 
     /* Runtime options */
     protected $dryRun                     = false;
@@ -62,6 +63,7 @@ class ConvertToQtiService
         $this->finalPath      = 'final';
         $this->logPath        = 'log';
         $this->rawPath        = 'raw';
+        $this->itemReference = array();
     }
 
     public function process()
@@ -161,7 +163,7 @@ class ConvertToQtiService
         foreach ($finder as $json) {
             $activityJson = json_decode(file_get_contents($json));
             $itemReferences = $activityJson->data->items;
-
+            $this->itemReference = $itemReferences;
             if (!empty($itemReferences)) {
                 foreach ($itemReferences as $itemref) {
                     $itemref = md5($itemref);
@@ -361,24 +363,57 @@ class ConvertToQtiService
     private function updateJobManifest(Manifest $manifest, array $results)
     {
         $resources = array();
-        
+        $additionalFileReferenceInfo = $this->getAdditionalFileInfoForManifestResource();
         foreach ($results as $result) {
             foreach($result['json']['questions'] as $question){
                 if (!empty($result['qti'])) {
-                    $resourc = new Resource();
-                    $files = array();
-                    $resourc->setIdentifier('i'.$question['reference']);
-                    $resourc->setType(Resource::TYPE_PREFIX_ITEM."xmlv2p1");
-                    $resourc->setHref($question['reference'].".xml");
+                    $resource = new Resource();
+                    $resource->setIdentifier('i'.$question['reference']);
+                    $resource->setType(Resource::TYPE_PREFIX_ITEM."xmlv2p1");
+                    $resource->setHref($question['reference'].".xml");
+                    if(array_key_exists($question['reference'], $additionalFileReferenceInfo)){
+                        $files = $this->addAdditionalFileInfo($additionalFileReferenceInfo[$question['reference']]);
+                    }
                     $file = new File();
                     $file->setHref($question['reference'].".xml");
                     $files[] = $file;
-                    $resourc->setFiles($files);
-                    $resources[] = $resourc;
+                    $resource->setFiles($files);
+                    $resources[] = $resource;
                 }
             }
         }
         return $resources;
+    }
+    
+    private function addAdditionalFileInfo($filesInfo){
+        $files = array();
+        foreach($filesInfo as $id=>$info){
+            $file = new File();
+            $href = substr($info, strlen('/vendor/learnosity/itembank/'));
+            $file->setHref($href);
+            $files[] = $file;
+        }
+        return $files;
+    }
+    
+    private function getAdditionalFileInfoForManifestResource(){
+        $itemsReferenseArray = $this->itemReference;
+        $learnosityManifestJson = json_decode(file_get_contents($this->inputPath. '/manifest.json'));
+        $activityArray = $learnosityManifestJson->assets->items;
+        $additionalFileInfoArray = array();
+        $valueArray = array();
+        foreach($itemsReferenseArray as $itemReference){
+            $questionArray = $learnosityManifestJson->assets->items->$itemReference;
+            if(is_object($questionArray->questions)){
+                foreach($questionArray->questions as $questionKey=>$questionValue){
+                    foreach($questionValue as $questions=>$value){
+                       $valueArray[] = $value->replacement;
+                    }
+                    $additionalFileInfoArray[$questionKey] = $valueArray;
+                }
+            }
+        }
+        return $additionalFileInfoArray;
     }
 
     private function tearDown()
