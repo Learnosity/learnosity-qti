@@ -18,8 +18,8 @@ abstract class AbstractQuestionTypeMapper
 
     protected function convertStimulusForPrompt($stimulusString)
     {
+        $stimulusString = strip_tags($stimulusString); 
         $stimulusComponents = QtiMarshallerUtil::unmarshallElement($stimulusString);
-
         $prompt = new Prompt();
         $prompt->setContent(ContentCollectionBuilder::buildFlowStaticCollectionContent($stimulusComponents));
         return $prompt;

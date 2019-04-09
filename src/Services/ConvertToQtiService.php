@@ -114,19 +114,17 @@ class ConvertToQtiService
      */
     private function parseContent()
     {
-        
         $results = [];
         $jsonFiles = $this->parseInputFolders();
         
         $finalManifest = $this->getJobManifestTemplate();
-
         $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Processing JSON directory: {$this->inputPath} </info>");
 
         foreach ($jsonFiles as $file) {
             if(file_exists($file)) {
                 $results[] = $this->convertLearnosityInDirectory($file);
-            } else {
-                $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Learnosity JSON file ".basename($file). " Not fount in: {$this->inputPath}/items </info>");
+            }else{
+                $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Learnosity JSON file ".basename($file). " Not found in: {$this->inputPath}/items </info>");
             }
         }
         
@@ -166,8 +164,10 @@ class ConvertToQtiService
             $this->itemReference = $itemReferences;
             if (!empty($itemReferences)) {
                 foreach ($itemReferences as $itemref) {
-                    $itemref = md5($itemref);
-                    $folders[] = $this->inputPath . '/items/' . $itemref . '.json';
+                    $jsonfile = $this->inputPath . '/items/' . md5($itemref) . '.json';
+                    if(file_exists($jsonfile)){
+                        $folders[] = $jsonfile;
+                    }
                 }
             } else {
                 $this->output->writeln("<error>Error converting : No item refrences found in the activity json</error>");
@@ -256,10 +256,10 @@ class ConvertToQtiService
         foreach ($files as $name => $file) {
             // Skip directories (they would be added automatically)
             if (!$file->isDir()) {
-                // Get real and relative path for currentI file
+                // Get real and relative path for current file
                 $filePath = $file->getRealPath();
                 $relativePath = substr($filePath, strlen($rootPath));
-                
+
       			// Add current file to archive
                 $zip->addFile($filePath, $relativePath);
             }
@@ -351,6 +351,7 @@ class ConvertToQtiService
                 }
             }
         }
+        
     }
 
     /**

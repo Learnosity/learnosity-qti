@@ -35,7 +35,6 @@ class McqMapper extends AbstractQuestionTypeMapper
         $inlineCollection = new InlineCollection();
 
         $metadata = $question->get_metadata();
-        
         if(isset($metadata) && !empty($metadata->get_distractor_rationale_response_level())){
             $feedbackOptions = [];
             foreach($metadata->get_distractor_rationale_response_level() as $feed):
@@ -84,8 +83,7 @@ class McqMapper extends AbstractQuestionTypeMapper
 
         // Set shuffle options
         $interaction->setShuffle($question->get_shuffle_options() ? true : false);
-
-        // Set the layout
+        //print_r($interaction->mustShuffle()); die;
         if ($question->get_ui_style() instanceof mcq_ui_style &&
             $question->get_ui_style()->get_type() === 'horizontal' &&
             intval($question->get_ui_style()->get_columns()) === count($question->get_options())) {

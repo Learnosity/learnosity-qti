@@ -46,8 +46,10 @@ class ContentCollectionBuilder
 
     public static function buildBlockCollectionContent(QtiComponentCollection $content)
     {
+        
         $builder = new BlockCollectionContentBuilder();
         return $builder->buildContentCollection($content);
+        
     }
 
     public static function buildBlockStaticCollectionContent(QtiComponentCollection $content)

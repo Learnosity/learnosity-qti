@@ -22,6 +22,7 @@ class ItemBodyBuilder
             return $this->buildItemBodySimple($interactions);
         }
         try {
+            
             return $this->buildItemBodyWithItemContent($interactions, $content);
             // If anything fails, <itemBody> can't be mapped due to whatever reasons
             // Probably simply due to its being wrapped in a tag which only accept inline content
@@ -43,6 +44,7 @@ class ItemBodyBuilder
 
             $itemBodyContent->attach($div);
             $itemBodyContent->merge($itemBody->getComponents());
+            
             $itemBody->setContent($itemBodyContent);
             LogService::log(
                 'Interactions are failed to be mapped with `item` content: ' . $e->getMessage()
@@ -57,17 +59,22 @@ class ItemBodyBuilder
         // Map <itemBody>
         // TODO: Wrap these `content` stuff in a div
         // TODO: to avoid QtiComponentIterator bug ignoring 2nd element with empty content
+        //$tags = array("<div>", "</div>");
+        //$content = str_replace($tags, "", $content);
         $contentCollection = QtiMarshallerUtil::unmarshallElement($content);
+        
         $wrapperCollection = new FlowCollection();
         foreach ($contentCollection as $component) {
             $wrapperCollection->attach($component);
         }
+        
         $divWrapper = new Div();
         $divWrapper->setContent($wrapperCollection);
 
         // Iterate through these elements and try to replace every single question `span` with its interaction equivalent
         $iterator = $divWrapper->getIterator();
         foreach ($iterator as $component) {
+            
             if ($component instanceof Span && StringUtil::contains($component->getClass(), 'learnosity-response')) {
                 $currentContainer = $iterator->getCurrentContainer();
                 $questionReference = trim(str_replace('learnosity-response', '', $component->getClass()));
@@ -75,6 +82,7 @@ class ItemBodyBuilder
 
                 // Build the actual interaction
                 $interaction = $interactions[$questionReference]['interaction'];
+                
                 $content = new FlowCollection();
                 if (isset($interactions[$questionReference]['extraContent'])) {
                     $content->attach($interactions[$questionReference]['extraContent']);
@@ -84,13 +92,14 @@ class ItemBodyBuilder
                 $replacement = ContentCollectionBuilder::buildContent($currentContainer, $content)->current();
                 $currentContainer->getComponents()->replace($component, $replacement);
             }
-        }
+        } 
 
         // Extract the actual content from the div wrapper and add that to our <itemBody>
         $componentsWithinDiv = $divWrapper->getComponents();
+        
         $itemBody = new ItemBody();
         $itemBody->setContent(ContentCollectionBuilder::buildBlockCollectionContent($componentsWithinDiv));
-
+       
         return $itemBody;
     }
 

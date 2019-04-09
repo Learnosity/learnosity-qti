@@ -259,7 +259,7 @@ class Converter
     public static function convertLearnosityToQtiItem(array $data)
     {
         $jsonType = self::guessLearnosityJsonDataType($data);
-        
+        //echo $jsonType; die;
         // Handle `item` which contains both a single item and one or more questions/features
         if ($jsonType === self::LEARNOSITY_DATA_ITEM) {
             list($xmlString, $messages) = self::convertLearnosityItem($data);

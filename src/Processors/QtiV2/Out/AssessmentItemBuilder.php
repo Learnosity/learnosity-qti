@@ -35,6 +35,7 @@ class AssessmentItemBuilder
 
     public function build($itemIdentifier, $itemLabel, array $questions, $content = '')
     {
+       
         // Initialise our <assessmentItem>
         $assessmentItem = new AssessmentItem($itemIdentifier, $itemIdentifier, false);
         $assessmentItem->setLabel($itemLabel);
@@ -87,7 +88,7 @@ class AssessmentItemBuilder
         
         // Build <itemBody>
         $assessmentItem->setItemBody($this->itemBodyBuilder->buildItemBody($interactions, $content));
-
+        
         // Map <responseDeclaration>
         if (!empty($responseDeclarationCollection)) {
             $assessmentItem->setResponseDeclarations($responseDeclarationCollection);
@@ -118,7 +119,7 @@ class AssessmentItemBuilder
         }
         $clazz = new \ReflectionClass(self::MAPPER_CLASS_BASE . ucfirst($type . 'Mapper'));
         $questionTypeMapper = $clazz->newInstance();
-
+        
         // Try to use question `reference` as identifier
         // Otherwise, generate an alternative identifier and store the original reference as `label` to be passed in
         $questionReference = $question->get_reference();

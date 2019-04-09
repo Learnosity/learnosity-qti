@@ -96,8 +96,9 @@ class LearnosityToQtiPreProcessingService
         // Then, return `DEMOFEATURE123`
         $parts = preg_split('/\s+/', $classname);
         foreach ($parts as $part) {
+            
             if (StringUtil::startsWith(strtolower($part), 'feature-')) {
-                return explode('-', $part)[1];
+                return str_replace('feature-','',$parts[1]); 
             }
         }
         // TODO: throw exception
