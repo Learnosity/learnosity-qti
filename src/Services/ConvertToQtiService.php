@@ -99,11 +99,9 @@ class ConvertToQtiService
     protected function decorateImsManifestRootElement(DOMElement $rootElement)
     {
         
-        $xsdLocation = 'http://www.imsglobal.org/xsd/imscp_v1p1 imscp_v1p1.xsd http://www.imsglobal.org/xsd/imsmd_v1p2 imsmd_v1p2p2.xsd http://www.imsglobal.org/xsd/imsqti_v2p1 imsqti_v2p1.xsd';
+        $xsdLocation = 'http://www.imsglobal.org/xsd/imscp_v1p1 http://www.imsglobal.org/xsd/qti/qtiv2p1/qtiv2p1_imscpv1p2_v1p0.xsd';
         $xmlns = "http://www.imsglobal.org/xsd/imscp_v1p1";
         $rootElement->setAttribute('xmlns', $xmlns);
-        $rootElement->setAttribute('xmlns:imsmd', 'http://www.imsglobal.org/xsd/imsmd_v1p2');
-        $rootElement->setAttribute('xmlns:imsqti', "http://www.imsglobal.org/xsd/imsqti_v2p1");
         $rootElement->setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
         $rootElement->setAttribute("xsi:schemaLocation", $xsdLocation);
     }
@@ -278,17 +276,6 @@ class ConvertToQtiService
         $schemaVersion = $imsManifestXml->createElement("schemaversion", $manifestMetadataContent->getSchemaversion());
         $manifestMetadata->appendChild($schemaVersion);
         
-        $record = $imsManifestXml->createElement("imsmd:record");
-        $genral = $imsManifestXml->createElement("imsmd:general");
-        $record->appendChild($genral);
-        
-        $title = $imsManifestXml->createElement("imsmd:title");
-        $langString = $imsManifestXml->createElement("imsmd:langstring", $manifestMetadataContent->getTitle());
-        $langString->setAttribute("xml:lang", "en_US");
-        $title->appendChild($langString);
-        $genral->appendChild($title);
-        $manifestMetadata->appendChild($record);
-        
         return $manifestMetadata;
     }
     
@@ -326,7 +313,7 @@ class ConvertToQtiService
     private function getJobManifestTemplate()
     {
         $manifest = new Manifest();
-        $manifest->setIdentifier(UuidUtil::generate());
+        $manifest->setIdentifier('i'.UuidUtil::generate());
         $manifest->setImsManifestMetaData($this->createImsManifestMetaData());
         return $manifest;
     }
@@ -380,7 +367,7 @@ class ConvertToQtiService
                 if (!empty($result['qti'])) {
                     $resourc = new Resource();
                     $files = array();
-                    $resourc->setIdentifier($question['reference']);
+                    $resourc->setIdentifier('i'.$question['reference']);
                     $resourc->setType(Resource::TYPE_PREFIX_ITEM."xmlv2p1");
                     $resourc->setHref($question['reference'].".xml");
                     $file = new File();
