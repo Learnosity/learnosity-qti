@@ -368,12 +368,13 @@ class ConvertToQtiService
         foreach ($results as $result) {
             foreach($result['json']['questions'] as $question){
                 if (!empty($result['qti'])) {
+                    $files = array();
                     $resource = new Resource();
                     $resource->setIdentifier('i'.$question['reference']);
                     $resource->setType(Resource::TYPE_PREFIX_ITEM."xmlv2p1");
                     $resource->setHref($question['reference'].".xml");
                     if(array_key_exists($question['reference'], $additionalFileReferenceInfo)){
-                        $files = $this->addAdditionalFileInfo($additionalFileReferenceInfo[$question['reference']]);
+                        $files = $this->addAdditionalFileInfo($additionalFileReferenceInfo[$question['reference']], $files);
                     }
                     $file = new File();
                     $file->setHref($question['reference'].".xml");
@@ -386,8 +387,7 @@ class ConvertToQtiService
         return $resources;
     }
     
-    private function addAdditionalFileInfo($filesInfo){
-        $files = array();
+    private function addAdditionalFileInfo($filesInfo, $files){
         foreach($filesInfo as $id=>$info){
             $file = new File();
             $href = substr($info, strlen('/vendor/learnosity/itembank/'));
@@ -402,11 +402,11 @@ class ConvertToQtiService
         $learnosityManifestJson = json_decode(file_get_contents($this->inputPath. '/manifest.json'));
         $activityArray = $learnosityManifestJson->assets->items;
         $additionalFileInfoArray = array();
-        $valueArray = array();
-        foreach($itemsReferenseArray as $itemReference){
-            $questionArray = $learnosityManifestJson->assets->items->$itemReference;
+        foreach($activityArray as $itemReference=>$itemValue){
+            $questionArray = $itemValue;
             if(is_object($questionArray->questions)){
                 foreach($questionArray->questions as $questionKey=>$questionValue){
+                    $valueArray = array();
                     foreach($questionValue as $questions=>$value){
                        $valueArray[] = $value->replacement;
                     }
