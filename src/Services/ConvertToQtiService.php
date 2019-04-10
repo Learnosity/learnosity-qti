@@ -189,11 +189,13 @@ class ConvertToQtiService
     private function convertAssessmentItem($json)
     {
         $result = [];
+        $finalXml = [];
         foreach($json['questions'] as $question):
             
             if (in_array($question['data']['type'], LearnosityExportConstant::$supportedQuestionTypes)) {
-                $result = Converter::convertLearnosityToQtiItem($json);
+                $result = Converter::convertLearnosityToQtiItem($question);
                 $result[0] = str_replace('/vendor/learnosity/itembank/','',$result[0]);
+                $finalXml[] = $result;
             } else {
                 $result = [
                     '',
@@ -206,7 +208,7 @@ class ConvertToQtiService
         endforeach;
 
         return [
-            'qti' => $result,
+            'qti' => $finalXml,
             'json' => $json
         ];
     }
@@ -340,15 +342,15 @@ class ConvertToQtiService
         }
 
         $this->output->writeln("\n<info>" . static::INFO_OUTPUT_PREFIX . "Writing conversion results: " . $outputFilePath . '.json' . "</info>\n");
-        print_r($results); die;
         foreach ($results as $result) {
-            
-            //foreach($result['json']['questions'] as $question){
-
+            $i = 0;
+            foreach($result['qti'] as $qti){
+                 
                 if (!empty($result['qti'])) {
-                    file_put_contents($outputFilePath . '/' . md5($result['json']['reference']) . '.xml', $result['qti'][0]);
+                    file_put_contents($outputFilePath . '/' . $result['json']['questions'][$i]['reference'] . '.xml', $qti[0]);
                 }
-            //}
+            $i++;
+            }
         }
         
     }
