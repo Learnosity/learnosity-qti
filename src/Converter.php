@@ -310,13 +310,13 @@ class Converter
         //$itemJson['questionReferences'] = array_column($itemJson['questions'], 'reference');
         //$itemJson['questionReferences'] = array_column($itemJson['questions'], 'response_id');
         $questionsJson = $itemJson['questions'];
-        //unset($itemJson['questions']);
+        unset($itemJson['questions']);
 
         // Pre-process these JSON
         $preprocessingService = new LearnosityToQtiPreProcessingService($questionsJson);
         $questionsJson = $preprocessingService->processJson($questionsJson);
         $itemJson = $preprocessingService->processJson($itemJson);
-
+        
         // Map those bad boys to Learnosity entities
         $itemMapper = new ItemMapper();
         $questionMapper = new QuestionMapper();

@@ -193,6 +193,7 @@ class ConvertToQtiService
             
             if (in_array($question['data']['type'], LearnosityExportConstant::$supportedQuestionTypes)) {
                 $result = Converter::convertLearnosityToQtiItem($json);
+                $result[0] = str_replace('/vendor/learnosity/itembank/','',$result[0]);
             } else {
                 $result = [
                     '',
@@ -203,8 +204,6 @@ class ConvertToQtiService
                 $this->output->writeln("<error>Question type `{$question['data']['type']}` not yet supported, ignoring</error>");
             }
         endforeach;
-
-        //endforeach;
 
         return [
             'qti' => $result,
@@ -341,15 +340,15 @@ class ConvertToQtiService
         }
 
         $this->output->writeln("\n<info>" . static::INFO_OUTPUT_PREFIX . "Writing conversion results: " . $outputFilePath . '.json' . "</info>\n");
-        
+        print_r($results); die;
         foreach ($results as $result) {
             
-            foreach($result['json']['questions'] as $question){
+            //foreach($result['json']['questions'] as $question){
 
                 if (!empty($result['qti'])) {
-                    file_put_contents($outputFilePath . '/' . $question['reference'] . '.xml', $result['qti'][0]);
+                    file_put_contents($outputFilePath . '/' . md5($result['json']['reference']) . '.xml', $result['qti'][0]);
                 }
-            }
+            //}
         }
         
     }
