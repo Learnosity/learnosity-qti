@@ -192,7 +192,7 @@ class Converter
                 $sourceDirectoryPath = dirname($filePath);
             }
             // TODO: Handle additional (related) items being passed back
-            $result = $itemMapper->parse($xmlString, $validate, $sourceDirectoryPath, $metadata);
+            $result = $itemMapper->parse($xmlString, $validate, $sourceDirectoryPath, $metadata, $customItemReference);
             $item = $result['item'];
             $questions = $result['questions'];
             $features = $result['features'];
