@@ -35,6 +35,7 @@ class ConvertToQtiService
     protected $inputPath;
     protected $outputPath;
     protected $output;
+    protected $format;
     protected $organisationId;
     protected $itemReference;
 
@@ -54,11 +55,12 @@ class ConvertToQtiService
 
     private $assetsFixer;
 
-    public function __construct($inputPath, $outputPath, OutputInterface $output, $organisationId = null)
+    public function __construct($inputPath, $outputPath, OutputInterface $output, $format, $organisationId = null)
     {
         $this->inputPath      = $inputPath;
         $this->outputPath     = $outputPath;
         $this->output         = $output;
+        $this->format         = $format;
         $this->organisationId = $organisationId;
         $this->finalPath      = 'final';
         $this->logPath        = 'log';
@@ -189,13 +191,16 @@ class ConvertToQtiService
     private function convertAssessmentItem($json)
     {
         $result = [];
-        $finalXml = [];
+        if($this->format=='canvas'){
+            $json['content'] = strip_tags($json['content'],"<span>");
+        }
+        
         foreach($json['questions'] as $question):
             
             if (in_array($question['data']['type'], LearnosityExportConstant::$supportedQuestionTypes)) {
-                $result = Converter::convertLearnosityToQtiItem($question);
+                $result = Converter::convertLearnosityToQtiItem($json);
                 $result[0] = str_replace('/vendor/learnosity/itembank/','',$result[0]);
-                $finalXml[] = $result;
+                
             } else {
                 $result = [
                     '',
@@ -208,7 +213,7 @@ class ConvertToQtiService
         endforeach;
 
         return [
-            'qti' => $finalXml,
+            'qti' => $result,
             'json' => $json
         ];
     }
@@ -266,7 +271,7 @@ class ConvertToQtiService
             }
         }
 
-        // Zip archive will be created only after closing object
+        //Zip archive will be created only after closing object
         $zip->close();
     }
 
@@ -343,13 +348,12 @@ class ConvertToQtiService
 
         $this->output->writeln("\n<info>" . static::INFO_OUTPUT_PREFIX . "Writing conversion results: " . $outputFilePath . '.json' . "</info>\n");
         foreach ($results as $result) {
-            $i = 0;
-            foreach($result['qti'] as $qti){
+            
+            foreach($result['json']['questions'] as $question){
                  
                 if (!empty($result['qti'])) {
-                    file_put_contents($outputFilePath . '/' . $result['json']['questions'][$i]['reference'] . '.xml', $qti[0]);
+                    file_put_contents($outputFilePath . '/' . $question['reference'] . '.xml', $result['qti'][0]);
                 }
-            $i++;
             }
         }
         
