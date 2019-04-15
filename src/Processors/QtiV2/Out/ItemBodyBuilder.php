@@ -1,7 +1,5 @@
 <?php
-
 namespace LearnosityQti\Processors\QtiV2\Out;
-
 use LearnosityQti\Services\LogService;
 use LearnosityQti\Utils\QtiMarshallerUtil;
 use LearnosityQti\Utils\SimpleHtmlDom\SimpleHtmlDom;
@@ -12,6 +10,8 @@ use qtism\data\content\ItemBody;
 use qtism\data\content\xhtml\text\Div;
 use qtism\data\content\xhtml\text\Span;
 use qtism\data\QtiComponentCollection;
+use DOMDocument;
+use DOMXpath;
 
 class ItemBodyBuilder
 {
@@ -30,7 +30,6 @@ class ItemBodyBuilder
         } catch (\Exception $e) {
             $itemBody = $this->buildItemBodySimple($interactions);
             $itemBodyContent = new BlockCollection();
-
             // Build the div bundle that contains all the item`s content
             // minus those questions and features `span`
             $html = new SimpleHtmlDom();
@@ -41,7 +40,6 @@ class ItemBodyBuilder
             $div = new Div();
             $contentCollection = QtiMarshallerUtil::unmarshallElement($html->save());
             $div->setContent(ContentCollectionBuilder::buildFlowCollectionContent($contentCollection));
-
             $itemBodyContent->attach($div);
             $itemBodyContent->merge($itemBody->getComponents());
             
@@ -53,14 +51,35 @@ class ItemBodyBuilder
             return $itemBody;
         }
     }
-
+    
+    private function removeUnusedSpanFromContent(array $interactions, $content) {
+        
+        $dom = new DOMDocument();
+        $dom->loadHTML($content);
+        $dom->formatOutput = true;
+        
+        $xpath = new DOMXpath($dom);
+        $class = 'learnosity-response';
+        $spanTag = $xpath->query("//span[contains(@class,'$class')]");
+        
+        foreach($spanTag as $span) {
+            $questionReference = trim(str_replace('learnosity-response question-', '', $span->getAttribute('class')));
+            if(!isset($interactions[$questionReference])) {
+                $span->parentNode->removeChild($span);
+            }
+        }
+        $dom->removeChild($dom->doctype);
+        $dom->replaceChild($dom->firstChild->firstChild->firstChild, $dom->firstChild);
+        $newHtml = $dom->saveHTML();
+        return $newHtml;
+    }
+    
     private function buildItemBodyWithItemContent(array $interactions, $content)
     {
         // Map <itemBody>
         // TODO: Wrap these `content` stuff in a div
         // TODO: to avoid QtiComponentIterator bug ignoring 2nd element with empty content
-        //$tags = array("<div>", "</div>");
-        //$content = str_replace($tags, "", $content);
+        $content = $this->removeUnusedSpanFromContent($interactions, $content);
         $contentCollection = QtiMarshallerUtil::unmarshallElement($content);
         
         $wrapperCollection = new FlowCollection();
@@ -70,7 +89,6 @@ class ItemBodyBuilder
         
         $divWrapper = new Div();
         $divWrapper->setContent($wrapperCollection);
-
         // Iterate through these elements and try to replace every single question `span` with its interaction equivalent
         $iterator = $divWrapper->getIterator();
         foreach ($iterator as $component) {
@@ -79,7 +97,6 @@ class ItemBodyBuilder
                 $currentContainer = $iterator->getCurrentContainer();
                 $questionReference = trim(str_replace('learnosity-response', '', $component->getClass()));
                 $questionReference = trim(str_replace('question-', '', $questionReference));
-
                 // Build the actual interaction
                 $interaction = $interactions[$questionReference]['interaction'];
                 
@@ -88,26 +105,22 @@ class ItemBodyBuilder
                     $content->attach($interactions[$questionReference]['extraContent']);
                 }
                 $content->attach($interaction);
-
                 $replacement = ContentCollectionBuilder::buildContent($currentContainer, $content)->current();
                 $currentContainer->getComponents()->replace($component, $replacement);
+                
             }
-        } 
-
+        }
+        
         // Extract the actual content from the div wrapper and add that to our <itemBody>
         $componentsWithinDiv = $divWrapper->getComponents();
-        
         $itemBody = new ItemBody();
         $itemBody->setContent(ContentCollectionBuilder::buildBlockCollectionContent($componentsWithinDiv));
-       
         return $itemBody;
     }
-
     private function buildItemBodySimple(array $interactions)
     {
         $interactions = array_values($interactions);
         $contentCollection = new QtiComponentCollection();
-
         // Append the extra contents belong to an interaction before the interaction itself
         foreach ($interactions as $data) {
             if (isset($data['extraContent'])) {
@@ -116,7 +129,6 @@ class ItemBodyBuilder
             }
             $contentCollection->attach($data['interaction']);
         }
-
         $itemBody = new ItemBody();
         $itemBody->setContent(ContentCollectionBuilder::buildBlockCollectionContent($contentCollection));
         return $itemBody;

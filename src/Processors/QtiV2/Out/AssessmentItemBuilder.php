@@ -41,14 +41,17 @@ class AssessmentItemBuilder
         $assessmentItem->setLabel($itemLabel);
         //$assessmentItem->setOutcomeDeclarations($this->buildOutcomeDeclarations());
         $assessmentItem->setToolName('Learnosity');
-
+        
         // Store interactions on this array to later be placed on <itemBody>
         $interactions = [];
         $responseDeclarationCollection = new ResponseDeclarationCollection();
         $responseProcessingTemplates = [];
+        
         foreach ($questions as $question) {
-
+            
             $questionData = $question->to_array();
+            $content = $questionData['content'];
+            
             if(isset($questionData['data']['validation']['valid_response']['score'])){  
                 $score = $questionData['data']['validation']['valid_response']['score']; 
                 $assessmentItem->setOutcomeDeclarations($this->buildOutcomeDeclarations($score));
@@ -87,6 +90,7 @@ class AssessmentItemBuilder
         }
         
         // Build <itemBody>
+        
         $assessmentItem->setItemBody($this->itemBodyBuilder->buildItemBody($interactions, $content));
         
         // Map <responseDeclaration>

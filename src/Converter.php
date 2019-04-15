@@ -151,7 +151,6 @@ class Converter
         $exceptions = null;
         $widgetWriter = AppContainer::getApplicationContainer()->get('learnosity_question_writer');
         $passageMapper = new SharedPassageMapper();
-
         $widget = null;
         // Parse `em
         try {
@@ -289,7 +288,6 @@ class Converter
         $preprocessingService = new LearnosityToQtiPreProcessingService();
         $questionMapper = new QuestionMapper();
         $questionWriter = new QuestionWriter();
-
         $question = $questionMapper->parse($preprocessingService->processJson($questionJson));
         return $questionWriter->convert($question);
     }

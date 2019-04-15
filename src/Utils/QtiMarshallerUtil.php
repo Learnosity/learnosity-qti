@@ -14,6 +14,7 @@ class QtiMarshallerUtil
 {
     public static function unmarshallElement($string)
     {
+        
         try {
             libxml_use_internal_errors(true);
 
@@ -29,16 +30,18 @@ class QtiMarshallerUtil
             $marshallerFactory = new LearnosityMarshallerFactory();
             $components = new QtiComponentCollection();
             foreach ($dom->documentElement->childNodes as $element) {
-                if ($element instanceof \DOMText) {
+                
+               if ($element instanceof \DOMText) {
                     $component = new TextRun($element->nodeValue);
-                } else {
+              } else {
                     $marshaller = $marshallerFactory->createMarshaller($element);
                     $component = $marshaller->unmarshall($element);
-                }
+             }
                 $components->attach($component);
             }
             return $components;
         } catch (\Exception $e) {
+            
             throw new MappingException('[Unable to transform to QTI] ' . $e->getMessage());
         }
     }

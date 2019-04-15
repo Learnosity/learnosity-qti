@@ -27,8 +27,8 @@ class QuestionWriter
         }
 
         $builder = new AssessmentItemBuilder();
+        
         $assessmentItem = $builder->build($questionIdentifier, '', [$question]);
-
         $xml = new XmlDocument();
         $xml->setDocumentComponent($assessmentItem);
 

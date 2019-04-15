@@ -191,12 +191,14 @@ class ConvertToQtiService
     private function convertAssessmentItem($json)
     {
         $result = [];
+
         if($this->format=='canvas'){
             $json['content'] = strip_tags($json['content'],"<span>");
         }
-        
+        $finalXml = [];
+        $content = $json['content'];
         foreach($json['questions'] as $question):
-            
+            $question['content'] = $content;
             if (in_array($question['data']['type'], LearnosityExportConstant::$supportedQuestionTypes)) {
                 $result = Converter::convertLearnosityToQtiItem($json);
                 $result[0] = str_replace('/vendor/learnosity/itembank/','',$result[0]);

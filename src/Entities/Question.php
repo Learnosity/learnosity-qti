@@ -8,13 +8,15 @@ class Question extends BaseEntity
     private $type;
     private $data;
     private $widget_type;
+    private $content;
 
-    function __construct($type, $reference, BaseQuestionType $data)
+    function __construct($type, $reference, BaseQuestionType $data, $content='')
     {
         $this->data        = $data;
         $this->reference   = $reference;
         $this->type        = $type;
         $this->widget_type = $data->get_widget_type();
+        $this->content = $content;
     }
 
     public function get_reference()
@@ -45,6 +47,14 @@ class Question extends BaseEntity
     public function set_data(BaseQuestionType $data)
     {
         $this->data = $data;
+    }
+    
+    public function get_content(){
+        return $this->content;
+    }
+    
+    public function set_content($content){
+        $this->content = $content;
     }
 
     /**
