@@ -13,17 +13,17 @@ class longtextV2_validation extends BaseQuestionTypeAttribute {
     protected $min_score_if_attempted;
     protected $unscored;
     
-    public function __construct(
-            )
+    public function __construct()
     {
-            }
+    
+    }
 
     /**
     * Get Max score \
     * The highest score a marker can award to this question response. \
     * @return number $max_score \
     */
-    public function get_max_score() {
+    public function get_max_score(){
         return $this->max_score;
     }
 
@@ -32,7 +32,7 @@ class longtextV2_validation extends BaseQuestionTypeAttribute {
     * The highest score a marker can award to this question response. \
     * @param number $max_score \
     */
-    public function set_max_score ($max_score) {
+    public function set_max_score ($max_score){
         $this->max_score = $max_score;
     }
 
@@ -41,7 +41,7 @@ class longtextV2_validation extends BaseQuestionTypeAttribute {
     * Positive value indicating the minimum score if a student attempted the question. \
     * @return number $min_score_if_attempted \
     */
-    public function get_min_score_if_attempted() {
+    public function get_min_score_if_attempted(){
         return $this->min_score_if_attempted;
     }
 
@@ -50,7 +50,7 @@ class longtextV2_validation extends BaseQuestionTypeAttribute {
     * Positive value indicating the minimum score if a student attempted the question. \
     * @param number $min_score_if_attempted \
     */
-    public function set_min_score_if_attempted ($min_score_if_attempted) {
+    public function set_min_score_if_attempted ($min_score_if_attempted){
         $this->min_score_if_attempted = $min_score_if_attempted;
     }
 

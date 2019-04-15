@@ -3,6 +3,7 @@
 namespace LearnosityQti\Processors\QtiV2\Out\QuestionTypes;
 
 use LearnosityQti\Entities\BaseQuestionType;
+use LearnosityQti\Processors\QtiV2\Out\Validation\LongtextValidationBuilder;
 use LearnosityQti\Entities\QuestionTypes\longtextV2;
 use qtism\data\content\interactions\ExtendedTextInteraction;
 use qtism\data\content\interactions\TextFormat;
@@ -26,6 +27,9 @@ class LongtextV2Mapper extends AbstractQuestionTypeMapper
             $interaction->setPlaceholderText($placeholderText);
         }
 
-        return [$interaction, null, null];
+        $builder = new LongtextValidationBuilder();
+        
+        list($responseDeclaration) = $builder->buildValidation($interactionIdentifier, $question->get_validation(),[]);
+        return [$interaction, $responseDeclaration, null];
     }
 }

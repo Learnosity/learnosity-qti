@@ -11,7 +11,7 @@ use qtism\data\state\ResponseDeclaration;
 class LongtextValidationBuilder extends AbstractQuestionValidationBuilder
 {
     protected $valiation = '';
-    protected function buildResponseDeclaration($responseIdentifier)
+    protected function buildResponseDeclaration($responseIdentifier, $validation)
     {
         /** @var mcq_validation $validation */
         $responseDeclaration = new ResponseDeclaration($responseIdentifier);
@@ -20,7 +20,7 @@ class LongtextValidationBuilder extends AbstractQuestionValidationBuilder
         $responseDeclaration->setBaseType(BaseType::IDENTIFIER);
 
         //$correctResponseBuilder = new QtiCorrectResponseBuilder();
-        //$responseDeclaration->setCorrectResponse($correctResponseBuilder->buildWithBaseTypeIdentifier($validation,$this->valueIdentifierMap));
+        //$responseDeclaration->setCorrectResponse($correctResponseBuilder->buildWithBaseTypeIdentifier($validation, ''));
 
         return $responseDeclaration;
     }
