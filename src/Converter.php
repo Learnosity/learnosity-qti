@@ -288,6 +288,7 @@ class Converter
         $preprocessingService = new LearnosityToQtiPreProcessingService();
         $questionMapper = new QuestionMapper();
         $questionWriter = new QuestionWriter();
+        
         $question = $questionMapper->parse($preprocessingService->processJson($questionJson));
         return $questionWriter->convert($question);
     }
@@ -339,7 +340,7 @@ class Converter
         }
 
         // Guess this JSON is an `item`
-        if (!isset($data['type'])) {
+        if (isset($data['type'])) {
             if (!isset($data['reference']) && !isset($data['content'])) {
                 throw new MappingException('Invalid `item` JSON. Neither `reference` nor `content` shall not be empty');
             }

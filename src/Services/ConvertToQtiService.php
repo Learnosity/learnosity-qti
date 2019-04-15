@@ -200,7 +200,7 @@ class ConvertToQtiService
         foreach($json['questions'] as $question):
             $question['content'] = $content;
             if (in_array($question['data']['type'], LearnosityExportConstant::$supportedQuestionTypes)) {
-                $result = Converter::convertLearnosityToQtiItem($json);
+                $result = Converter::convertLearnosityToQtiItem($question);
                 $result[0] = str_replace('/vendor/learnosity/itembank/','',$result[0]);
                 
             } else {
@@ -407,8 +407,10 @@ class ConvertToQtiService
     private function getAdditionalFileInfoForManifestResource(){
         $itemsReferenseArray = $this->itemReference;
         $learnosityManifestJson = json_decode(file_get_contents($this->inputPath. '/manifest.json'));
-        $activityArray = $learnosityManifestJson->assets->items;
         $additionalFileInfoArray = array();
+        if(isset($learnosityManifestJson->assets->items)) {
+        $activityArray = $learnosityManifestJson->assets->items;
+        
         foreach($activityArray as $itemReference=>$itemValue){
             $questionArray = $itemValue;
             if(is_object($questionArray->questions)){
@@ -420,6 +422,7 @@ class ConvertToQtiService
                     $additionalFileInfoArray[$questionKey] = $valueArray;
                 }
             }
+        }
         }
         return $additionalFileInfoArray;
     }
