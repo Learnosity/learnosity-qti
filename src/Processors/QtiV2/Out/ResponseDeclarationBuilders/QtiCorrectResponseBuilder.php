@@ -32,7 +32,7 @@ class QtiCorrectResponseBuilder
     {
         // Handle `valid_response`
         $values = $this->buildValues($validation->get_valid_response()->get_value());
-
+        
         // Handle `alt_responses`
         if (!empty($validation->get_alt_responses())) {
             foreach ($validation->get_alt_responses() as $alt) {

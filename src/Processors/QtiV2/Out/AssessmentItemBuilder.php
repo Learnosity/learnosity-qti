@@ -59,6 +59,12 @@ class AssessmentItemBuilder
                 $assessmentItem->setOutcomeDeclarations($this->buildOutcomeDeclarations(0));
             }
 
+            // add outcome declaration for MAXSCORE
+            if(isset($questionData['data']['validation']['max_score'])){  
+                $max_score = $questionData['data']['validation']['max_score']; 
+                $assessmentItem->setOutcomeDeclarations($this->buildMaxscoreOutcomeDeclarations($max_score));
+            }
+
             if(isset($questionData['data']['metadata']['distractor_rationale_response_level'])){
                 $assessmentItem->setOutcomeDeclarations($this->buildFeedbackOutcomeDeclarations());
             }
@@ -107,8 +113,6 @@ class AssessmentItemBuilder
                 $responseProcessing->setTemplate($isOnlyMatchCorrect ? Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT : Constants::RESPONSE_PROCESSING_TEMPLATE_MAP_RESPONSE);
                 $assessmentItem->setResponseProcessing($responseProcessing);
             }else{
-                //$responseProcess = new ResponseProcessing();
-                //$responseProcess->setResponseRules($responseProcessing);
                 $assessmentItem->setResponseProcessing($responseProcessing);
             }
         }
@@ -153,9 +157,21 @@ class AssessmentItemBuilder
         return $outcomeDeclarationCollection;
     }
 
+    private function buildMaxscoreOutcomeDeclarations($score)
+    {
+        // Set <outcomeDeclaration> with MAXSCORE identifier
+        $outcomeDeclaration = new OutcomeDeclaration('MAXSCORE', BaseType::FLOAT);
+        $valueCollection = new ValueCollection();
+        $valueCollection->attach(new Value($score));
+        $outcomeDeclaration->setDefaultValue(new DefaultValue($valueCollection));
+        $outcomeDeclarationCollection = $this->outcomeDeclarationCollection;
+        $outcomeDeclarationCollection->attach($outcomeDeclaration);
+        return $outcomeDeclarationCollection;
+    }
+
     private function buildFeedbackOutcomeDeclarations()
     {
-        // Set <outcomeDeclaration> with  FEEDBACK identifier 
+        // Set <outcomeDeclaration> with FEEDBACK identifier 
         $outcomeDeclaration = new OutcomeDeclaration('FEEDBACK', BaseType::IDENTIFIER);
         $outcomeDeclarationCollection = $this->outcomeDeclarationCollection;
         $outcomeDeclarationCollection->attach($outcomeDeclaration);

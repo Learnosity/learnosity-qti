@@ -13,10 +13,9 @@ class longtext_validation extends BaseQuestionTypeAttribute {
     protected $min_score_if_attempted;
     protected $unscored;
     
-    public function __construct(
-            )
+    public function __construct()
     {
-            }
+    }
 
     /**
     * Get Max score \

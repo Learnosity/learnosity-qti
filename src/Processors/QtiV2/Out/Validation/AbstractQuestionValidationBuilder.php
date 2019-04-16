@@ -20,6 +20,12 @@ abstract class AbstractQuestionValidationBuilder
         if (empty($validation)) {
             return [null, null];
         }
+
+        if ((method_exists($validation, 'get_max_score')) && (empty($validation->get_max_score()))) {
+            // TODO: Need to support more validation type :)
+            LogService::log('Invalid value of max_score. Failed to build `responseDeclaration` and `responseProcessingTemplate');
+            return [null, null];
+        }
         
         if ((method_exists($validation, 'get_scoring_type')) && (empty($validation->get_scoring_type()) || !in_array($validation->get_scoring_type(), $this->supportedScoringType))) {
                 // TODO: Need to support more validation type :)

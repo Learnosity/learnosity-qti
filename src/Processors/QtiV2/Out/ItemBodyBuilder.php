@@ -89,11 +89,14 @@ class ItemBodyBuilder
         
         $divWrapper = new Div();
         $divWrapper->setContent($wrapperCollection);
+        
         // Iterate through these elements and try to replace every single question `span` with its interaction equivalent
         $iterator = $divWrapper->getIterator();
+        
         foreach ($iterator as $component) {
             
-            if ($component instanceof Span && StringUtil::contains($component->getClass(), 'learnosity-response')) {
+            if ($component instanceof Span && StringUtil::contains($component->getClass(), 'learnosity-response')) 
+            {
                 $currentContainer = $iterator->getCurrentContainer();
                 $questionReference = trim(str_replace('learnosity-response', '', $component->getClass()));
                 $questionReference = trim(str_replace('question-', '', $questionReference));
@@ -105,10 +108,10 @@ class ItemBodyBuilder
                     $content->attach($interactions[$questionReference]['extraContent']);
                 }
                 $content->attach($interaction);
-                $replacement = ContentCollectionBuilder::buildContent($currentContainer, $content)->current();
-                $currentContainer->getComponents()->replace($component, $replacement);
                 
             }
+                $replacement = ContentCollectionBuilder::buildContent($currentContainer, $content)->current();
+                $currentContainer->getComponents()->replace($component, $replacement);
         }
         
         // Extract the actual content from the div wrapper and add that to our <itemBody>

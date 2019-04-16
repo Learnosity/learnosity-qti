@@ -14,14 +14,15 @@ class LongtextV2Mapper extends AbstractQuestionTypeMapper
     {
         /** @var longtextV2 $question */
         $question = $questionType;
-
+        $questionData = $question->to_array();
         $interaction = new ExtendedTextInteraction($interactionIdentifier);
         $interaction->setLabel($interactionLabel);
         $interaction->setPrompt($this->convertStimulusForPrompt($question->get_stimulus()));
         $interaction->setFormat(TextFormat::XHTML);
         $interaction->setMinStrings(1);
         $interaction->setMaxStrings(1);
-
+        $interaction->setExpectedLength($questionData['max_length']);
+        
         $placeholderText = $question->get_placeholder();
         if (!empty($placeholderText)) {
             $interaction->setPlaceholderText($placeholderText);
