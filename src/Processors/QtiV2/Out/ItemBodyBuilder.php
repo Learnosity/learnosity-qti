@@ -83,7 +83,7 @@ class ItemBodyBuilder
 
         $content = $this->removeUnusedSpanFromContent($interactions, $content);
         $contentCollection = QtiMarshallerUtil::unmarshallElement($content);
-       
+        
         $wrapperCollection = new FlowCollection();
         foreach ($contentCollection as $component) {
             $wrapperCollection->attach($component);
@@ -119,6 +119,7 @@ class ItemBodyBuilder
         $itemBody->setContent(ContentCollectionBuilder::buildBlockCollectionContent($componentsWithinDiv));
         return $itemBody;
     }
+    
     private function buildItemBodySimple(array $interactions)
     {
         $interactions = array_values($interactions);

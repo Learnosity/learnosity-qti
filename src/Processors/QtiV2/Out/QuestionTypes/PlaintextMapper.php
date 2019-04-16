@@ -32,7 +32,6 @@ class PlaintextMapper extends AbstractQuestionTypeMapper
 
         $builder = new PlaintextValidationBuilder();
         list($responseDeclaration) = $builder->buildValidation($interactionIdentifier, $question->get_validation(),[]);
-        
         return [$interaction, $responseDeclaration, null];
     }
 }

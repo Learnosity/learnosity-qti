@@ -98,7 +98,7 @@ class AssessmentItemBuilder
         // Build <itemBody>
         
         $assessmentItem->setItemBody($this->itemBodyBuilder->buildItemBody($interactions, $content));
-        
+        //print_r($assessmentItem); die;
         // Map <responseDeclaration>
         if (!empty($responseDeclarationCollection)) {
             $assessmentItem->setResponseDeclarations($responseDeclarationCollection);
