@@ -30,9 +30,10 @@ class QtiMarshallerUtil
             $marshallerFactory = new LearnosityMarshallerFactory();
             $components = new QtiComponentCollection();
             foreach ($dom->documentElement->childNodes as $element) {
-                
-               if ($element instanceof \DOMText) {
-                    $component = new TextRun($element->nodeValue);
+              if ($element instanceof \DOMText) {
+                    if(!empty(trim($element->data))) {
+                        $component = new TextRun($element->nodeValue);
+                    }
               } else {
                     $marshaller = $marshallerFactory->createMarshaller($element);
                     $component = $marshaller->unmarshall($element);
@@ -41,7 +42,6 @@ class QtiMarshallerUtil
             }
             return $components;
         } catch (\Exception $e) {
-            
             throw new MappingException('[Unable to transform to QTI] ' . $e->getMessage());
         }
     }

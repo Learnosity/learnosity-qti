@@ -21,7 +21,6 @@ class ContentCollectionBuilder
         // TODO: Assumption `setContent` always has content setter on first parameter
         $parameterClass = $reflectionClass->getMethod('setContent')->getParameters()[0]->getClass();
         $contentType = $parameterClass->getShortName();
-
         try {
             /** @var QtiComponentCollection $content */
             $content = self::validateContent($content);

@@ -81,7 +81,7 @@ class ItemBodyBuilder
         // TODO: to avoid QtiComponentIterator bug ignoring 2nd element with empty content
         $content = $this->removeUnusedSpanFromContent($interactions, $content);
         $contentCollection = QtiMarshallerUtil::unmarshallElement($content);
-        
+       
         $wrapperCollection = new FlowCollection();
         foreach ($contentCollection as $component) {
             $wrapperCollection->attach($component);
@@ -92,7 +92,6 @@ class ItemBodyBuilder
         
         // Iterate through these elements and try to replace every single question `span` with its interaction equivalent
         $iterator = $divWrapper->getIterator();
-        
         foreach ($iterator as $component) {
             
             if ($component instanceof Span && StringUtil::contains($component->getClass(), 'learnosity-response')) 
@@ -108,10 +107,10 @@ class ItemBodyBuilder
                     $content->attach($interactions[$questionReference]['extraContent']);
                 }
                 $content->attach($interaction);
-                
-            }
                 $replacement = ContentCollectionBuilder::buildContent($currentContainer, $content)->current();
                 $currentContainer->getComponents()->replace($component, $replacement);
+            }
+            
         }
         
         // Extract the actual content from the div wrapper and add that to our <itemBody>

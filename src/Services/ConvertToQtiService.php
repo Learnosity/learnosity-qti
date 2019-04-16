@@ -213,7 +213,6 @@ class ConvertToQtiService
                 $this->output->writeln("<error>Question type `{$question['data']['type']}` not yet supported, ignoring</error>");
             }
         endforeach;
-
         return [
             'qti' => $result,
             'json' => $json
