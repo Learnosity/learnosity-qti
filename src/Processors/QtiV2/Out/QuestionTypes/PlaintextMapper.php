@@ -21,8 +21,9 @@ class PlaintextMapper extends AbstractQuestionTypeMapper
         $interaction->setFormat(TextFormat::PLAIN);
         $interaction->setMinStrings(1);
         $interaction->setMaxStrings(1);
-        $interaction->setExpectedLength($questionData['max_length']);
-        
+        if(isset($questionData['max_length'])){
+            $interaction->setExpectedLength($questionData['max_length']);
+        }
 
         $placeholderText = $question->get_placeholder();
         if (!empty($placeholderText)) {
@@ -31,6 +32,7 @@ class PlaintextMapper extends AbstractQuestionTypeMapper
 
         $builder = new PlaintextValidationBuilder();
         list($responseDeclaration) = $builder->buildValidation($interactionIdentifier, $question->get_validation(),[]);
+        
         return [$interaction, $responseDeclaration, null];
     }
 }

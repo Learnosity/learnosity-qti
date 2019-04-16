@@ -71,6 +71,7 @@ class ItemBodyBuilder
         $dom->removeChild($dom->doctype);
         $dom->replaceChild($dom->firstChild->firstChild->firstChild, $dom->firstChild);
         $newHtml = $dom->saveHTML();
+        
         return $newHtml;
     }
     
@@ -79,6 +80,7 @@ class ItemBodyBuilder
         // Map <itemBody>
         // TODO: Wrap these `content` stuff in a div
         // TODO: to avoid QtiComponentIterator bug ignoring 2nd element with empty content
+
         $content = $this->removeUnusedSpanFromContent($interactions, $content);
         $contentCollection = QtiMarshallerUtil::unmarshallElement($content);
        
@@ -93,16 +95,14 @@ class ItemBodyBuilder
         // Iterate through these elements and try to replace every single question `span` with its interaction equivalent
         $iterator = $divWrapper->getIterator();
         foreach ($iterator as $component) {
-            
-            if ($component instanceof Span && StringUtil::contains($component->getClass(), 'learnosity-response')) 
-            {
+            if ($component instanceof Span && StringUtil::contains($component->getClass(), 'learnosity-response')) {
                 $currentContainer = $iterator->getCurrentContainer();
                 $questionReference = trim(str_replace('learnosity-response', '', $component->getClass()));
                 $questionReference = trim(str_replace('question-', '', $questionReference));
+
                 // Build the actual interaction
                 $interaction = $interactions[$questionReference]['interaction'];
-                
-                $content = new FlowCollection();
+                $content = new QtiComponentCollection();
                 if (isset($interactions[$questionReference]['extraContent'])) {
                     $content->attach($interactions[$questionReference]['extraContent']);
                 }

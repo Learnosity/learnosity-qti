@@ -18,6 +18,7 @@ class BlockCollectionContentBuilder extends AbstractContentBuilder
 
         // Check whether the content could all be attached as is
         if ($areBlockComponents) {
+             
             $blockCollection = new BlockCollection();
             foreach ($contentCollection as $component) {
                 $blockCollection->attach($component);

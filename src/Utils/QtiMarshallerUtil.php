@@ -30,14 +30,16 @@ class QtiMarshallerUtil
             $marshallerFactory = new LearnosityMarshallerFactory();
             $components = new QtiComponentCollection();
             foreach ($dom->documentElement->childNodes as $element) {
-              if ($element instanceof \DOMText) {
-                    if(!empty(trim($element->data))) {
-                        $component = new TextRun($element->nodeValue);
-                    }
-              } else {
-                    $marshaller = $marshallerFactory->createMarshaller($element);
-                    $component = $marshaller->unmarshall($element);
-             }
+
+                if ($element instanceof \DOMText) {
+                        if(!empty(trim($element->data))) {
+                            $component = new TextRun($element->nodeValue);
+                        }
+                } else {
+                        $marshaller = $marshallerFactory->createMarshaller($element);
+                        $component = $marshaller->unmarshall($element);
+                }
+
                 $components->attach($component);
             }
             return $components;

@@ -20,8 +20,9 @@ class LongtextMapper extends AbstractQuestionTypeMapper
         $interaction->setFormat(TextFormat::XHTML);
         $interaction->setMinStrings(1);
         $interaction->setMaxStrings(1);
-        $interaction->setExpectedLength($questionData['max_length']);
-        
+        if(isset($questionData['max_length'])){
+            $interaction->setExpectedLength($questionData['max_length']);
+        }
 
         $placeholderText = $question->get_placeholder();
         if (!empty($placeholderText)) {
