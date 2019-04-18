@@ -22,6 +22,7 @@ use qtism\data\content\interactions\SimpleChoice;
 use qtism\data\content\interactions\SimpleChoiceCollection;
 
 
+
 class McqMapper extends AbstractQuestionTypeMapper
 {
     public function convert(BaseQuestionType $questionType, $interactionIdentifier, $interactionLabel)
@@ -46,12 +47,13 @@ class McqMapper extends AbstractQuestionTypeMapper
         foreach ($question->get_options() as $index => $option) {
             /** @var mcq_options_item $option */
             $choiceContent = new FlowStaticCollection();
+            
             foreach (QtiMarshallerUtil::unmarshallElement($option->get_label()) as $component) {
                 
                 $choiceContent->attach($component);
 
                 // attach feedbackInline to simpleChoice
-                if(isset($feedbackOptions) && $feedbackOptions[$i]!=''){
+                if(isset($feedbackOptions) && isset($feedbackOptions[$i]) && $feedbackOptions[$i]!=''){
                     $content = new InlineCollection(array(new TextRun($feedbackOptions[$i])));
                     $feedback = new FeedbackInline('FEEDBACK','CHOICE_'.$option->get_value(),'true');
                     $feedback->setContent($content);
@@ -88,6 +90,7 @@ class McqMapper extends AbstractQuestionTypeMapper
             $question->get_ui_style()->get_type() === 'horizontal' &&
             intval($question->get_ui_style()->get_columns()) === count($question->get_options())) {
             $interaction->setOrientation(Orientation::HORIZONTAL);
+            
         } else {
             $interaction->setOrientation(Orientation::VERTICAL);
             LogService::log('ui_style` is ignored and `choiceInteraction` is assumed and set as `vertical`');

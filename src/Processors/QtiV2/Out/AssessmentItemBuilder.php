@@ -4,11 +4,14 @@ namespace LearnosityQti\Processors\QtiV2\Out;
 
 use LearnosityQti\Entities\Question;
 use LearnosityQti\Exceptions\MappingException;
-use LearnosityQti\Services\LogService;
 use LearnosityQti\Utils\StringUtil;
 use qtism\common\enums\BaseType;
 use qtism\common\utils\Format;
 use qtism\data\AssessmentItem;
+use qtism\data\content\FlowStaticCollection;
+use qtism\data\content\ModalFeedback;
+use qtism\data\content\ModalFeedbackCollection;
+use qtism\data\content\TextRun;
 use qtism\data\processing\ResponseProcessing;
 use qtism\data\state\DefaultValue;
 use qtism\data\state\OutcomeDeclaration;
@@ -20,19 +23,16 @@ use qtism\data\state\ValueCollection;
 class AssessmentItemBuilder
 {
     const MAPPER_CLASS_BASE = 'LearnosityQti\Processors\QtiV2\Out\QuestionTypes\\';
-
     /**
      * @var ItemBodyBuilder
      */
     private $itemBodyBuilder;
-
     public function __construct()
     {
         $this->itemBodyBuilder = new ItemBodyBuilder();
         // to add multiple outcomedeclaration in case of feedback
         $this->outcomeDeclarationCollection = new OutcomeDeclarationCollection();
     }
-
     public function build($itemIdentifier, $itemLabel, array $questions, $content = '')
     {
        
@@ -58,13 +58,12 @@ class AssessmentItemBuilder
             }else{
                 $assessmentItem->setOutcomeDeclarations($this->buildOutcomeDeclarations(0));
             }
-
             // add outcome declaration for MAXSCORE
             if(isset($questionData['data']['validation']['max_score'])){  
                 $max_score = $questionData['data']['validation']['max_score']; 
                 $assessmentItem->setOutcomeDeclarations($this->buildMaxscoreOutcomeDeclarations($max_score));
             }
-
+            
             // add outcome declaration for MINSCORE
             if(isset($questionData['data']['validation']['min_score_if_attempted'])){  
                 $min_score = $questionData['data']['validation']['min_score_if_attempted']; 
@@ -75,7 +74,12 @@ class AssessmentItemBuilder
             if(isset($questionData['data']['metadata']['distractor_rationale_response_level'])){
                 $assessmentItem->setOutcomeDeclarations($this->buildFeedbackOutcomeDeclarations());
             }
-
+            
+            if(isset($questionData['data']['metadata']['distractor_rationale'])){
+                $distractorRational = $questionData['data']['metadata']['distractor_rationale'];
+                $assessmentItem->setModalFeedbacks(new ModalFeedbackCollection(array($this->buildModalFeedBack($distractorRational))));
+            }
+            
             /** @var Question $question */
             // Map the `questions` and its validation objects to be placed at <itemBody>
             // The extraContent usually comes from `stimulus` of item that mapped to inline interaction and has no `prompt`
@@ -124,7 +128,6 @@ class AssessmentItemBuilder
         }
         return $assessmentItem;
     }
-
     private function map(Question $question)
     {
         $type = $question->get_type();
@@ -149,7 +152,6 @@ class AssessmentItemBuilder
         $result[] = $questionTypeMapper->getExtraContent();
         return $result;
     }
-
     private function buildOutcomeDeclarations($score)
     {
         // Set <outcomeDeclaration> with assumption default value is always 0
@@ -162,7 +164,6 @@ class AssessmentItemBuilder
         $outcomeDeclarationCollection->attach($outcomeDeclaration);
         return $outcomeDeclarationCollection;
     }
-
     private function buildMaxscoreOutcomeDeclarations($score)
     {
         // Set <outcomeDeclaration> with MAXSCORE identifier
@@ -174,7 +175,7 @@ class AssessmentItemBuilder
         $outcomeDeclarationCollection->attach($outcomeDeclaration);
         return $outcomeDeclarationCollection;
     }
-
+    
     private function buildMinscoreOutcomeDeclarations($score)
     {
         // Set <outcomeDeclaration> with MINSCORE identifier
@@ -186,7 +187,7 @@ class AssessmentItemBuilder
         $outcomeDeclarationCollection->attach($outcomeDeclaration);
         return $outcomeDeclarationCollection;
     }
-
+    
     private function buildFeedbackOutcomeDeclarations()
     {
         // Set <outcomeDeclaration> with FEEDBACK identifier 
@@ -194,5 +195,11 @@ class AssessmentItemBuilder
         $outcomeDeclarationCollection = $this->outcomeDeclarationCollection;
         $outcomeDeclarationCollection->attach($outcomeDeclaration);
         return $outcomeDeclarationCollection;
+    }
+    
+    private function buildModalFeedBack($feedBackText){
+        $content = new FlowStaticCollection(array(new TextRun($feedBackText)));
+        $modalFeedback = new ModalFeedback('FEEDBACK', 'correctOrIncorrect', $content);
+        return $modalFeedback;
     }
 }

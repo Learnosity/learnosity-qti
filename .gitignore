@@ -1,7 +1,0 @@
-.idea
-.sonar
-vendor
-reports
-.DS_Store
-_vault
-data/convert:to:learnosity.log.json
