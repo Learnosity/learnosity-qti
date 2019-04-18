@@ -28,12 +28,10 @@ class plaintext extends BaseQuestionType {
     protected $spellcheck;
     protected $placeholder;
     
-    public function __construct(
-                    $type
-                        )
+    public function __construct($type )
     {
-                $this->type = $type;
-            }
+        $this->type = $type;
+    }
 
     /**
     * Get Contains math \

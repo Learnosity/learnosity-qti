@@ -65,6 +65,13 @@ class AssessmentItemBuilder
                 $assessmentItem->setOutcomeDeclarations($this->buildMaxscoreOutcomeDeclarations($max_score));
             }
 
+            // add outcome declaration for MINSCORE
+            if(isset($questionData['data']['validation']['min_score_if_attempted'])){  
+                $min_score = $questionData['data']['validation']['min_score_if_attempted']; 
+                $assessmentItem->setOutcomeDeclarations($this->buildMinscoreOutcomeDeclarations($min_score));
+            }
+
+            // add outcome declaration for FEEDBACK INLINE
             if(isset($questionData['data']['metadata']['distractor_rationale_response_level'])){
                 $assessmentItem->setOutcomeDeclarations($this->buildFeedbackOutcomeDeclarations());
             }
@@ -98,7 +105,6 @@ class AssessmentItemBuilder
         // Build <itemBody>
         
         $assessmentItem->setItemBody($this->itemBodyBuilder->buildItemBody($interactions, $content));
-        //print_r($assessmentItem); die;
         // Map <responseDeclaration>
         if (!empty($responseDeclarationCollection)) {
             $assessmentItem->setResponseDeclarations($responseDeclarationCollection);
@@ -161,6 +167,18 @@ class AssessmentItemBuilder
     {
         // Set <outcomeDeclaration> with MAXSCORE identifier
         $outcomeDeclaration = new OutcomeDeclaration('MAXSCORE', BaseType::FLOAT);
+        $valueCollection = new ValueCollection();
+        $valueCollection->attach(new Value($score));
+        $outcomeDeclaration->setDefaultValue(new DefaultValue($valueCollection));
+        $outcomeDeclarationCollection = $this->outcomeDeclarationCollection;
+        $outcomeDeclarationCollection->attach($outcomeDeclaration);
+        return $outcomeDeclarationCollection;
+    }
+
+    private function buildMinscoreOutcomeDeclarations($score)
+    {
+        // Set <outcomeDeclaration> with MINSCORE identifier
+        $outcomeDeclaration = new OutcomeDeclaration('MINSCORE', BaseType::FLOAT);
         $valueCollection = new ValueCollection();
         $valueCollection->attach(new Value($score));
         $outcomeDeclaration->setDefaultValue(new DefaultValue($valueCollection));

@@ -13,16 +13,19 @@ class PlaintextMapper extends AbstractQuestionTypeMapper
     public function convert(BaseQuestionType $questionType, $interactionIdentifier, $interactionLabel)
     {
         /** @var plaintext $question */
-        $question = $questionType;
+        $question = $questionType; 
         $questionData = $question->to_array();
+     
         $interaction = new ExtendedTextInteraction($interactionIdentifier);
         $interaction->setLabel($interactionLabel);
         $interaction->setPrompt($this->convertStimulusForPrompt($question->get_stimulus()));
-        $interaction->setFormat(TextFormat::PLAIN);
+        $interaction->setFormat('plain');
         $interaction->setMinStrings(1);
-        $interaction->setMaxStrings(1);
         if(isset($questionData['max_length'])){
             $interaction->setExpectedLength($questionData['max_length']);
+            $interaction->setMaxStrings($questionData['max_length']);
+        }else{
+            $interaction->setMaxStrings(1);
         }
 
         $placeholderText = $question->get_placeholder();

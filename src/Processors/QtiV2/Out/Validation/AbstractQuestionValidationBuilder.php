@@ -13,7 +13,7 @@ abstract class AbstractQuestionValidationBuilder
     private $supportedScoringType = ['exactMatch'];
     abstract protected function buildResponseDeclaration($responseIdentifier, $validation);
     
-    public function buildValidation($responseIdentifier, $validation,$distractor_rationale_response_level = array() ,$isCaseSensitive = true)
+    public function buildValidation($responseIdentifier,$validation,$distractor_rationale_response_level = array() ,$isCaseSensitive = true)
     {
         
         // Some basic validation on the `validation` object

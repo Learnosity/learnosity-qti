@@ -45,7 +45,7 @@ class ConvertToQtiCommand extends Command
         $validationErrors = [];
         $inputPath = $input->getOption('input');
         $outputPath = $input->getOption('output');
-        $format = $input->getOption('format');
+        $format = strtolower($input->getOption('format'));
 
         // Validate the required options
         if (empty($inputPath) || empty($outputPath)) {
