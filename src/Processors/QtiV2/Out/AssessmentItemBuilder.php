@@ -6,6 +6,7 @@ use LearnosityQti\Entities\Question;
 use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Utils\StringUtil;
 use qtism\common\enums\BaseType;
+use qtism\common\enums\Cardinality;
 use qtism\common\utils\Format;
 use qtism\data\AssessmentItem;
 use qtism\data\content\FlowStaticCollection;
@@ -54,30 +55,31 @@ class AssessmentItemBuilder
             
             if(isset($questionData['data']['validation']['valid_response']['score'])){  
                 $score = $questionData['data']['validation']['valid_response']['score']; 
-                $assessmentItem->setOutcomeDeclarations($this->buildOutcomeDeclarations($score));
+                $assessmentItem->setOutcomeDeclarations($this->buildScoreOutcomeDeclarations($score, 'SCORE'));
             }else{
                 $assessmentItem->setOutcomeDeclarations($this->buildOutcomeDeclarations(0));
             }
             // add outcome declaration for MAXSCORE
             if(isset($questionData['data']['validation']['max_score'])){  
                 $max_score = $questionData['data']['validation']['max_score']; 
-                $assessmentItem->setOutcomeDeclarations($this->buildMaxscoreOutcomeDeclarations($max_score));
+                $assessmentItem->setOutcomeDeclarations($this->buildScoreOutcomeDeclarations($max_score, 'MAXSCORE'));
             }
             
             // add outcome declaration for MINSCORE
             if(isset($questionData['data']['validation']['min_score_if_attempted'])){  
                 $min_score = $questionData['data']['validation']['min_score_if_attempted']; 
-                $assessmentItem->setOutcomeDeclarations($this->buildMinscoreOutcomeDeclarations($min_score));
+                $assessmentItem->setOutcomeDeclarations($this->buildScoreOutcomeDeclarations($min_score, 'MINSCORE'));
             }
 
             // add outcome declaration for FEEDBACK INLINE
             if(isset($questionData['data']['metadata']['distractor_rationale_response_level'])){
-                $assessmentItem->setOutcomeDeclarations($this->buildFeedbackOutcomeDeclarations());
+                $assessmentItem->setOutcomeDeclarations($this->buildFeedbackOutcomeDeclarations('FEEDBACK', Cardinality::MULTIPLE));
             }
             
             if(isset($questionData['data']['metadata']['distractor_rationale'])){
                 $distractorRational = $questionData['data']['metadata']['distractor_rationale'];
-                $assessmentItem->setModalFeedbacks(new ModalFeedbackCollection(array($this->buildModalFeedBack($distractorRational))));
+                $assessmentItem->setOutcomeDeclarations($this->buildFeedbackOutcomeDeclarations('FEEDBACK_GENERAL'));
+                $assessmentItem->setModalFeedbacks(new ModalFeedbackCollection(array($this->buildModalFeedBack($distractorRational, 'FEEDBACK_GENERAL', 'correctOrIncorrect'))));
             }
             
             /** @var Question $question */
@@ -148,14 +150,15 @@ class AssessmentItemBuilder
             );
         } */
         $interactionIdentifier = 'RESPONSE';
+        
         $result = $questionTypeMapper->convert($question->get_data(), $interactionIdentifier, $questionReference);
         $result[] = $questionTypeMapper->getExtraContent();
         return $result;
     }
-    private function buildOutcomeDeclarations($score)
+    private function buildScoreOutcomeDeclarations($score, $type)
     {
         // Set <outcomeDeclaration> with assumption default value is always 0
-        $outcomeDeclaration = new OutcomeDeclaration('SCORE', BaseType::FLOAT);
+        $outcomeDeclaration = new OutcomeDeclaration($type, BaseType::FLOAT);
         $valueCollection = new ValueCollection();
         $valueCollection->attach(new Value($score));
         $outcomeDeclaration->setDefaultValue(new DefaultValue($valueCollection));
@@ -164,42 +167,19 @@ class AssessmentItemBuilder
         $outcomeDeclarationCollection->attach($outcomeDeclaration);
         return $outcomeDeclarationCollection;
     }
-    private function buildMaxscoreOutcomeDeclarations($score)
-    {
-        // Set <outcomeDeclaration> with MAXSCORE identifier
-        $outcomeDeclaration = new OutcomeDeclaration('MAXSCORE', BaseType::FLOAT);
-        $valueCollection = new ValueCollection();
-        $valueCollection->attach(new Value($score));
-        $outcomeDeclaration->setDefaultValue(new DefaultValue($valueCollection));
-        $outcomeDeclarationCollection = $this->outcomeDeclarationCollection;
-        $outcomeDeclarationCollection->attach($outcomeDeclaration);
-        return $outcomeDeclarationCollection;
-    }
     
-    private function buildMinscoreOutcomeDeclarations($score)
-    {
-        // Set <outcomeDeclaration> with MINSCORE identifier
-        $outcomeDeclaration = new OutcomeDeclaration('MINSCORE', BaseType::FLOAT);
-        $valueCollection = new ValueCollection();
-        $valueCollection->attach(new Value($score));
-        $outcomeDeclaration->setDefaultValue(new DefaultValue($valueCollection));
-        $outcomeDeclarationCollection = $this->outcomeDeclarationCollection;
-        $outcomeDeclarationCollection->attach($outcomeDeclaration);
-        return $outcomeDeclarationCollection;
-    }
-    
-    private function buildFeedbackOutcomeDeclarations()
+    private function buildFeedbackOutcomeDeclarations($identifire, $cardinality = Cardinality::SINGLE)
     {
         // Set <outcomeDeclaration> with FEEDBACK identifier 
-        $outcomeDeclaration = new OutcomeDeclaration('FEEDBACK', BaseType::IDENTIFIER);
+        $outcomeDeclaration = new OutcomeDeclaration($identifire, BaseType::IDENTIFIER, $cardinality);
         $outcomeDeclarationCollection = $this->outcomeDeclarationCollection;
         $outcomeDeclarationCollection->attach($outcomeDeclaration);
         return $outcomeDeclarationCollection;
     }
     
-    private function buildModalFeedBack($feedBackText){
+    private function buildModalFeedBack($feedBackText, $identifier, $outComeidentifier){
         $content = new FlowStaticCollection(array(new TextRun($feedBackText)));
-        $modalFeedback = new ModalFeedback('FEEDBACK', 'correctOrIncorrect', $content);
+        $modalFeedback = new ModalFeedback($identifier, $outComeidentifier, $content);
         return $modalFeedback;
     }
 }

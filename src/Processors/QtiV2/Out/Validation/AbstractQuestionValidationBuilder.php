@@ -13,7 +13,7 @@ abstract class AbstractQuestionValidationBuilder
     private $supportedScoringType = ['exactMatch'];
     abstract protected function buildResponseDeclaration($responseIdentifier, $validation);
     
-    public function buildValidation($responseIdentifier,$validation,$distractor_rationale_response_level = array() ,$isCaseSensitive = true)
+    public function buildValidation($responseIdentifier,$validation,$feedBackOptions = array() ,$isCaseSensitive = true)
     {
         
         // Some basic validation on the `validation` object
@@ -41,9 +41,9 @@ abstract class AbstractQuestionValidationBuilder
         
 
         // if found distractor_rationale_response_level generate response processing with setoutcome value FEEDBACK
-        if(!empty($distractor_rationale_response_level) && is_array($distractor_rationale_response_level)){
+        if(!empty($feedBackOptions) && is_array($feedBackOptions)){
             $score = $validation->get_valid_response()->get_score(); 
-            $responseProcessing = QtiResponseProcessingBuilder::build($score);
+            $responseProcessing = QtiResponseProcessingBuilder::build($score, $feedBackOptions);
         }else{ 
             $responseProcessing = $this->buildResponseProcessing($validation, $isCaseSensitive);
         }

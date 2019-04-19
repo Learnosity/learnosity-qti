@@ -19,7 +19,7 @@ use qtism\data\expressions\ExpressionCollection;
 
 class QtiResponseProcessingBuilder {
 
-    public function build($score){
+    public function build($score, $feedBackOptions = array()){
         
         // creating feedback outcome
         $feedbackResponseComponent = new SetOutcomeValue('FEEDBACK', new Variable('RESPONSE'));
@@ -34,12 +34,21 @@ class QtiResponseProcessingBuilder {
         $responseIfComponent = new SetOutcomeValue('SCORE', new BaseValue(BaseType::FLOAT,$score));
         $responseIfRuleCollection = new ResponseRuleCollection();
         $responseIfRuleCollection->attach($responseIfComponent);
-        $responseIf = new ResponseIf(new Match($responseIfexpressionCollection),$responseIfRuleCollection);
-         
+        
+        
         // generating response else condition
         $responseElseComponent = new SetOutcomeValue('SCORE', new BaseValue(BaseType::FLOAT,0));
         $responseElseRuleCollection = new ResponseRuleCollection();
         $responseElseRuleCollection->attach($responseElseComponent);
+        
+        // genrate outcome value if distrator_rationale_value is set
+        if(is_array($feedBackOptions) && !empty($feedBackOptions['genral_feedback'])){
+            $responseFeedbackComponent = new SetOutcomeValue('FEEDBACK_GENERAL', new BaseValue(BaseType::IDENTIFIER,'correctOrIncorrect'));
+            $responseIfRuleCollection->attach($responseFeedbackComponent);
+            $responseElseRuleCollection->attach($responseFeedbackComponent);
+        }
+        
+        $responseIf = new ResponseIf(new Match($responseIfexpressionCollection),$responseIfRuleCollection);
         $responseElse = new ResponseElse($responseElseRuleCollection);
 
         // merge response conditions
