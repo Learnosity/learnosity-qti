@@ -99,13 +99,14 @@ class ItemBodyBuilder
                 $currentContainer = $iterator->getCurrentContainer();
                 $questionReference = trim(str_replace('learnosity-response', '', $component->getClass()));
                 $questionReference = trim(str_replace('question-', '', $questionReference));
-
+                
                 // Build the actual interaction
                 $interaction = $interactions[$questionReference]['interaction'];
-                $content = new QtiComponentCollection();
+                $content = new FlowCollection();
                 if (isset($interactions[$questionReference]['extraContent'])) {
                     $content->attach($interactions[$questionReference]['extraContent']);
                 }
+                
                 $content->attach($interaction);
                 $replacement = ContentCollectionBuilder::buildContent($currentContainer, $content)->current();
                 $currentContainer->getComponents()->replace($component, $replacement);

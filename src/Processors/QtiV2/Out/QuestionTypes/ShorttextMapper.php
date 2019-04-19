@@ -17,7 +17,7 @@ class ShorttextMapper extends AbstractQuestionTypeMapper
     {
         /** @var shorttext $question */
         $question = $questionType;
-
+        
         // Extra text that can't be mapped since we are in textEntryInteraction which does not have prompt
         $this->extraContent = $question->get_stimulus();
 
@@ -29,12 +29,12 @@ class ShorttextMapper extends AbstractQuestionTypeMapper
         if (!empty($placeholderText)) {
             $interaction->setPlaceholderText($placeholderText);
         }
-
+        
         // Use 15 as default
         $interaction->setExpectedLength($question->get_max_length() ? $question->get_max_length() : 15);
 
         // Build those validation
-        $isCaseSensitive = $question->get_case_sensitive() === null ? true : $question->get_case_sensitive();
+        $isCaseSensitive = $question->get_case_sensitive() === null ? false : $question->get_case_sensitive();
         $validationBuilder = new ShorttextValidationBuilder($isCaseSensitive);
         list($responseDeclaration, $responseProcessing) = $validationBuilder->buildValidation(
             $interactionIdentifier,

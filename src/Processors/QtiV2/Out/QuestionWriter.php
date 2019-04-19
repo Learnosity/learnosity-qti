@@ -14,7 +14,7 @@ class QuestionWriter
     {
         // Make sure we clean up the log
         LogService::flush();
-
+        
         // Try to build the identifier using question `reference`
         // Otherwise, generate an alternative identifier and store the original reference as `label`
         $questionReference = $question->get_reference();

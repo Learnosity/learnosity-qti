@@ -20,8 +20,9 @@ abstract class AbstractQuestionValidationBuilder
         if (empty($validation)) {
             return [null, null];
         }
-
-        if ((method_exists($validation, 'get_max_score')) && (empty($validation->get_max_score()))) {
+        
+        /*if ((method_exists($validation, 'get_max_score')) && (empty($validation->get_max_score()))) {
+            
             // TODO: Need to support more validation type :)
             LogService::log('Invalid value of max_score. Failed to build `responseDeclaration` and `responseProcessingTemplate');
             return [null, null];
@@ -32,7 +33,7 @@ abstract class AbstractQuestionValidationBuilder
                 LogService::log('Invalid `scoring_type`, only supported `exactMatch`. Failed to build `responseDeclaration` and `responseProcessingTemplate');
                 return [null, null];
         }
-        
+        */
 
         if ((method_exists($validation, 'get_valid_response')) && (empty($validation->get_valid_response()) || empty($validation->get_valid_response()->get_value()) || empty($validation->get_valid_response()->get_score()))) {
                 LogService::log('Invalid `valid_response` object, fail to build `responseDeclaration` and `responseProcessingTemplate');

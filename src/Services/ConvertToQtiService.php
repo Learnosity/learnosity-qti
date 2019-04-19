@@ -411,18 +411,18 @@ class ConvertToQtiService
         if(isset($learnosityManifestJson->assets->items)) {
         $activityArray = $learnosityManifestJson->assets->items;
         
-        foreach($activityArray as $itemReference=>$itemValue){
-            $questionArray = $itemValue;
-            if(is_object($questionArray->questions)){
-                foreach($questionArray->questions as $questionKey=>$questionValue){
-                    $valueArray = array();
-                    foreach($questionValue as $questions=>$value){
-                       $valueArray[] = $value->replacement;
+            foreach($activityArray as $itemReference=>$itemValue){
+                $questionArray = $itemValue;
+                if(is_object($questionArray->questions)){
+                    foreach($questionArray->questions as $questionKey=>$questionValue){
+                        $valueArray = array();
+                        foreach($questionValue as $questions=>$value){
+                        $valueArray[] = $value->replacement;
+                        }
+                        $additionalFileInfoArray[$questionKey] = $valueArray;
                     }
-                    $additionalFileInfoArray[$questionKey] = $valueArray;
                 }
             }
-        }
         }
         return $additionalFileInfoArray;
     }
