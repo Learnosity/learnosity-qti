@@ -15,65 +15,76 @@ use qtism\data\state\Value;
 
 class McqMapperTest extends AbstractQuestionTypeTest
 {
-    public function testSimpleCase()
-    {
+    public function testSimpleCase() {
         $data = json_decode($this->getFixtureFileContents('learnosityjsons/mcq.json'), true);
-        $assessmentItem = $this->convertToAssessmentItem($data);
 
-        // Simple validation on <responseDeclaration> and <responseProcessing>
-        $this->assertEquals(1, $assessmentItem->getResponseDeclarations()->count());
-        $this->assertNotNull($assessmentItem->getResponseProcessing());
+        $assessmentItemArray = $this->convertToAssessmentItem($data);
 
-        // Has <extendedTextInteraction> as the first and only interaction
-        /** @var ChoiceInteraction $interaction */
-        $interaction = $assessmentItem->getComponentsByClassName('choiceInteraction', true)->getArrayCopy()[0];
-        $this->assertTrue($interaction instanceof ChoiceInteraction);
+        foreach ($assessmentItemArray as $assessmentItem) {
+            // Simple validation on <responseDeclaration> and <responseProcessing>
+            $this->assertEquals(1, $assessmentItem->getResponseDeclarations()->count());
+            $this->assertNotNull($assessmentItem->getResponseProcessing());
 
-        // And its prompt is mapped correctly
-        $promptString = QtiMarshallerUtil::marshallCollection($interaction->getPrompt()->getComponents());
-        $this->assertEquals('<p>Listen.</p><div><span class="learnosity-feature" data-type="audioplayer" data-src="http://www.kozco.com/tech/LRMonoPhase4.wav"/></div>What does it say?', $promptString);
+            // Has <extendedTextInteraction> as the first and only interaction
+            /** @var ChoiceInteraction $interaction */
+            $interaction = $assessmentItem->getComponentsByClassName('choiceInteraction', true)->getArrayCopy()[0];
+            $this->assertTrue($interaction instanceof ChoiceInteraction);
 
-        // All the choices also mapped properly
-        /** @var SimpleChoice[] $simpleChoices */
-        $simpleChoices = $interaction->getSimpleChoices()->getArrayCopy(true);
-        $this->assertEquals($simpleChoices[0]->getIdentifier(), 'ChoiceA');
-        $this->assertEquals(QtiMarshallerUtil::marshallCollection($simpleChoices[0]->getContent()), 'You must stay with your luggage at all times.');
-        $this->assertEquals($simpleChoices[1]->getIdentifier(), 'ChoiceB');
-        $this->assertEquals(QtiMarshallerUtil::marshallCollection($simpleChoices[1]->getContent()), 'Do not let someone else look after your luggage.');
-        $this->assertEquals($simpleChoices[2]->getIdentifier(), 'ChoiceC');
-        $this->assertEquals(QtiMarshallerUtil::marshallCollection($simpleChoices[2]->getContent()), 'Remember your luggage when you leave.');
+            // And its prompt is mapped correctly
+            $promptString = QtiMarshallerUtil::marshallCollection($interaction->getPrompt()->getComponents());
+            $this->assertEquals('<p>What is the capital of USA ?</p>', trim($promptString));
 
-        // Check `minChoices` and `maxChoices`
-        $this->assertEquals(1, $interaction->getMinChoices());
-        $this->assertEquals(1, $interaction->getMaxChoices());
+            // All the choices also mapped properly
+            /** @var SimpleChoice[] $simpleChoices */
+            $simpleChoices = $interaction->getSimpleChoices()->getArrayCopy(true);
+            $this->assertEquals($simpleChoices[0]->getIdentifier(), 'CHOICE_0');
+            $this->assertEquals(QtiMarshallerUtil::marshallCollection($simpleChoices[0]->getContent()), 'Washington DC');
+            $this->assertEquals($simpleChoices[1]->getIdentifier(), 'CHOICE_1');
+            $this->assertEquals(QtiMarshallerUtil::marshallCollection($simpleChoices[1]->getContent()), 'Delhi');
+            $this->assertEquals($simpleChoices[2]->getIdentifier(), 'CHOICE_2');
+            $this->assertEquals(QtiMarshallerUtil::marshallCollection($simpleChoices[2]->getContent()), 'Maskow');
+            $this->assertEquals($simpleChoices[3]->getIdentifier(), 'CHOICE_3');
+            $this->assertEquals(QtiMarshallerUtil::marshallCollection($simpleChoices[3]->getContent()), 'Canbera');
 
-        // No shuffle option obviously
-        $this->assertFalse($interaction->mustShuffle());
 
-        // The usual layout
-        $this->assertEquals(Orientation::VERTICAL, $interaction->getOrientation());
+            // Check `minChoices` and `maxChoices`
+            $this->assertEquals(1, $interaction->getMinChoices());
+            $this->assertEquals(1, $interaction->getMaxChoices());
+
+            // No shuffle option obviously
+            $this->assertFalse($interaction->mustShuffle());
+
+            // The usual layout
+            $this->assertEquals(Orientation::VERTICAL, $interaction->getOrientation());
+        }
     }
 
     public function testMultipleResponseMcq()
     {
         $data = json_decode($this->getFixtureFileContents('learnosityjsons/item_mcq.json'), true);
-        $assessmentItem = $this->convertToAssessmentItem($data);
-
+        $assessmentItemArray = $this->convertToAssessmentItem($data);
+        $this->assertCount(2, $assessmentItemArray);
         // Has <extendedTextInteraction> as the first and only interaction
         /** @var ChoiceInteraction $interactionOne */
         /** @var ChoiceInteraction $interactionTwo */
-        $interactions = $assessmentItem->getComponentsByClassName('choiceInteraction', true)->getArrayCopy();
-        $interactionOne = $interactions[0];
-        $interactionTwo = $interactions[1];
+        $interactionsArray = array();
+        $responseDeclarationArray = array();
+        foreach($assessmentItemArray as $assessmentItem) {
+            $interactionsArray[] = $assessmentItem->getComponentsByClassName('choiceInteraction', true)->getArrayCopy();
+            $responseDeclarationArray[] = $assessmentItem->getResponseDeclarations()->getArrayCopy(true);
+            
+        }
+        $interactionOne = $interactionsArray[0][0];
+        $interactionTwo = $interactionsArray[1][0];
+        
+        $this->assertCount(2, $responseDeclarationArray);
         $this->assertTrue($interactionOne instanceof ChoiceInteraction && $interactionTwo instanceof ChoiceInteraction);
 
         // Simple validation on <responseDeclaration> and <responseProcessing>
-        $responseDeclarations = $assessmentItem->getResponseDeclarations()->getArrayCopy(true);
-        $this->assertCount(2, $responseDeclarations);
+        
         $this->assertEquals(Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT, $assessmentItem->getResponseProcessing()->getTemplate());
-        $responseDeclarationOne = $responseDeclarations[$interactionOne->getResponseIdentifier()];
-        $responseDeclarationTwo = $responseDeclarations[$interactionTwo->getResponseIdentifier()];
-
+        $responseDeclarationOne = $responseDeclarationArray[0][$interactionOne->getResponseIdentifier()];
+        $responseDeclarationTwo = $responseDeclarationArray[1][$interactionTwo->getResponseIdentifier()];
         // Assert the actual interactions and its response declaration
         $this->assertInteractionOne($interactionOne, $responseDeclarationOne);
         $this->assertInteractionTwo($interactionTwo, $responseDeclarationTwo);

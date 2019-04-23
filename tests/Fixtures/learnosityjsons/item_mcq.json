@@ -1,75 +1,78 @@
 {
-    "reference": "DEMO_1",
-    "content": "<div class=\"alert alert-info\"><strong>This is an example of a multiple response MCQ. Students can select more than one option.</strong></div>\r\n\r\n<p><span class=\"learnosity-response question-DEMO_1_3\"></span></p>\r\n\r\n<div class=\"alert alert-info\"><strong>This is an example of a single response MCQ. Students can only select one option. Instant feedback is turned <em>ON</em></strong></div>\r\n\r\n<p><span class=\"learnosity-response question-DEMO_1_2\"></span></p>\r\n\r\n<p>&nbsp;</p>",
-    "tags": {
-        "Difficulty": [
-            "advanced"
-        ]
+    "reference": "PAPE_21",
+    "content": "<div class=\"row\"><div class=\"col-xs-12\"><span class=\"learnosity-response question-013137d0-3941-4e6f-8e33-7a8989c8edf8\"></span><span class=\"learnosity-response question-75316373-a2ca-425b-8e1f-7a650f85201c\"></span><span class=\"learnosity-response question-612eaa40-5188-4a04-85ac-f9590e9b0a0b\"></span></div></div>",
+    "workflow": null,
+    "metadata": {
+        "acknowledgements": null,
+        "scoring_type": "per-question"
     },
+    "tags": {},
     "questions": [
         {
-            "type": "mcq",
-            "widget_type": "response",
-            "reference": "DEMO_1_3",
+            "reference": "612eaa40-5188-4a04-85ac-f9590e9b0a0b",
             "data": {
-                "is_math": true,
                 "multiple_responses": true,
-                "shuffle_options": true,
-                "options": [{
-                    "value": "0",
-                    "label": "\\(5^2+\\sqrt[n]{19}\\)"
-                }, {
-                    "value": "1",
-                    "label": "\\(9\\)"
-                }, {
-                    "value": "2",
-                    "label": "\\(8+3\\)"
-                }, {
-                    "value": "3",
-                    "label": "\\(\\left(\\frac{5}{9}\\right)+\\pi\\)"
-                }],
+                "is_math" : true,
+                "options": [
+                    {
+                        "label": "\\(5^2+\\sqrt[n]{19}\\)",
+                        "value": "0"
+                    },
+                    {
+                        "label": "\\(9\\)",
+                        "value": "1"
+                    },
+                    {
+                        "label": "\\(8+3\\)",
+                        "value": "2"
+                    },
+                    {
+                        "label": "\\(\\left(\\frac{5}{9}\\right)+\\pi\\)",
+                        "value": "3"
+                    }
+                ],
                 "stimulus": "Which of the following are not equals to 1",
                 "type": "mcq",
-                "ui_style": {},
                 "validation": {
                     "scoring_type": "exactMatch",
                     "valid_response": {
                         "score": 1,
-                        "value": ["0", "1", "3"]
+                        "value": [
+                            "0",
+                            "1",
+                            "3"
+                        ]
                     }
-                }
+                },
+                "ui_style": {
+                    "type": "horizontal"
+                },
+                "shuffle_options": true
             }
         },
         {
-            "type": "mcq",
-            "widget_type": "response",
-            "reference": "DEMO_1_2",
+            "reference": "013137d0-3941-4e6f-8e33-7a8989c8edf8",
             "data": {
-                "instant_feedback": true,
                 "options": [
                     {
-                        "value": "0",
-                        "label": "Tomato"
+                        "label": "Tomato",
+                        "value": "0"
                     },
                     {
-                        "value": "1",
-                        "label": "Orange"
+                        "label": "Orange",
+                        "value": "1"
                     },
                     {
-                        "value": "2",
-                        "label": "Celery"
+                        "label": "Celery",
+                        "value": "2"
                     },
                     {
-                        "value": "3",
-                        "label": "Pear"
+                        "label": "Pear",
+                        "value": "3"
                     }
                 ],
                 "stimulus": "Pick the odd one out",
                 "type": "mcq",
-                "ui_style": {
-                    "columns": 4,
-                    "type": "horizontal"
-                },
                 "validation": {
                     "scoring_type": "exactMatch",
                     "valid_response": {
@@ -77,9 +80,16 @@
                         "value": [
                             "2"
                         ]
-                    }
+                    },
+                    "unscored": true
+                },
+                "ui_style": {
+                    "columns": 4,
+                    "type": "horizontal"
                 }
+                
             }
         }
-    ]
+    ],
+    "features": []
 }
