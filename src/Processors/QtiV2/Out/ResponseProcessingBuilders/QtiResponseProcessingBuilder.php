@@ -21,7 +21,7 @@ use qtism\data\expressions\ExpressionCollection;
 
 class QtiResponseProcessingBuilder {
 
-    public function build($score, $maxscore, $feedBackOptions = array() , $type = array()){
+    public function build($score, $feedBackOptions = array() , $type = array()){
         
         $responseRuleCollection = new ResponseRuleCollection();
         

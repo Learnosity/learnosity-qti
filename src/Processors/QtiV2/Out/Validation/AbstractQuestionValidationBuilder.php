@@ -44,7 +44,7 @@ abstract class AbstractQuestionValidationBuilder
         if(!empty($feedBackOptions) && is_array($feedBackOptions)){
             $type = [];
             $score = 0;
-            $maxscore = 0;
+            
             if(method_exists($validation, 'get_valid_response')){
                 $type[] = 'score';
                 $score = $validation->get_valid_response()->get_score(); 
@@ -54,7 +54,7 @@ abstract class AbstractQuestionValidationBuilder
                 $maxscore = $validation->get_max_score();
             }
                 
-            $responseProcessing = QtiResponseProcessingBuilder::build($score, $maxscore, $feedBackOptions, $type);
+            $responseProcessing = QtiResponseProcessingBuilder::build($score, $feedBackOptions, $type);
             
             
         }else{ 
