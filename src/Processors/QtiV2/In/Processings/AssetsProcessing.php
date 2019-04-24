@@ -19,8 +19,8 @@ class AssetsProcessing implements ProcessingInterface
     public function processAssessmentItem(AssessmentItem $assessmentItem)
     {
         foreach ($assessmentItem->getIterator() as $component) {
-            if ($component instanceof Object) {
-                /** @var Object $component */
+            if ($component instanceof ObjectElement) {
+                /** @var ObjectElement $component */
                 if ($this->isInternalUrl($component->getData())) {
                     $component->setData($this->baseAssetUrl . $component->getData());
                 }

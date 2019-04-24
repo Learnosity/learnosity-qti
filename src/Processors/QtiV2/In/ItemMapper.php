@@ -44,7 +44,7 @@ class ItemMapper
      *                   first element, associated questions as the second, and
      *                   log messages resulting from the operation as the last element
      */
-    public function parse($xmlString, $validateXml = true, $sourceDirectoryPath = null, $metadata = [])
+    public function parse($xmlString, $validateXml = true, $sourceDirectoryPath = null, $metadata = [], $customItemReference = null)
     {
         // TODO: Remove this, and move it higher up
         LogService::flush();
@@ -59,7 +59,7 @@ class ItemMapper
         $assessmentItem = $this->getAssessmentItemFromXmlDocument($xmlDocument);
 
         // Convert the QTI assessment item into Learnosity output
-        return $this->parseWithAssessmentItemComponent($assessmentItem, $sourceDirectoryPath, $metadata);
+        return $this->parseWithAssessmentItemComponent($assessmentItem, $sourceDirectoryPath, $metadata, $customItemReference);
     }
 
     /**
@@ -71,7 +71,7 @@ class ItemMapper
      *                   first element, associated questions as the second, and
      *                   log messages resulting from the operation as the last element
      */
-    public function parseWithAssessmentItemComponent(AssessmentItem $assessmentItem, $sourceDirectoryPath = null, $metadata = [])
+    public function parseWithAssessmentItemComponent(AssessmentItem $assessmentItem, $sourceDirectoryPath = null, $metadata = [], $customItemReference = null)
     {
         // TODO: Move this logging service upper to converter class level
         // Make sure we clean up the log
@@ -85,7 +85,12 @@ class ItemMapper
 
         // Conversion from QTI item to Learnosity item and questions
         // TODO: Handle additional (related) items being passed back
-        list($item, $questions, $features, $rubric) = $this->buildLearnosityItemFromQtiAssessmentItem($assessmentItem, $sourceDirectoryPath, $metadata);
+        list($item, $questions, $features, $rubric) = $this->buildLearnosityItemFromQtiAssessmentItem(
+            $assessmentItem,
+            $sourceDirectoryPath,
+            $metadata,
+            $customItemReference
+        );
 
         // TODO: Check whether this needs to handle mapping questions to relevant items
         list($item, $questions) = $this->processLearnosityItem($item, $questions, $processings);
@@ -114,9 +119,13 @@ class ItemMapper
      *
      * @throws \LearnosityQti\Exceptions\MappingException
      */
-    protected function buildLearnosityItemFromQtiAssessmentItem(AssessmentItem $assessmentItem, $sourceDirectoryPath = null, $metadata = [])
+    protected function buildLearnosityItemFromQtiAssessmentItem(AssessmentItem $assessmentItem, $sourceDirectoryPath = null, $metadata = [], $itemReference = null)
     {
         $responseProcessingTemplate = $this->getResponseProcessingTemplate($assessmentItem->getResponseProcessing());
+
+        if (is_null($itemReference)) {
+            $itemReference = $assessmentItem->getIdentifier();
+        }
 
         /** @var ItemBody $itemBody */
         $itemBody = $assessmentItem->getItemBody();
@@ -143,7 +152,7 @@ class ItemMapper
         }
 
         $itemBuilder->map(
-            $assessmentItem->getIdentifier(),
+            $itemReference,
             $itemBody,
             $interactionComponents,
             $responseDeclarations,
