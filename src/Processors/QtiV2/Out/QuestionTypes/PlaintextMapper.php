@@ -19,7 +19,7 @@ class PlaintextMapper extends AbstractQuestionTypeMapper
         $interaction = new ExtendedTextInteraction($interactionIdentifier);
         $interaction->setLabel($interactionLabel);
         $interaction->setPrompt($this->convertStimulusForPrompt($question->get_stimulus()));
-        $interaction->setFormat('plain');
+        $interaction->setFormat(TextFormat::PLAIN);
         $interaction->setMinStrings(1);
         if(isset($questionData['max_length'])){
             $interaction->setExpectedLength($questionData['max_length']);
