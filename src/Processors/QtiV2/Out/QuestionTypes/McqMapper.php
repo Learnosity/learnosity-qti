@@ -36,9 +36,8 @@ class McqMapper extends AbstractQuestionTypeMapper
         $inlineCollection = new InlineCollection();
 
         $metadata = $question->get_metadata();
-        
+        $feedbackOptions = [];
         if(isset($metadata) && !empty($metadata->get_distractor_rationale_response_level())){
-            $feedbackOptions = [];
             foreach($metadata->get_distractor_rationale_response_level() as $feed):
                 $feedbackOptions[] = $feed;
             endforeach;

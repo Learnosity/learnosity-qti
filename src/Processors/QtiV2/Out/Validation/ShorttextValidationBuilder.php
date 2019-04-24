@@ -20,6 +20,7 @@ class ShorttextValidationBuilder extends AbstractQuestionValidationBuilder
 
     protected function buildResponseDeclaration($responseIdentifier, $validation)
     {
+        
         $responseDeclaration = new ResponseDeclaration($responseIdentifier);
         $responseDeclaration->setCardinality(Cardinality::SINGLE);
         $responseDeclaration->setBaseType(BaseType::STRING);

@@ -15,6 +15,14 @@ class LongtextV2Mapper extends AbstractQuestionTypeMapper
         /** @var longtextV2 $question */
         $question = $questionType;
         $questionData = $question->to_array();
+        
+        $metadata = $question->get_metadata();
+        $feedbackOptions = [];
+        
+        if(isset($metadata) && !empty($metadata->get_distractor_rationale())){
+            $feedbackOptions['genral_feedback'] = $metadata->get_distractor_rationale();
+        }
+        
         $interaction = new ExtendedTextInteraction($interactionIdentifier);
         $interaction->setLabel($interactionLabel);
         $interaction->setPrompt($this->convertStimulusForPrompt($question->get_stimulus()));
@@ -31,7 +39,12 @@ class LongtextV2Mapper extends AbstractQuestionTypeMapper
 
         $builder = new LongtextValidationBuilder();
         
-        list($responseDeclaration) = $builder->buildValidation($interactionIdentifier, $question->get_validation(),[]);
-        return [$interaction, $responseDeclaration, null];
+        if(isset($feedbackOptions) && !empty($feedbackOptions)){
+            list($responseDeclaration,$responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation(),$feedbackOptions);
+        }else{
+            list($responseDeclaration,$responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation());
+        }
+        
+        return [$interaction, $responseDeclaration, $responseProcessing];
     }
 }

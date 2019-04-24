@@ -14,7 +14,7 @@ class PlaintextMapperTest extends AbstractQuestionTypeTest
         $assessmentItem = $this->convertToAssessmentItem($data);
 
         // Plaintext shall have no <responseDeclaration> and <responseProcessing>
-        $this->assertEquals(0, $assessmentItem->getResponseDeclarations()->count());
+        $this->assertEquals(1, $assessmentItem->getResponseDeclarations()->count());
         $this->assertNull($assessmentItem->getResponseProcessing());
 
         // Has <extendedTextInteraction> as the first and only interaction

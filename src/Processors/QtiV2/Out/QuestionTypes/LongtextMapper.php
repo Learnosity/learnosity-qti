@@ -4,6 +4,7 @@ namespace LearnosityQti\Processors\QtiV2\Out\QuestionTypes;
 
 use LearnosityQti\Entities\BaseQuestionType;
 use LearnosityQti\Entities\QuestionTypes\longtext;
+use LearnosityQti\Processors\QtiV2\Out\Validation\LongtextValidationBuilder;
 use qtism\data\content\interactions\ExtendedTextInteraction;
 use qtism\data\content\interactions\TextFormat;
 
@@ -14,6 +15,14 @@ class LongtextMapper extends AbstractQuestionTypeMapper
         /** @var longtext $question */
         $question = $questionType;
         $questionData = $question->to_array();
+        
+        $metadata = $question->get_metadata();
+        $feedbackOptions = [];
+        
+        if(isset($metadata) && !empty($metadata->get_distractor_rationale())){
+            $feedbackOptions['genral_feedback'] = $metadata->get_distractor_rationale();
+        }
+        
         $interaction = new ExtendedTextInteraction($interactionIdentifier);
         $interaction->setLabel($interactionLabel);
         $interaction->setPrompt($this->convertStimulusForPrompt($question->get_stimulus()));
@@ -25,13 +34,17 @@ class LongtextMapper extends AbstractQuestionTypeMapper
         }
 
         $placeholderText = $question->get_placeholder();
-        if (!empty($placeholderText)) {
+        if(!empty($placeholderText)) {
             $interaction->setPlaceholderText($placeholderText);
         }
 
         $builder = new LongtextValidationBuilder();
+        if(isset($feedbackOptions) && !empty($feedbackOptions)){
+            list($responseDeclaration,$responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation(),$feedbackOptions);
+        }else{
+            list($responseDeclaration,$responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation());
+        }
         
-        list($responseDeclaration) = $builder->buildValidation($interactionIdentifier, $question->get_validation(),[]);
-        return [$interaction, $responseDeclaration, null];
+        return [$interaction, $responseDeclaration, $responseProcessing];
     }
 }

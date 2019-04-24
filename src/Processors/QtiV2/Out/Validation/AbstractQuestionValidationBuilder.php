@@ -40,11 +40,23 @@ abstract class AbstractQuestionValidationBuilder
                 return [null, null];
         }
         
-
         // if found distractor_rationale_response_level generate response processing with setoutcome value FEEDBACK
         if(!empty($feedBackOptions) && is_array($feedBackOptions)){
-            $score = $validation->get_valid_response()->get_score(); 
-            $responseProcessing = QtiResponseProcessingBuilder::build($score, $feedBackOptions);
+            $type = [];
+            $score = 0;
+            $maxscore = 0;
+            if(method_exists($validation, 'get_valid_response')){
+                $type[] = 'score';
+                $score = $validation->get_valid_response()->get_score(); 
+            }
+            if(method_exists($validation, 'get_max_score')){
+                $type[] = 'maxscore';
+                $maxscore = $validation->get_max_score();
+            }
+                
+            $responseProcessing = QtiResponseProcessingBuilder::build($score, $maxscore, $feedBackOptions, $type);
+            
+            
         }else{ 
             $responseProcessing = $this->buildResponseProcessing($validation, $isCaseSensitive);
         }

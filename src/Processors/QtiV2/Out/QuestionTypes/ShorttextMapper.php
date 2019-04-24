@@ -21,6 +21,13 @@ class ShorttextMapper extends AbstractQuestionTypeMapper
         // Extra text that can't be mapped since we are in textEntryInteraction which does not have prompt
         $this->extraContent = $question->get_stimulus();
 
+        $metadata = $question->get_metadata();
+        $feedbackOptions = [];
+        
+        if(isset($metadata) && !empty($metadata->get_distractor_rationale())){
+            $feedbackOptions['genral_feedback'] = $metadata->get_distractor_rationale();
+        }
+        
         $interaction = new TextEntryInteraction($interactionIdentifier);
         $interaction->setLabel($interactionLabel);
 
@@ -36,11 +43,20 @@ class ShorttextMapper extends AbstractQuestionTypeMapper
         // Build those validation
         $isCaseSensitive = $question->get_case_sensitive() === null ? false : $question->get_case_sensitive();
         $validationBuilder = new ShorttextValidationBuilder($isCaseSensitive);
-        list($responseDeclaration, $responseProcessing) = $validationBuilder->buildValidation(
-            $interactionIdentifier,
-            $question->get_validation(),
-            $isCaseSensitive
-        );
+        if(isset($feedbackOptions) && !empty($feedbackOptions)){
+            list($responseDeclaration, $responseProcessing) = $validationBuilder->buildValidation(
+                $interactionIdentifier,
+                $question->get_validation(),
+                $feedbackOptions,
+                $isCaseSensitive
+            );
+        }else{ 
+            list($responseDeclaration, $responseProcessing) = $validationBuilder->buildValidation(
+                $interactionIdentifier,
+                $question->get_validation(),
+                $isCaseSensitive
+            );
+        }
 
         // TODO: This is a freaking hack
         // Wrap this interaction in a block since our `shorttext` meant to be blocky and not inline

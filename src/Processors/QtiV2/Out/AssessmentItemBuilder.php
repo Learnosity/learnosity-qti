@@ -57,8 +57,10 @@ class AssessmentItemBuilder
                 $score = $questionData['data']['validation']['valid_response']['score']; 
                 $assessmentItem->setOutcomeDeclarations($this->buildScoreOutcomeDeclarations($score, 'SCORE'));
             }else{
-                $assessmentItem->setOutcomeDeclarations($this->buildOutcomeDeclarations(0));
+                $assessmentItem->setOutcomeDeclarations($this->buildScoreOutcomeDeclarations(0, 'SCORE'));
             }
+            
+            
             // add outcome declaration for MAXSCORE
             if(isset($questionData['data']['validation']['max_score'])){  
                 $max_score = $questionData['data']['validation']['max_score']; 
