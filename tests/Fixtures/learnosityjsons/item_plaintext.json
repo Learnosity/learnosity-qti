@@ -11,7 +11,6 @@
     "status": "published",
     "questions": [
         {
-            "type": "plaintext",
             "widget_type": "response",
             "reference": "Grade8TheNumberSystem_1_duplicate_duplicate_duplicate_duplicate",
             "data": {

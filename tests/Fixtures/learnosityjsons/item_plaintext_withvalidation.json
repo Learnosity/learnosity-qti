@@ -1,0 +1,34 @@
+{
+    "reference": "PAPE_28",
+    "content": "<div class=\"row\"><div class=\"col-xs-12\"><span class=\"learnosity-response question-18bdfb27-9652-451c-8e9f-b6c2033a2e19\"></span></div></div>",
+    "workflow": null,
+    "metadata": {
+        "acknowledgements": null,
+        "scoring_type": "per-question"
+    },
+    "tags": {},
+    "questions": [
+        {
+            "reference": "18bdfb27-9652-451c-8e9f-b6c2033a2e19",
+            "data": {
+                "show_copy": true,
+                "show_cut": true,
+                "show_paste": true,
+                "stimulus": "Write an short essay on India -",
+                "spellcheck": true,
+                "type": "plaintext",
+                "metadata": {
+                    "distractor_rationale": "This is general feedback"
+                },
+                "validation": {
+                    "max_score": 10,
+                    "min_score_if_attempted": 1
+                },
+                "max_length": 1000,
+                "submit_over_limit": true,
+                "placeholder": "Please write somethig"
+            }
+        }
+    ],
+    "features": []
+}
