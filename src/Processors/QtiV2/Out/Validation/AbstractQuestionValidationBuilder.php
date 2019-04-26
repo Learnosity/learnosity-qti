@@ -15,9 +15,9 @@ abstract class AbstractQuestionValidationBuilder
     
     public function buildValidation($responseIdentifier,$validation,$feedBackOptions = array() ,$isCaseSensitive = true)
     {
-        
         // Some basic validation on the `validation` object
-        if (empty($validation)) {
+        
+        if (empty($validation) && empty($feedBackOptions)) {
             return [null, null];
         }
         
@@ -55,8 +55,6 @@ abstract class AbstractQuestionValidationBuilder
             }
                 
             $responseProcessing = QtiResponseProcessingBuilder::build($score, $feedBackOptions, $type);
-            
-            
         }else{ 
             $responseProcessing = $this->buildResponseProcessing($validation, $isCaseSensitive);
         }

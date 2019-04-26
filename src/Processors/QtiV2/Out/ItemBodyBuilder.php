@@ -15,7 +15,7 @@ use DOMXpath;
 
 class ItemBodyBuilder
 {
-    public function buildItemBody(array $interactions, $content = '')
+    public function buildItemBody(array $interactions, $content = '', $questionType)
     {
         // Try to build the <itemBody> according to items` content if exists
         if (empty($content)) {
@@ -23,12 +23,18 @@ class ItemBodyBuilder
         }
         try {
             
-            return $this->buildItemBodyWithItemContent($interactions, $content);
+            return $this->buildItemBodyWithItemContent($interactions, $content, $questionType);
             // If anything fails, <itemBody> can't be mapped due to whatever reasons
             // Probably simply due to its being wrapped in a tag which only accept inline content
             // Simply build it without considering items` content and put the content on the top
         } catch (\Exception $e) {
+            echo $e->getMessage()."\n";
+            echo $e->getFile()."\n";
+            echo $e->getLine();
+            //die; 
+            
             $itemBody = $this->buildItemBodySimple($interactions);
+            
             $itemBodyContent = new BlockCollection();
             // Build the div bundle that contains all the item`s content
             // minus those questions and features `span`
@@ -75,7 +81,7 @@ class ItemBodyBuilder
         return $newHtml;
     }
     
-    private function buildItemBodyWithItemContent(array $interactions, $content)
+    private function buildItemBodyWithItemContent(array $interactions, $content, $questionType)
     {
         // Map <itemBody>
         // TODO: Wrap these `content` stuff in a div
@@ -95,7 +101,7 @@ class ItemBodyBuilder
         // Iterate through these elements and try to replace every single question `span` with its interaction equivalent
         $iterator = $divWrapper->getIterator();
         foreach ($iterator as $component) {
-            if ($component instanceof Span && StringUtil::contains($component->getClass(), 'learnosity-response')) {
+             if ($component instanceof Span && StringUtil::contains($component->getClass(), 'learnosity-response')) {
                 $currentContainer = $iterator->getCurrentContainer();
                 $questionReference = trim(str_replace('learnosity-response', '', $component->getClass()));
                 $questionReference = trim(str_replace('question-', '', $questionReference));
@@ -104,14 +110,16 @@ class ItemBodyBuilder
                 $interaction = $interactions[$questionReference]['interaction'];
                 $content = new FlowCollection();
                 if (isset($interactions[$questionReference]['extraContent'])) {
-                    $content->attach($interactions[$questionReference]['extraContent']);
+                    // In case of shorttext its throwing error and closing div tag above the interaction 
+                    if($questionType!='shorttext'){
+                        $content->attach($interactions[$questionReference]['extraContent']);
+                    }
                 }
                 
                 $content->attach($interaction);
                 $replacement = ContentCollectionBuilder::buildContent($currentContainer, $content)->current();
                 $currentContainer->getComponents()->replace($component, $replacement);
             }
-            
         }
         
         // Extract the actual content from the div wrapper and add that to our <itemBody>

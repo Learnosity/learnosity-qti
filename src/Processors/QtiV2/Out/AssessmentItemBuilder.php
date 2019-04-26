@@ -52,6 +52,7 @@ class AssessmentItemBuilder
             
             $questionData = $question->to_array();
             $content = $questionData['content'];
+            $questionType = $questionData['type']; 
             
             if(isset($questionData['data']['validation']['valid_response']['score'])){  
                 $score = $questionData['data']['validation']['valid_response']['score']; 
@@ -112,7 +113,7 @@ class AssessmentItemBuilder
         
         // Build <itemBody>
         
-        $assessmentItem->setItemBody($this->itemBodyBuilder->buildItemBody($interactions, $content));
+        $assessmentItem->setItemBody($this->itemBodyBuilder->buildItemBody($interactions, $content, $questionType));
         // Map <responseDeclaration>
         if (!empty($responseDeclarationCollection)) {
             $assessmentItem->setResponseDeclarations($responseDeclarationCollection);
@@ -157,6 +158,7 @@ class AssessmentItemBuilder
         $result[] = $questionTypeMapper->getExtraContent();
         return $result;
     }
+    
     private function buildScoreOutcomeDeclarations($score, $type)
     {
         // Set <outcomeDeclaration> with assumption default value is always 0
