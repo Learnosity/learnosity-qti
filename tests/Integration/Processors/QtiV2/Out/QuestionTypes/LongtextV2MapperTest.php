@@ -8,7 +8,7 @@ use qtism\data\content\interactions\TextFormat;
 use qtism\data\rules\ResponseElse;
 use qtism\data\rules\ResponseIf;
 
-class LongtextMapperTest extends AbstractQuestionTypeTest
+class LongtextV2MapperTest extends AbstractQuestionTypeTest
 {
     public function testVerySimpleCase()
     {
@@ -72,3 +72,5 @@ class LongtextMapperTest extends AbstractQuestionTypeTest
         }
     }
 }
+
+

@@ -5,6 +5,8 @@ namespace LearnosityQti\Tests\Integration\Processors\QtiV2\Out\QuestionTypes;
 use LearnosityQti\Utils\QtiMarshallerUtil;
 use qtism\data\content\interactions\ExtendedTextInteraction;
 use qtism\data\content\interactions\TextFormat;
+use qtism\data\rules\ResponseElse;
+use qtism\data\rules\ResponseIf;
 
 class PlaintextMapperTest extends AbstractQuestionTypeTest
 {
