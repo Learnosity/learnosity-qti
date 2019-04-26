@@ -3,11 +3,12 @@
 namespace LearnosityQti\Tests\Integration\Processors\QtiV2\Out\QuestionTypes;
 
 use LearnosityQti\Processors\QtiV2\Out\Constants;
+use LearnosityQti\Utils\QtiMarshallerUtil;
 use qtism\data\content\interactions\TextEntryInteraction;
+use qtism\data\content\ModalFeedback;
 use qtism\data\state\MapEntry;
 use qtism\data\state\ResponseDeclaration;
 use qtism\data\state\Value;
-use qtism\data\content\ModalFeedback;
 
 class ShorttextMapperTest extends AbstractQuestionTypeTest
 {
@@ -40,6 +41,19 @@ class ShorttextMapperTest extends AbstractQuestionTypeTest
             $mapEntries = $responseDeclaration->getMapping()->getMapEntries()->getArrayCopy(true);
             $this->assertEquals('Canbera', $mapEntries[0]->getMapKey());
             $this->assertEquals(10, $mapEntries[0]->getMappedValue());
+            
+            // Check itembody is correct that the stimulus is appended before
+            $itemBodyContent = QtiMarshallerUtil::marshallCollection($assessmentItem->getItemBody()->getComponents());
+            $expectedString = '<div class="row">
+      <div class="col-xs-12">
+        <div>
+          <div>What is the capital of Australia</div>
+          <textEntryInteraction responseIdentifier="RESPONSE" expectedLength="15" placeholderText="Please answer the question" label="1c72f3e5-4445-4af9-bf06-4e8b26c0d1fe"/>
+        </div>
+      </div>
+    </div>';
+            $this->assertEquals($expectedString, $itemBodyContent);
+            
         }   
     }
     
