@@ -273,10 +273,8 @@ class Converter
     private static function convertLearnosityItem(array $itemJson)
     {
         // Separate question(s) and item
-        //$itemJson['questionReferences'] = array_column($itemJson['questions'], 'reference');
         $itemJson['questionReferences'] = array_column($itemJson['questions'], 'response_id');
         $questionsJson = $itemJson['questions'];
-        unset($itemJson['questions']);
         // Pre-process these JSON
         $preprocessingService = new LearnosityToQtiPreProcessingService($questionsJson);
         $questionsJson = $preprocessingService->processJson($questionsJson);
@@ -289,7 +287,7 @@ class Converter
         foreach ($questionsJson as $question) {
             $question['reference'] = $question['response_id'];
             
-            if (!in_array($question['type'],['audioplayer','videoplayer','sharedpassage'])) {
+            if (!in_array($question['data']['type'],['audioplayer','videoplayer','sharedpassage'])) {
                 $questions[] = $questionMapper->parse($question);
             }
         }
