@@ -13,7 +13,9 @@ use \qtism\data\expressions\operators\IsNull;
 use \qtism\data\rules\ResponseRuleCollection;
 use \qtism\data\expressions\operators\Match;
 use \qtism\data\expressions\operators\Equal;
+use \qtism\data\expressions\operators\Sum;
 use \qtism\data\expressions\BaseValue;
+use \qtism\data\expressions\Expression;
 use \qtism\data\expressions\ExpressionCollection;
 use \qtism\data\expressions\Variable;
 use \qtism\data\state\OutcomeDeclarationCollection;
@@ -337,6 +339,69 @@ abstract class BaseInteractionValidationBuilder
     }
 
     /**
+     * @param \qtism\data\expressions\Expression
+     * @return mixed
+     */
+    protected function evaluateExpression(Expression $expression)
+    {
+        switch (true) {
+            case $expression instanceof Sum:
+                return $this->evaluateSum($expression);
+
+            case $expression instanceof BaseValue:
+                return $expression->getValue();
+
+            case $expression instanceof Variable:
+                return $this->evaluateVariable($expression);
+
+            default:
+                LogService::log('ResponseProcessing: Unsupported expression: ' . get_class($expression));
+                return null;
+        }
+    }
+
+    /**
+     * @param \qtism\data\expressions\operators\Sum
+     * @return integer|float
+     */
+    protected function evaluateSum(Sum $sum)
+    {
+        $values = [];
+        foreach ($sum->getExpressions() as $sumOperand) {
+            $values[] = $this->evaluateExpression($sumOperand);
+        }
+
+        return array_sum($values);
+    }
+
+    /**
+     * @param \qtism\data\expressions\Variable
+     * @return integer|float
+     */
+    protected function evaluateVariable(Variable $variable)
+    {
+        $id = $variable->getIdentifier();
+
+        // look up the response declaration to get the base value
+        if (empty($this->outcomeDeclarations[$id])) {
+            // no mapping found for the specified identifier
+            LogService::log("ResponseProcessing: No variable mapping found in outcomeDeclaration block for: $id");
+            return null;
+        }
+
+        $value = 0;
+        if (!empty($this->outcomeDeclarations[$id]->getDefaultValue())) {
+            $defaultValues = $this->outcomeDeclarations[$id]->getDefaultValue();
+
+            // we only want the first object as as the variable should only map to another, not multiple
+            $values = $defaultValues->getValues();
+            $value = $values[0]->getValue();
+        }
+
+        return $value;
+    }
+
+    /**
      * Get the outcome values from the ResponseRuleCollection
      *
      * @param \qtism\data\rules\ResponseRuleCollection
@@ -363,25 +428,16 @@ abstract class BaseInteractionValidationBuilder
 
             // the expression here can either be a BaseValue or a Variable object
             switch (true) {
+                case $expression instanceof Sum:
+                    $results[] = $this->evaluateSum($expression);
+                    break;
+
                 case $expression instanceof BaseValue:
                     $results[] = $expression->getValue();
                     break;
 
                 case $expression instanceof Variable:
-                    $id = $expression->getIdentifier();
-
-                    // look up the response declaration to get the base value
-                    if (empty($this->outcomeDeclarations[$id])) {
-                        // no mapping found for the specified identifier
-                        LogService::log("ResponseProcessing: No variable mapping found in outcomeDeclaration block for: $id");
-                        break;
-                    }
-
-                    $defaultValues = $this->outcomeDeclarations[$id]->getDefaultValue();
-
-                    // we only want the first object as as the variable should only map to another, not multiple
-                    $values = $defaultValues->getValues();
-                    $results[] = $values[0]->getValue();
+                    $results[] = $this->evaluateVariable($expression);
                     break;
 
                 case $expression instanceof MapResponse:
