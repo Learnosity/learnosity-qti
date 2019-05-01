@@ -9,6 +9,21 @@ class Manifest
     protected $metadata;
     protected $organizations;
     protected $manifest;
+    protected $imsManifestMetadata;
+    
+    /**
+     * @return mixed
+     */
+    function getImsManifestMetadata() {
+        return $this->imsManifestMetadata;
+    }
+    
+    /**
+     * @param mixed $imsManifestMetadata
+     */
+    function setImsManifestMetadata(ImsManifestMetadata $imsManifestMetadata) {
+        $this->imsManifestMetadata = $imsManifestMetadata;
+    }
 
     /**
      * @return mixed
