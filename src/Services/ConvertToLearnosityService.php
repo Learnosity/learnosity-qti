@@ -99,13 +99,14 @@ class ConvertToLearnosityService
     private function parseContentPackage()
     {
         $manifestFolders = $this->parseInputFolders();
+        
         $finalManifest = $this->getJobManifestTemplate();
-
+        
         foreach ($manifestFolders as $dir) {
             $tempDirectoryParts = explode('/', dirname($dir));
             $dirName = $tempDirectoryParts[count($tempDirectoryParts)-1];
+            
             $results = $this->convertQtiContentPackagesInDirectory(dirname($dir), $dirName);
-
             // if (!isset($results['qtiitems'])) {
             //     continue;
             // }
@@ -148,7 +149,6 @@ class ConvertToLearnosityService
 
         $manifestFinder = new Finder();
         $manifestFinderPath = $manifestFinder->files()->in($sourceDirectory)->name('imsmanifest.xml');
-
         $totalItemCount = 0;
         foreach ($manifestFinderPath as $manifestFile) {
             /** @var SplFileInfo $manifestFile */
@@ -161,6 +161,7 @@ class ConvertToLearnosityService
 
             // build the DOMDocument object
             $manifestDoc = new \DOMDocument();
+            
             $manifestDoc->load($fullFilePath);
 
             $itemResources = $this->getItemResourcesByHrefFromDocument($manifestDoc);
@@ -178,21 +179,22 @@ class ConvertToLearnosityService
                     $this->useResourceIdentifier,
                     $this->useFileNameAsIdentifier
                 );
-
+                
+                $itemTagsArray = $this->getTaxonPathEntryForItemTags($relatedResource);
                 $metadata = [];
                 $itemPointValue = $this->getPointValueFromResource($relatedResource);
                 if (isset($itemPointValue)) {
                     $metadata['point_value'] = $itemPointValue;
                 }
-
+                
                 $this->output->writeln("<comment>Converting assessment item {$itemReference}: $relativeDir/$resourceHref</comment>");
-                $convertedContent = $this->convertAssessmentItemInFile($assessmentItemContents, $itemReference, $metadata, $currentDir, $resourceHref);
+                $convertedContent = $this->convertAssessmentItemInFile($assessmentItemContents, $itemReference, $metadata, $currentDir, $resourceHref, $itemTagsArray);
+                
                 if (!empty($convertedContent)) {
                     $results['qtiitems'][basename($relativeDir).'/'.$resourceHref] = $convertedContent;
                 }
             }
         }
-
         return $results;
     }
 
@@ -208,11 +210,11 @@ class ConvertToLearnosityService
     {
         $itemResources = [];
         $resources = $manifestDoc->getElementsByTagName('resource');
-
+        
         while (($resource = $resources->item(0)) != null) {
             $resourceHref = $resource->getAttribute('href');
             $resourceType = $resource->getAttribute('type');
-
+             
             if ($resourceType === static::RESOURCE_TYPE_ITEM) {
                 $itemResources[] = [
                     'href' => $resourceHref,
@@ -239,6 +241,7 @@ class ConvertToLearnosityService
     private function getIdentifierFromResourceMetadata(\DOMNode $resource)
     {
         $identifier = null;
+        
         $xpath = $this->getXPathForQtiDocument($resource->ownerDocument);
 
         $lomIdentifier = null;
@@ -272,10 +275,35 @@ class ConvertToLearnosityService
         $xpath = new \DOMXPath($resource->ownerDocument);
         $xpath->registerNamespace('lom', 'http://ltsc.ieee.org/xsd/LOM');
         $xpath->registerNamespace('qti', 'http://www.imsglobal.org/xsd/imscp_v1p1');
-
         $searchResult = $xpath->query('.//qti:metadata/lom:lom/lom:general/lom:identifier', $resource);
-
         return $searchResult->length > 0;
+    }
+    
+    /**
+     * Checks whether a taxonPath exists in the Learning Object Metadata
+     * for this resource.
+     *
+     * @param  DOMNode $resource
+     *
+     * @return array
+     */
+    private function getTaxonPathEntryForItemTags(\DOMNode $resource)
+    {
+        $xpath = new \DOMXPath($resource->ownerDocument);
+        $xpath->registerNamespace('lom', 'http://ltsc.ieee.org/xsd/LOM');
+        $xpath->registerNamespace('qti', 'http://www.imsglobal.org/xsd/imscp_v1p1');
+
+        $searchResult = $xpath->query('.//lom:taxonPath', $resource);
+        $itemTagsArray = array();
+        foreach($searchResult as $search){
+            $tagName = $xpath->query('.//lom:source/lom:string', $search)->item(0)->textContent."\n";
+            $tagValues = $xpath->query('.//lom:taxon/lom:entry/lom:string', $search)->item(0)->textContent."\n";
+            if(!empty(trim($tagValues))){
+                $tagValuesArray = explode(',', rtrim($tagValues));
+                $itemTagsArray[rtrim($tagName)] = $tagValuesArray;
+            }
+        }
+        return $itemTagsArray;
     }
 
     /**
@@ -286,7 +314,7 @@ class ConvertToLearnosityService
      *
      * @return array - the results of the conversion
      */
-    private function convertAssessmentItemInFile($contents, $itemReference = null, array $metadata = [], $currentDir, $resourceHref)
+    private function convertAssessmentItemInFile($contents, $itemReference = null, array $metadata = [], $currentDir, $resourceHref, $itemTagsArray = [])
     {
         $results = null;
 
@@ -299,7 +327,7 @@ class ConvertToLearnosityService
             }
 
             $resourcePath = $currentDir . '/' . $resourceHref;
-            $results      = $this->convertAssessmentItem($xmlString, $itemReference, $resourcePath, $metadata);
+            $results      = $this->convertAssessmentItem($xmlString, $itemReference, $resourcePath, $metadata, $itemTagsArray);
         } catch (\Exception $e) {
             $targetFilename = $resourceHref;
             $message        = $e->getMessage();
@@ -323,7 +351,7 @@ class ConvertToLearnosityService
      *
      * @throws \Exception - if the conversion fails
      */
-    private function convertAssessmentItem($xmlString, $itemReference = null, $resourcePath = null, array $metadata = [])
+    private function convertAssessmentItem($xmlString, $itemReference = null, $resourcePath = null, array $metadata = [], array $itemTagsArray = [])
     {
         AssumptionHandler::flush();
 
@@ -349,7 +377,7 @@ class ConvertToLearnosityService
             }
             $manifest = array_merge($manifest, $scoringTypeManifest);
         }
-
+        $item['tags'] = $itemTagsArray;
         return [
             'item'        => $item,
             'questions'   => $questions,
@@ -403,7 +431,6 @@ class ConvertToLearnosityService
             $resourceHref  = $resource->getAttribute('href');
             $itemReference = $this->getIdentifierFromResourceHref($resourceHref);
         }
-
         return $itemReference;
     }
 
