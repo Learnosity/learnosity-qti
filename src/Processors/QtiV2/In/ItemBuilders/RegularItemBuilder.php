@@ -73,7 +73,6 @@ class RegularItemBuilder extends AbstractItemBuilder
 
         // Build item's HTML content
         $extraContentHtml = new SimpleHtmlDom();
-        
         if (!$extraContentHtml->load(QtiMarshallerUtil::marshallCollection($itemBody->getComponents()), false)) {
             throw new \Exception('Issues with the content for itemBody, it might not be valid');
         }
@@ -85,9 +84,6 @@ class RegularItemBuilder extends AbstractItemBuilder
         // NOTE: Make sure we wrap in an <itemBody> so we get the correct DOM structure (and documentElement)
         $dom->loadHTML('<?xml version="1.0" encoding="UTF-8"><itemBody>'.$extraContentHtml->save().'</itemBody>', LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
         $xpath = new DOMXPath($dom);
-        
-        $questionHtmlContents = [];
-        $contentList = '';
         
         foreach ($questionsXmls as $questionReference => $interactionData) {
             
@@ -123,8 +119,6 @@ class RegularItemBuilder extends AbstractItemBuilder
             $existingStimulus = $this->questions[$questionReference]->get_data()->get_stimulus();
             $stimulus_content = $stimulus . $existingStimulus;
             $this->questions[$questionReference]->get_data()->set_stimulus($stimulus_content);
-            
-
         }
 
         
