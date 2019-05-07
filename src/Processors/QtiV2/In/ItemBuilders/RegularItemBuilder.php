@@ -88,7 +88,7 @@ class RegularItemBuilder extends AbstractItemBuilder
         
         $questionHtmlContents = [];
         $contentList = '';
-        $previousContent = '';
+        
         foreach ($questionsXmls as $questionReference => $interactionData) {
             
             // Append this question span to our `item` content as it is
@@ -102,6 +102,8 @@ class RegularItemBuilder extends AbstractItemBuilder
             
             //fetch each interaction content to get the stimulus 
             $appnodes = $xpath->query('/itembody'.$toQuery.'/preceding-sibling::*');
+            $previousContent = '';
+            $contentList = '';
             for($j=0;$j<$appnodes->length;$j++){
                 if($appnodes->item($j)->nodeName== strtolower($qtiClassName)){
                     continue;
