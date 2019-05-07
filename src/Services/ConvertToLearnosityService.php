@@ -184,7 +184,9 @@ class ConvertToLearnosityService
                 if (isset($itemPointValue)) {
                     $metadata['point_value'] = $itemPointValue;
                 }
-
+                
+                $metadata['organisation_id'] = $this->organisationId;
+                
                 $this->output->writeln("<comment>Converting assessment item {$itemReference}: $relativeDir/$resourceHref</comment>");
                 $convertedContent = $this->convertAssessmentItemInFile($assessmentItemContents, $itemReference, $metadata, $currentDir, $resourceHref);
                 if (!empty($convertedContent)) {

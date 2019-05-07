@@ -25,4 +25,6 @@ class Constants
     public static $unsupportedInteractions = [
         'drawingInteraction'
     ];
+    
+    public static $learnosityImagePath = 'https://assets.learnosity.com/organisations/';
 }

@@ -7,6 +7,7 @@ use LearnosityQti\Entities\QuestionTypes\hotspot_area_attributes;
 use LearnosityQti\Entities\QuestionTypes\hotspot_area_attributes_global;
 use LearnosityQti\Entities\QuestionTypes\hotspot_image;
 use LearnosityQti\Exceptions\MappingException;
+use LearnosityQti\Processors\QtiV2\In\Constants;
 use LearnosityQti\Processors\QtiV2\In\Validation\HotspotInteractionValidationBuilder;
 use LearnosityQti\Services\LogService;
 use LearnosityQti\Utils\QtiMarshallerUtil;
@@ -16,7 +17,6 @@ use qtism\data\content\interactions\HotspotChoice;
 use qtism\data\content\interactions\HotspotChoiceCollection;
 use qtism\data\content\interactions\HotspotInteraction;
 use qtism\data\content\interactions\Prompt;
-use qtism\data\content\xhtml\ObjectElement;
 
 class HotspotInteractionMapper extends AbstractInteractionMapper
 {
@@ -88,8 +88,10 @@ class HotspotInteractionMapper extends AbstractInteractionMapper
 
     private function buildHotspotImage(Object $imageObject)
     {
+        $imageArray = explode('/',$imageObject->getData());
+        $imageBaseUrl = Constants::$learnosityImagePath.$this->organisationId."/".end($imageArray);
         $image = new hotspot_image();
-        $image->set_source($imageObject->getData());
+        $image->set_source($imageBaseUrl);
         $image->set_height($imageObject->getHeight());
         $image->set_width($imageObject->getWidth());
         return $image;

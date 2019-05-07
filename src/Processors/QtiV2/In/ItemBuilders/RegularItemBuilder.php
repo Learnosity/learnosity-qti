@@ -54,11 +54,13 @@ class RegularItemBuilder extends AbstractItemBuilder
             $outcomeDeclaration = $this->assessmentItem->getOutcomeDeclarations();
             $mapper = $this->getMapperInstance(
                 $component->getQtiClassName(),
-                [$component, $responseDeclaration, $responseProcessingTemplate, $outcomeDeclaration]
+                [$component, $responseDeclaration, $responseProcessingTemplate, $outcomeDeclaration, $this->organisationId]
             );
+            
             $question = $mapper->getQuestionType();
 
             $this->questions[$questionReference] = new Question($question->get_type(), $questionReference, $question);
+            
             $questionsXmls[$questionReference] = [
                 'qtiClassName' => $component->getQtiClassName(),
                 'responseIdentifier' => $component->getResponseIdentifier()
@@ -91,7 +93,7 @@ class RegularItemBuilder extends AbstractItemBuilder
             // Clean up interaction HTML content
             foreach ($xpath->query('/itembody'.$toQuery) as $element) {
                 $elementRoot = $this->getElementHierarchyRoot($element, $dom->documentElement);
-
+                
                 // Write out the hierarchy structure to a new DOM to get the content
                 $newDom = new DOMDocument();
                 $newDom->preserveWhitespace = false;
@@ -104,6 +106,7 @@ class RegularItemBuilder extends AbstractItemBuilder
                     while (!is_null($nextNode = $nextNode->nextSibling)) {
                         $siblings[] = $nextNode;
                     }
+                    
                     foreach ($siblings as $siblingNode) {
                         $siblingNode->parentNode->removeChild($siblingNode);
                     }
