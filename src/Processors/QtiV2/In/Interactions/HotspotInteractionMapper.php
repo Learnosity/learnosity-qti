@@ -17,6 +17,7 @@ use qtism\data\content\interactions\HotspotChoice;
 use qtism\data\content\interactions\HotspotChoiceCollection;
 use qtism\data\content\interactions\HotspotInteraction;
 use qtism\data\content\interactions\Prompt;
+use qtism\data\content\xhtml\ObjectElement;
 
 class HotspotInteractionMapper extends AbstractInteractionMapper
 {
