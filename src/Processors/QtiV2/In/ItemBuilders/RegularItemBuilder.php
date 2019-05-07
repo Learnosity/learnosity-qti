@@ -67,6 +67,10 @@ class RegularItemBuilder extends AbstractItemBuilder
             ];
         }
 
+        if (empty($this->questions)) {
+            LogService::log('Item contains no valid, supported questions');
+        }
+
         // Build item's HTML content
         $extraContentHtml = new SimpleHtmlDom();
         
@@ -118,7 +122,9 @@ class RegularItemBuilder extends AbstractItemBuilder
             $stimulus_content = $stimulus . $existingStimulus;
             $this->questions[$questionReference]->get_data()->set_stimulus($stimulus_content);
             
+
         }
+
         
         // TODO: Confirm that calling processRubricBlock after generating the item content won't break anything
         // Process <rubricBlock> elements
