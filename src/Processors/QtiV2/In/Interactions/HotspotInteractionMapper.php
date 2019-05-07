@@ -86,7 +86,7 @@ class HotspotInteractionMapper extends AbstractInteractionMapper
         return $hotspot;
     }
 
-    private function buildHotspotImage(Object $imageObject)
+    private function buildHotspotImage(ObjectElement $imageObject)
     {
         $imageArray = explode('/',$imageObject->getData());
         $imageBaseUrl = Constants::$learnosityImagePath.$this->organisationId."/".end($imageArray);
@@ -97,7 +97,7 @@ class HotspotInteractionMapper extends AbstractInteractionMapper
         return $image;
     }
 
-    private function buildAreas(HotspotChoiceCollection $hotspotChoices, Object $imageObject)
+    private function buildAreas(HotspotChoiceCollection $hotspotChoices, ObjectElement $imageObject)
     {
         /* @var $choice HotspotChoice */
         $areas             = [];
@@ -116,7 +116,7 @@ class HotspotInteractionMapper extends AbstractInteractionMapper
         return $areas;
     }
 
-    private function transformCoordinates(QtiCoords $coords, $shape, Object $imageObject)
+    private function transformCoordinates(QtiCoords $coords, $shape, ObjectElement $imageObject)
     {
         $width  = $imageObject->getWidth();
         $height = $imageObject->getHeight();

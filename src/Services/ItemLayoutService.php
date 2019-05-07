@@ -124,7 +124,7 @@ class ItemLayoutService
      *
      * @return array - migrated item result
      */
-    protected function migrateItem(array $item, array $widgetsJson = [])
+    public function migrateItem(array $item, array $widgetsJson = [])
     {
         if (isset($item['definition'])) {
             return $item;

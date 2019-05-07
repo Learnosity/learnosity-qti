@@ -86,7 +86,7 @@ class ImageclozeassociationMapper extends AbstractQuestionTypeMapper
                 // TODO: Validation these attributes exists
                 $src = $img[0]->src;
                 $imagesize = getimagesize(CurlUtil::prepareUrlForCurl($src));
-                $gapImageObject = new Object($src, $imagesize['mime']);
+                $gapImageObject = new ObjectElement($src, $imagesize['mime']);
                 $gapImageObject->setWidth($imagesize[0]);
                 $gapImageObject->setHeight($imagesize[1]);
                 // No `img` assuming its all text
@@ -104,7 +104,7 @@ class ImageclozeassociationMapper extends AbstractQuestionTypeMapper
     {
         $imageSrc = $image->get_src();
         list($imageWidth, $imageHeight) = CurlUtil::getImageSize(CurlUtil::prepareUrlForCurl($imageSrc));
-        $imageObject = new Object($imageSrc, MimeUtil::guessMimeType($imageSrc));
+        $imageObject = new ObjectElement($imageSrc, MimeUtil::guessMimeType($imageSrc));
         $imageObject->setWidth($imageWidth);
         $imageObject->setHeight($imageHeight);
 
@@ -135,7 +135,7 @@ class ImageclozeassociationMapper extends AbstractQuestionTypeMapper
 
         $imagedata = 'data:image/png;base64,' . base64_encode($imagedata);
 
-        $gapImageObject = new Object($imagedata, 'image/png');
+        $gapImageObject = new ObjectElement($imagedata, 'image/png');
         $gapImageObject->setWidth($width);
         $gapImageObject->setHeight($height);
         return $gapImageObject;
