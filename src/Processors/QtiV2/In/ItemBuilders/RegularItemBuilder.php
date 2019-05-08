@@ -84,7 +84,7 @@ class RegularItemBuilder extends AbstractItemBuilder
         // NOTE: Make sure we wrap in an <itemBody> so we get the correct DOM structure (and documentElement)
         $dom->loadHTML('<?xml version="1.0" encoding="UTF-8"><itemBody>'.$extraContentHtml->save().'</itemBody>', LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
         $xpath = new DOMXPath($dom);
-        
+        $previousContent = '';
         foreach ($questionsXmls as $questionReference => $interactionData) {
             
             // Append this question span to our `item` content as it is
@@ -98,7 +98,7 @@ class RegularItemBuilder extends AbstractItemBuilder
             
             //fetch each interaction content to get the stimulus 
             $appnodes = $xpath->query('/itembody'.$toQuery.'/preceding-sibling::*');
-            $previousContent = '';
+            
             $contentList = '';
             for($j=0;$j<$appnodes->length;$j++){
                 if($appnodes->item($j)->nodeName== strtolower($qtiClassName)){
@@ -108,9 +108,7 @@ class RegularItemBuilder extends AbstractItemBuilder
             }
             
             //replace the previous interaction content from this question stimulus
-            $stimulus = '<div>';
-            $stimulus .= str_replace($previousContent, '', $contentList);
-            $stimulus .= '</div>';
+            $stimulus = str_replace($previousContent, '', $contentList);
             
             //store the previous interaction stimulus
             $previousContent = $contentList; 
