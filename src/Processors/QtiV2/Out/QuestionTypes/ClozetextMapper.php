@@ -38,7 +38,6 @@ class ClozetextMapper extends AbstractQuestionTypeMapper
         if(!empty($feedbackOptions)){
             $p = new P();
             $choiceContent = new FlowCollection();
-            $choiceContent->attach($p);
             $i = 1;
             foreach($feedbackOptions as $feedback){
                 $content = new InlineCollection(array(new TextRun($feedback)));
