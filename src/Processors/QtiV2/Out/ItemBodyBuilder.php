@@ -28,13 +28,8 @@ class ItemBodyBuilder
             // Probably simply due to its being wrapped in a tag which only accept inline content
             // Simply build it without considering items` content and put the content on the top
         } catch (\Exception $e) {
-            echo $e->getMessage()."\n";
-            echo $e->getFile()."\n";
-            echo $e->getLine();
-            //die; 
             
             $itemBody = $this->buildItemBodySimple($interactions);
-            
             $itemBodyContent = new BlockCollection();
             // Build the div bundle that contains all the item`s content
             // minus those questions and features `span`
@@ -111,7 +106,7 @@ class ItemBodyBuilder
                 $content = new FlowCollection();
                 if (isset($interactions[$questionReference]['extraContent'])) {
                     // In case of shorttext its throwing error and closing div tag above the interaction 
-                    if($questionType!='shorttext'){
+                    if($questionType!='shorttext' && $questionType!='clozetext'){
                         $content->attach($interactions[$questionReference]['extraContent']);
                     }
                 }

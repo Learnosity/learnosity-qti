@@ -54,13 +54,8 @@ class AssessmentItemBuilder
             $content = $questionData['content'];
             $questionType = $questionData['type']; 
             
-            if(isset($questionData['data']['validation']['valid_response']['score'])){  
-                $score = $questionData['data']['validation']['valid_response']['score']; 
-                $assessmentItem->setOutcomeDeclarations($this->buildScoreOutcomeDeclarations($score, 'SCORE'));
-            }else{
-                $assessmentItem->setOutcomeDeclarations($this->buildScoreOutcomeDeclarations(0, 'SCORE'));
-            }
             
+            $assessmentItem->setOutcomeDeclarations($this->buildScoreOutcomeDeclarations(0, 'SCORE'));
             
             // add outcome declaration for MAXSCORE
             if(isset($questionData['data']['validation']['max_score'])){  
@@ -89,7 +84,14 @@ class AssessmentItemBuilder
             // Map the `questions` and its validation objects to be placed at <itemBody>
             // The extraContent usually comes from `stimulus` of item that mapped to inline interaction and has no `prompt`
             list($interaction, $responseDeclaration, $responseProcessing, $extraContent) = $this->map($question);
-            if (!empty($responseDeclaration)) {
+            if (!empty($responseDeclaration)){
+                
+                if(sizeof($responseDeclaration)>1){
+                    for($i=1;$i<=sizeof($responseDeclaration);$i++){
+                        $assessmentItem->setOutcomeDeclarations($this->buildScoreOutcomeDeclarations(0.0, 'SCORE'.$i));
+                    }
+                }
+                
                 // TODO: Need to tidy this up
                 // Well sometimes we can have multiple response declarations, ie. clozetext
                 if ($responseDeclaration instanceof ResponseDeclarationCollection) {
@@ -99,12 +101,11 @@ class AssessmentItemBuilder
                 }
             }
             
-            if (!empty($responseProcessing)) {
-                
+            if (!empty($responseProcessing)){
                 /** @var ResponseProcessing $responseProcessing */
                 $responseProcessingTemplates[] = $responseProcessing->getTemplate();
-                
             }
+            
             $interactions[$question->get_reference()]['interaction'] = $interaction;
             if (!empty($extraContent)) {
                 $interactions[$question->get_reference()]['extraContent'] = $extraContent;
