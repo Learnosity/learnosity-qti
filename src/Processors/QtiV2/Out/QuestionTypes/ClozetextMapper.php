@@ -72,7 +72,6 @@ class ClozetextMapper extends AbstractQuestionTypeMapper
         
         // Wrap this interaction in a block since our `clozetext` `template` meant to be blocky and not inline
         $interactionContent = ContentCollectionBuilder::buildFlowCollectionContent(QtiMarshallerUtil::unmarshallElement($template));
-       // $feedbackContent = ContentCollectionBuilder::buildFlowCollectionContent(QtiMarshallerUtil::unmarshallElement($choiceContent));
         $div = new Div();
         $div->setClass('lrn-template');
         $contentCollection = QtiMarshallerUtil::unmarshallElement($this->extraContent);

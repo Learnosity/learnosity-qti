@@ -106,7 +106,8 @@ class ItemBodyBuilder
                 $content = new FlowCollection();
                 if (isset($interactions[$questionReference]['extraContent'])) {
                     // In case of shorttext its throwing error and closing div tag above the interaction 
-                    if($questionType!='shorttext' && $questionType!='clozetext'){
+                    $questionTypeArr = ['shorttext','clozetext','clozedropdown'];
+                    if(!in_array($questionType, $questionTypeArr)){
                         $content->attach($interactions[$questionReference]['extraContent']);
                     }
                 }
