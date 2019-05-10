@@ -53,8 +53,6 @@ class AssessmentItemBuilder
             $questionData = $question->to_array();
             $content = $questionData['content'];
             $questionType = $questionData['type']; 
-            
-            
             $assessmentItem->setOutcomeDeclarations($this->buildScoreOutcomeDeclarations(0, 'SCORE'));
             
             // add outcome declaration for MAXSCORE
@@ -89,10 +87,10 @@ class AssessmentItemBuilder
             if (!empty($responseDeclaration)){
                 
                 if($responseDeclaration instanceof ResponseDeclarationCollection && $responseDeclaration->count()>0){
-                    for($i=0;$i<=sizeof($responseDeclaration);$i++){
+                    for($i=1;$i<=sizeof($responseDeclaration);$i++){
                         $assessmentItem->setOutcomeDeclarations($this->buildScoreOutcomeDeclarations(0.0, 'SCORE'.$i));
                     }
-                     $responseDeclarationCollection->merge($responseDeclaration);
+                    $responseDeclarationCollection->merge($responseDeclaration);
                 }
                 else {
                     $responseDeclarationCollection->attach($responseDeclaration);
