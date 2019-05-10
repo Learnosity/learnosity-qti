@@ -23,18 +23,18 @@ use qtism\data\expressions\ExpressionCollection;
 
 class QtiResponseProcessingBuilder {
 
-    public function build($score,$maxscore, $penalty, $feedBackOptions = array() , $type = array() , $responseIdentifiers = array()){
+    public function build($score,$maxscore, $penalty, $feedBackOptions = array() , $type = array()){
         
         $responseRuleCollection = new ResponseRuleCollection();
         
         // creating feedback outcome
         if(sizeof($feedBackOptions)>1){
-            $feedbackResponseComponent = new SetOutcomeValue('FEEDBACK', new Variable($responseIdentifiers[0]));
+            $feedbackResponseComponent = new SetOutcomeValue('FEEDBACK', new Variable('RESPONSE'));
             $responseRuleCollection->attach($feedbackResponseComponent);
         }
         
         $responseIfexpressionCollection =  new ExpressionCollection();
-        $responseIfexpressionCollection->attach(new Variable($responseIdentifiers[0]));
+        $responseIfexpressionCollection->attach(new Variable('RESPONSE'));
         
         $responseIfRuleCollection = new ResponseRuleCollection();
         $responseIfNullScoreComponent = new SetOutcomeValue('SCORE', new BaseValue(BaseType::FLOAT,0.0));
@@ -58,8 +58,8 @@ class QtiResponseProcessingBuilder {
         
         // creating responseIf condition
         $responseIfexpressionCollection1 =  new ExpressionCollection();
-        $responseIfexpressionCollection1->attach(new Variable($responseIdentifiers[0]));
-        $responseIfexpressionCollection1->attach(new Correct($responseIdentifiers[0]));
+        $responseIfexpressionCollection1->attach(new Variable('RESPONSE'));
+        $responseIfexpressionCollection1->attach(new Correct('RESPONSE'));
          
         $responseIfRuleCollection1 = new ResponseRuleCollection();
         
