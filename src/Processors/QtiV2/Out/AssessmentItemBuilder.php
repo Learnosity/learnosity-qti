@@ -86,17 +86,13 @@ class AssessmentItemBuilder
             list($interaction, $responseDeclaration, $responseProcessing, $extraContent) = $this->map($question);
             if (!empty($responseDeclaration)){
                 
-                if(sizeof($responseDeclaration)>1){
-                    for($i=1;$i<=sizeof($responseDeclaration);$i++){
+                if($responseDeclaration instanceof ResponseDeclarationCollection && $responseDeclaration->count()>0){
+                    for($i=0;$i<=sizeof($responseDeclaration);$i++){
                         $assessmentItem->setOutcomeDeclarations($this->buildScoreOutcomeDeclarations(0.0, 'SCORE'.$i));
                     }
+                     $responseDeclarationCollection->merge($responseDeclaration);
                 }
-                
-                // TODO: Need to tidy this up
-                // Well sometimes we can have multiple response declarations, ie. clozetext
-                if ($responseDeclaration instanceof ResponseDeclarationCollection) {
-                    $responseDeclarationCollection->merge($responseDeclaration);
-                } else {
+                else {
                     $responseDeclarationCollection->attach($responseDeclaration);
                 }
             }
@@ -147,6 +143,7 @@ class AssessmentItemBuilder
         // Otherwise, generate an alternative identifier and store the original reference as `label` to be passed in
         $questionReference = $question->get_reference();
         $interactionIdentifier = Format::isIdentifier($questionReference, false) ? $questionReference : strtoupper($type)  . '_' . StringUtil::generateRandomString(12);
+        
         /* if ($interactionIdentifier !== $questionReference) {
             LogService::log(
                 "The question `reference` ($questionReference) is not a valid identifier. " .
@@ -154,7 +151,6 @@ class AssessmentItemBuilder
             );
         } */
         $interactionIdentifier = 'RESPONSE';
-        
         $result = $questionTypeMapper->convert($question->get_data(), $interactionIdentifier, $questionReference);
         $result[] = $questionTypeMapper->getExtraContent();
         return $result;
