@@ -12,11 +12,12 @@ use LearnosityQti\Processors\IMSCP\Entities\ImsManifestMetadata;
 use LearnosityQti\Processors\IMSCP\Entities\Manifest;
 use LearnosityQti\Processors\IMSCP\Entities\Resource;
 use LearnosityQti\Processors\QtiV2\Out\Constants as LearnosityExportConstant;
+use LearnosityQti\Utils\General\CopyDirectoreyHelper;
 use LearnosityQti\Utils\General\FileSystemHelper;
 use LearnosityQti\Utils\UuidUtil;
-use LearnosityQti\Utils\General\CopyDirectoreyHelper;
 use RecursiveIteratorIterator;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
 use Symfony\Component\Finder\SplFileInfo;
@@ -154,26 +155,32 @@ class ConvertToQtiService
     }
 
     // Traverse the -i option and find all paths with files
-    private function parseInputFolders() {
+    private function parseInputFolders(){
         $folders = [];
 
         // Look for json files in the current path
         $finder = new Finder();
-        $finder->files()->in($this->inputPath . '/activities');
-        foreach ($finder as $json) {
-            $activityJson = json_decode(file_get_contents($json));
-            $itemReferences = $activityJson->data->items;
-            $this->itemReference = $itemReferences;
-            if (!empty($itemReferences)) {
-                foreach ($itemReferences as $itemref) {
-                    $jsonfile = $this->inputPath . '/items/' . md5($itemref) . '.json';
-                    if(file_exists($jsonfile)){
-                        $folders[] = $jsonfile;
+        try{
+            $finder->files()->in($this->inputPath . '/activities');
+            foreach ($finder as $json) {
+                $activityJson = json_decode(file_get_contents($json));
+                $itemReferences = $activityJson->data->items;
+                $this->itemReference = $itemReferences;
+                if (!empty($itemReferences)) {
+                    foreach ($itemReferences as $itemref) {
+                        $jsonfile = $this->inputPath . '/items/' . md5($itemref) . '.json';
+                        if(file_exists($jsonfile)){
+                            $folders[] = $jsonfile;
+                        }
                     }
+                } else {
+                    $this->output->writeln("<error>Error converting : No item refrences found in the activity json</error>");
                 }
-            } else {
-                $this->output->writeln("<error>Error converting : No item refrences found in the activity json</error>");
             }
+        }
+        catch(Exception $exception){
+            $message = $exception->getMessage();
+            throw new Exception($message);
         }
 
         return $folders;
@@ -435,7 +442,6 @@ class ConvertToQtiService
     {
         $errors = [];
         $jsonFolders = $this->parseInputFolders();
-
         if (empty($jsonFolders)) {
             array_push($errors, 'No files found in ' . $this->inputPath);
         }

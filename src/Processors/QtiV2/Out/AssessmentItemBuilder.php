@@ -68,10 +68,12 @@ class AssessmentItemBuilder
                 $min_score = $questionData['data']['validation']['min_score_if_attempted']; 
                 $assessmentItem->setOutcomeDeclarations($this->buildScoreOutcomeDeclarations($min_score, 'MINSCORE'));
             }
-
+            
+            $baseType = $this->getBaseType($questionData['type']);
+            
             // add outcome declaration for FEEDBACK INLINE
             if(isset($questionData['data']['metadata']['distractor_rationale_response_level'])){
-                $assessmentItem->setOutcomeDeclarations($this->buildFeedbackOutcomeDeclarations('FEEDBACK', Cardinality::MULTIPLE));
+               $assessmentItem->setOutcomeDeclarations($this->buildFeedbackOutcomeDeclarations('FEEDBACK', Cardinality::MULTIPLE, $baseType));
             }
             
             if(isset($questionData['data']['metadata']['distractor_rationale'])){
@@ -169,10 +171,10 @@ class AssessmentItemBuilder
         return $outcomeDeclarationCollection;
     }
     
-    private function buildFeedbackOutcomeDeclarations($identifire, $cardinality = Cardinality::SINGLE)
+    private function buildFeedbackOutcomeDeclarations($identifire, $cardinality = Cardinality::SINGLE, $baseType = BaseType::IDENTIFIER)
     {
         // Set <outcomeDeclaration> with FEEDBACK identifier 
-        $outcomeDeclaration = new OutcomeDeclaration($identifire, BaseType::IDENTIFIER, $cardinality);
+        $outcomeDeclaration = new OutcomeDeclaration($identifire, $baseType, $cardinality);
         $outcomeDeclarationCollection = $this->outcomeDeclarationCollection;
         $outcomeDeclarationCollection->attach($outcomeDeclaration);
         return $outcomeDeclarationCollection;
@@ -183,4 +185,15 @@ class AssessmentItemBuilder
         $modalFeedback = new ModalFeedback($identifier, $outComeidentifier, $content);
         return $modalFeedback;
     }
+    
+    private function getBaseType($questionType) {
+        switch ($questionType) {
+            case 'clozeassociation':
+                return BaseType::DIRECTED_PAIR;
+                break;
+            default:
+                return BaseType::IDENTIFIER;
+        }
+    }
+
 }
