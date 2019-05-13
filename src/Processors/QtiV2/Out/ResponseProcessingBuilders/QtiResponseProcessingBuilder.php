@@ -28,7 +28,7 @@ class QtiResponseProcessingBuilder {
         $responseRuleCollection = new ResponseRuleCollection();
         
         // creating feedback outcome
-        if(sizeof($feedBackOptions)>1){
+        if(isset($feedBackOptions) && sizeof($feedBackOptions)>1){
             $feedbackResponseComponent = new SetOutcomeValue('FEEDBACK', new Variable('RESPONSE'));
             $responseRuleCollection->attach($feedbackResponseComponent);
         }
@@ -40,7 +40,7 @@ class QtiResponseProcessingBuilder {
         $responseIfNullScoreComponent = new SetOutcomeValue('SCORE', new BaseValue(BaseType::FLOAT,0.0));
         $responseIfRuleCollection->attach($responseIfNullScoreComponent);
         
-        // genrate outcome value if distrator_rationale_value is set
+        // generate outcome value if distrator_rationale_value is set
         if(is_array($feedBackOptions) && !empty($feedBackOptions['genral_feedback'])){
             $responseFeedbackComponent = new SetOutcomeValue('FEEDBACK_GENERAL', new BaseValue(BaseType::IDENTIFIER,'correctOrIncorrect'));
             $responseIfRuleCollection->attach($responseFeedbackComponent);

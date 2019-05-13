@@ -19,7 +19,7 @@ abstract class AbstractQuestionValidationBuilder
         if(empty($validation) && empty($feedBackOptions)){
             return [null, null];
         }
-        
+        /*
         if ((method_exists($validation, 'get_max_score')) && (empty($validation->get_max_score()))) {
             // TODO: Need to support more validation type :)
             LogService::log('Invalid value of max_score. Failed to build `responseDeclaration` and `responseProcessingTemplate');
@@ -35,7 +35,8 @@ abstract class AbstractQuestionValidationBuilder
         if ((method_exists($validation, 'get_valid_response')) && (empty($validation->get_valid_response()) || empty($validation->get_valid_response()->get_value()) || empty($validation->get_valid_response()->get_score()))) {
             LogService::log('Invalid `valid_response` object, fail to build `responseDeclaration` and `responseProcessingTemplate');
             return [null, null];
-        }
+        }*/
+        
         
         $responseDeclaration = $this->buildResponseDeclaration($responseIdentifier, $validation);
         $responseIdentifiers = [];
@@ -48,16 +49,15 @@ abstract class AbstractQuestionValidationBuilder
         $score = 0;
         $maxscore = 0;
         $penalty = 0;
-            
+        
         if(method_exists($validation, 'get_valid_response')){
-            $type[] = 'score';
             $score = $validation->get_valid_response()->get_score(); 
         }
-        if(method_exists($validation, 'get_max_score')){
+        if(method_exists($validation, 'get_max_score') && $validation->get_max_score()!=''){
             $type[] = 'maxscore';
             $maxscore = $validation->get_max_score();
         }
-        if(method_exists($validation, 'get_penalty')){
+        if(method_exists($validation, 'get_penalty') && $validation->get_penalty()!=''){
             $type[] = 'penalty';
             $penalty = $validation->get_penalty();
         }
@@ -68,6 +68,7 @@ abstract class AbstractQuestionValidationBuilder
             if(!empty($feedBackOptions) && is_array($feedBackOptions) || in_array('maxscore', $type) || in_array('penalty', $type)){
                 $responseProcessing = QtiResponseProcessingBuilder::build($score,$maxscore,$penalty,$feedBackOptions, $type);
             }else{ 
+                
                 $responseProcessing = $this->buildResponseProcessing($validation, $isCaseSensitive);
             }
         }
