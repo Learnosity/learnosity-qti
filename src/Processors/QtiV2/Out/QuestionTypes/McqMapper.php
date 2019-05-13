@@ -54,19 +54,20 @@ class McqMapper extends AbstractQuestionTypeMapper
             $choiceContent = new FlowStaticCollection();
             
             foreach (QtiMarshallerUtil::unmarshallElement($option->get_label()) as $component) {
-                
                 $choiceContent->attach($component);
-
-                // attach feedbackInline to simpleChoice
-                if(isset($feedbackOptions) && isset($feedbackOptions[$i]) && $feedbackOptions[$i]!=''){
-                    $content = new InlineCollection(array(new TextRun($feedbackOptions[$i])));
-                    $feedback = new FeedbackInline('FEEDBACK','CHOICE_'.$option->get_value(),'true');
-                    $feedback->setContent($content);
-                    $choiceContent->attach($feedback);
+                if($component instanceof TextRun){
+                    // attach feedbackInline to simpleChoice
+                    if(isset($feedbackOptions) && isset($feedbackOptions[$i]) && $feedbackOptions[$i]!=''){
+                        $content = new InlineCollection(array(new TextRun($feedbackOptions[$i])));
+                        $feedback = new FeedbackInline('FEEDBACK','CHOICE_'.$option->get_value(),'true');
+                        $feedback->setContent($content);
+                        $choiceContent->attach($feedback);
+                    }
+                    $i++;
                 }
-                $i++;
             }
-
+            
+            
             // Use option['value'] as choice `identifier` if it has the correct format,
             // Otherwise, generate a valid using index such `CHOICE_1`, `CHOICE_2`, etc
             $originalOptionValue = $option->get_value();
@@ -78,7 +79,7 @@ class McqMapper extends AbstractQuestionTypeMapper
             $choice->setContent($choiceContent);
             $simpleChoiceCollection->attach($choice);
         }
-
+        
         // Build final interaction and its corresponding <responseDeclaration>, and its <responseProcessingTemplate>
         $interaction = new ChoiceInteraction($interactionIdentifier, $simpleChoiceCollection);
         $interaction->setLabel($interactionLabel);

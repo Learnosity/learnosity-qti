@@ -28,9 +28,12 @@ class QtiResponseProcessingBuilder {
         $responseRuleCollection = new ResponseRuleCollection();
         
         // creating feedback outcome
-        if(isset($feedBackOptions) && sizeof($feedBackOptions)>1){
-            $feedbackResponseComponent = new SetOutcomeValue('FEEDBACK', new Variable('RESPONSE'));
-            $responseRuleCollection->attach($feedbackResponseComponent);
+        if(sizeof($feedBackOptions)>1){
+                $multipleExpression = new ExpressionCollection();
+                $variable = new Variable('RESPONSE');
+                $multipleExpression->attach($variable);
+                $feedbackResponseComponent = new SetOutcomeValue('FEEDBACK', new Multiple($multipleExpression));
+                $responseRuleCollection->attach($feedbackResponseComponent);
         }
         
         $responseIfexpressionCollection =  new ExpressionCollection();
