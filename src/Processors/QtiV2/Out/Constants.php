@@ -34,4 +34,12 @@ class Constants
 
     const RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT = 'http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct';
     const RESPONSE_PROCESSING_TEMPLATE_MAP_RESPONSE = 'http://www.imsglobal.org/question/qti_v2p1/rptemplates/map_response';
+    const IMSQTI_TOOLNAME = 'SCIP ItemExport';
+    const IMSQTI_TOOL_VERSION = '1.0';
+    const IMSQTI_TOOL_VENDOR = 'Certica Solutions, Inc.';
+    const IMSQTI_TITLE = 'SCIP Item Bank Package';
+    const IMSQTI_LANG = 'en';
+    const IMSQTI_METADATA_SCHEMA = array('LOMv1.0','QTIv2.1');
+    const IMSQTI_RIGHTS = 'Copyright (c) 2016 by Certica Solutions, Inc. All rights reserved.';
+    
 }

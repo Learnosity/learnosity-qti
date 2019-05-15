@@ -7,6 +7,7 @@ class ImsManifestMetadata {
     private $schema;
     private $schemaversion;
     private $title;
+    private $qtiMetadata;
 
     function getSchema() {
         return $this->schema;
@@ -31,5 +32,12 @@ class ImsManifestMetadata {
     function setTitle($title) {
         $this->title = $title;
     }
+    
+    function getQtiMetadata() {
+        return $this->qtiMetadata;
+    }
 
+    function setQtiMetadata($qtiMetadata) {
+        $this->qtiMetadata = $qtiMetadata;
+    }
 }

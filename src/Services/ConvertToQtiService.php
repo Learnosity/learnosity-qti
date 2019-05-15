@@ -104,6 +104,8 @@ class ConvertToQtiService
         $xsdLocation = 'http://www.imsglobal.org/xsd/imscp_v1p1 http://www.imsglobal.org/xsd/qti/qtiv2p1/qtiv2p1_imscpv1p2_v1p0.xsd';
         $xmlns = "http://www.imsglobal.org/xsd/imscp_v1p1";
         $rootElement->setAttribute('xmlns', $xmlns);
+        $rootElement->setAttribute('xmlns:imsmd', 'http://ltsc.ieee.org/xsd/LOM');
+        $rootElement->setAttribute('xmlns:imsqti', 'http://www.imsglobal.org/xsd/imsqti_metadata_v2p1');
         $rootElement->setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
         $rootElement->setAttribute("xsi:schemaLocation", $xsdLocation);
     }
@@ -189,10 +191,16 @@ class ConvertToQtiService
     private function convertAssessmentItem($json)
     {
         $result = [];
+
+        
+        $finalXml = [];
+        $content = $json['content'];
         foreach($json['questions'] as $question):
-            
+            $question['content'] = $content;
             if (in_array($question['data']['type'], LearnosityExportConstant::$supportedQuestionTypes)) {
-                $result = Converter::convertLearnosityToQtiItem($json);
+                $result = Converter::convertLearnosityToQtiItem($question);
+                $result[0] = str_replace('/vendor/learnosity/itembank/','',$result[0]);
+                $finalXml[] = $result;
             } else {
                 $result = [
                     '',
@@ -203,11 +211,8 @@ class ConvertToQtiService
                 $this->output->writeln("<error>Question type `{$question['data']['type']}` not yet supported, ignoring</error>");
             }
         endforeach;
-
-        //endforeach;
-
         return [
-            'qti' => $result,
+            'qti' => $finalXml,
             'json' => $json
         ];
     }
@@ -275,8 +280,44 @@ class ConvertToQtiService
         $schema = $imsManifestXml->createElement("schema", $manifestMetadataContent->getSchema());
         $manifestMetadata->appendChild($schema);
         
+        $qtiMetaData = $imsManifestXml->createElement('imsqti:qtiMetadata');
+        
+        $qtiMetaData->appendChild($imsManifestXml->createElement('imsqti:toolName', LearnosityExportConstant::IMSQTI_TOOLNAME));
+        $qtiMetaData->appendChild($imsManifestXml->createElement('imsqti:toolVersion', LearnosityExportConstant::IMSQTI_TOOL_VERSION));
+        $qtiMetaData->appendChild($imsManifestXml->createElement('imsqti:toolVendor', LearnosityExportConstant::IMSQTI_TOOL_VENDOR));
+        
+        $qtiLOMData = $imsManifestXml->createElement('imsmd:lom');
+        $qtiLOMGenral = $imsManifestXml->createElement('imsmd:general');
+        $qtiLOMTitle = $imsManifestXml->createElement('imsmd:title');
+        
+        $qtiLOMTitleValue = $imsManifestXml->createElement('imsmd:string', LearnosityExportConstant::IMSQTI_TITLE);
+        $qtiLOMTitleValue->setAttribute('xml:lang', LearnosityExportConstant::IMSQTI_LANG);
+        $qtiLOMTitle->appendChild($qtiLOMTitleValue);
+        
+        $qtiLOMGenral->appendChild($qtiLOMTitle);
+        $qtiLOMData->appendChild($qtiLOMGenral);
+        
+        $imsMetaMetaData = LearnosityExportConstant::IMSQTI_METADATA_SCHEMA;
+        $imsMetaMetaDataSchema = $imsManifestXml->createElement('imsmd:metaMetadata');
+        foreach($imsMetaMetaData as $metaDataSchema){
+            $imsMetaMetaDataSchema->appendChild($imsManifestXml->createElement('imsmd:metadataschema', $metaDataSchema));
+        }
+        $imsMetaMetaDataSchema->appendChild($imsManifestXml->createElement('imsmd:language', LearnosityExportConstant::IMSQTI_LANG));
+        
+        $imsRights = $imsManifestXml->createElement('imsmd:rights');
+        $imsDescription = $imsManifestXml->createElement('imsmd:description');
+        $imsDescriptionValue = $imsManifestXml->createElement('imsmd:string', LearnosityExportConstant::IMSQTI_RIGHTS);
+        $imsDescriptionValue->setAttribute('xml:lang', LearnosityExportConstant::IMSQTI_LANG);
+        $imsDescription->appendChild($imsDescriptionValue);
+        $imsRights->appendChild($imsDescription);
+        
+        
         $schemaVersion = $imsManifestXml->createElement("schemaversion", $manifestMetadataContent->getSchemaversion());
         $manifestMetadata->appendChild($schemaVersion);
+        $manifestMetadata->appendChild($qtiMetaData);
+        $manifestMetadata->appendChild($qtiLOMData);
+        $manifestMetadata->appendChild($imsMetaMetaDataSchema);
+        $manifestMetadata->appendChild($imsRights);
         return $manifestMetadata;
     }
     
@@ -321,9 +362,10 @@ class ConvertToQtiService
     
     private function createImsManifestMetaData(){
         $manifestMetaData = new ImsManifestMetadata();
-        $manifestMetaData->setSchema("QTI2.1 Content");
-        $manifestMetaData->setSchemaversion("2.1");
+        $manifestMetaData->setSchema("QTIv2.1 Item Bank Package");
+        $manifestMetaData->setSchemaversion("1.0.0");
         $manifestMetaData->setTitle("QTI 2.1 Conversion Data");
+        $manifestMetaData->setQtiMetadata('ABCVD');
         return $manifestMetaData;
     }
 
@@ -342,12 +384,13 @@ class ConvertToQtiService
         $this->output->writeln("\n<info>" . static::INFO_OUTPUT_PREFIX . "Writing conversion results: " . $outputFilePath . '.json' . "</info>\n");
         
         foreach ($results as $result) {
-            
-            foreach($result['json']['questions'] as $question){
-
+            $i=0;
+            foreach($result['qti'] as $qti){
+                 
                 if (!empty($result['qti'])) {
-                    file_put_contents($outputFilePath . '/' . $question['reference'] . '.xml', $result['qti'][0]);
+                    file_put_contents($outputFilePath . '/' . $result['json']['questions'][$i]['reference'] . '.xml', $qti[0]);
                 }
+                $i++;
             }
         }
     }
