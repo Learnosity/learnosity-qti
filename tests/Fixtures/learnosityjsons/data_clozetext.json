@@ -1,31 +1,41 @@
 {
-    "stimulus": "<p>[This is the stem.]</p>",
-    "template": "<p>Risus {{response}}, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum. Nunc diam enim, porta sed eros vitae. {{response}} dignissim, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum.</p>",
-    "type": "clozetext",
-    "validation": {
-        "scoring_type": "exactMatch",
-        "valid_response": {
-            "score": 3,
-            "value": [
-                "responseone",
-                "responsetwo"
-            ]
-        },
-        "alt_responses": [
-            {
-                "score": 2,
-                "value": [
-                    "otherresponseone",
-                    "otherresponsetwo"
-                ]
-            },
-            {
-                "score": 1,
-                "value": [
-                    "anotherresponseone",
-                    "anotherresponsetwo"
-                ]
+    "reference": "clozetext",
+    "content": "<div class=\"row\"><div class=\"col-xs-12\"><span class=\"learnosity-response question-b897ad06-503f-499c-be28-754628261907\"></span></div></div>",
+    "workflow": null,
+    "metadata": {
+        "acknowledgements": null,
+        "scoring_type": "per-question"
+    },
+    "tags": {},
+    "questions": [
+        {
+            "reference": "b897ad06-503f-499c-be28-754628261907",
+            "data": {
+                "stimulus": "This is clozetext question.",
+                "template": "Risus {{response}}, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum. Nunc diam enim, porta sed eros vitae. {{response}} dignissim, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum.",
+                "type": "clozetext",
+                "validation": {
+                    "scoring_type": "exactMatch",
+                    "valid_response": {
+                        "score": 2,
+                        "value": [
+                            "response1",
+                            "response2"
+                        ]
+                    },
+                    "penalty": 1,
+                    "match_all_possible_responses": true
+                },
+                "max_length": 15,
+                "metadata": {
+                    "distractor_rationale": "Thanks for attending this test.",
+                    "distractor_rationale_response_level": [
+                        "Its correct",
+                        "its not correct"
+                    ]
+                }
             }
-        ]
-    }
+        }
+    ],
+    "features": []
 }

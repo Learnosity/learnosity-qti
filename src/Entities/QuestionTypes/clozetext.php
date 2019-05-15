@@ -29,14 +29,11 @@ class clozetext extends BaseQuestionType {
     protected $spellcheck;
     protected $case_sensitive;
     
-    public function __construct(
-                    $type,
-                                $template
-                        )
+    public function __construct($type,$template)
     {
                 $this->type = $type;
                 $this->template = $template;
-            }
+    }
 
     /**
     * Get Contains math \

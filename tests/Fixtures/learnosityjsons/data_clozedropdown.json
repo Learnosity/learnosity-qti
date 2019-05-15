@@ -1,19 +1,63 @@
 {
-    "possible_responses": [
-        ["Choice A", "Choice B", "Choice C", "Choice D"],
-        ["Choice A", "Choice B", "Choice C", "Choice D"]
-    ],
-    "response_container": {
-        "pointer": "left"
+    "reference": "clozetext",
+    "content": "<div class=\"row\"><div class=\"col-xs-12\"><span class=\"learnosity-response question-9bc45adb-8bb8-482c-8cd6-7e0427c3b998\"></span></div></div>",
+    "workflow": null,
+    "metadata": {
+        "acknowledgements": null,
+        "scoring_type": "per-question"
     },
-    "stimulus": "<p>[This is the stem.]</p>",
-    "template": "<p>Risus {{response}}, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum. Nunc diam enim, porta sed eros vitae. {{response}} dignissim, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum.</p>",
-    "type": "clozedropdown",
-    "validation": {
-        "scoring_type": "exactMatch",
-        "valid_response": {
-            "score": 1,
-            "value": ["Choice C", "Choice B"]
+    "tags": {},
+    "questions": [
+        {
+            "reference": "9bc45adb-8bb8-482c-8cd6-7e0427c3b998",
+            "data": {
+                "possible_responses": [
+                    [
+                        "Vegetable",
+                        "Color",
+                        "Snacks",
+                        "Fruit"
+                    ],
+                    [
+                        "Fruit",
+                        "Vegetable",
+                        "Color"
+                    ],
+                    [
+                        "Color",
+                        "Fruit"
+                    ]
+                ],
+                "response_container": {
+                    "pointer": "left"
+                },
+                "stimulus": "Cloze with drop down",
+                "template": "<p>Potato is a {{response}}&nbsp; Guava is a {{response}} and red is a {{response}}</p><p>&nbsp;</p>",
+                "type": "clozedropdown",
+                "case_sensitive": true,
+                "validation": {
+                    "scoring_type": "exactMatch",
+                    "valid_response": {
+                        "score": 1,
+                        "value": [
+                            "Vegetable",
+                            "Fruit",
+                            "Color"
+                        ]
+                    },
+                    "match_all_possible_responses": true
+                },
+                "metadata": {
+                    "distractor_rationale": "common feedback",
+                    "distractor_rationale_response_level": [
+                        "Right answer is vegetable",
+                        "Right answer is fruit",
+                        "Right answer is color"
+                    ]
+                },
+                "shuffle_options": true
+            }
         }
-    }
+    ],
+    "features": []
 }

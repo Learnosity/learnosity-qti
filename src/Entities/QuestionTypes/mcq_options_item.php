@@ -12,10 +12,9 @@ class mcq_options_item extends BaseQuestionTypeAttribute {
     protected $value;
     protected $label;
     
-    public function __construct(
-            )
+    public function __construct()
     {
-            }
+    }      
 
     /**
     * Get Value \

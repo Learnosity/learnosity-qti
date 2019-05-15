@@ -32,24 +32,27 @@ class ClozetextMapper extends AbstractQuestionTypeMapper
         $this->extraContent = "<div>".$stimulus."</div>";
         
         // Check if distractor_rationale_response_level exists
-        $metadata = $question->get_metadata();
         $feedbackOptions = [];
-        $feedbackOptions = $metadata->get_distractor_rationale_response_level();
-        if(!empty($feedbackOptions)){
-            $p = new P();
-            $choiceContent = new FlowCollection();
-            $i = 1;
-            foreach($feedbackOptions as $feedback){
-                $content = new InlineCollection(array(new TextRun($feedback)));
-                $feedbackinline = new FeedbackInline('FEEDBACK','IDENTIFIER_'.$i,'true');
-                $feedbackinline->setContent($content);
-                $choiceContent->attach($feedbackinline);
-                $i++;
+        $metadata = $question->get_metadata();
+        if(isset($metadata)){
+            
+            $feedbackOptions = $metadata->get_distractor_rationale_response_level();
+            if(!empty($feedbackOptions)){
+                $p = new P();
+                $choiceContent = new FlowCollection();
+                $i = 1;
+                foreach($feedbackOptions as $feedback){
+                    $content = new InlineCollection(array(new TextRun($feedback)));
+                    $feedbackinline = new FeedbackInline('FEEDBACK','IDENTIFIER_'.$i,'true');
+                    $feedbackinline->setContent($content);
+                    $choiceContent->attach($feedbackinline);
+                    $i++;
+                }
             }
-        }
-        
-        if(!empty($metadata->get_distractor_rationale())){
-            $feedbackOptions['genral_feedback'] = $metadata->get_distractor_rationale();
+            
+            if(!empty($metadata->get_distractor_rationale())){
+                $feedbackOptions['genral_feedback'] = $metadata->get_distractor_rationale();
+            }
         }
         
         // Replace {{ response }} with `textEntryInteraction` elements

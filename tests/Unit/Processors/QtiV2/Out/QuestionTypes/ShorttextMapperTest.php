@@ -37,7 +37,7 @@ class ShorttextMapperTest extends \PHPUnit_Framework_TestCase
 
         // Not going to test the interaction, too boring
         $this->assertTrue($interaction instanceof Div);
-        $this->assertTrue($interaction->getComponents()->getArrayCopy()[0] instanceof TextEntryInteraction);
+        $this->assertTrue($interaction->getComponents()->getArrayCopy()[1] instanceof TextEntryInteraction);
 
         // Shorttext shall have one simple exactMatch <responseDeclaration> and <responseProcessing>
         /** @var ResponseProcessing $responseProcessing */
@@ -47,7 +47,7 @@ class ShorttextMapperTest extends \PHPUnit_Framework_TestCase
         /** @var Value[] $values */
         $values = $responseDeclaration->getCorrectResponse()->getValues()->getArrayCopy(true);
         $this->assertEquals('testhello', $values[0]->getValue());
-
+        
         /** @var MapEntry[] $mapEntries */
         $mapEntries = $responseDeclaration->getMapping()->getMapEntries()->getArrayCopy(true);
         $this->assertEquals('testhello', $mapEntries[0]->getMapKey());
@@ -64,11 +64,10 @@ class ShorttextMapperTest extends \PHPUnit_Framework_TestCase
         $mapper = new ShorttextMapper();
         /** @var TextEntryInteraction $interaction */
         list($interaction, $responseDeclaration, $responseProcessing) = $mapper->convert($question, 'reference', 'reference');
-
+        
         // Not going to test the interaction, too boring
         $this->assertTrue($interaction instanceof Div);
-        $this->assertTrue($interaction->getComponents()->getArrayCopy()[0] instanceof TextEntryInteraction);
-
+        
         // Shorttext shall have one simple exactMatch <responseDeclaration> and <responseProcessing>
         /** @var ResponseProcessing $responseProcessing */
         $this->assertEquals(Constants::RESPONSE_PROCESSING_TEMPLATE_MAP_RESPONSE, $responseProcessing->getTemplate());
@@ -143,14 +142,12 @@ class ShorttextMapperTest extends \PHPUnit_Framework_TestCase
         $responseElse = $responseProcessing->getComponentsByClassName('responseElse', true)->getArrayCopy()[0];
         $this->assertTrue($responseElse instanceof ResponseElse);
         $promptElseString = QtiMarshallerUtil::marshallCollection($responseElse->getComponents());
-        $this->assertEquals('<responseCondition><responseIf><match><variable identifier="RESPONSE"/><correct identifier="RESPONSE"/></match><setOutcomeValue identifier="SCORE"><variable identifier="MAXSCORE"/></setOutcomeValue><setOutcomeValue identifier="FEEDBACK_GENERAL"><baseValue baseType="identifier">correctOrIncorrect</baseValue></setOutcomeValue></responseIf><responseElse><setOutcomeValue identifier="SCORE"><baseValue baseType="float">0</baseValue></setOutcomeValue><setOutcomeValue identifier="FEEDBACK_GENERAL"><baseValue baseType="identifier">correctOrIncorrect</baseValue></setOutcomeValue></responseElse></responseCondition>', $promptElseString);
+        $this->assertEquals('<responseCondition><responseIf><match><variable identifier="RESPONSE"/><correct identifier="RESPONSE"/></match><setOutcomeValue identifier="SCORE"><baseValue baseType="float">5</baseValue></setOutcomeValue><setOutcomeValue identifier="FEEDBACK_GENERAL"><baseValue baseType="identifier">correctOrIncorrect</baseValue></setOutcomeValue></responseIf><responseElse><setOutcomeValue identifier="SCORE"><baseValue baseType="float">0</baseValue></setOutcomeValue><setOutcomeValue identifier="FEEDBACK_GENERAL"><baseValue baseType="identifier">correctOrIncorrect</baseValue></setOutcomeValue></responseElse></responseCondition>', $promptElseString);
         
         /** @var ResponseDeclaration $responseDeclaration */
         $this->assertNotNull($responseDeclaration);
-        
         $this->assertTrue($interaction instanceof Div);
-        $this->assertTrue($interaction->getComponents()->getArrayCopy()[0] instanceof TextEntryInteraction);
-
+        
         // Check on the responseDeclaration and responseProcessing objects to be correctly generated
         $this->assertEquals('', $responseProcessing->getTemplate());
         $this->assertEquals(Cardinality::SINGLE, $responseDeclaration->getCardinality());

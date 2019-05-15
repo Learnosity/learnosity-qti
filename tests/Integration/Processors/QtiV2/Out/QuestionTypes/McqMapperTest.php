@@ -46,7 +46,6 @@ class McqMapperTest extends AbstractQuestionTypeTest
             $this->assertEquals($simpleChoices[3]->getIdentifier(), 'CHOICE_3');
             $this->assertEquals(QtiMarshallerUtil::marshallCollection($simpleChoices[3]->getContent()), 'Canbera');
 
-
             // Check `minChoices` and `maxChoices`
             $this->assertEquals(1, $interaction->getMinChoices());
             $this->assertEquals(1, $interaction->getMaxChoices());
