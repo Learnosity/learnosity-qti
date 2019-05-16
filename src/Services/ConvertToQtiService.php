@@ -131,7 +131,6 @@ class ConvertToQtiService
                 $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Learnosity JSON file ".basename($file). " Not fount in: {$this->inputPath}/items </info>");
             }
         }
-        
         $resourceInfo = $this->updateJobManifest($finalManifest, $results);
         $finalManifest->setResources($resourceInfo);
         $this->persistResultsFile($results, realpath($this->outputPath) . '/' . $this->rawPath . '/');
@@ -194,13 +193,16 @@ class ConvertToQtiService
 
         
         $finalXml = [];
+        $tagsArray = [];
         $content = $json['content'];
+        $tags = $json['tags'];
         foreach($json['questions'] as $question):
             $question['content'] = $content;
             if (in_array($question['data']['type'], LearnosityExportConstant::$supportedQuestionTypes)) {
                 $result = Converter::convertLearnosityToQtiItem($question);
                 $result[0] = str_replace('/vendor/learnosity/itembank/','',$result[0]);
                 $finalXml[] = $result;
+                $tagsArray[$question['reference']] = $tags;
             } else {
                 $result = [
                     '',
@@ -213,7 +215,8 @@ class ConvertToQtiService
         endforeach;
         return [
             'qti' => $finalXml,
-            'json' => $json
+            'json' => $json,
+            'tags' => $tagsArray
         ];
     }
 
@@ -222,7 +225,7 @@ class ConvertToQtiService
      *
      * @param array $manifest
      */
-    private function flushJobManifest(Manifest $manifestContent)
+    private function flushJobManifest(Manifest $manifestContent, array $results)
     {
         $manifestFileBasename = static::MANIFEST_FILE_NAME;
         $imsManifestXml = new DOMDocument("1.0", "UTF-8");
@@ -237,7 +240,7 @@ class ConvertToQtiService
         $organization = $this->addOrganizationInfoInManifest($manifestContent, $imsManifestXml);
         $element->appendChild($organization);
         
-        $resourceInfo = $this->addResourceInfoInManifest($manifestContent, $imsManifestXml);
+        $resourceInfo = $this->addResourceInfoInManifest($manifestContent, $imsManifestXml, $results);
         $element->appendChild($resourceInfo);
         
         $this->decorateImsManifestRootElement($element);
@@ -326,16 +329,23 @@ class ConvertToQtiService
         return $organization;
     }
     
-    private function addResourceInfoInManifest(Manifest $manifestContent, DOMDocument $imsManifestXml){
+    private function addResourceInfoInManifest(Manifest $manifestContent, DOMDocument $imsManifestXml, array $results){
         $resources = $imsManifestXml->createElement("resources");
         $resourcesContent = $manifestContent->getResources();
+        $i = 0;
         foreach($resourcesContent as $resourceContent){
             $resource = $imsManifestXml->createElement("resource");
-            $resource->setAttribute("identifier", $resourceContent->getIdentifier());
+            $resource->setAttribute("identifier", 'i'.$resourceContent->getIdentifier());
             $resource->setAttribute("type", $resourceContent->getType());
             $resource->setAttribute("href", $resourceContent->getHref());
-            $metadara = $imsManifestXml->createElement("metadata");
-            $resource->appendChild($metadara);
+            $metadata = $imsManifestXml->createElement("metadata");
+            
+            $tagsArray = $results[$i]['tags'][$resourceContent->getIdentifier()];
+            if(is_array($tagsArray) && sizeof($tagsArray) > 0){
+                $resourceMatadata = $this->addResourceMetaDataInfo($imsManifestXml, $tagsArray);
+                $metadata->appendChild($resourceMatadata);
+            }
+            $resource->appendChild($metadata);
             $filesData = $resourceContent->getFiles();
             foreach($filesData as $fileContent){
                 $file = $imsManifestXml->createElement("file");
@@ -343,9 +353,12 @@ class ConvertToQtiService
                 $resource->appendChild($file);
             }
             $resources->appendChild($resource);
+            $i++;
          }
          return $resources;
     }
+    
+    
     
     /**
      * Returns the base template for job manifests consumed by this job.
@@ -412,7 +425,7 @@ class ConvertToQtiService
                 if (!empty($result['qti'])) {
                     $files = array();
                     $resource = new Resource();
-                    $resource->setIdentifier('i'.$question['reference']);
+                    $resource->setIdentifier($question['reference']);
                     $resource->setType(Resource::TYPE_PREFIX_ITEM."xmlv2p1");
                     $resource->setHref($question['reference'].".xml");
                     if(array_key_exists($question['reference'], $additionalFileReferenceInfo)){
@@ -427,6 +440,32 @@ class ConvertToQtiService
             }
         }
         return $resources;
+    }
+    
+    private function addResourceMetaDataInfo(DOMDocument $imsManifestXml, $tagsArray){
+        $imsmdLom = $imsManifestXml->createElement('imsmd:lom');
+        $imsmdClassification = $imsManifestXml->createElement('imsmd:classification');
+        $imsmdLom->appendChild($imsmdClassification);
+        $imsmdPurpose = $imsManifestXml->createElement('imsmd:purpose');
+        $imsmdPurpose->appendChild($imsManifestXml->createElement('imsmd:source', 'LOMv1.0'));
+        $imsmdPurpose->appendChild($imsManifestXml->createElement('imsmd:value', 'discipline'));
+        $imsmdClassification->appendChild($imsmdPurpose);
+        foreach($tagsArray as $tagKey=>$tagValues){
+            $taxonPath = $imsManifestXml->createElement('imsmd:taxonPath');
+            $imsmdSource = $imsManifestXml->createElement('imsmd:source');
+            $imsmdSource->appendChild($imsManifestXml->createElement('imsmd:string', $tagKey));
+            $taxonPath->appendChild($imsmdSource);
+            
+            $taxOn = $imsManifestXml->createElement('imsmd:taxon');
+            $imsmdEntry = $imsManifestXml->createElement('imsmd:entry');
+            $tagsValues = implode(',', $tagValues);
+            $imsmdEntry->appendChild($imsManifestXml->createElement('msmd:string', $tagsValues));
+            $taxOn->appendChild($imsmdEntry);
+            $taxonPath->appendChild($taxOn);
+            
+            $imsmdClassification->appendChild($taxonPath);
+        }
+        return $imsmdLom;
     }
     
      private function addAdditionalFileInfo($filesInfo, $files){
