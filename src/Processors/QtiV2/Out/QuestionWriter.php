@@ -17,7 +17,7 @@ class QuestionWriter
 
         // Try to build the identifier using question `reference`
         // Otherwise, generate an alternative identifier and store the original reference as `label`
-        $questionReference = $question->get_reference();
+        $questionReference = 'i'.$question->get_reference();
         $questionIdentifier = Format::isIdentifier($questionReference, false) ? $questionReference : 'ITEM_' . StringUtil::generateRandomString(12);
         if ($questionReference !== $questionIdentifier) {
             LogService::log(
