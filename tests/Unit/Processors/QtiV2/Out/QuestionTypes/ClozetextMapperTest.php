@@ -95,7 +95,9 @@ class ClozetextMapperTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals(15, $interactionOne->getExpectedLength());
         
         // Check has the feedbackInline
-        $this->assertNotNull($interaction->getComponentsByClassName('feedbackInline', true));
+        $feedBackInlinesArray = $interaction->getComponentsByClassName('feedbackInline', true)->getArrayCopy();
+        $this->assertCount(1, $feedBackInlinesArray);
+        $this->assertEquals('Right answer is response1' ,$feedBackInlinesArray[0]->getContent()[0]->getContent());
         
         // Assert response declarations
         /** @var ResponseDeclaration $responseDeclarationOne */

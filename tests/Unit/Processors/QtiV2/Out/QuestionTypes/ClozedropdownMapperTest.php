@@ -116,7 +116,13 @@ class ClozedropdownMapperTest extends \PHPUnit_Framework_TestCase {
         
         $interactions = $interaction->getComponentsByClassName('inlineChoiceInteraction', true)->getArrayCopy();
         
-        // assert feedback inline 
+        // Check has the feedbackInline
+        $feedBackInlinesArray = $interaction->getComponentsByClassName('feedbackInline', true)->getArrayCopy();
+        $this->assertCount(3, $feedBackInlinesArray);
+        $this->assertEquals('Right answer is Vegetable' ,$feedBackInlinesArray[0]->getContent()[0]->getContent());
+        $this->assertEquals('Right answer is fruit' ,$feedBackInlinesArray[1]->getContent()[0]->getContent());
+        $this->assertEquals('Right answer is Color' ,$feedBackInlinesArray[2]->getContent()[0]->getContent());
+        
         $this->assertNotNull($interaction->getComponentsByClassName('feedbackInline', true));
         
         /** @var InlineChoiceInteraction $interactionOne */
