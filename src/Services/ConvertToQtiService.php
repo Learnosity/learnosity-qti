@@ -157,7 +157,6 @@ class ConvertToQtiService
     // Traverse the -i option and find all paths with files
     private function parseInputFolders() {
         $folders = [];
-
         // Look for json files in the current path
         $finder = new Finder();
         $finder->files()->in($this->inputPath . '/activities');
@@ -174,7 +173,6 @@ class ConvertToQtiService
                 $this->output->writeln("<error>Error converting : No item refrences found in the activity json</error>");
             }
         }
-
         return $folders;
     }
 
@@ -196,8 +194,10 @@ class ConvertToQtiService
         $tagsArray = [];
         $content = $json['content'];
         $tags = $json['tags'];
+        $itemReference = $json['reference'];
         foreach($json['questions'] as $question):
             $question['content'] = $content;
+            $question['itemreference'] = $itemReference;
             if (in_array($question['data']['type'], LearnosityExportConstant::$supportedQuestionTypes)) {
                 $result = Converter::convertLearnosityToQtiItem($question);
                 $result[0] = str_replace('/vendor/learnosity/itembank/','',$result[0]);
@@ -307,20 +307,11 @@ class ConvertToQtiService
         }
         $imsMetaMetaDataSchema->appendChild($imsManifestXml->createElement('imsmd:language', LearnosityExportConstant::IMSQTI_LANG));
         
-        $imsRights = $imsManifestXml->createElement('imsmd:rights');
-        $imsDescription = $imsManifestXml->createElement('imsmd:description');
-        $imsDescriptionValue = $imsManifestXml->createElement('imsmd:string', LearnosityExportConstant::IMSQTI_RIGHTS);
-        $imsDescriptionValue->setAttribute('xml:lang', LearnosityExportConstant::IMSQTI_LANG);
-        $imsDescription->appendChild($imsDescriptionValue);
-        $imsRights->appendChild($imsDescription);
-        
-        
         $schemaVersion = $imsManifestXml->createElement("schemaversion", $manifestMetadataContent->getSchemaversion());
         $manifestMetadata->appendChild($schemaVersion);
         $manifestMetadata->appendChild($qtiMetaData);
         $manifestMetadata->appendChild($qtiLOMData);
         $manifestMetadata->appendChild($imsMetaMetaDataSchema);
-        $manifestMetadata->appendChild($imsRights);
         return $manifestMetadata;
     }
     
@@ -375,8 +366,8 @@ class ConvertToQtiService
     
     private function createImsManifestMetaData(){
         $manifestMetaData = new ImsManifestMetadata();
-        $manifestMetaData->setSchema("QTIv2.1 Item Bank Package");
-        $manifestMetaData->setSchemaversion("1.0.0");
+        $manifestMetaData->setSchema(LearnosityExportConstant::SCHEMA_NAME);
+        $manifestMetaData->setSchemaversion(LearnosityExportConstant::SCHEMA_VERSION);
         $manifestMetaData->setTitle("QTI 2.1 Conversion Data");
         $manifestMetaData->setQtiMetadata('ABCVD');
         return $manifestMetaData;

@@ -14,10 +14,9 @@ class QuestionMapper
         // TODO: Type and data should definitely exists
         // Map the `data` attribute
         $questionTypeClassName = 'LearnosityQti\Entities\QuestionTypes\\' . $questionJson['data']['type'];
-
         /** @var BaseQuestionType $questionType */
         $questionType = EntityBuilder::build($questionTypeClassName, $questionJson['data']);
-        return new Question($questionJson['data']['type'], $questionJson['reference'], $questionType);
+        return new Question($questionJson['data']['type'], $questionJson['reference'], $questionType, $questionJson['itemreference']);
     }
 
     public function parseDataOnly(array $questionDataJson)

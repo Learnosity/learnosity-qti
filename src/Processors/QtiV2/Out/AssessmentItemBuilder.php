@@ -34,7 +34,11 @@ class AssessmentItemBuilder
     public function build($itemIdentifier, $itemLabel, array $questions, $content = '')
     {
         // Initialise our <assessmentItem>
+        
         $assessmentItem = new AssessmentItem($itemIdentifier, $itemIdentifier, false);
+        if(isset($questions[0])) {
+            $itemLabel = $questions[0]->get_item_reference();
+        }
         $assessmentItem->setLabel($itemLabel);
         $assessmentItem->setOutcomeDeclarations($this->buildOutcomeDeclarations());
         $assessmentItem->setToolName('Learnosity');
