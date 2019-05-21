@@ -32,7 +32,7 @@ class ImsManifestMetadata {
     function setTitle($title) {
         $this->title = $title;
     }
-    
+
     function getQtiMetadata() {
         return $this->qtiMetadata;
     }

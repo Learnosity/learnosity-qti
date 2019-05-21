@@ -31,12 +31,11 @@ class AssessmentItemBuilder
         $this->itemBodyBuilder = new ItemBodyBuilder();
     }
 
-    public function build($itemIdentifier, $itemLabel, array $questions, $content = '')
-    {
+    public function build($itemIdentifier, $itemLabel, array $questions, $content = '') {
         // Initialise our <assessmentItem>
-        
+
         $assessmentItem = new AssessmentItem($itemIdentifier, $itemIdentifier, false);
-        if(isset($questions[0])) {
+        if (isset($questions[0])) {
             $itemLabel = $questions[0]->get_item_reference();
         }
         $assessmentItem->setLabel($itemLabel);
