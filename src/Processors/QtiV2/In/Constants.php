@@ -26,5 +26,5 @@ class Constants
         'drawingInteraction'
     ];
     
-    public static $learnosityImagePath = 'https://assets.learnosity.com/organisations/';
+    public static $baseLearnosityAssetsUrl = 'https://assets.learnosity.com/organisations/';
 }

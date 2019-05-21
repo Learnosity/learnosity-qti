@@ -153,7 +153,7 @@ class ItemMapper
             $itemBuilder->setItemPointValue($metadata['point_value']);
         }
         
-        if(isset($metadata['organisation_id'])){
+        if (isset($metadata['organisation_id'])) {
             $itemBuilder->setOrganisationId($metadata['organisation_id']);
         }
         

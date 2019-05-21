@@ -90,7 +90,7 @@ class HotspotInteractionMapper extends AbstractInteractionMapper
     private function buildHotspotImage(ObjectElement $imageObject)
     {
         $imageArray = explode('/',$imageObject->getData());
-        $imageBaseUrl = Constants::$learnosityImagePath.$this->organisationId."/".end($imageArray);
+        $imageBaseUrl = Constants::$baseLearnosityAssetsUrl.$this->organisationId."/".end($imageArray);
         $image = new hotspot_image();
         $image->set_source($imageBaseUrl);
         $image->set_height($imageObject->getHeight());
