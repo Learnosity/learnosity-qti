@@ -96,16 +96,15 @@ class ConvertToLearnosityService
      * Performs a conversion on each directory (one level deep)
      * inside the given source directory.
      */
-    private function parseContentPackage()
-    {
+    private function parseContentPackage() {
         $manifestFolders = $this->parseInputFolders();
-        
+
         $finalManifest = $this->getJobManifestTemplate();
-        
+
         foreach ($manifestFolders as $dir) {
             $tempDirectoryParts = explode('/', dirname($dir));
-            $dirName = $tempDirectoryParts[count($tempDirectoryParts)-1];
-            
+            $dirName = $tempDirectoryParts[count($tempDirectoryParts) - 1];
+
             $results = $this->convertQtiContentPackagesInDirectory(dirname($dir), $dirName);
             // if (!isset($results['qtiitems'])) {
             //     continue;
@@ -209,15 +208,14 @@ class ConvertToLearnosityService
      *
      * @return array
      */
-    private function getItemResourcesByHrefFromDocument(\DOMDocument $manifestDoc)
-    {
+    private function getItemResourcesByHrefFromDocument(\DOMDocument $manifestDoc) {
         $itemResources = [];
         $resources = $manifestDoc->getElementsByTagName('resource');
-        
+
         while (($resource = $resources->item(0)) != null) {
             $resourceHref = $resource->getAttribute('href');
             $resourceType = $resource->getAttribute('type');
-             
+
             if ($resourceType === static::RESOURCE_TYPE_ITEM) {
                 $itemResources[] = [
                     'href' => $resourceHref,
@@ -290,18 +288,17 @@ class ConvertToLearnosityService
      *
      * @return array
      */
-    private function getTaxonPathEntryForItemTags(\DOMNode $resource)
-    {
+    private function getTaxonPathEntryForItemTags(\DOMNode $resource) {
         $xpath = new \DOMXPath($resource->ownerDocument);
         $xpath->registerNamespace('lom', 'http://ltsc.ieee.org/xsd/LOM');
         $xpath->registerNamespace('qti', 'http://www.imsglobal.org/xsd/imscp_v1p1');
 
         $searchResult = $xpath->query('.//lom:taxonPath', $resource);
         $itemTagsArray = array();
-        foreach($searchResult as $search){
-            $tagName = $xpath->query('.//lom:source/lom:string', $search)->item(0)->textContent."\n";
-            $tagValues = $xpath->query('.//lom:taxon/lom:entry/lom:string', $search)->item(0)->textContent."\n";
-            if(!empty(trim($tagValues))){
+        foreach ($searchResult as $search) {
+            $tagName = $xpath->query('.//lom:source/lom:string', $search)->item(0)->textContent . "\n";
+            $tagValues = $xpath->query('.//lom:taxon/lom:entry/lom:string', $search)->item(0)->textContent . "\n";
+            if (!empty(trim($tagValues))) {
                 $tagValuesArray = explode(',', rtrim($tagValues));
                 $itemTagsArray[rtrim($tagName)] = $tagValuesArray;
             }
