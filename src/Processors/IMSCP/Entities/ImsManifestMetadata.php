@@ -1,43 +1,51 @@
 <?php
-
 namespace LearnosityQti\Processors\IMSCP\Entities;
 
-class ImsManifestMetadata {
+class ImsManifestMetadata
+{
 
     private $schema;
     private $schemaversion;
     private $title;
     private $qtiMetadata;
 
-    function getSchema() {
+    function getSchema()
+    {
         return $this->schema;
     }
 
-    function getSchemaversion() {
+    function getSchemaversion()
+    {
         return $this->schemaversion;
     }
 
-    function getTitle() {
+    function getTitle()
+    {
         return $this->title;
     }
 
-    function setSchema($schema) {
+    function setSchema($schema)
+    {
         $this->schema = $schema;
     }
 
-    function setSchemaversion($schemaversion) {
+    function setSchemaversion($schemaversion)
+    {
         $this->schemaversion = $schemaversion;
     }
 
-    function setTitle($title) {
+    function setTitle($title)
+    {
         $this->title = $title;
     }
 
-    function getQtiMetadata() {
+    function getQtiMetadata()
+    {
         return $this->qtiMetadata;
     }
 
-    function setQtiMetadata($qtiMetadata) {
+    function setQtiMetadata($qtiMetadata)
+    {
         $this->qtiMetadata = $qtiMetadata;
     }
 }

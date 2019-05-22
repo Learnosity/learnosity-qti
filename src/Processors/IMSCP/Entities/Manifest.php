@@ -1,27 +1,29 @@
 <?php
-
 namespace LearnosityQti\Processors\IMSCP\Entities;
 
 class Manifest
 {
+
     protected $identifier;
     protected $resources;
     protected $metadata;
     protected $organizations;
     protected $manifest;
     protected $imsManifestMetadata;
-    
+
     /**
      * @return mixed
      */
-    function getImsManifestMetadata() {
+    function getImsManifestMetadata()
+    {
         return $this->imsManifestMetadata;
     }
-    
+
     /**
      * @param mixed $imsManifestMetadata
      */
-    function setImsManifestMetadata(ImsManifestMetadata $imsManifestMetadata) {
+    function setImsManifestMetadata(ImsManifestMetadata $imsManifestMetadata)
+    {
         $this->imsManifestMetadata = $imsManifestMetadata;
     }
 

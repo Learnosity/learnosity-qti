@@ -1,7 +1,9 @@
 <?php
 namespace LearnosityQti\Utils\General;
 
-class CopyDirectoreyHelper {
+class CopyDirectoreyHelper
+{
+
     /**
      * Copy a file, or recursively copy a folder and its contents
      *
@@ -9,7 +11,8 @@ class CopyDirectoreyHelper {
      * @param       string   $dest      Destination path
      * @return      bool     Returns TRUE on success, FALSE on failure
      */
-    public static function copyFiles($source, $dest) {
+    public static function copyFiles($source, $dest)
+    {
         // Check for symlinks
         if (is_link($source)) {
             return symlink(readlink($source), $dest);

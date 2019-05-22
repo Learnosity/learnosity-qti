@@ -1,5 +1,4 @@
 <?php
-
 namespace LearnosityQti\Processors\Learnosity\In;
 
 use LearnosityQti\Entities\BaseQuestionType;
@@ -8,7 +7,9 @@ use LearnosityQti\Utils\UuidUtil;
 
 class QuestionMapper
 {
-    public function parse(array $questionJson) {
+
+    public function parse(array $questionJson)
+    {
         // TODO: Some validation to check all the required keys exists
         // TODO: Type and data should definitely exists
         // Map the `data` attribute

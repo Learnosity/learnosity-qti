@@ -496,7 +496,7 @@ class ConvertToQtiService
         }
         return $imsmdLom;
     }
-    
+
     /**
      * Add any additional file info is associated with resource
      * 
@@ -515,7 +515,7 @@ class ConvertToQtiService
         }
         return $files;
     }
-    
+
     /**
      * This function will add additional file info in resource part of manifest xml
      * 

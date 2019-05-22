@@ -1,5 +1,4 @@
 <?php
-
 namespace LearnosityQti\Processors\QtiV2\Out;
 
 use LearnosityQti\Entities\Question;
@@ -19,6 +18,7 @@ use qtism\data\state\ValueCollection;
 
 class AssessmentItemBuilder
 {
+
     const MAPPER_CLASS_BASE = 'LearnosityQti\Processors\QtiV2\Out\QuestionTypes\\';
 
     /**
@@ -31,7 +31,8 @@ class AssessmentItemBuilder
         $this->itemBodyBuilder = new ItemBodyBuilder();
     }
 
-    public function build($itemIdentifier, $itemLabel, array $questions, $content = '') {
+    public function build($itemIdentifier, $itemLabel, array $questions, $content = '')
+    {
         // Initialise our <assessmentItem>
 
         $assessmentItem = new AssessmentItem($itemIdentifier, $itemIdentifier, false);
@@ -101,7 +102,7 @@ class AssessmentItemBuilder
         // Try to use question `reference` as identifier
         // Otherwise, generate an alternative identifier and store the original reference as `label` to be passed in
         $questionReference = $question->get_reference();
-        $interactionIdentifier = Format::isIdentifier($questionReference, false) ? $questionReference : strtoupper($type)  . '_' . StringUtil::generateRandomString(12);
+        $interactionIdentifier = Format::isIdentifier($questionReference, false) ? $questionReference : strtoupper($type) . '_' . StringUtil::generateRandomString(12);
         if ($interactionIdentifier !== $questionReference) {
             LogService::log(
                 "The question `reference` ($questionReference) is not a valid identifier. " .
