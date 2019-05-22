@@ -99,21 +99,25 @@ class ConvertToLearnosityCommand extends Command
 
             $Convert = ConvertToLearnosityService::initClass($inputPath, $outputPath, $output, $organisationId);
 
-            $Convert->useMetadataIdentifier = true;
-            $Convert->useResourceIdentifier = false;
-            $Convert->useFileNameAsIdentifier = false;
+            $useMetadataIdentifier = $Convert->getMetadataIdentifier();
+            $useResourceIdentifier = $Convert->getResourceIdentifier();
+            $useFileNameAsIdentifier = $Convert->getFileNameAsIdentifier();
+            
+            $useMetadataIdentifier = true;
+            $useResourceIdentifier = false;
+            $useFileNameAsIdentifier = false;
             if ($itemReferenceSource === 'item') {
-                $Convert->useMetadataIdentifier = false;
-                $Convert->useResourceIdentifier = false;
-                $Convert->useFileNameAsIdentifier = false;
+                $useMetadataIdentifier = false;
+                $useResourceIdentifier = false;
+                $useFileNameAsIdentifier = false;
             } elseif ($itemReferenceSource === 'filename') {
-                $Convert->useMetadataIdentifier = false;
-                $Convert->useResourceIdentifier = false;
-                $Convert->useFileNameAsIdentifier = true;
+                $useMetadataIdentifier = false;
+                $useResourceIdentifier = false;
+                $useFileNameAsIdentifier = true;
             } elseif ($itemReferenceSource === 'resource') {
-                $Convert->useMetadataIdentifier = false;
-                $Convert->useResourceIdentifier = true;
-                $Convert->useFileNameAsIdentifier = false;
+                $useMetadataIdentifier = false;
+                $useResourceIdentifier = true;
+                $useFileNameAsIdentifier = false;
             }
 
 

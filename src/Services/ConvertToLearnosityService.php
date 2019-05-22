@@ -83,6 +83,21 @@ class ConvertToLearnosityService
     {
         return $this->inputPath;
     }
+    
+    public function getMetadataIdentifier()
+    {
+        return $this->useMetadataIdentifier;
+    }
+    
+    public function getResourceIdentifier()
+    {
+        return $this->useResourceIdentifier;
+    }
+    
+    public function getFileNameAsIdentifier()
+    {
+        return $this->useFileNameAsIdentifier;
+    }
 
     public function process()
     {
