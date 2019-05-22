@@ -1,5 +1,4 @@
 <?php
-
 namespace LearnosityQti\Commands;
 
 use LearnosityQti\Services\ConvertToLearnosityService;
@@ -11,6 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ConvertToLearnosityCommand extends Command
 {
+
     protected function configure()
     {
         $this
@@ -18,25 +18,13 @@ class ConvertToLearnosityCommand extends Command
             ->setDescription('Converts Learnosity JSON to QTI v2.1')
             ->setHelp('Converts QTI v2.1 to Learnosity JSON, expects to run on folder(s) with a imsmanifest.xml file')
             ->addOption(
-                'input',
-                'i',
-                InputOption::VALUE_REQUIRED,
-                'The input path to your QTI content',
-                './data/input'
+                'input', 'i', InputOption::VALUE_REQUIRED, 'The input path to your QTI content', './data/input'
             )
             ->addOption(
-                'output',
-                'o',
-                InputOption::VALUE_REQUIRED,
-                'An output path where the Learnosity JSON will be saved',
-                './data/output'
+                'output', 'o', InputOption::VALUE_REQUIRED, 'An output path where the Learnosity JSON will be saved', './data/output'
             )
             ->addOption(
-                'organisation_id',
-                '',
-                InputOption::VALUE_REQUIRED,
-                'The identifier of the item bank you want to import content into',
-                ''
+                'organisation_id', '', InputOption::VALUE_REQUIRED, 'The identifier of the item bank you want to import content into', ''
             )
         ;
     }
@@ -87,7 +75,7 @@ class ConvertToLearnosityCommand extends Command
                 "  <info>mo convert:to:learnosity --input /path/to/qti --output /path/to/save/folder --organisation_id [integer]</info>"
             ]);
         } else {
-            $Convert = new ConvertToLearnosityService($inputPath, $outputPath, $output, $organisationId);
+            $Convert = ConvertToLearnosityService::initClass($inputPath, $outputPath, $output, $organisationId);
             $result = $Convert->process();
             if ($result['status'] === false) {
                 $output->writeln('<error>Error running job</error>');

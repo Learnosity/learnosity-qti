@@ -1,12 +1,15 @@
 <?php
-
 namespace LearnosityQti\Processors\QtiV2\In\Interactions;
 
 use LearnosityQti\Entities\QuestionTypes\mcq;
+use LearnosityQti\Entities\QuestionTypes\mcq_metadata;
 use LearnosityQti\Entities\QuestionTypes\mcq_ui_style;
+use LearnosityQti\Services\ConvertToLearnosityService;
+use LearnosityQti\Utils\HtmlExtractorUtil;
 use LearnosityQti\Utils\QtiMarshallerUtil;
 use LearnosityQti\Processors\QtiV2\In\Validation\ChoiceInteractionValidationBuilder;
 use LearnosityQti\Services\LogService;
+use qtism\data\content\FeedbackInline;
 use qtism\data\content\interactions\Orientation;
 use qtism\data\content\interactions\Prompt;
 use qtism\data\content\interactions\SimpleChoice;
@@ -15,13 +18,20 @@ use qtism\data\content\interactions\ChoiceInteraction as QtiChoiceInteraction;
 
 class ChoiceInteractionMapper extends AbstractInteractionMapper
 {
+
     public function getQuestionType()
     {
         /* @var QtiChoiceInteraction $interaction */
         $interaction = $this->interaction;
 
         $options = $this->buildOptions($interaction->getSimpleChoices());
+        $metadata = $this->buildFeedbackMetadata($interaction->getSimpleChoices());
         $mcq = new mcq('mcq', $options);
+
+        // Support for @mcq-metadata
+        $metaData = new mcq_metadata();
+        $metaData->set_distractor_rationale_response_level($metadata);
+        $mcq->set_metadata($metaData);
 
         // Support for @shuffle
         $mustShuffle = $interaction->mustShuffle();
@@ -65,10 +75,7 @@ class ChoiceInteractionMapper extends AbstractInteractionMapper
 
         // Build validation
         $validationBuilder = new ChoiceInteractionValidationBuilder(
-            $this->responseDeclaration,
-            array_column($options, 'label', 'value'),
-            $maxChoices,
-            $this->outcomeDeclarations
+            $this->responseDeclaration, array_column($options, 'label', 'value'), $maxChoices, $this->outcomeDeclarations
         );
         $validation = $validationBuilder->buildValidation($this->responseProcessingTemplate);
         if (!empty($validation)) {
@@ -89,5 +96,48 @@ class ChoiceInteractionMapper extends AbstractInteractionMapper
             ];
         }
         return $options;
+    }
+
+    private function buildFeedbackMetadata(SimpleChoiceCollection $simpleChoices)
+    {
+        /* @var $choice SimpleChoice */
+        $metadata = [];
+        foreach ($simpleChoices as $key => $choice) {
+            $flow = $choice->getContent();
+            $class = new \ReflectionClass(get_class($flow));
+            if (property_exists($flow, 'dataPlaceHolder')) {
+                $property = $class->getProperty('dataPlaceHolder');
+                $property->setAccessible(true);
+                $feed = $property->getValue($flow);
+                $count = 0;
+                foreach ($feed as $feeddata) {
+                    if ($feeddata instanceof FeedbackInline) {
+                        $count++;
+                        $feeddataArray = array_values((array) $feeddata);
+                        $feedbackArray = array_values((array) $feeddataArray[3]);
+                        if (sizeof($feedbackArray[0]) >= 2) {
+                            $feedInlineArray = array_values((array) $feedbackArray[0][1]);
+                            if (!empty($feedInlineArray) && $feedInlineArray[2] == 'text/html') {
+                                $learnosityServiceObject = ConvertToLearnosityService::getInstance();
+                                $inputPath = $learnosityServiceObject->getInputpath();
+                                $htmlfile = $inputPath . '/' . $feedInlineArray[1];
+                                $metadata[] = HtmlExtractorUtil::getHtmlData(realpath($htmlfile));
+                            }
+                        } else {
+                            $feeddataArray = array_values((array) $feedbackArray[0][0]);
+                            if (!empty($feeddataArray[0])) {
+                                $metadata[] = trim($feeddataArray[0]);
+                            } else {
+                                $metadata[] = "";
+                            }
+                        }
+                    }
+                }
+                if ($count == 0) {
+                    $metadata[] = "";
+                }
+            }
+        }
+        return $metadata;
     }
 }

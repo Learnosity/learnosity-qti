@@ -1,17 +1,18 @@
 <?php
-
 namespace LearnosityQti\Utils;
 
 use DOMDocument;
 use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Processors\QtiV2\Marshallers\LearnosityMarshallerFactory;
+use LearnosityQti\Services\ConvertToLearnosityService;
 use qtism\data\content\TextRun;
 use qtism\data\QtiComponent;
 use qtism\data\QtiComponentCollection;
 use qtism\data\storage\xml\marshalling\Qti21MarshallerFactory;
 
-class QtiMarshallerUtil
+class QtiMarshallerUtil extends ConvertToLearnosityService
 {
+
     public static function unmarshallElement($string)
     {
         try {
@@ -56,9 +57,23 @@ class QtiMarshallerUtil
     {
         $results = [];
         foreach ($collection as $component) {
-            $results[] = self::marshall($component);
+            $html = '';
+            $class = new \ReflectionClass(get_class($component));
+            if (property_exists($component, 'data')) {
+                $property = $class->getProperty('data');
+                $property->setAccessible(true);
+                $learnosityServiceObject = QtiMarshallerUtil::getInstance();
+                $inputPath = $learnosityServiceObject->getInputpath();
+                $file = $inputPath . '/' . $property->getValue($component);
+                if (file_exists($file)) {
+                    $html = HtmlExtractorUtil::getHtmlData(realpath($file));
+                } else {
+                    echo 'File not found: ' . $file . "\n";
+                }
+                continue;
+            }
         }
-        return implode('', $results);
+        return $html;
     }
 
     public static function marshall(QtiComponent $component)
@@ -84,7 +99,7 @@ class QtiMarshallerUtil
     {
         $marshallerFactory = new Qti21MarshallerFactory();
         $marshaller = $marshallerFactory->createMarshaller($component);
-        $element    = $marshaller->marshall($component);
+        $element = $marshaller->marshall($component);
 
         $dom = new \DOMDocument();
         $dom->preserveWhiteSpace = false;
