@@ -10,7 +10,7 @@ use qtism\data\QtiComponent;
 use qtism\data\QtiComponentCollection;
 use qtism\data\storage\xml\marshalling\Qti21MarshallerFactory;
 
-class QtiMarshallerUtil extends ConvertToLearnosityService
+class QtiMarshallerUtil
 {
 
     public static function unmarshallElement($string)
@@ -62,7 +62,7 @@ class QtiMarshallerUtil extends ConvertToLearnosityService
             if (property_exists($component, 'data')) {
                 $property = $class->getProperty('data');
                 $property->setAccessible(true);
-                $learnosityServiceObject = QtiMarshallerUtil::getInstance();
+                $learnosityServiceObject = ConvertToLearnosityService::getInstance();
                 $inputPath = $learnosityServiceObject->getInputpath();
                 $file = $inputPath . '/' . $property->getValue($component);
                 if (file_exists($file)) {
