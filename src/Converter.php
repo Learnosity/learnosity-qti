@@ -1,5 +1,6 @@
 <?php
 namespace LearnosityQti;
+
 use Exception;
 use LearnosityQti\Entities\Item\item;
 use LearnosityQti\Entities\Question;
@@ -22,13 +23,16 @@ use qtism\data\storage\xml\XmlDocument;
 use qtism\data\storage\xml\XmlStorageException;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+
 class Converter
 {
+
     const INPUT_FORMAT_QTIV2P1 = 'qtiv2p1';
     const OUTPUT_FORMAT_LRN_JSON = 'json';
     const LEARNOSITY_DATA_ITEM = 'item';
     const LEARNOSITY_DATA_QUESTION = 'question';
     const LEARNOSITY_DATA_QUESTION_DATA = 'questiondata';
+
     public static function convertImscpDirectoryToLearnosityDirectory($imscpDirectory, $learnosityDirectory, $baseAssetsUrl = '', $validate = true)
     {
         // Brute extract all images from the target IMSCP folder
@@ -36,9 +40,7 @@ class Converter
         $learnosityImagesDirectory = $learnosityDirectory . '/Images';
         FileSystemUtil::createOrReplaceDir($learnosityImagesDirectory);
         $allImages = array_merge(
-            self::extractFiles('*.jpg', $imscpDirectory, $learnosityImagesDirectory),
-            self::extractFiles('*.jpeg', $imscpDirectory, $learnosityImagesDirectory),
-            self::extractFiles('*.gif', $imscpDirectory, $learnosityImagesDirectory)
+            self::extractFiles('*.jpg', $imscpDirectory, $learnosityImagesDirectory), self::extractFiles('*.jpeg', $imscpDirectory, $learnosityImagesDirectory), self::extractFiles('*.gif', $imscpDirectory, $learnosityImagesDirectory)
         );
         // Brute extract all the xml excepts imsmanifest.xml
         $itemReferences = [];
@@ -83,6 +85,7 @@ class Converter
         }
         return $itemReferences;
     }
+
     private static function extractFiles($filename, $searchDirectory, $resultDirectory)
     {
         $filenames = [];
@@ -94,6 +97,7 @@ class Converter
         }
         return $filenames;
     }
+
     public static function convertQtiManifestToLearnosity($xmlString, array $rules = [])
     {
         /** @var ManifestMapper $manifestMapper */
@@ -110,6 +114,7 @@ class Converter
             throw new MappingException($e->getMessage());
         }
     }
+
     public static function convertQtiTestToLearnosity($xmlString, $validate = true)
     {
         $testMapper = AppContainer::getApplicationContainer()->get('qtiv2_test_mapper');
@@ -130,6 +135,7 @@ class Converter
         $activityData = $activityWriter->convert($activity);
         return [$activityData, $exceptions];
     }
+
     public static function convertQtiPassageToLearnosity($xmlString)
     {
         $exceptions = null;
@@ -159,6 +165,7 @@ class Converter
         }
         return [$widgetData, $exceptions];
     }
+
     public static function convertQtiItemToLearnosity($xmlString, $baseAssetsUrl = '', $validate = true, $filePath = null, $customItemReference = null, $metadata = [])
     {
         $itemMapper = AppContainer::getApplicationContainer()->get('qtiv2_item_mapper');
@@ -181,7 +188,7 @@ class Converter
                 $item->set_reference($customItemReference);
             }
             if (!empty($rubricItem)) {
-                $rubricItem->set_reference($item->get_reference().'_rubric');
+                $rubricItem->set_reference($item->get_reference() . '_rubric');
                 $item->get_metadata()->rubric_reference = $rubricItem->get_reference();
                 foreach ($questions as $question) {
                     $questionMetadata = $question->get_data()->get_metadata();
@@ -236,16 +243,17 @@ class Converter
             'rubric' => $rubricItemData,
         ];
     }
+
     public static function convertLearnosityToQtiItem(array $data)
     {
         $jsonType = self::guessLearnosityJsonDataType($data);
         // Handle `item` which contains both a single item and one or more questions/features
         if ($jsonType === self::LEARNOSITY_DATA_ITEM) {
             list($xmlString, $messages) = self::convertLearnosityItem($data);
-        // Handle if just question
+            // Handle if just question
         } elseif ($jsonType === self::LEARNOSITY_DATA_QUESTION) {
             list($xmlString, $messages) = self::convertLearnosityQuestion($data);
-        // Handle if just question data
+            // Handle if just question data
         } elseif ($jsonType === self::LEARNOSITY_DATA_QUESTION_DATA) {
             list($xmlString, $messages) = self::convertLearnosityQuestionData($data);
         } else {
@@ -260,6 +268,7 @@ class Converter
         }
         return [$xmlString, $messages];
     }
+
     private static function convertLearnosityQuestion(array $questionJson)
     {
         $preprocessingService = new LearnosityToQtiPreProcessingService();
@@ -268,6 +277,7 @@ class Converter
         $question = $questionMapper->parse($preprocessingService->processJson($questionJson));
         return $questionWriter->convert($question);
     }
+
     private static function convertLearnosityQuestionData(array $questionDataJson)
     {
         $preprocessingService = new LearnosityToQtiPreProcessingService();
@@ -276,6 +286,7 @@ class Converter
         $question = $questionMapper->parseDataOnly($preprocessingService->processJson($questionDataJson));
         return $questionWriter->convert($question);
     }
+
     private static function convertLearnosityItem(array $itemJson)
     {
         // Separate question(s) and item
@@ -292,8 +303,8 @@ class Converter
         $questions = [];
         foreach ($questionsJson as $question) {
             $question['reference'] = $question['response_id'];
-            
-            if (!in_array($question['data']['type'],['audioplayer','videoplayer','sharedpassage'])) {
+
+            if (!in_array($question['data']['type'], ['audioplayer', 'videoplayer', 'sharedpassage'])) {
                 $questions[] = $questionMapper->parse($question);
             }
         }
@@ -301,6 +312,7 @@ class Converter
         $itemWriter = new ItemWriter();
         return $itemWriter->convert($item, $questions);
     }
+
     private static function guessLearnosityJsonDataType(array $data)
     {
         if ($data == null) {

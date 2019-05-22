@@ -1,5 +1,6 @@
 <?php
 namespace LearnosityQti\Processors\QtiV2\Out\QuestionTypes;
+
 use LearnosityQti\Entities\QuestionTypes\mcq_ui_style;
 use LearnosityQti\Processors\QtiV2\Out\Validation\McqValidationBuilder;
 use LearnosityQti\Entities\BaseQuestionType;
@@ -18,8 +19,10 @@ use qtism\data\content\interactions\ChoiceInteraction;
 use qtism\data\content\interactions\Orientation;
 use qtism\data\content\interactions\SimpleChoice;
 use qtism\data\content\interactions\SimpleChoiceCollection;
+
 class McqMapper extends AbstractQuestionTypeMapper
 {
+
     public function convert(BaseQuestionType $questionType, $interactionIdentifier, $interactionLabel)
     {
         /** @var mcq $question */
@@ -29,10 +32,10 @@ class McqMapper extends AbstractQuestionTypeMapper
         $simpleChoiceCollection = new SimpleChoiceCollection();
         $inlineCollection = new InlineCollection();
         $metadata = $question->get_metadata();
-       
-        if(isset($metadata) && !empty($metadata->get_distractor_rationale_response_level())){
+
+        if (isset($metadata) && !empty($metadata->get_distractor_rationale_response_level())) {
             $feedbackOptions = [];
-            foreach($metadata->get_distractor_rationale_response_level() as $feed):
+            foreach ($metadata->get_distractor_rationale_response_level() as $feed):
                 $feedbackOptions[] = $feed;
             endforeach;
         }
@@ -41,12 +44,12 @@ class McqMapper extends AbstractQuestionTypeMapper
             /** @var mcq_options_item $option */
             $choiceContent = new FlowStaticCollection();
             foreach (QtiMarshallerUtil::unmarshallElement($option->get_label()) as $component) {
-                
+
                 $choiceContent->attach($component);
                 // attach feedbackInline to simpleChoice
-                if(isset($feedbackOptions) && $feedbackOptions[$i]!=''){
+                if (isset($feedbackOptions) && $feedbackOptions[$i] != '') {
                     $content = new InlineCollection(array(new TextRun($feedbackOptions[$i])));
-                    $feedback = new FeedbackInline('FEEDBACK','CHOICE_'.$option->get_value(),'true');
+                    $feedback = new FeedbackInline('FEEDBACK', 'CHOICE_' . $option->get_value(), 'true');
                     $feedback->setContent($content);
                     $choiceContent->attach($feedback);
                 }
@@ -84,12 +87,12 @@ class McqMapper extends AbstractQuestionTypeMapper
             return [$interaction, null, null];
         }
         $builder = new McqValidationBuilder($question->get_multiple_responses(), $valueIdentifierMap);
-        if(isset($feedbackOptions) && !empty($feedbackOptions)){
-            list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation(),$feedbackOptions);
-        }else{
-            list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation(),[]);
+        if (isset($feedbackOptions) && !empty($feedbackOptions)) {
+            list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation(), $feedbackOptions);
+        } else {
+            list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation(), []);
         }
-        
+
         return [$interaction, $responseDeclaration, $responseProcessing];
     }
 }

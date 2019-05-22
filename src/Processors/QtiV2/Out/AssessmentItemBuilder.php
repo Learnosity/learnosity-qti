@@ -1,5 +1,6 @@
 <?php
 namespace LearnosityQti\Processors\QtiV2\Out;
+
 use LearnosityQti\Entities\Question;
 use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Services\LogService;
@@ -14,19 +15,24 @@ use qtism\data\state\OutcomeDeclarationCollection;
 use qtism\data\state\ResponseDeclarationCollection;
 use qtism\data\state\Value;
 use qtism\data\state\ValueCollection;
+
 class AssessmentItemBuilder
 {
+
     const MAPPER_CLASS_BASE = 'LearnosityQti\Processors\QtiV2\Out\QuestionTypes\\';
+
     /**
      * @var ItemBodyBuilder
      */
     private $itemBodyBuilder;
+
     public function __construct()
     {
         $this->itemBodyBuilder = new ItemBodyBuilder();
         // to add multiple outcomedeclaration in case of feedback
         $this->outcomeDeclarationCollection = new OutcomeDeclarationCollection();
     }
+
     public function build($itemIdentifier, $itemLabel, array $questions, $content = '')
     {
         // Initialise our <assessmentItem>
@@ -40,13 +46,13 @@ class AssessmentItemBuilder
         $responseProcessingTemplates = [];
         foreach ($questions as $question) {
             $questionData = $question->to_array();
-            if(isset($questionData['data']['validation']['valid_response']['score'])){  
-                $score = $questionData['data']['validation']['valid_response']['score']; 
+            if (isset($questionData['data']['validation']['valid_response']['score'])) {
+                $score = $questionData['data']['validation']['valid_response']['score'];
                 $assessmentItem->setOutcomeDeclarations($this->buildOutcomeDeclarations($score));
-            }else{
+            } else {
                 $assessmentItem->setOutcomeDeclarations($this->buildOutcomeDeclarations(0));
             }
-            if(isset($questionData['data']['metadata']['distractor_rationale_response_level'])){
+            if (isset($questionData['data']['metadata']['distractor_rationale_response_level'])) {
                 $assessmentItem->setOutcomeDeclarations($this->buildFeedbackOutcomeDeclarations());
             }
             /** @var Question $question */
@@ -62,12 +68,11 @@ class AssessmentItemBuilder
                     $responseDeclarationCollection->attach($responseDeclaration);
                 }
             }
-            
+
             if (!empty($responseProcessing)) {
-                
+
                 /** @var ResponseProcessing $responseProcessing */
                 $responseProcessingTemplates[] = $responseProcessing->getTemplate();
-                
             }
             $interactions[$question->get_reference()]['interaction'] = $interaction;
             if (!empty($extraContent)) {
@@ -83,13 +88,13 @@ class AssessmentItemBuilder
         // Map <responseProcessing> - combine response processing from questions
         // TODO: Tidy up this stuff
         if (!empty($responseProcessingTemplates)) {
-            if(!empty($responseProcessingTemplates[0])){
+            if (!empty($responseProcessingTemplates[0])) {
                 $templates = array_unique($responseProcessingTemplates);
                 $isOnlyMatchCorrect = count($templates) === 1 && $templates[0] === Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT;
                 $responseProcessing = new ResponseProcessing();
                 $responseProcessing->setTemplate($isOnlyMatchCorrect ? Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT : Constants::RESPONSE_PROCESSING_TEMPLATE_MAP_RESPONSE);
                 $assessmentItem->setResponseProcessing($responseProcessing);
-            }else{
+            } else {
                 //$responseProcess = new ResponseProcessing();
                 //$responseProcess->setResponseRules($responseProcessing);
                 $assessmentItem->setResponseProcessing($responseProcessing);
@@ -97,6 +102,7 @@ class AssessmentItemBuilder
         }
         return $assessmentItem;
     }
+
     private function map(Question $question)
     {
         $type = $question->get_type();
@@ -108,18 +114,19 @@ class AssessmentItemBuilder
         // Try to use question `reference` as identifier
         // Otherwise, generate an alternative identifier and store the original reference as `label` to be passed in
         $questionReference = $question->get_reference();
-        $interactionIdentifier = Format::isIdentifier($questionReference, false) ? $questionReference : strtoupper($type)  . '_' . StringUtil::generateRandomString(12);
+        $interactionIdentifier = Format::isIdentifier($questionReference, false) ? $questionReference : strtoupper($type) . '_' . StringUtil::generateRandomString(12);
         /* if ($interactionIdentifier !== $questionReference) {
-            LogService::log(
-                "The question `reference` ($questionReference) is not a valid identifier. " .
-                "Replaced it with randomly generated `$interactionIdentifier` and stored the original `reference` as `label` attribute"
-            );
-        } */
+          LogService::log(
+          "The question `reference` ($questionReference) is not a valid identifier. " .
+          "Replaced it with randomly generated `$interactionIdentifier` and stored the original `reference` as `label` attribute"
+          );
+          } */
         $interactionIdentifier = 'RESPONSE';
         $result = $questionTypeMapper->convert($question->get_data(), $interactionIdentifier, $questionReference);
         $result[] = $questionTypeMapper->getExtraContent();
         return $result;
     }
+
     private function buildOutcomeDeclarations($score)
     {
         // Set <outcomeDeclaration> with assumption default value is always 0
@@ -132,6 +139,7 @@ class AssessmentItemBuilder
         $outcomeDeclarationCollection->attach($outcomeDeclaration);
         return $outcomeDeclarationCollection;
     }
+
     private function buildFeedbackOutcomeDeclarations()
     {
         // Set <outcomeDeclaration> with  FEEDBACK identifier 

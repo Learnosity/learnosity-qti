@@ -1,10 +1,13 @@
 <?php
 namespace LearnosityQti\Processors\Learnosity\In;
+
 use LearnosityQti\Entities\BaseQuestionType;
 use LearnosityQti\Entities\Question;
 use LearnosityQti\Utils\UuidUtil;
+
 class QuestionMapper
 {
+
     public function parse(array $questionJson)
     {
         // TODO: Some validation to check all the required keys exists
@@ -15,6 +18,7 @@ class QuestionMapper
         $questionType = EntityBuilder::build($questionTypeClassName, $questionJson['data']);
         return new Question($questionJson['data']['type'], $questionJson['reference'], $questionType);
     }
+
     public function parseDataOnly(array $questionDataJson)
     {
         $questionJson = [
