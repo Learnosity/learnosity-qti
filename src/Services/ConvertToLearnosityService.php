@@ -96,7 +96,8 @@ class ConvertToLearnosityService
      * Performs a conversion on each directory (one level deep)
      * inside the given source directory.
      */
-    private function parseContentPackage() {
+    private function parseContentPackage()
+    {
         $manifestFolders = $this->parseInputFolders();
 
         $finalManifest = $this->getJobManifestTemplate();
@@ -208,7 +209,8 @@ class ConvertToLearnosityService
      *
      * @return array
      */
-    private function getItemResourcesByHrefFromDocument(\DOMDocument $manifestDoc) {
+    private function getItemResourcesByHrefFromDocument(\DOMDocument $manifestDoc)
+    {
         $itemResources = [];
         $resources = $manifestDoc->getElementsByTagName('resource');
 
@@ -288,7 +290,8 @@ class ConvertToLearnosityService
      *
      * @return array
      */
-    private function getTaxonPathEntryForItemTags(\DOMNode $resource) {
+    private function getTaxonPathEntryForItemTags(\DOMNode $resource)
+    {
         $xpath = new \DOMXPath($resource->ownerDocument);
         $xpath->registerNamespace('lom', 'http://ltsc.ieee.org/xsd/LOM');
         $xpath->registerNamespace('qti', 'http://www.imsglobal.org/xsd/imscp_v1p1');
