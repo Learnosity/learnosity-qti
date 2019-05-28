@@ -27,7 +27,7 @@ class QtiResponseProcessingBuilder
     {
 
         $responseRuleCollection = new ResponseRuleCollection();
-        
+
         // creating feedback outcome
         if (sizeof($feedBackOptions) > 1) {
             $multipleExpression = new ExpressionCollection();
@@ -192,7 +192,6 @@ class QtiResponseProcessingBuilder
 
             // creating expression of scores for final score
             $sumexpressionCollection->attach(new Variable('SCORE' . $i));
-
             $i++;
         }
 
