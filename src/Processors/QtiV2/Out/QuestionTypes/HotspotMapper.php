@@ -67,7 +67,7 @@ class HotspotMapper extends AbstractQuestionTypeMapper
     private function buildMainImageObject(hotspot_image $image)
     {
         $imageSrc = $image->get_source();
-        $imageObject = new Object($imageSrc, MimeUtil::guessMimeType($imageSrc));
+        $imageObject = new ObjectElement($imageSrc, MimeUtil::guessMimeType($imageSrc));
 
         $imageWidth = null;
         $imageHeight = null;

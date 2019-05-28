@@ -96,6 +96,10 @@ class GapMatchInteractionValidationBuilder extends BaseInteractionValidationBuil
         $responseIndexSet = [];
         $responses = [];
 
+        // FIXME: Remove this hard-coded variable and implement handling of mode
+        // for map response template validation
+        $mode = 'exactMatch';
+
         foreach ($this->responseDeclaration->getMapping()->getMapEntries() as $mapEntry) {
             /** @var MapEntry $mapEntry */
             /** @var QtiDirectedPair $mapKey */
