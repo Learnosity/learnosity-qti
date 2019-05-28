@@ -1,5 +1,4 @@
 <?php
-
 namespace LearnosityQti\Processors\QtiV2\Out\QuestionTypes;
 
 use LearnosityQti\Entities\BaseQuestionType;
@@ -17,9 +16,9 @@ use qtism\data\content\TextRun;
 use qtism\data\content\xhtml\text\Div;
 use qtism\data\content\xhtml\text\P;
 
-
 class ClozetextMapper extends AbstractQuestionTypeMapper
 {
+
     private $extraContent;
 
     public function convert(BaseQuestionType $questionType, $interactionIdentifier, $interactionLabel)
@@ -29,32 +28,31 @@ class ClozetextMapper extends AbstractQuestionTypeMapper
 
         // Extra text that can't be mapped since we are in textEntryInteraction which does not have prompt
         $stimulus = $question->get_stimulus();
-        $this->extraContent = "<div>".$stimulus."</div>";
-        
+        $this->extraContent = "<div>" . $stimulus . "</div>";
+
         // Check if distractor_rationale_response_level exists
         $feedbackOptions = [];
         $metadata = $question->get_metadata();
-        if(isset($metadata)){
-            
+        if (isset($metadata)) {
+
             $feedbackOptions = $metadata->get_distractor_rationale_response_level();
-            if(!empty($feedbackOptions)){
-                $p = new P();
+            if (!empty($feedbackOptions)) {
                 $choiceContent = new FlowCollection();
                 $i = 1;
-                foreach($feedbackOptions as $feedback){
+                foreach ($feedbackOptions as $feedback) {
                     $content = new InlineCollection(array(new TextRun($feedback)));
-                    $feedbackinline = new FeedbackInline('FEEDBACK','IDENTIFIER_'.$i,'true');
+                    $feedbackinline = new FeedbackInline('FEEDBACK', 'IDENTIFIER_' . $i, 'true');
                     $feedbackinline->setContent($content);
                     $choiceContent->attach($feedbackinline);
                     $i++;
                 }
             }
-            
-            if(!empty($metadata->get_distractor_rationale())){
+
+            if (!empty($metadata->get_distractor_rationale())) {
                 $feedbackOptions['genral_feedback'] = $metadata->get_distractor_rationale();
             }
         }
-        
+
         // Replace {{ response }} with `textEntryInteraction` elements
         $maxLength = !is_null($question->get_max_length()) ? intval($question->get_max_length()) : 15; // Set default to `15` if not set
         $index = 0;
@@ -63,7 +61,7 @@ class ClozetextMapper extends AbstractQuestionTypeMapper
             $interactionIdentifier,
             $interactionLabel,
             $maxLength
-        ) {
+            ) {
             $interactionIdentifier = $interactionIdentifier . '_' . $index;
             $interaction = new TextEntryInteraction($interactionIdentifier);
             $interaction->setLabel($interactionLabel);
@@ -72,28 +70,28 @@ class ClozetextMapper extends AbstractQuestionTypeMapper
             $replacement = QtiMarshallerUtil::marshall($interaction);
             return $replacement;
         }, $question->get_template());
-        
+
         // Wrap this interaction in a block since our `clozetext` `template` meant to be blocky and not inline
         $interactionContent = ContentCollectionBuilder::buildFlowCollectionContent(QtiMarshallerUtil::unmarshallElement($template));
         $div = new Div();
         $div->setClass('lrn-template');
         $contentCollection = QtiMarshallerUtil::unmarshallElement($this->extraContent);
-        $extracontent = ContentCollectionBuilder::buildFlowCollectionContent($contentCollection); 
+        $extracontent = ContentCollectionBuilder::buildFlowCollectionContent($contentCollection);
         $div->setContent($extracontent);
-        
+
         $content = new FlowCollection();
         $content->merge($extracontent);
         $content->merge($interactionContent);
-        if(isset($choiceContent)){
+        if (isset($choiceContent)) {
             $content->merge($choiceContent);
         }
         $div->setContent($content);
-        
+
         // Build validation
         $isCaseSensitive = is_null($question->get_case_sensitive()) ? true : $question->get_case_sensitive();
         $validationBuilder = new ClozetextValidationBuilder($isCaseSensitive);
-        list($responseDeclaration, $responseProcessing) = $validationBuilder->buildValidation($interactionIdentifier, $question->get_validation(),$feedbackOptions ,$isCaseSensitive);
-        
+        list($responseDeclaration, $responseProcessing) = $validationBuilder->buildValidation($interactionIdentifier, $question->get_validation(), $feedbackOptions, $isCaseSensitive);
+
         return [$div, $responseDeclaration, $responseProcessing];
     }
 

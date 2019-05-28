@@ -1,5 +1,4 @@
 <?php
-
 namespace LearnosityQti\Processors\QtiV2\Out\QuestionTypes;
 
 use LearnosityQti\Entities\BaseQuestionType;
@@ -7,14 +6,20 @@ use LearnosityQti\Entities\QuestionTypes\choicematrix;
 use LearnosityQti\Processors\QtiV2\Out\ContentCollectionBuilder;
 use LearnosityQti\Processors\QtiV2\Out\Validation\ChoicematrixValidationBuilder;
 use LearnosityQti\Utils\QtiMarshallerUtil;
+use qtism\data\content\FlowCollection;
+use qtism\data\content\FeedbackInline;
+use qtism\data\content\InlineCollection;
 use qtism\data\content\interactions\MatchInteraction;
 use qtism\data\content\interactions\SimpleAssociableChoice;
 use qtism\data\content\interactions\SimpleAssociableChoiceCollection;
 use qtism\data\content\interactions\SimpleMatchSet;
 use qtism\data\content\interactions\SimpleMatchSetCollection;
+use qtism\data\content\TextRun;
+use qtism\data\content\xhtml\text\Div;
 
 class ChoicematrixMapper extends AbstractQuestionTypeMapper
 {
+
     public function convert(BaseQuestionType $question, $interactionIdentifier, $interactionLabel)
     {
         /** @var choicematrix $question */
@@ -22,6 +27,15 @@ class ChoicematrixMapper extends AbstractQuestionTypeMapper
         $isMultipleResponses = !empty($question->get_multiple_responses()) ? $question->get_multiple_responses() : false;
         $optionCount = count($question->get_options());
         $stemCount = count($question->get_stems());
+
+        // Check if distractor_rationale_response_level exists
+        $feedbackOptions = [];
+        $metadata = $question->get_metadata();
+        if (isset($metadata)) {
+            if (!empty($metadata->get_distractor_rationale())) {
+                $feedbackOptions['genral_feedback'] = $metadata->get_distractor_rationale();
+            }
+        }
 
         // Append the two sets of choices, the first set defines the source choices and the second set the targets
         $simpleMatchCollection = new SimpleMatchSetCollection();
@@ -35,18 +49,17 @@ class ChoicematrixMapper extends AbstractQuestionTypeMapper
         $interaction->setPrompt($this->convertStimulusForPrompt($question->get_stimulus()));
         $interaction->setLabel($interactionLabel);
         $interaction->setShuffle(false); // No support for shuffling
-
         // If multiple response set then student is allowed to put 1 association (tick 1 box) or (optionCount * stemCount) association (tick all the boxes)
         $interaction->setMaxAssociations($isMultipleResponses ? ($optionCount * $stemCount) : $stemCount);
         $interaction->setMinAssociations($isMultipleResponses ? 1 : $stemCount);
 
         $builder = new ChoicematrixValidationBuilder($stemIndexIdentifierMap, $optionIndexIdentifierMap);
-        list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation());
-
+        list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation(), $feedbackOptions);
         return [$interaction, $responseDeclaration, $responseProcessing];
+        
     }
 
-    private function buildStemCollection(choicematrix $question, $isMultipleResponses, $optionCount)
+    private function buildStemCollection(choicematrix $question, $isMultipleResponses, $optionCount, $feedbackOptions = array())
     {
         $stemIndexIdentifierMap = [];
         $stemCollection = new SimpleAssociableChoiceCollection();
@@ -67,7 +80,7 @@ class ChoicematrixMapper extends AbstractQuestionTypeMapper
         $optionIndexIdentifierMap = [];
         $optionCollection = new SimpleAssociableChoiceCollection();
         foreach ($question->get_options() as $key => $optionValue) {
-            // Learnosity's `choicematrix` always have its options to have any number of associable choice, thus setting to stems count
+            // Learnosity's 'choicematrix' always have its options to have any number of associable choice, thus setting to stems count
             // Same as above, won't validate upon empty response, thus setting match min to 1
             $optionChoice = new SimpleAssociableChoice('OPTION_' . $key, $stemCount);
             $optionChoice->setMatchMin(1);
