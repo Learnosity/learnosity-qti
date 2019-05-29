@@ -3,12 +3,15 @@
 namespace LearnosityQti\Services;
 
 use LearnosityQti\Exceptions\MappingException;
+use LearnosityQti\Processors\QtiV2\Out\Constants;
 use LearnosityQti\Processors\QtiV2\Out\ContentCollectionBuilder;
 use LearnosityQti\Utils\MimeUtil;
 use LearnosityQti\Utils\QtiMarshallerUtil;
 use LearnosityQti\Utils\SimpleHtmlDom\SimpleHtmlDom;
 use LearnosityQti\Utils\StringUtil;
+use qtism\data\content\FlowCollection;
 use qtism\data\content\xhtml\ObjectElement;
+use qtism\data\content\xhtml\text\Div;
 
 class LearnosityToQtiPreProcessingService
 {
@@ -80,11 +83,14 @@ class LearnosityToQtiPreProcessingService
                 return QtiMarshallerUtil::marshallValidQti($object);
 
             } else if ($type === 'sharedpassage') {
+                $flowCollection = new FlowCollection();
+                $div = $this->createDivForSharedPassage();
                 $content = $feature['data']['content'];
-                $object = new Object('', 'text/html');
-                $object->setContent(ContentCollectionBuilder::buildObjectFlowCollectionContent(QtiMarshallerUtil::unmarshallElement($content)));
+                $object = new ObjectElement('sharedpassage/'.$featureReference.'.html', 'text/html');
                 $object->setLabel($featureReference);
-                return QtiMarshallerUtil::marshallValidQti($object);
+                $flowCollection->attach($object);
+                $div->setContent($flowCollection);
+                return QtiMarshallerUtil::marshallValidQti($div);
             }
         }
         throw new MappingException($type . ' not supported');
@@ -103,5 +109,11 @@ class LearnosityToQtiPreProcessingService
         }
         // TODO: throw exception
         return null;
+    }
+    
+    private function createDivForSharedPassage(){
+        $div = new Div();
+        $div->setClass(Constants::SHARED_PASSAGE_DIV_CLASS);
+        return $div;
     }
 }

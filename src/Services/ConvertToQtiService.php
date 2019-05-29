@@ -32,6 +32,7 @@ class ConvertToQtiService
     const CONVERT_LOG_FILENAME = 'converttoqti.log';
     const MANIFEST_FILE_NAME = 'imsmanifest.xml';
     const IMS_CONTENT_PACKAGE_NAME = 'imsqti.zip';
+    const SHARED_PASSAGE_FOLDER_NAME = 'sharedpassage';
 
     protected $inputPath;
     protected $outputPath;
@@ -130,7 +131,6 @@ class ConvertToQtiService
                 $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Learnosity JSON file ".basename($file). " Not found in: {$this->inputPath}/items </info>");
             }
         }
-        
         $resourceInfo = $this->updateJobManifest($finalManifest, $results);
         $finalManifest->setResources($resourceInfo);
         $this->persistResultsFile($results, realpath($this->outputPath) . '/' . $this->rawPath . '/');
@@ -204,8 +204,13 @@ class ConvertToQtiService
         }
         $finalXml = [];
         $content = $json['content'];
+        $features = $json['features'];
+        if(is_array($features) && sizeof($features) > 0) {
+            $this->createSharedPassageFolder($this->outputPath . '/' . $this->rawPath);
+        }
         foreach($json['questions'] as $question):
             $question['content'] = $content;
+            $question['feature'] = $features;
             if (in_array($question['data']['type'], LearnosityExportConstant::$supportedQuestionTypes)) {
                 $result = Converter::convertLearnosityToQtiItem($question);
                 $result[0] = str_replace('/vendor/learnosity/itembank/','',$result[0]);
@@ -231,7 +236,7 @@ class ConvertToQtiService
      *
      * @param array $manifest
      */
-    private function flushJobManifest(Manifest $manifestContent)
+    private function flushJobManifest(Manifest $manifestContent, array $results)
     {
         $manifestFileBasename = static::MANIFEST_FILE_NAME;
         $imsManifestXml = new DOMDocument("1.0", "UTF-8");
@@ -266,7 +271,7 @@ class ConvertToQtiService
         // Create recursive directory iterator
         /** @var SplFileInfo[] $files */
         $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($rootPath, true), RecursiveIteratorIterator::LEAVES_ONLY);
-            
+          
         foreach ($files as $name => $file) {
             // Skip directories (they would be added automatically)
             if (!$file->isDir()) {
@@ -341,6 +346,22 @@ class ConvertToQtiService
         $manifestMetaData->setTitle("QTI 2.1 Conversion Data");
         return $manifestMetaData;
     }
+    
+    private function createSharedPassageFolder($path)
+    {
+        // Desired folder structure
+        $structure = $path."//".self::SHARED_PASSAGE_FOLDER_NAME;
+
+        // To create the nested structure, the $recursive parameter 
+        // to mkdir() must be specified.
+        if (!file_exists($structure)) {
+            mkdir($structure, 0777, true);
+        } 
+        else 
+        {
+            $this->output->writeln("<error>sharedpassage directorey already created.</error>");
+        }
+    }
 
     /**
      * Writes a given results file to the specified output path.
@@ -378,7 +399,11 @@ class ConvertToQtiService
     private function updateJobManifest(Manifest $manifest, array $results)
     {
         $resources = array();
-        $additionalFileReferenceInfo = $this->getAdditionalFileInfoForManifestResource();
+        $featureArray = array();
+        if(is_array($results) && isset($results[0]['qti']) && is_array($results[0]['qti'][0][2])) {
+            $featureArray = $results[0]['qti'][0][2];
+        }
+        $additionalFileReferenceInfo = $this->getAdditionalFileInfoForManifestResource($results);
         foreach ($results as $result) {
             foreach($result['json']['questions'] as $question){
                 if (!empty($result['qti'])) {
@@ -389,6 +414,9 @@ class ConvertToQtiService
                     $resource->setHref($question['reference'].".xml");
                     if(array_key_exists($question['reference'], $additionalFileReferenceInfo)){
                         $files = $this->addAdditionalFileInfo($additionalFileReferenceInfo[$question['reference']], $files);
+                    }
+                    if(sizeof($featureArray) > 0 && array_key_exists($question['reference'], $featureArray)) {
+                        $files = $this->addFeatureHtmlFilesInfo($featureArray[$question['reference']], $files);
                     }
                     $file = new File();
                     $file->setHref($question['reference'].".xml");
@@ -401,6 +429,18 @@ class ConvertToQtiService
         return $resources;
     }
     
+    private function addFeatureHtmlFilesInfo($featureHtmlArray, array $files)
+    {
+        foreach ($featureHtmlArray as $featureId => $featureHtml) {
+            if (file_put_contents($this->outputPath . '/' . $this->rawPath . '/' . self::SHARED_PASSAGE_FOLDER_NAME . '/' . $featureId . '.html', $featureHtml)) {
+                $file = new File();
+                $file->setHref(self::SHARED_PASSAGE_FOLDER_NAME . '/' . $featureId . '.html');
+                $files[] = $file;
+            }
+        }
+        return $files;
+    }
+    
     private function addAdditionalFileInfo($filesInfo, $files){
         foreach($filesInfo as $id=>$info){
             $file = new File();
@@ -411,26 +451,28 @@ class ConvertToQtiService
         return $files;
     }
     
-    private function getAdditionalFileInfoForManifestResource(){
+    
+    
+    private function getAdditionalFileInfoForManifestResource(array $results){
         $itemsReferenseArray = $this->itemReference;
         $learnosityManifestJson = json_decode(file_get_contents($this->inputPath. '/manifest.json'));
         $additionalFileInfoArray = array();
         if(isset($learnosityManifestJson->assets->items)) {
         $activityArray = $learnosityManifestJson->assets->items;
-        
             foreach($activityArray as $itemReference=>$itemValue){
                 $questionArray = $itemValue;
                 if(is_object($questionArray->questions)){
                     foreach($questionArray->questions as $questionKey=>$questionValue){
                         $valueArray = array();
                         foreach($questionValue as $questions=>$value){
-                        $valueArray[] = $value->replacement;
+                            $valueArray[] = $value->replacement;
                         }
                         $additionalFileInfoArray[$questionKey] = $valueArray;
                     }
                 }
             }
         }
+        
         return $additionalFileInfoArray;
     }
 

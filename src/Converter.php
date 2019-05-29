@@ -261,13 +261,13 @@ class Converter
         //echo $jsonType; die;
         // Handle `item` which contains both a single item and one or more questions/features
         if ($jsonType === self::LEARNOSITY_DATA_ITEM) {
-            list($xmlString, $messages) = self::convertLearnosityItem($data);
+            list($xmlString, $messages, $featureHtml) = self::convertLearnosityItem($data);
         // Handle if just question
         } elseif ($jsonType === self::LEARNOSITY_DATA_QUESTION) {
-            list($xmlString, $messages) = self::convertLearnosityQuestion($data);
+            list($xmlString, $messages, $featureHtml) = self::convertLearnosityQuestion($data);
         // Handle if just question data
         } elseif ($jsonType === self::LEARNOSITY_DATA_QUESTION_DATA) {
-            list($xmlString, $messages) = self::convertLearnosityQuestionData($data);
+            list($xmlString, $messages, $featureHtml) = self::convertLearnosityQuestionData($data);
         } else {
             throw new \Exception('Unknown JSON format');
         }
@@ -280,12 +280,13 @@ class Converter
             LogService::log('Unknown error occurred. The QTI XML produced may not be valid');
         }
 
-        return [$xmlString, $messages];
+        return [$xmlString, $messages, $featureHtml];
     }
 
     private static function convertLearnosityQuestion(array $questionJson)
     {
-        $preprocessingService = new LearnosityToQtiPreProcessingService();
+        
+        $preprocessingService = new LearnosityToQtiPreProcessingService($questionJson['feature']);
         $questionMapper = new QuestionMapper();
         $questionWriter = new QuestionWriter();
         
