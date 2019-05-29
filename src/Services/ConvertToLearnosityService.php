@@ -187,12 +187,17 @@ class ConvertToLearnosityService
                     $metadata['point_value'] = $itemPointValue;
                 }
 
+                
+                $metadata['organisation_id'] = $this->organisationId;
+                
                 if (isset($itemReference)) {
                     $this->output->writeln("<comment>Converting assessment item {$itemReference}: $relativeDir/$resourceHref</comment>");
                 } else {
                     $this->output->writeln("<comment>Converting assessment item {$itemCount}: $relativeDir/$resourceHref</comment>");
                 }
+
                 $convertedContent = $this->convertAssessmentItemInFile($assessmentItemContents, $itemReference, $metadata, $currentDir, $resourceHref, $itemTagsArray);
+              
                 if (!empty($convertedContent)) {
                     $results['qtiitems'][basename($relativeDir).'/'.$resourceHref] = $convertedContent;
                 }
