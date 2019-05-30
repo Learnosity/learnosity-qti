@@ -15,12 +15,14 @@ abstract class AbstractInteractionMapper
     protected $responseDeclaration;
     protected $responseProcessingTemplate;
     protected $outcomeDeclarations;
+    protected $organisationId;
 
     public function __construct(
         Interaction $interaction,
         ResponseDeclaration $responseDeclaration = null,
         ResponseProcessingTemplate $responseProcessingTemplate = null,
-        OutcomeDeclarationCollection $outcomeDeclarations = null
+        OutcomeDeclarationCollection $outcomeDeclarations = null,
+        $organisationId = ''
     ) {
         $this->interaction = $interaction;
         $this->responseDeclaration = $responseDeclaration;
@@ -31,6 +33,7 @@ abstract class AbstractInteractionMapper
         $this->responseProcessingTemplate = $responseProcessingTemplate;
 
         $this->outcomeDeclarations = $outcomeDeclarations;
+        $this->organisationId = $organisationId;
     }
 
     abstract public function getQuestionType();
