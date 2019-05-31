@@ -9,6 +9,9 @@ use qtism\common\datatypes\QtiDirectedPair;
 use qtism\common\enums\BaseType;
 use qtism\common\enums\Cardinality;
 use qtism\data\state\CorrectResponse;
+use qtism\data\state\MapEntry;
+use qtism\data\state\MapEntryCollection;
+use qtism\data\state\Mapping;
 use qtism\data\state\ResponseDeclaration;
 use qtism\data\state\Value;
 use qtism\data\state\ValueCollection;
@@ -30,24 +33,28 @@ class ImageclozeassociationValidationBuilder extends AbstractQuestionValidationB
 
         /** @var imageclozeassociation_validation $validation */
         $validationValues = $validation->get_valid_response()->get_value();
-        $validationScore = $validation->get_valid_response()->get_score();
+        $validationScore = floatval($validation->get_valid_response()->get_score());
 
         // Build correct response
         // Try to handle `null` values in `valid_response` `value`s
         $values = new ValueCollection();
+        $mapEntriesCollection = new MapEntryCollection();
         foreach ($validationValues as $index => $validResponse) {
             if (!isset($this->possibleResponsesMap[$validResponse])) {
-                throw new MappingException('Invalid or missing valid response `' . $validResponse . '``');
+                throw new MappingException('Invalid or missing valid response' . $validResponse . '``');
             }
             if (!empty($validResponse)) {
                 $first = ImageclozeassociationMapper::ASSOCIABLEHOTSPOT_IDENTIFIER_PREFIX . $index;
                 $second = ImageclozeassociationMapper::GAPIMG_IDENTIFIER_PREFIX . $this->possibleResponsesMap[$validResponse];
                 $values->attach(new Value(new QtiDirectedPair($first, $second)));
+                $mapEntriesCollection->attach(new MapEntry(new QtiDirectedPair($first, $second), $validationScore));
             }
         }
+        
         if ($values->count() > 0) {
             $correctResponse = new CorrectResponse($values);
             $responseDeclaration->setCorrectResponse($correctResponse);
+            $responseDeclaration->setMapping(new Mapping($mapEntriesCollection));
         }
         return $responseDeclaration;
     }

@@ -56,8 +56,9 @@ class ConvertToQtiService
     protected $useResourceIdentifier      = false;
 
     private $assetsFixer;
+    private static $instance = null;
 
-    public function __construct($inputPath, $outputPath, OutputInterface $output, $format, $organisationId = null)
+    private function __construct($inputPath, $outputPath, OutputInterface $output, $format, $organisationId = null)
     {
         $this->inputPath      = $inputPath;
         $this->outputPath     = $outputPath;
@@ -68,6 +69,27 @@ class ConvertToQtiService
         $this->logPath        = 'log';
         $this->rawPath        = 'raw';
         $this->itemReference = array();
+    }
+    
+    // The object is created from within the class itself
+    // only if the class has no instance.
+    public static function initClass($inputPath, $outputPath, OutputInterface $output, $organisationId = null)
+    {
+        if (!self::$instance) {
+            self::$instance = new ConvertToQtiService($inputPath, $outputPath, $output, $organisationId);
+        }
+        return self::$instance;
+    }
+    
+    // Return instance of the class
+    public static function getInstance()
+    {
+        return self::$instance;
+    }
+    
+    public function getInputPath()
+    {
+        return $this->inputPath;
     }
 
     public function process()

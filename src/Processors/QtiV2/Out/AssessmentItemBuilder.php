@@ -70,7 +70,7 @@ class AssessmentItemBuilder
             $baseType = $this->getBaseType($questionData['type']);
             
             // add outcome declaration for FEEDBACK INLINE
-            if(isset($questionData['data']['metadata']['distractor_rationale_response_level'])){
+            if(isset($questionData['data']['metadata']['distractor_rationale_response_level']) && $questionType=='mcq'){
                $assessmentItem->setOutcomeDeclarations($this->buildFeedbackOutcomeDeclarations('FEEDBACK', Cardinality::MULTIPLE, $baseType));
             }
             

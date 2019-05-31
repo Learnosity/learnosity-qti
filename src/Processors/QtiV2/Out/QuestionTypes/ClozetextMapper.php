@@ -33,24 +33,9 @@ class ClozetextMapper extends AbstractQuestionTypeMapper
         // Check if distractor_rationale_response_level exists
         $feedbackOptions = [];
         $metadata = $question->get_metadata();
-        if (isset($metadata)) {
-
-            $feedbackOptions = $metadata->get_distractor_rationale_response_level();
-            if (!empty($feedbackOptions)) {
-                $choiceContent = new FlowCollection();
-                $i = 1;
-                foreach ($feedbackOptions as $feedback) {
-                    $content = new InlineCollection(array(new TextRun($feedback)));
-                    $feedbackinline = new FeedbackInline('FEEDBACK', 'IDENTIFIER_' . $i, 'true');
-                    $feedbackinline->setContent($content);
-                    $choiceContent->attach($feedbackinline);
-                    $i++;
-                }
-            }
-
-            if (!empty($metadata->get_distractor_rationale())) {
-                $feedbackOptions['genral_feedback'] = $metadata->get_distractor_rationale();
-            }
+        $feedbackOptions = [];
+        if(isset($metadata) && !empty($metadata->get_distractor_rationale())){
+            $feedbackOptions['genral_feedback'] = $metadata->get_distractor_rationale();
         }
 
         // Replace {{ response }} with `textEntryInteraction` elements

@@ -89,7 +89,7 @@ class ConvertToQtiCommand extends Command
                 "  <info>mo convert:to:qti -i /path/to/qti -o /path/to/save/folder -f qti|canvas</info>"
             ]);
         } else {
-            $Convert = new ConvertToQtiService($inputPath, $outputPath, $output , $format);
+            $Convert = ConvertToQtiService::initClass($inputPath, $outputPath, $output , $format);
             $result = $Convert->process();
             if ($result['status'] === false) {
                 $output->writeln('<error>Error running job</error>');

@@ -28,7 +28,9 @@ class imageclozeassociation extends BaseQuestionType {
     protected $img_src;
     protected $duplicate_responses;
     protected $shuffle_options;
-    
+    protected $possible_responses;
+
+
     public function __construct(
                     $type,
                                 imageclozeassociation_image $image,
@@ -340,6 +342,24 @@ class imageclozeassociation extends BaseQuestionType {
     */
     public function set_group_possible_responses ($group_possible_responses) {
         $this->group_possible_responses = $group_possible_responses;
+    }
+    
+    /**
+     * Get possible responses \
+     * @return PossibleResponses $possible_responses \
+     */
+    public function get_possible_responses()
+    {
+        return $this->possible_responses;
+    }
+
+    /**
+     * Set possible responses \
+     * @param PossibleResponses $possible_responses \
+     */
+    public function set_possible_responses($possible_responses)
+    {
+        $this->possible_responses = $possible_responses;
     }
 
     /**

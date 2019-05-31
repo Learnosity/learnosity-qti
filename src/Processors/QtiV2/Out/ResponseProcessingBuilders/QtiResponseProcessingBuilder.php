@@ -28,7 +28,7 @@ class QtiResponseProcessingBuilder
 
         $responseRuleCollection = new ResponseRuleCollection();
 
-        // creating feedback outcome
+        // creating feedbackInline outcome for questions which supports feedbackInline
         if (sizeof($feedBackOptions) > 1) {
             $multipleExpression = new ExpressionCollection();
             $variable = new Variable('FEEDBACK');
@@ -45,12 +45,6 @@ class QtiResponseProcessingBuilder
         $responseIfRuleCollection = new ResponseRuleCollection();
         $responseIfNullScoreComponent = new SetOutcomeValue('SCORE', new BaseValue(BaseType::FLOAT, 0.0));
         $responseIfRuleCollection->attach($responseIfNullScoreComponent);
-
-        // generate outcome value if distrator_rationale_value is set
-        if (is_array($feedBackOptions) && !empty($feedBackOptions['genral_feedback'])) {
-            $responseFeedbackComponent = new SetOutcomeValue('FEEDBACK_GENERAL', new BaseValue(BaseType::IDENTIFIER, 'correctOrIncorrect'));
-            $responseIfRuleCollection->attach($responseFeedbackComponent);
-        }
 
         // generating response else condition
         $responseElseRuleCollection = new ResponseRuleCollection();
@@ -84,13 +78,6 @@ class QtiResponseProcessingBuilder
         }
         $responseElseRuleCollection1->attach($responseElseComponent1);
 
-        // genrate outcome value if distrator_rationale_value is set
-        if (is_array($feedBackOptions) && !empty($feedBackOptions['genral_feedback'])) {
-            $responseFeedbackComponent = new SetOutcomeValue('FEEDBACK_GENERAL', new BaseValue(BaseType::IDENTIFIER, 'correctOrIncorrect'));
-            $responseIfRuleCollection1->attach($responseFeedbackComponent);
-            $responseElseRuleCollection1->attach($responseFeedbackComponent);
-        }
-
         $responseIf1 = new ResponseIf(new Match($responseIfexpressionCollection1), $responseIfRuleCollection1);
         $responseElse1 = new ResponseElse($responseElseRuleCollection1);
 
@@ -99,6 +86,12 @@ class QtiResponseProcessingBuilder
         $responseRuleCollection->attach($responseCondition);
         $responseElseRuleCollection->attach($responseCondition1);
 
+        // generate outcome value if distrator_rationale_value is set
+        if (is_array($feedBackOptions) && !empty($feedBackOptions['genral_feedback'])) {
+            $responseFeedbackComponent = new SetOutcomeValue('FEEDBACK_GENERAL', new BaseValue(BaseType::IDENTIFIER, 'correctOrIncorrect'));
+            $responseRuleCollection->attach($responseFeedbackComponent);
+        }
+        
         // set response rules to responseProcessing
         $responseProcessing = new ResponseProcessing();
         $responseProcessing->setResponseRules($responseRuleCollection);
