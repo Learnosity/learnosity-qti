@@ -67,7 +67,7 @@ class LearnosityToQtiPreProcessingService
             $src = trim($node->attr['data-src']);
             $type = trim($node->attr['data-type']);
             if ($type === 'audioplayer' || $type === 'audioplayer') {
-                return QtiMarshallerUtil::marshallValidQti(new Object($src, MimeUtil::guessMimeType(basename($src))));
+                return QtiMarshallerUtil::marshallValidQti(new ObjectElement($src, MimeUtil::guessMimeType(basename($src))));
             }
         // Process regular question feature
         } else {
@@ -78,7 +78,7 @@ class LearnosityToQtiPreProcessingService
 
             if ($type === 'audioplayer' || $type === 'audioplayer') {
                 $src = $feature['data']['src'];
-                $object = new Object($src, MimeUtil::guessMimeType(basename($src)));
+                $object = new ObjectElement($src, MimeUtil::guessMimeType(basename($src)));
                 $object->setLabel($featureReference);
                 return QtiMarshallerUtil::marshallValidQti($object);
 
@@ -86,7 +86,7 @@ class LearnosityToQtiPreProcessingService
                 $flowCollection = new FlowCollection();
                 $div = $this->createDivForSharedPassage();
                 $content = $feature['data']['content'];
-                $object = new ObjectElement('sharedpassage/'.$featureReference.'.html', 'text/html');
+                $object = new ObjectElement('sharedpassage/' . $featureReference . '.html', 'text/html');
                 $object->setLabel($featureReference);
                 $flowCollection->attach($object);
                 $div->setContent($flowCollection);

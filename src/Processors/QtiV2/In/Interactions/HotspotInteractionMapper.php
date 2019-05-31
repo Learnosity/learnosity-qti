@@ -7,6 +7,7 @@ use LearnosityQti\Entities\QuestionTypes\hotspot_area_attributes;
 use LearnosityQti\Entities\QuestionTypes\hotspot_area_attributes_global;
 use LearnosityQti\Entities\QuestionTypes\hotspot_image;
 use LearnosityQti\Exceptions\MappingException;
+use LearnosityQti\Processors\QtiV2\In\Constants;
 use LearnosityQti\Processors\QtiV2\In\Validation\HotspotInteractionValidationBuilder;
 use LearnosityQti\Services\LogService;
 use LearnosityQti\Utils\QtiMarshallerUtil;
@@ -86,16 +87,18 @@ class HotspotInteractionMapper extends AbstractInteractionMapper
         return $hotspot;
     }
 
-    private function buildHotspotImage(Object $imageObject)
+    private function buildHotspotImage(ObjectElement $imageObject)
     {
+        $imageArray = explode('/',$imageObject->getData());
+        $imageBaseUrl = Constants::$baseLearnosityAssetsUrl.$this->organisationId."/".end($imageArray);
         $image = new hotspot_image();
-        $image->set_source($imageObject->getData());
+        $image->set_source($imageBaseUrl);
         $image->set_height($imageObject->getHeight());
         $image->set_width($imageObject->getWidth());
         return $image;
     }
 
-    private function buildAreas(HotspotChoiceCollection $hotspotChoices, Object $imageObject)
+    private function buildAreas(HotspotChoiceCollection $hotspotChoices, ObjectElement $imageObject)
     {
         /* @var $choice HotspotChoice */
         $areas             = [];
@@ -114,7 +117,7 @@ class HotspotInteractionMapper extends AbstractInteractionMapper
         return $areas;
     }
 
-    private function transformCoordinates(QtiCoords $coords, $shape, Object $imageObject)
+    private function transformCoordinates(QtiCoords $coords, $shape, ObjectElement $imageObject)
     {
         $width  = $imageObject->getWidth();
         $height = $imageObject->getHeight();

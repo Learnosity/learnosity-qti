@@ -54,15 +54,21 @@ class RegularItemBuilder extends AbstractItemBuilder
             $outcomeDeclaration = $this->assessmentItem->getOutcomeDeclarations();
             $mapper = $this->getMapperInstance(
                 $component->getQtiClassName(),
-                [$component, $responseDeclaration, $responseProcessingTemplate, $outcomeDeclaration]
+                [$component, $responseDeclaration, $responseProcessingTemplate, $outcomeDeclaration, $this->organisationId]
             );
+            
             $question = $mapper->getQuestionType();
 
             $this->questions[$questionReference] = new Question($question->get_type(), $questionReference, $question);
+            
             $questionsXmls[$questionReference] = [
                 'qtiClassName' => $component->getQtiClassName(),
                 'responseIdentifier' => $component->getResponseIdentifier()
             ];
+        }
+
+        if (empty($this->questions)) {
+            LogService::log('Item contains no valid, supported questions');
         }
 
         // Build item's HTML content
@@ -91,7 +97,7 @@ class RegularItemBuilder extends AbstractItemBuilder
             // Clean up interaction HTML content
             foreach ($xpath->query('/itembody'.$toQuery) as $element) {
                 $elementRoot = $this->getElementHierarchyRoot($element, $dom->documentElement);
-
+                
                 // Write out the hierarchy structure to a new DOM to get the content
                 $newDom = new DOMDocument();
                 $newDom->preserveWhitespace = false;
@@ -104,6 +110,7 @@ class RegularItemBuilder extends AbstractItemBuilder
                     while (!is_null($nextNode = $nextNode->nextSibling)) {
                         $siblings[] = $nextNode;
                     }
+                    
                     foreach ($siblings as $siblingNode) {
                         $siblingNode->parentNode->removeChild($siblingNode);
                     }
@@ -147,24 +154,26 @@ class RegularItemBuilder extends AbstractItemBuilder
         }
 
         // Inject item content into stimulus per question
-        foreach ($questionHtmlContents as $questionReference => $content) {
-            $existingStimulus = $this->questions[$questionReference]->get_data()->get_stimulus();
-            // HACK: Replace placeholders in item content with <prompt> stimulus, and inject the whole thing
-            $newStimulus = str_replace($questionReference, $existingStimulus, $content);
-            $this->questions[$questionReference]->get_data()->set_stimulus($newStimulus);
+        if (!empty($this->questions)) {
+            foreach ($questionHtmlContents as $questionReference => $content) {
+                $existingStimulus = $this->questions[$questionReference]->get_data()->get_stimulus();
+                // HACK: Replace placeholders in item content with <prompt> stimulus, and inject the whole thing
+                $newStimulus = str_replace($questionReference, $existingStimulus, $content);
+                $this->questions[$questionReference]->get_data()->set_stimulus($newStimulus);
 
-            LogService::log('Extra <itemBody> content is prepended to question stimulus and please verify as this `might` break item content structure');
-        }
+                LogService::log('Extra <itemBody> content is prepended to question stimulus and please verify as this `might` break item content structure');
+            }
 
-        // Making assumption question always has stimulus `right`?
-        // So, prepend the extra content on the stimulus on the first question
-        if (!empty(trim($extraContent))) {
-            $firstQuestionReference = key($this->questions);
-            $existingStimulus = $this->questions[$firstQuestionReference]->get_data()->get_stimulus();
-            $newStimulus = $extraContent . $existingStimulus;
-            $this->questions[$firstQuestionReference]->get_data()->set_stimulus($newStimulus);
+            // Making assumption question always has stimulus `right`?
+            // So, prepend the extra content on the stimulus on the first question
+            if (!empty(trim($extraContent))) {
+                $firstQuestionReference = key($this->questions);
+                $existingStimulus = $this->questions[$firstQuestionReference]->get_data()->get_stimulus();
+                $newStimulus = $extraContent . $existingStimulus;
+                $this->questions[$firstQuestionReference]->get_data()->set_stimulus($newStimulus);
 
-            LogService::log('Extra <itemBody> content is prepended to question stimulus and please verify as this `might` break item content structure');
+                LogService::log('Extra <itemBody> content is prepended to question stimulus and please verify as this `might` break item content structure');
+            }
         }
 
         // TODO: Confirm that calling processRubricBlock after generating the item content won't break anything

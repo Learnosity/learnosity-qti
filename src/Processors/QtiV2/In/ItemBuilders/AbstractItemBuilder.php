@@ -24,7 +24,8 @@ abstract class AbstractItemBuilder
     protected $assessmentItem;
     protected $rubricData;
     protected $sourceDirectoryPath = null;
-
+    protected $organisationId = '';
+    
     // Used to describe the maximum possible score (used for rubrics)
     protected $itemPointValue;
     protected $foundScoringGuidanceRubric = false;
@@ -83,8 +84,10 @@ abstract class AbstractItemBuilder
     public function getQuestions()
     {
         // FIXME: Should this be getting set every time on read?
-        if (!empty($this->questionsMetadata)) {
+        
+       if (!empty($this->questionsMetadata)) {
             foreach ($this->questions as $question) {
+                
                 /** @var Question $question */
                 $data = $question->get_data();
                 $metadata = $data->get_metadata();
@@ -198,7 +201,12 @@ abstract class AbstractItemBuilder
     {
         $this->sourceDirectoryPath = $sourceDirectoryPath;
     }
-
+    
+    public function setOrganisationId($organisationId)
+    {
+        $this->organisationId = $organisationId;
+    }
+    
     protected function processRubricBlock(RubricBlock $rubricBlock)
     {
         $mapper = new RubricBlockMapper($this->sourceDirectoryPath);
