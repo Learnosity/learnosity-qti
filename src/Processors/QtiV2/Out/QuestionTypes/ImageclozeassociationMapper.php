@@ -96,7 +96,7 @@ class ImageclozeassociationMapper extends AbstractQuestionTypeMapper
                 // TODO: Validation these attributes exists
                 $src = $img[0]->src;
                 $imagesize = getimagesize(CurlUtil::prepareUrlForCurl($src));
-                $gapImageObject = new Object($src, $imagesize['mime']);
+                $gapImageObject = new ObjectElement($src, $imagesize['mime']);
                 $gapImageObject->setWidth($imagesize[0]);
                 $gapImageObject->setHeight($imagesize[1]);
                 // No `img` assuming its all text
@@ -113,6 +113,7 @@ class ImageclozeassociationMapper extends AbstractQuestionTypeMapper
     private function buildMainImageObject(imageclozeassociation_image $image)
     {
         $imageSrc = $image->get_src();
+
         $learnosityService = ConvertToQtiService::getInstance();
         $inputPath = $learnosityService->getInputPath();
         $imageRealPath = str_replace("/vendor/learnosity/itembank",$inputPath, $imageSrc); 

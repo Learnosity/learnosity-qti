@@ -25,21 +25,23 @@ class imageclozeassociation extends BaseQuestionType {
     protected $response_positions;
     protected $aria_labels;
     protected $group_possible_responses;
+    protected $possible_responses;
     protected $img_src;
     protected $duplicate_responses;
     protected $shuffle_options;
     protected $possible_responses;
 
-
     public function __construct(
                     $type,
                                 imageclozeassociation_image $image,
-                                array $response_positions
+                                array $response_positions,
+                                array $possible_responses
                         )
     {
                 $this->type = $type;
                 $this->image = $image;
                 $this->response_positions = $response_positions;
+                $this->possible_responses = $possible_responses;
             }
 
     /**
@@ -76,6 +78,24 @@ class imageclozeassociation extends BaseQuestionType {
     */
     public function set_metadata (imageclozeassociation_metadata $metadata) {
         $this->metadata = $metadata;
+    }
+
+    /**
+    * Get Possible Responses \
+    * The question possible_responses. Can include text, tables, images. \
+    * @return string $possible_responses \
+    */
+    public function get_possible_responses() {
+        return $this->possible_responses;
+    }
+
+    /**
+    * Set Possible Responses \
+    * The question possible_responses. Can include text, tables, images. \
+    * @param string $possible_responses \
+    */
+    public function set_possible_responses (array $possible_responses) {
+        $this->possible_responses = $possible_responses;
     }
 
     /**
@@ -416,9 +436,8 @@ class imageclozeassociation extends BaseQuestionType {
         $this->shuffle_options = $shuffle_options;
     }
 
-    
+
     public function get_widget_type() {
     return 'response';
     }
 }
-
