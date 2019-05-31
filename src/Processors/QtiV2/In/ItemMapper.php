@@ -59,7 +59,9 @@ class ItemMapper
         $assessmentItem = $this->getAssessmentItemFromXmlDocument($xmlDocument);
 
         // Convert the QTI assessment item into Learnosity output
+
         return $this->parseWithAssessmentItemComponent($assessmentItem, $sourceDirectoryPath, $metadata, $customItemReference);
+
     }
 
     /**
@@ -150,7 +152,11 @@ class ItemMapper
         if (isset($metadata['point_value'])) {
             $itemBuilder->setItemPointValue($metadata['point_value']);
         }
-
+        
+        if (isset($metadata['organisation_id'])) {
+            $itemBuilder->setOrganisationId($metadata['organisation_id']);
+        }
+        
         $itemBuilder->map(
             $itemReference,
             $itemBody,
@@ -168,6 +174,7 @@ class ItemMapper
         $rubric = $itemBuilder->getRubricItem();
 
         $questions = $itemBuilder->getQuestions();
+        
         $features = $itemBuilder->getFeatures();
 
         // Support additional (related) items being passed back

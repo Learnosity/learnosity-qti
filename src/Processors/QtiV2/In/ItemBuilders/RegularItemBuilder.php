@@ -55,12 +55,14 @@ class RegularItemBuilder extends AbstractItemBuilder
             $outcomeDeclaration = $this->assessmentItem->getOutcomeDeclarations();
             $mapper = $this->getMapperInstance(
                 $component->getQtiClassName(),
-                [$component, $responseDeclaration, $responseProcessingTemplate, $outcomeDeclaration]
+                [$component, $responseDeclaration, $responseProcessingTemplate, $outcomeDeclaration, $this->organisationId]
             );
+            
             $question = $mapper->getQuestionType();
             
             
             $this->questions[$questionReference] = new Question($question->get_type(), $questionReference, $question);
+            
             $questionsXmls[$questionReference] = [
                 'qtiClassName' => $component->getQtiClassName(),
                 'responseIdentifier' => $component->getResponseIdentifier()
@@ -95,7 +97,6 @@ class RegularItemBuilder extends AbstractItemBuilder
 
             $toQuery = '//'.strtolower($qtiClassName).'[@responseidentifier="'.$responseIdentifier.'"]';
             // Clean up interaction HTML content
-            
             //fetch each interaction content to get the stimulus 
             $appnodes = $xpath->query('/itembody'.$toQuery.'/preceding-sibling::*');
             
@@ -103,6 +104,46 @@ class RegularItemBuilder extends AbstractItemBuilder
             for($j=0;$j<$appnodes->length;$j++){
                 if($appnodes->item($j)->nodeName== strtolower($qtiClassName)){
                     continue;
+
+            foreach ($xpath->query('/itembody'.$toQuery) as $element) {
+                $elementRoot = $this->getElementHierarchyRoot($element, $dom->documentElement);
+                
+                // Write out the hierarchy structure to a new DOM to get the content
+                $newDom = new DOMDocument();
+                $newDom->preserveWhitespace = false;
+                $newXPath = new DOMXPath($newDom);
+                $newDom->appendChild($newDom->importNode($elementRoot, true));
+                foreach ($newXPath->query($toQuery) as $newElement) {
+                    // HACK: Remove any trailing sibling nodes (as it won't look sensible with the elements gone).
+                    $siblings = [];
+                    $nextNode = $newElement;
+                    while (!is_null($nextNode = $nextNode->nextSibling)) {
+                        $siblings[] = $nextNode;
+                    }
+                    
+                    foreach ($siblings as $siblingNode) {
+                        $siblingNode->parentNode->removeChild($siblingNode);
+                    }
+
+                    // Remove the node itself from the stimulus content
+                    // $newElement->parentNode->removeChild($newElement);
+                    // HACK: Put a placeholder so we can pop prompts in place later on.
+                    $placeholderNode = $newDom->createTextNode($questionReference);
+                    $newElement->parentNode->replaceChild($placeholderNode, $newElement);
+
+                    // TODO: When looking at siblings and ancestor relatives to keep, we should only keep text nodes and wrapping content
+                    // HACK: Forcefully remove other interactions from this hierarchy
+                    $extraInteractions = $newXPath->query('//'.strtolower($qtiClassName).'[@responseidentifier!="'.$responseIdentifier.'"]');
+                    foreach ($extraInteractions as $interaction) {
+                        $interaction->parentNode->removeChild($interaction);
+                    }
+                }
+                // Remove the whole hierarchy from the remaining itemBody content
+                // TODO: Check if removing interactions while iterating on DOMNodeList causes issues
+                $elementRoot->parentNode->removeChild($elementRoot);
+
+                if (!isset($questionHtmlContents[$questionReference])) {
+                    $questionHtmlContents[$questionReference] = '';
                 }
                 $contentList .= $dom->saveHTML($appnodes->item($j));
             }
