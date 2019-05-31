@@ -85,7 +85,6 @@ class LearnosityToQtiPreProcessingService
             } else if ($type === 'sharedpassage') {
                 $flowCollection = new FlowCollection();
                 $div = $this->createDivForSharedPassage();
-                $content = $feature['data']['content'];
                 $object = new ObjectElement('sharedpassage/' . $featureReference . '.html', 'text/html');
                 $object->setLabel($featureReference);
                 $flowCollection->attach($object);

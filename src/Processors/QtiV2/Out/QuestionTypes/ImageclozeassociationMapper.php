@@ -35,12 +35,12 @@ class ImageclozeassociationMapper extends AbstractQuestionTypeMapper
         
         // Check if distractor_rationale_response_level exists
         $feedbackOptions = [];
-        /*$metadata = $question->get_metadata();
+        $metadata = $question->get_metadata();
         if (isset($metadata)) {
             if (!empty($metadata->get_distractor_rationale())) {
                 $feedbackOptions['genral_feedback'] = $metadata->get_distractor_rationale();
             }
-        } */
+        }
 
         // Map `possible_responses` to `gapImg`(s)
         $possibleResponses = $question->get_possible_responses();
