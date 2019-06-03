@@ -29,7 +29,7 @@ class imageclozeassociation extends BaseQuestionType {
     protected $img_src;
     protected $duplicate_responses;
     protected $shuffle_options;
-    
+
     public function __construct(
                     $type,
                                 imageclozeassociation_image $image,
