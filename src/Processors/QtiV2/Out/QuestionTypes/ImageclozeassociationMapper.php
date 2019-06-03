@@ -113,12 +113,12 @@ class ImageclozeassociationMapper extends AbstractQuestionTypeMapper
     private function buildMainImageObject(imageclozeassociation_image $image)
     {
         $imageSrc = $image->get_src();
+
         $learnosityService = ConvertToQtiService::getInstance();
         $inputPath = $learnosityService->getInputPath();
         $imageRealPath = str_replace("/vendor/learnosity/itembank",$inputPath, $imageSrc); 
         //list($imageWidth, $imageHeight) = CurlUtil::getImageSize(CurlUtil::prepareUrlForCurl($imageSrc));
         list($imageWidth, $imageHeight) = getimagesize(($imageRealPath));
-
         $imageObject = new ObjectElement($imageSrc, MimeUtil::guessMimeType($imageSrc));
         $imageObject->setWidth($imageWidth);
         $imageObject->setHeight($imageHeight);

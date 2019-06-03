@@ -83,6 +83,7 @@ class LearnosityToQtiPreProcessingService
                 return QtiMarshallerUtil::marshallValidQti($object);
 
             } else if ($type === 'sharedpassage') {
+
                 $flowCollection = new FlowCollection();
                 $div = $this->createDivForSharedPassage();
                 $object = new ObjectElement('sharedpassage/' . $featureReference . '.html', 'text/html');
