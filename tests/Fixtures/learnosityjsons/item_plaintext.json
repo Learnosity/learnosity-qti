@@ -48,5 +48,6 @@
         "difficulty": null,
         "operational_exposure": null,
         "seeding_exposure": null
-    }
+    },
+    "features": []
 }
