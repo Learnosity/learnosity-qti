@@ -29,7 +29,7 @@
         "learnosity/learnosity-sdk-php": "^0.10"
     },
     "require-dev": {
-        "phpunit/phpunit": "^4.8"
+        "phpunit/phpunit": "^5.7"
     },
     "bin": [
         "bin/mo"
