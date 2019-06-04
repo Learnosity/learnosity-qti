@@ -5,10 +5,11 @@ namespace LearnosityQti\Tests\Unit\Processors\QtiV2\Out\QuestionTypes;
 use LearnosityQti\Entities\QuestionTypes\plaintext;
 use LearnosityQti\Processors\QtiV2\Out\QuestionTypes\PlaintextMapper;
 use LearnosityQti\Utils\QtiMarshallerUtil;
+use PHPUnit\Framework\TestCase;
 use qtism\data\content\interactions\ExtendedTextInteraction;
 use qtism\data\content\interactions\TextFormat;
 
-class PlaintextMapperTest extends \PHPUnit_Framework_TestCase
+class PlaintextMapperTest extends TestCase
 {
     public function testMappingSimpleQuestionWithNoValidation()
     {

@@ -9,6 +9,7 @@ use LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
 use LearnosityQti\Processors\QtiV2\Out\Constants;
 use LearnosityQti\Processors\QtiV2\Out\QuestionTypes\OrderlistMapper;
 use LearnosityQti\Utils\QtiMarshallerUtil;
+use PHPUnit\Framework\TestCase;
 use qtism\common\enums\Cardinality;
 use qtism\data\content\interactions\OrderInteraction;
 use qtism\data\content\interactions\Orientation;
@@ -17,7 +18,7 @@ use qtism\data\processing\ResponseProcessing;
 use qtism\data\state\ResponseDeclaration;
 use qtism\data\state\Value;
 
-class OrderlistMapperTest extends \PHPUnit_Framework_TestCase
+class OrderlistMapperTest extends TestCase
 {
     public function testWithNoValidation()
     {
