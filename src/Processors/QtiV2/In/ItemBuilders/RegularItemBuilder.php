@@ -21,7 +21,6 @@ use qtism\data\state\ResponseDeclaration;
 
 class RegularItemBuilder extends AbstractItemBuilder
 {
-
     const MAPPER_CLASS_BASE = 'LearnosityQti\Processors\QtiV2\In\Interactions\\';
 
     public function map(
@@ -31,7 +30,7 @@ class RegularItemBuilder extends AbstractItemBuilder
         QtiComponentCollection $responseDeclarations = null,
         ResponseProcessingTemplate $responseProcessingTemplate = null,
         QtiComponentCollection $rubricBlockComponents = null
-    ){
+    ) {
         $this->itemReference = $itemReference;
         
         $questionsXmls = [];
@@ -68,11 +67,8 @@ class RegularItemBuilder extends AbstractItemBuilder
         if (empty($this->questions)) {
             LogService::log('Item contains no valid, supported questions');
         }
-
-        
         // Build item's HTML content
         $extraContentHtml = new SimpleHtmlDom();
-
         if (!$extraContentHtml->load(QtiMarshallerUtil::marshallCollection($itemBody->getComponents()), false)) {
             throw new \Exception('Issues with the content for itemBody, it might not be valid');
         }
