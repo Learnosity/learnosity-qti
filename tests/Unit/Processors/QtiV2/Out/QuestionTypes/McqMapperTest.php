@@ -13,7 +13,6 @@ use LearnosityQti\Processors\QtiV2\Out\QuestionTypes\McqMapper;
 use LearnosityQti\Utils\QtiMarshallerUtil;
 use qtism\common\enums\BaseType;
 use qtism\common\enums\Cardinality;
-use qtism\data\content\FeedbackInline;
 use qtism\data\content\interactions\ChoiceInteraction;
 use qtism\data\content\interactions\Orientation;
 use qtism\data\content\interactions\SimpleChoice;
@@ -111,17 +110,17 @@ class McqMapperTest extends \PHPUnit_Framework_TestCase {
         /** @var ResponseDeclaration $responseDeclaration */
         /** @var ResponseProcessing $responseProcessing */
         list($interaction, $responseDeclaration, $responseProcessing) = $mcqMapper->convert($question, 'testIdentifier', 'testIdentifierLabel');
-        $this->assertCount(1, $responseProcessing->getComponents());
+        $this->assertCount(2, $responseProcessing->getComponents());
 
         $responseIf = $responseProcessing->getComponentsByClassName('responseIf', true)->getArrayCopy()[0];
         $this->assertTrue($responseIf instanceof ResponseIf);
         $promptIfString = QtiMarshallerUtil::marshallCollection($responseIf->getComponents());
-        $this->assertEquals('<isNull><variable identifier="RESPONSE"/></isNull><setOutcomeValue identifier="SCORE"><baseValue baseType="float">0</baseValue></setOutcomeValue><setOutcomeValue identifier="FEEDBACK_GENERAL"><baseValue baseType="identifier">correctOrIncorrect</baseValue></setOutcomeValue>', $promptIfString);
+        $this->assertEquals('<isNull><variable identifier="RESPONSE"/></isNull><setOutcomeValue identifier="SCORE"><baseValue baseType="float">0</baseValue></setOutcomeValue>', $promptIfString);
         
         $responseElse = $responseProcessing->getComponentsByClassName('responseElse', true)->getArrayCopy()[0];
         $this->assertTrue($responseElse instanceof ResponseElse);
         $promptElseString = QtiMarshallerUtil::marshallCollection($responseElse->getComponents());
-        $this->assertEquals('<responseCondition><responseIf><match><variable identifier="RESPONSE"/><correct identifier="RESPONSE"/></match><setOutcomeValue identifier="SCORE"><baseValue baseType="float">1</baseValue></setOutcomeValue><setOutcomeValue identifier="FEEDBACK_GENERAL"><baseValue baseType="identifier">correctOrIncorrect</baseValue></setOutcomeValue></responseIf><responseElse><setOutcomeValue identifier="SCORE"><baseValue baseType="float">0</baseValue></setOutcomeValue><setOutcomeValue identifier="FEEDBACK_GENERAL"><baseValue baseType="identifier">correctOrIncorrect</baseValue></setOutcomeValue></responseElse></responseCondition>', $promptElseString);
+        $this->assertEquals('<responseCondition><responseIf><match><variable identifier="RESPONSE"/><correct identifier="RESPONSE"/></match><setOutcomeValue identifier="SCORE"><baseValue baseType="float">1</baseValue></setOutcomeValue></responseIf><responseElse><setOutcomeValue identifier="SCORE"><baseValue baseType="float">0</baseValue></setOutcomeValue></responseElse></responseCondition>', $promptElseString);
         
         // Check on the responseDeclaration and responseProcessing objects to be correctly generated
         $this->assertEquals('', $responseProcessing->getTemplate());
