@@ -1,4 +1,5 @@
 <?php
+
 namespace LearnosityQti\Processors\QtiV2\In\ItemBuilders;
 
 use \DOMDocument;
@@ -24,18 +25,25 @@ class RegularItemBuilder extends AbstractItemBuilder
     const MAPPER_CLASS_BASE = 'LearnosityQti\Processors\QtiV2\In\Interactions\\';
 
     public function map(
-    $itemReference, ItemBody $itemBody, QtiComponentCollection $interactionComponents, QtiComponentCollection $responseDeclarations = null, ResponseProcessingTemplate $responseProcessingTemplate = null, QtiComponentCollection $rubricBlockComponents = null
-    )
-    {
+        $itemReference,
+        ItemBody $itemBody,
+        QtiComponentCollection $interactionComponents,
+        QtiComponentCollection $responseDeclarations = null,
+        ResponseProcessingTemplate $responseProcessingTemplate = null,
+        QtiComponentCollection $rubricBlockComponents = null
+    ){
         $this->itemReference = $itemReference;
+        
         $questionsXmls = [];
         $responseDeclarationsMap = [];
+        
         if ($responseDeclarations) {
             /** @var ResponseDeclaration $responseDeclaration */
             foreach ($responseDeclarations as $responseDeclaration) {
                 $responseDeclarationsMap[$responseDeclaration->getIdentifier()] = $responseDeclaration;
             }
         }
+        
         foreach ($interactionComponents as $component) {
 
             /* @var $component Interaction */
@@ -45,10 +53,10 @@ class RegularItemBuilder extends AbstractItemBuilder
                 $responseDeclarationsMap[$component->getResponseIdentifier()] : null;
             $outcomeDeclaration = $this->assessmentItem->getOutcomeDeclarations();
             $mapper = $this->getMapperInstance(
-                $component->getQtiClassName(), [$component, $responseDeclaration, $responseProcessingTemplate, $outcomeDeclaration]
+                $component->getQtiClassName(),
+                [$component, $responseDeclaration, $responseProcessingTemplate, $outcomeDeclaration, $this->organisationId]
             );
             $question = $mapper->getQuestionType();
-
 
             $this->questions[$questionReference] = new Question($question->get_type(), $questionReference, $question);
             $questionsXmls[$questionReference] = [
@@ -56,6 +64,12 @@ class RegularItemBuilder extends AbstractItemBuilder
                 'responseIdentifier' => $component->getResponseIdentifier()
             ];
         }
+        
+        if (empty($this->questions)) {
+            LogService::log('Item contains no valid, supported questions');
+        }
+
+        
         // Build item's HTML content
         $extraContentHtml = new SimpleHtmlDom();
 
