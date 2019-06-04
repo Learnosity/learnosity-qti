@@ -7,10 +7,11 @@ use LearnosityQti\Processors\QtiV2\In\ItemBuilders\RegularItemBuilder;
 use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\ChoiceInteractionBuilder;
 use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\ItemBodyBuilder;
 use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\ResponseDeclarationBuilder;
+use PHPUnit\Framework\TestCase;
 use qtism\data\content\interactions\TextEntryInteraction;
 use qtism\data\QtiComponentCollection;
 
-class RegularItemBuilderTest
+class RegularItemBuilderTest extends TestCase
 {
     /* @var RegularItemBuilder $regularItemBuilder */
     private $regularItemBuilder;

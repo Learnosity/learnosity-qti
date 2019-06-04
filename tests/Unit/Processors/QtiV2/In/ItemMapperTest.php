@@ -7,6 +7,7 @@ use LearnosityQti\Entities\QuestionTypes\clozetext;
 use LearnosityQti\Processors\QtiV2\In\ItemMapper;
 use LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
 use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\InlineChoiceInteractionBuilder;
+use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
 use qtism\data\AssessmentItem;
 use qtism\data\content\BlockCollection;
@@ -18,7 +19,7 @@ use qtism\data\content\TextRun;
 use qtism\data\content\xhtml\text\P;
 use qtism\data\processing\ResponseProcessing;
 
-class ItemMapperTest extends \PHPUnit_Framework_TestCase
+class ItemMapperTest extends TestCase
 {
     /* @var ItemMapper $itemMapper */
     private $itemMapper;

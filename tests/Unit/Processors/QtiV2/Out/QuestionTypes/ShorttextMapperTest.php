@@ -7,6 +7,7 @@ use LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidationBuilder;
 use LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
 use LearnosityQti\Processors\QtiV2\Out\Constants;
 use LearnosityQti\Processors\QtiV2\Out\QuestionTypes\ShorttextMapper;
+use PHPUnit\Framework\TestCase;
 use qtism\data\content\interactions\TextEntryInteraction;
 use qtism\data\content\xhtml\text\Div;
 use qtism\data\processing\ResponseProcessing;
@@ -14,7 +15,7 @@ use qtism\data\state\MapEntry;
 use qtism\data\state\ResponseDeclaration;
 use qtism\data\state\Value;
 
-class ShorttextMapperTest extends \PHPUnit_Framework_TestCase
+class ShorttextMapperTest extends TestCase
 {
     public function testSimpleCaseWithSimpleValidation()
     {

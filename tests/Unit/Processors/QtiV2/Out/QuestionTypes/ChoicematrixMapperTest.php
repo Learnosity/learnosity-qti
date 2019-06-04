@@ -9,6 +9,7 @@ use LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
 use LearnosityQti\Processors\QtiV2\Out\Constants;
 use LearnosityQti\Processors\QtiV2\Out\QuestionTypes\ChoicematrixMapper;
 use LearnosityQti\Utils\QtiMarshallerUtil;
+use PHPUnit\Framework\TestCase;
 use qtism\common\datatypes\QtiDirectedPair;
 use qtism\data\content\interactions\MatchInteraction;
 use qtism\data\content\interactions\SimpleAssociableChoice;
@@ -17,7 +18,7 @@ use qtism\data\state\MapEntry;
 use qtism\data\state\ResponseDeclaration;
 use qtism\data\state\Value;
 
-class ChoicematrixMapperTest extends \PHPUnit_Framework_TestCase
+class ChoicematrixMapperTest extends TestCase
 {
     public function testSingularResponsesWithNoValidation()
     {

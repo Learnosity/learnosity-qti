@@ -5,10 +5,11 @@ namespace LearnosityQti\Tests\Unit\Processors\QtiV2\Out\QuestionTypes;
 use LearnosityQti\Entities\QuestionTypes\longtext;
 use LearnosityQti\Processors\QtiV2\Out\QuestionTypes\LongtextMapper;
 use LearnosityQti\Utils\QtiMarshallerUtil;
+use PHPUnit\Framework\TestCase;
 use qtism\data\content\interactions\ExtendedTextInteraction;
 use qtism\data\content\interactions\TextFormat;
 
-class LongtextMapperTest extends \PHPUnit_Framework_TestCase
+class LongtextMapperTest extends TestCase
 {
     public function testMappingSimpleQuestionWithNoValidation()
     {

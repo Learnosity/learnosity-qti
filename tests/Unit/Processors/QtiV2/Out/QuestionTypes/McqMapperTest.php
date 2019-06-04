@@ -10,6 +10,7 @@ use LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
 use LearnosityQti\Processors\QtiV2\Out\Constants;
 use LearnosityQti\Processors\QtiV2\Out\QuestionTypes\McqMapper;
 use LearnosityQti\Utils\QtiMarshallerUtil;
+use PHPUnit\Framework\TestCase;
 use qtism\common\enums\BaseType;
 use qtism\common\enums\Cardinality;
 use qtism\data\content\interactions\ChoiceInteraction;
@@ -18,7 +19,7 @@ use qtism\data\content\interactions\SimpleChoice;
 use qtism\data\processing\ResponseProcessing;
 use qtism\data\state\ResponseDeclaration;
 
-class McqMapperTest extends \PHPUnit_Framework_TestCase
+class McqMapperTest extends TestCase
 {
     public function testSimpleCaseWithNoValidation()
     {
