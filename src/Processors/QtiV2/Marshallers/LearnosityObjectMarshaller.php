@@ -45,7 +45,7 @@ class LearnosityObjectMarshaller extends ObjectMarshaller
                 break;
             case self::MIME_HTML:
                 $fragment = self::getDOMCradle()->createDocumentFragment();
-                $fragment->appendXML(QtiMarshallerUtil::marshallCollection(ContentCollectionBuilder::buildFlowCollectionContent($component->getComponents())));
+                $fragment->appendXML(QtiMarshallerUtil::marshallHtmlCollection(ContentCollectionBuilder::buildFlowCollectionContent($component->getComponents())));
                 $element = self::getDOMCradle()->createElement('div');
                 $element->setAttribute('data-type', 'sharedpassage');
                 $element->appendChild($fragment);

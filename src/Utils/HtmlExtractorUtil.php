@@ -1,15 +1,10 @@
 <?php
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 namespace LearnosityQti\Utils;
 
 /**
- * Description of HtmlExtractorUtil
+ * This class is used to extract html content from html file.
  *
- * @author qainfotech
  */
 class HtmlExtractorUtil
 {
@@ -30,11 +25,11 @@ class HtmlExtractorUtil
             $body = $d->getElementsByTagName('body')->item(0);
             if (!empty($body)) {
                 foreach ($body->childNodes as $childNode) {
-                    $html .= str_replace("\n", "", $d->saveHTML($childNode));
+                    $html .= str_replace(PHP_EOL, "", $d->saveHTML($childNode));
                 }
             }
         } else {
-            echo 'File not found: ' . $file . "\n";
+            echo 'File not found: ' . $file . PHP_EOL;
         }
         return $html;
     }

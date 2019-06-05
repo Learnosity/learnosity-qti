@@ -51,9 +51,8 @@ class ConvertToLearnosityService
     // Hold the class instance.
     private static $instance = null;
 
-    private function __construct($inputPath, $outputPath, OutputInterface $output, $organisationId)
+    protected function __construct($inputPath, $outputPath, OutputInterface $output, $organisationId)
     {
-
         $this->inputPath = $inputPath;
         $this->outputPath = $outputPath;
         $this->output = $output;
@@ -144,12 +143,7 @@ class ConvertToLearnosityService
         foreach ($manifestFolders as $dir) {
             $tempDirectoryParts = explode('/', dirname($dir));
             $dirName = $tempDirectoryParts[count($tempDirectoryParts) - 1];
-            
             $results = $this->convertQtiContentPackagesInDirectory(dirname($dir), $dirName);
-            // if (!isset($results['qtiitems'])) {
-            //     continue;
-            // }
-
             $this->updateJobManifest($finalManifest, $results);
             $this->persistResultsFile($results, realpath($this->outputPath) . '/' . $this->rawPath . '/' . $dirName);
         }
@@ -213,7 +207,10 @@ class ConvertToLearnosityService
                 $relatedResource = $resource['resource'];
                 $assessmentItemContents = file_get_contents($currentDir . '/' . $resourceHref);
                 $itemReference = $this->getItemReferenceFromResource(
-                    $relatedResource, $this->useMetadataIdentifier, $this->useResourceIdentifier, $this->useFileNameAsIdentifier
+                    $relatedResource, 
+                    $this->useMetadataIdentifier, 
+                    $this->useResourceIdentifier, 
+                    $this->useFileNameAsIdentifier
                 );
                 
                 $itemTagsArray = $this->getTaxonPathEntryForItemTags($relatedResource);
@@ -402,12 +399,12 @@ class ConvertToLearnosityService
         AssumptionHandler::flush();
 
         $xmlString = CheckValidQti::preProcessing($xmlString);
-
-        $result = Converter::convertQtiItemToLearnosity($xmlString, null, null, $resourcePath, $itemReference, $metadata);
-        $item = $result['item'];
-        $questions = $result['questions'];
-        $features = $result['features'];
-        $manifest = $result['messages'];
+        
+        $result     = Converter::convertQtiItemToLearnosity($xmlString, null, null, $resourcePath, $itemReference, $metadata);
+        $item       = $result['item'];
+        $questions  = $result['questions'];
+        $features   = $result['features'];
+        $manifest   = $result['messages'];
         $rubricItem = !empty($result['rubric']) ? $result['rubric'] : null;
 
         $questions = !empty($questions) ? $this->assetsFixer->fix($questions) : $questions;
@@ -425,11 +422,11 @@ class ConvertToLearnosityService
         }
         $item['tags'] = $itemTagsArray;
         return [
-            'item' => $item,
-            'questions' => $questions,
-            'features' => $features,
-            'manifest' => $manifest,
-            'rubric' => $rubricItem,
+            'item'        => $item,
+            'questions'   => $questions,
+            'features'    => $features,
+            'manifest'    => $manifest,
+            'rubric'      => $rubricItem,
             'assumptions' => AssumptionHandler::flush()
         ];
     }
@@ -456,9 +453,7 @@ class ConvertToLearnosityService
      *
      * @return string|null
      */
-    private function getItemReferenceFromResource(
-    \DOMNode $resource, $useMetadataIdentifier = true, $useResourceIdentifier = false, $useFileNameAsIdentifier = false
-    )
+    private function getItemReferenceFromResource(\DOMNode $resource, $useMetadataIdentifier = true, $useResourceIdentifier = false, $useFileNameAsIdentifier = false)
     {
         $itemReference = null;
 

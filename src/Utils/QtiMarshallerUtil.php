@@ -57,7 +57,16 @@ class QtiMarshallerUtil
     {
         $results = [];
         foreach ($collection as $component) {
-            $html = '';
+            $results[] = self::marshall($component);
+        }
+        return implode('', $results);
+    }
+    
+    public static function marshallHtmlCollection(QtiComponentCollection $collection)
+    {
+        $results = [];
+        $html = '';
+        foreach ($collection as $component) {
             $class = new \ReflectionClass(get_class($component));
             if (property_exists($component, 'data')) {
                 $property = $class->getProperty('data');
@@ -68,7 +77,7 @@ class QtiMarshallerUtil
                 if (file_exists($file)) {
                     $html = HtmlExtractorUtil::getHtmlData(realpath($file));
                 } else {
-                    echo 'File not found: ' . $file . "\n";
+                    echo 'File not found: ' . $file . PHP_EOL;
                 }
                 continue;
             }
