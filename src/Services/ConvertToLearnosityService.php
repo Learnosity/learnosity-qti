@@ -53,13 +53,13 @@ class ConvertToLearnosityService
 
     protected function __construct($inputPath, $outputPath, OutputInterface $output, $organisationId)
     {
-        $this->inputPath = $inputPath;
-        $this->outputPath = $outputPath;
-        $this->output = $output;
+        $this->inputPath      = $inputPath;
+        $this->outputPath     = $outputPath;
+        $this->output         = $output;
         $this->organisationId = $organisationId;
-        $this->finalPath = 'final';
-        $this->logPath = 'log';
-        $this->rawPath = 'raw';
+        $this->finalPath      = 'final';
+        $this->logPath        = 'log';
+        $this->rawPath        = 'raw';
     }
 
     // The object is created from within the class itself
