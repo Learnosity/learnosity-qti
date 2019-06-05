@@ -116,7 +116,7 @@ class ChoiceInteractionMapper extends AbstractInteractionMapper
                 foreach ($feed as $feeddata) {
                     if ($feeddata instanceof FeedbackInline) {
                         $count++;
-                        $metadata = $this->buildMetadataForFeedbackInline($feedData);
+                        $metadata = $this->buildMetadataForFeedbackInline($feeddata);
                     }
                 }
                 if ($count == 0) {
@@ -127,11 +127,9 @@ class ChoiceInteractionMapper extends AbstractInteractionMapper
         return $metadata;
     }
 
-    protected function buildMetadataForFeedbackInline(FeedbackInline $feedData)
+    protected function buildMetadataForFeedbackInline(FeedbackInline $feeddata)
     {
-        $metadata = "";
-
-        $feeddataArray = array_values((array) $feedData);
+        $feeddataArray = array_values((array) $feeddata);
         $feedbackArray = array_values((array) $feeddataArray[3]);
         if (sizeof($feedbackArray[0]) >= 2) {
             $feedInlineArray = array_values((array) $feedbackArray[0][1]);
