@@ -5,6 +5,7 @@ use DOMDocument;
 use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Processors\QtiV2\Marshallers\LearnosityMarshallerFactory;
 use LearnosityQti\Services\ConvertToLearnosityService;
+use qtism\data\content\FeedbackInline;
 use qtism\data\content\TextRun;
 use qtism\data\content\xhtml\ObjectElement;
 use qtism\data\QtiComponent;
@@ -74,7 +75,7 @@ class QtiMarshallerUtil
                         echo 'File not found: ' . $file . PHP_EOL;
                     }
                 }
-            } else {
+            } else if(!($component instanceof FeedbackInline)) {
                 $results[] = self::marshall($component);
             }
         }

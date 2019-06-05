@@ -48,7 +48,9 @@ class LearnosityObjectMarshaller extends ObjectMarshaller
                 $fragment->appendXML(QtiMarshallerUtil::marshallCollection(ContentCollectionBuilder::buildFlowCollectionContent($component->getComponents())));
                 $element = self::getDOMCradle()->createElement('div');
                 $element->setAttribute('data-type', 'sharedpassage');
-                $element->appendChild($fragment);
+                if($fragment->hasChildNodes()) {
+                    $element->appendChild($fragment);
+                }
                 return $element;
                 break;
             default:
