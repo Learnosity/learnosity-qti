@@ -104,15 +104,21 @@ class ChoiceInteractionMapper extends AbstractInteractionMapper
         }
         return $options;
     }
-
+    
+    /**
+     * This function is used to create distractor_rationale_response_level from feedbackInline
+     * 
+     * @param SimpleChoiceCollection $simpleChoices
+     * @return string
+     */
     private function buildFeedbackMetadata(SimpleChoiceCollection $simpleChoices)
     {
         /* @var $choice SimpleChoice */
         $metadata = [];
         foreach ($simpleChoices as $choice) {
             $flow = $choice->getContent();
-            $class = new \ReflectionClass(get_class($flow));
             if (property_exists($flow, 'dataPlaceHolder')) {
+                $class = new \ReflectionClass(get_class($flow));
                 $property = $class->getProperty('dataPlaceHolder');
                 $property->setAccessible(true);
                 $feed = $property->getValue($flow);
@@ -131,7 +137,13 @@ class ChoiceInteractionMapper extends AbstractInteractionMapper
         
         return $metadata;
     }
-
+    
+    /**
+     * This function is used to create feedbackInline data 
+     * 
+     * @param FeedbackInline $feeddata
+     * @return string
+     */
     protected function buildMetadataForFeedbackInline(FeedbackInline $feeddata)
     {
         $metadata = "";

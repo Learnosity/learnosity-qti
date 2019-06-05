@@ -33,10 +33,10 @@ class ConvertToLearnosityService
     protected $organisationId;
 
     /* Runtime options */
-    protected $dryRun = false;
-    protected $shouldAppendLogs = false;
+    protected $dryRun                     = false;
+    protected $shouldAppendLogs           = false;
     protected $shouldGuessItemScoringType = true;
-    protected $shouldUseManifest = true;
+    protected $shouldUseManifest          = true;
 
     /* Job-specific configurations */
     // Overrides identifiers to be the same as the filename
@@ -468,8 +468,11 @@ class ConvertToLearnosityService
      *
      * @return string|null
      */
-    private function getItemReferenceFromResource(\DOMNode $resource, $useMetadataIdentifier = true, $useResourceIdentifier = false, $useFileNameAsIdentifier = false)
-    {
+    private function getItemReferenceFromResource(
+        \DOMNode $resource, $useMetadataIdentifier = true, 
+        $useResourceIdentifier = false, 
+        $useFileNameAsIdentifier = false
+    ) {
         $itemReference = null;
 
         if ($useMetadataIdentifier && $this->metadataIdentifierExists($resource)) {
