@@ -147,7 +147,6 @@ class ChoiceInteractionMapper extends AbstractInteractionMapper
     protected function buildMetadataForFeedbackInline(FeedbackInline $feeddata)
     {
         $metadata = "";
-        
         $feeddataArray = array_values((array) $feeddata);
         $feedbackArray = array_values((array) $feeddataArray[3]);
         if (sizeof($feedbackArray[0]) >= 2) {
