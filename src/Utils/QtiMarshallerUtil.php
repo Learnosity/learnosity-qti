@@ -6,6 +6,7 @@ use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Processors\QtiV2\Marshallers\LearnosityMarshallerFactory;
 use LearnosityQti\Services\ConvertToLearnosityService;
 use qtism\data\content\TextRun;
+use qtism\data\content\xhtml\ObjectElement;
 use qtism\data\QtiComponent;
 use qtism\data\QtiComponentCollection;
 use qtism\data\storage\xml\marshalling\Qti21MarshallerFactory;
@@ -58,32 +59,26 @@ class QtiMarshallerUtil
         $results = [];
         $html = '';
         foreach ($collection as $component) {
-            $results[] = self::marshall($component);
-        }
-        return implode('', $results);
-    }
-
-    public static function marshallHtmlCollection(QtiComponentCollection $collection)
-    {
-        $results = [];
-        $html = '';
-        foreach ($collection as $component) {
-            $class = new \ReflectionClass(get_class($component));
-            if (property_exists($component, 'data')) {
-                $property = $class->getProperty('data');
-                $property->setAccessible(true);
-                $learnosityServiceObject = ConvertToLearnosityService::getInstance();
-                $inputPath = $learnosityServiceObject->getInputpath();
-                $file = $inputPath . '/' . $property->getValue($component);
-                if (file_exists($file)) {
-                    $html = HtmlExtractorUtil::getHtmlData(realpath($file));
-                } else {
-                    echo 'File not found: ' . $file . PHP_EOL;
+            if ($component instanceof ObjectElement) {
+                $class = new \ReflectionClass(get_class($component));
+                if (property_exists($component, 'data')) {
+                    $property = $class->getProperty('data');
+                    $property->setAccessible(true);
+                    $learnosityServiceObject = ConvertToLearnosityService::getInstance();
+                    $inputPath = $learnosityServiceObject->getInputpath();
+                    $file = $inputPath . '/' . $property->getValue($component);
+                    if (file_exists($file)) {
+                        $html = HtmlExtractorUtil::getHtmlData(realpath($file));
+                        $results[] = $html;
+                    } else {
+                        echo 'File not found: ' . $file . PHP_EOL;
+                    }
                 }
-                continue;
+            } else {
+                $results[] = self::marshall($component);
             }
         }
-        return $html;
+        return implode('', $results);
     }
 
     public static function marshall(QtiComponent $component)

@@ -29,9 +29,13 @@ class ChoiceInteractionMapper extends AbstractInteractionMapper
         $mcq = new mcq('mcq', $options);
 
         // Support for @mcq-metadata
-        $metaData = new mcq_metadata();
-        $metaData->set_distractor_rationale_response_level($feedbackMetadata);
-        $mcq->set_metadata($metaData);
+        foreach ($feedbackMetadata as $value) {
+            if (!empty($value)) {
+            $metaData = new mcq_metadata();
+            $metaData->set_distractor_rationale_response_level($feedbackMetadata);
+            $mcq->set_metadata($metaData);
+            }
+        }
 
         // Support for @shuffle
         $mustShuffle = $interaction->mustShuffle();
@@ -116,7 +120,7 @@ class ChoiceInteractionMapper extends AbstractInteractionMapper
                 foreach ($feed as $feeddata) {
                     if ($feeddata instanceof FeedbackInline) {
                         $count++;
-                        $metadata = $this->buildMetadataForFeedbackInline($feeddata);
+                        $metadata[] = $this->buildMetadataForFeedbackInline($feeddata);
                     }
                 }
                 if ($count == 0) {
@@ -124,11 +128,14 @@ class ChoiceInteractionMapper extends AbstractInteractionMapper
                 }
             }
         }
+        
         return $metadata;
     }
 
     protected function buildMetadataForFeedbackInline(FeedbackInline $feeddata)
     {
+        $metadata = "";
+        
         $feeddataArray = array_values((array) $feeddata);
         $feedbackArray = array_values((array) $feeddataArray[3]);
         if (sizeof($feedbackArray[0]) >= 2) {
@@ -137,14 +144,14 @@ class ChoiceInteractionMapper extends AbstractInteractionMapper
                 $learnosityServiceObject = ConvertToLearnosityService::getInstance();
                 $inputPath = $learnosityServiceObject->getInputpath();
                 $htmlfile = $inputPath . '/' . $feedInlineArray[1];
-                $metadata[] = HtmlExtractorUtil::getHtmlData(realpath($htmlfile));
+                $metadata = HtmlExtractorUtil::getHtmlData(realpath($htmlfile));
             }
         } else {
             $feeddataArray = array_values((array) $feedbackArray[0][0]);
             if (!empty($feeddataArray[0])) {
-                $metadata[] = trim($feeddataArray[0]);
+                $metadata = trim($feeddataArray[0]);
             } else {
-                $metadata[] = "";
+                $metadata = "";
             }
         }
 
