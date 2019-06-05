@@ -56,12 +56,13 @@ class QtiMarshallerUtil
     public static function marshallCollection(QtiComponentCollection $collection)
     {
         $results = [];
+        $html = '';
         foreach ($collection as $component) {
             $results[] = self::marshall($component);
         }
         return implode('', $results);
     }
-    
+
     public static function marshallHtmlCollection(QtiComponentCollection $collection)
     {
         $results = [];

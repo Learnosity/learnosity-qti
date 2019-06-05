@@ -18,7 +18,7 @@ class ConvertToLearnosityCommand extends Command
             ->setDescription('Converts Learnosity JSON to QTI v2.1')
             ->setHelp('Converts QTI v2.1 to Learnosity JSON, expects to run on folder(s) with a imsmanifest.xml file')
             ->addOption(
-                'input', 
+                'input',
                 'i', 
                 InputOption::VALUE_REQUIRED, 
                 'The input path to your QTI content', 
@@ -26,16 +26,17 @@ class ConvertToLearnosityCommand extends Command
             )
             ->addOption(
                 'output', 
-                'o', 
-                InputOption::VALUE_REQUIRED, 
-                'An output path where the Learnosity JSON will be saved', 
+                'o',
+                InputOption::VALUE_REQUIRED,
+                'An output path where the Learnosity JSON will be saved',
                 './data/output'
             )
             ->addOption(
                 'organisation_id', 
                 '', 
                 InputOption::VALUE_REQUIRED, 
-                'The identifier of the item bank you want to import content into', ''
+                'The identifier of the item bank you want to import content into',
+                ''
             )
             ->addOption(
                 'item-reference-source',
@@ -110,27 +111,22 @@ class ConvertToLearnosityCommand extends Command
 
             $Convert = ConvertToLearnosityService::initClass($inputPath, $outputPath, $output, $organisationId);
 
-            $useMetadataIdentifier = $Convert->getMetadataIdentifier();
-            $useResourceIdentifier = $Convert->getResourceIdentifier();
-            $useFileNameAsIdentifier = $Convert->getFileNameAsIdentifier();
-            
-            $useMetadataIdentifier = true;
-            $useResourceIdentifier = false;
-            $useFileNameAsIdentifier = false;
+            $Convert->setMetadataIdentifier(true);
+            $Convert->setResourceIdentifier(false);
+            $Convert->setFileNameAsIdentifier(false);
             if ($itemReferenceSource === 'item') {
-                $useMetadataIdentifier = false;
-                $useResourceIdentifier = false;
-                $useFileNameAsIdentifier = false;
+                $Convert->setMetadataIdentifier(false);
+                $Convert->setResourceIdentifier(false);
+                $Convert->setFileNameAsIdentifier(false);
             } elseif ($itemReferenceSource === 'filename') {
-                $useMetadataIdentifier = false;
-                $useResourceIdentifier = false;
-                $useFileNameAsIdentifier = true;
+                $Convert->setMetadataIdentifier(false);
+                $Convert->setResourceIdentifier(false);
+                $Convert->setFileNameAsIdentifier(true);
             } elseif ($itemReferenceSource === 'resource') {
-                $useMetadataIdentifier = false;
-                $useResourceIdentifier = true;
-                $useFileNameAsIdentifier = false;
+                $Convert->setMetadataIdentifier(false);
+                $Convert->setResourceIdentifier(true);
+                $Convert->setFileNameAsIdentifier(false);
             }
-
 
             $result = $Convert->process();
             if ($result['status'] === false) {

@@ -88,14 +88,29 @@ class ConvertToLearnosityService
         return $this->useMetadataIdentifier;
     }
     
+    public function setMetadataIdentifier($useMetadataIdentifier)
+    {
+        $this->useMetadataIdentifier = $useMetadataIdentifier;
+    }
+    
     public function getResourceIdentifier()
     {
         return $this->useResourceIdentifier;
     }
     
+    public function setResourceIdentifier($useResourceIdentifier)
+    {
+        $this->useResourceIdentifier = $useResourceIdentifier;
+    }
+    
     public function getFileNameAsIdentifier()
     {
         return $this->useFileNameAsIdentifier;
+    }
+    
+    public function setFileNameAsIdentifier($useFileNameAsIdentifier)
+    {
+        $this->useFileNameAsIdentifier = $useFileNameAsIdentifier;
     }
 
     public function process()
