@@ -1,9 +1,9 @@
 <?php
+
 namespace LearnosityQti\Processors\IMSCP\Entities;
 
 class Manifest
 {
-
     protected $identifier;
     protected $resources;
     protected $metadata;

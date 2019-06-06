@@ -1,4 +1,5 @@
 <?php
+
 namespace LearnosityQti\Services;
 
 use DOMDocument;
@@ -23,7 +24,6 @@ use ZipArchive;
 
 class ConvertToQtiService
 {
-
     use JobDataTrait;
 
     const RESOURCE_TYPE_ITEM = 'imsqti_item_xmlv2p1';
@@ -39,30 +39,30 @@ class ConvertToQtiService
     protected $itemReference;
 
     /* Runtime options */
-    protected $dryRun = false;
-    protected $shouldAppendLogs = false;
+    protected $dryRun                     = false;
+    protected $shouldAppendLogs           = false;
     protected $shouldGuessItemScoringType = true;
-    protected $shouldUseManifest = true;
+    protected $shouldUseManifest          = true;
 
     /* Job-specific configurations */
     // Overrides identifiers to be the same as the filename
     protected $useFileNameAsIdentifier = false;
     // Uses the identifier found in learning object metadata if available
-    protected $useMetadataIdentifier = true;
+    protected $useMetadataIdentifier   = true;
     // Resource identifiers sometimes (but not always) match the assessmentItem identifier, so this can be useful
-    protected $useResourceIdentifier = false;
+    protected $useResourceIdentifier   = false;
     private $assetsFixer;
 
     public function __construct($inputPath, $outputPath, OutputInterface $output, $organisationId = null)
     {
-        $this->inputPath = $inputPath;
-        $this->outputPath = $outputPath;
-        $this->output = $output;
+        $this->inputPath      = $inputPath;
+        $this->outputPath     = $outputPath;
+        $this->output         = $output;
         $this->organisationId = $organisationId;
-        $this->finalPath = 'final';
-        $this->logPath = 'log';
-        $this->rawPath = 'raw';
-        $this->itemReference = array();
+        $this->finalPath      = 'final';
+        $this->logPath        = 'log';
+        $this->rawPath        = 'raw';
+        $this->itemReference  = array();
     }
 
     public function process()
@@ -99,7 +99,6 @@ class ConvertToQtiService
      */
     protected function decorateImsManifestRootElement(DOMElement $rootElement)
     {
-
         $xsdLocation = 'http://www.imsglobal.org/xsd/imscp_v1p1 http://www.imsglobal.org/xsd/qti/qtiv2p1/qtiv2p1_imscpv1p2_v1p0.xsd';
         $xmlns = "http://www.imsglobal.org/xsd/imscp_v1p1";
         $rootElement->setAttribute('xmlns', $xmlns);
@@ -115,10 +114,8 @@ class ConvertToQtiService
      */
     private function parseContent()
     {
-
         $results = [];
         $jsonFiles = $this->parseInputFolders();
-
         $finalManifest = $this->getJobManifestTemplate();
 
         $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Processing JSON directory: {$this->inputPath} </info>");
@@ -130,6 +127,7 @@ class ConvertToQtiService
                 $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Learnosity JSON file " . basename($file) . " Not fount in: {$this->inputPath}/items </info>");
             }
         }
+        
         $resourceInfo = $this->updateJobManifest($finalManifest, $results);
         $finalManifest->setResources($resourceInfo);
         $this->persistResultsFile($results, realpath($this->outputPath) . '/' . $this->rawPath . '/');
@@ -156,6 +154,7 @@ class ConvertToQtiService
     private function parseInputFolders()
     {
         $folders = [];
+        
         // Look for json files in the current path
         $finder = new Finder();
         $finder->files()->in($this->inputPath . '/activities');
@@ -211,7 +210,7 @@ class ConvertToQtiService
             }
         endforeach;
         return [
-            'qti' => $finalXml,
+            'qti'  => $finalXml,
             'json' => $json,
             'tags' => $tagsArray
         ];
@@ -548,7 +547,6 @@ class ConvertToQtiService
 
     private function tearDown()
     {
-        
     }
 
     private function validate()

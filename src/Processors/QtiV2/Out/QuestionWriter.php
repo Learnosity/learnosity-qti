@@ -1,4 +1,5 @@
 <?php
+
 namespace LearnosityQti\Processors\QtiV2\Out;
 
 use LearnosityQti\Entities\Question;
@@ -9,7 +10,6 @@ use qtism\data\storage\xml\XmlDocument;
 
 class QuestionWriter
 {
-
     public function convert(Question $question)
     {
         // Make sure we clean up the log

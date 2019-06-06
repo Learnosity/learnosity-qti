@@ -1,9 +1,9 @@
 <?php
+
 namespace LearnosityQti\Processors\IMSCP\Entities;
 
 class ImsManifestMetadata
 {
-
     private $schema;
     private $schemaversion;
     private $title;

@@ -1,4 +1,5 @@
 <?php
+
 namespace LearnosityQti;
 
 use Exception;
@@ -40,7 +41,9 @@ class Converter
         $learnosityImagesDirectory = $learnosityDirectory . '/Images';
         FileSystemUtil::createOrReplaceDir($learnosityImagesDirectory);
         $allImages = array_merge(
-            self::extractFiles('*.jpg', $imscpDirectory, $learnosityImagesDirectory), self::extractFiles('*.jpeg', $imscpDirectory, $learnosityImagesDirectory), self::extractFiles('*.gif', $imscpDirectory, $learnosityImagesDirectory)
+            self::extractFiles('*.jpg', $imscpDirectory, $learnosityImagesDirectory), 
+            self::extractFiles('*.jpeg', $imscpDirectory, $learnosityImagesDirectory),
+            self::extractFiles('*.gif', $imscpDirectory, $learnosityImagesDirectory)
         );
 
         // Brute extract all the xml excepts imsmanifest.xml
@@ -199,7 +202,7 @@ class Converter
                 $item->set_reference($customItemReference);
             }
             if (!empty($rubricItem)) {
-                $rubricItem->set_reference($item->get_reference() . '_rubric');
+                $rubricItem->set_reference($item->get_reference().'_rubric');
                 $item->get_metadata()->rubric_reference = $rubricItem->get_reference();
                 foreach ($questions as $question) {
                     $questionMetadata = $question->get_data()->get_metadata();
@@ -260,10 +263,10 @@ class Converter
         // Handle `item` which contains both a single item and one or more questions/features
         if ($jsonType === self::LEARNOSITY_DATA_ITEM) {
             list($xmlString, $messages) = self::convertLearnosityItem($data);
-            // Handle if just question
+        // Handle if just question
         } elseif ($jsonType === self::LEARNOSITY_DATA_QUESTION) {
             list($xmlString, $messages) = self::convertLearnosityQuestion($data);
-            // Handle if just question data
+        // Handle if just question data
         } elseif ($jsonType === self::LEARNOSITY_DATA_QUESTION_DATA) {
             list($xmlString, $messages) = self::convertLearnosityQuestionData($data);
         } else {

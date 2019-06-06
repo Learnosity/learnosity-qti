@@ -1,9 +1,9 @@
 <?php
+
 namespace LearnosityQti\Entities;
 
 class Question extends BaseEntity
 {
-
     private $reference;
     private $type;
     private $data;
@@ -12,13 +12,13 @@ class Question extends BaseEntity
 
     function __construct($type, $reference, BaseQuestionType $data, $itemReference)
     {
-        $this->data = $data;
-        $this->reference = $reference;
-        $this->type = $type;
-        $this->widget_type = $data->get_widget_type();
+        $this->data          = $data;
+        $this->reference     = $reference;
+        $this->type          = $type;
+        $this->widget_type   = $data->get_widget_type();
         $this->itemReference = $itemReference;
     }
-
+  
     public function get_reference()
     {
         return $this->reference;
@@ -64,7 +64,7 @@ class Question extends BaseEntity
      * */
     public function to_array()
     {
-        $question = get_object_vars($this);
+        $question         = get_object_vars($this);
         $question['data'] = $this->data->to_array();
         return $question;
     }

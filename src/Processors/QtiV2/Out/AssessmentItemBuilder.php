@@ -1,4 +1,5 @@
 <?php
+
 namespace LearnosityQti\Processors\QtiV2\Out;
 
 use LearnosityQti\Entities\Question;
@@ -18,7 +19,6 @@ use qtism\data\state\ValueCollection;
 
 class AssessmentItemBuilder
 {
-
     const MAPPER_CLASS_BASE = 'LearnosityQti\Processors\QtiV2\Out\QuestionTypes\\';
 
     /**
@@ -34,7 +34,6 @@ class AssessmentItemBuilder
     public function build($itemIdentifier, $itemLabel, array $questions, $content = '')
     {
         // Initialise our <assessmentItem>
-
         $assessmentItem = new AssessmentItem($itemIdentifier, $itemIdentifier, false);
         if (isset($questions[0])) {
             $itemLabel = $questions[0]->get_item_reference();

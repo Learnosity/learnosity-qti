@@ -1,9 +1,9 @@
 <?php
+
 namespace LearnosityQti\Processors\QtiV2\Out;
 
 class Constants
 {
-
     public static $supportedQuestionTypes = [
         'mcq',
         'shorttext',
