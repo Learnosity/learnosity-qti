@@ -115,7 +115,7 @@ class Converter
 
             $manifest = $manifestMapper->parse($xmlString);
             list($activities, $activitiesTags, $itemsTags) = $manifestWriter->convert($manifest, $rules);
-            
+
             $messages = LogService::flush();
             return [$activities, $activitiesTags, $itemsTags, $messages];
         } catch (Exception $e) {

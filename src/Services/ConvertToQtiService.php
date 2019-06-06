@@ -32,7 +32,7 @@ class ConvertToQtiService
     protected $outputPath;
     protected $output;
     protected $organisationId;
-    
+
     /* Runtime options */
     protected $dryRun                     = false;
     protected $shouldAppendLogs           = false;
@@ -65,22 +65,22 @@ class ConvertToQtiService
             'status' => null,
             'message' => []
         ];
-        
+
         if (!empty($errors)) {
             $result['status'] = false;
             $result['message'] = $errors;
             return $result;
         }
-        
+
         // Setup output (or -o) subdirectories
         FileSystemHelper::createDirIfNotExists($this->outputPath . '/' . $this->finalPath);
         FileSystemHelper::createDirIfNotExists($this->outputPath . '/' . $this->logPath);
         FileSystemHelper::createDirIfNotExists($this->outputPath . '/' . $this->rawPath);
-        
+
         $result = $this->parseContent();
-        
+
         $this->tearDown();
-        
+
         return $result;
     }
 
@@ -94,7 +94,7 @@ class ConvertToQtiService
         $jsonFiles = $this->parseInputFolders();
         $finalManifest = $this->getJobManifestTemplate();
         $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Processing JSON directory: {$this->inputPath} </info>");
-        
+
         foreach ($jsonFiles as $file) {
             $tempDirectoryParts = explode('/', dirname($file));
             $fileName = $tempDirectoryParts[count($tempDirectoryParts)-1];
@@ -124,7 +124,7 @@ class ConvertToQtiService
     private function parseInputFolders()
     {
         $folders = [];
-        
+
         // Look for json files in the current path
         $finder = new Finder();
         $finder->files()->in($this->inputPath . '/activities');
@@ -189,13 +189,13 @@ class ConvertToQtiService
         if ($this->dryRun) {
             return;
         }
-        
+
         if ($this->shouldAppendLogs) {
             $manifestFileBasename = static::CONVERT_LOG_FILENAME . '_' . date('m-d-y-His');
         } else {
             $manifestFileBasename = static::CONVERT_LOG_FILENAME;
         }
-        
+
         $this->output->writeln('<info>' . static::INFO_OUTPUT_PREFIX . 'Writing manifest: ' . $this->outputPath . '/' . $manifestFileBasename . '.json</info>');
         $this->writeJsonToFile($manifest, $this->outputPath . '/' . $this->logPath . '/' . $manifestFileBasename . '.json');
     }
@@ -259,11 +259,11 @@ class ConvertToQtiService
     {
         $errors = [];
         $jsonFolders = $this->parseInputFolders();
-        
+
         if (empty($jsonFolders)) {
             array_push($errors, 'No files found in ' . $this->inputPath);
         }
-        
+
         return $errors;
     }
 }

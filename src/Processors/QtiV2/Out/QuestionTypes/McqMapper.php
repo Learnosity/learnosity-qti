@@ -28,7 +28,7 @@ class McqMapper extends AbstractQuestionTypeMapper
     {
         /** @var mcq $question */
         $question = $questionType;
-        
+
         // Build <choiceInteraction>
         $valueIdentifierMap = [];
         $simpleChoiceCollection = new SimpleChoiceCollection();
@@ -57,31 +57,31 @@ class McqMapper extends AbstractQuestionTypeMapper
                 }
                 $i++;
             }
-            
+
             // Use option['value'] as choice `identifier` if it has the correct format,
             // Otherwise, generate a valid using index such `CHOICE_1`, `CHOICE_2`, etc
             $originalOptionValue = $option->get_value();
             $choiceIdentifier = Format::isIdentifier($originalOptionValue, false) ? $originalOptionValue : 'CHOICE_' . $index;
             // Store this reference in a map
             $valueIdentifierMap[$originalOptionValue] = $choiceIdentifier;
-            
+
             $choice = new SimpleChoice($choiceIdentifier);
             $choice->setContent($choiceContent);
             $simpleChoiceCollection->attach($choice);
         }
-        
+
         // Build final interaction and its corresponding <responseDeclaration>, and its <responseProcessingTemplate>
         $interaction = new ChoiceInteraction($interactionIdentifier, $simpleChoiceCollection);
         $interaction->setLabel($interactionLabel);
         $interaction->setMinChoices(1);
         $interaction->setMaxChoices($question->get_multiple_responses() ? $simpleChoiceCollection->count() : 1);
-        
+
         // Build the prompt
         $interaction->setPrompt($this->convertStimulusForPrompt($question->get_stimulus()));
-        
+
         // Set shuffle options
         $interaction->setShuffle($question->get_shuffle_options() ? true : false);
-        
+
         // Set the layout
         if ($question->get_ui_style() instanceof mcq_ui_style &&
             $question->get_ui_style()->get_type() === 'horizontal' &&
@@ -91,11 +91,11 @@ class McqMapper extends AbstractQuestionTypeMapper
             $interaction->setOrientation(Orientation::VERTICAL);
             LogService::log('ui_style` is ignored and `choiceInteraction` is assumed and set as `vertical`');
         }
-        
+
         if (empty($question->get_validation())) {
             return [$interaction, null, null];
         }
-        
+
         $builder = new McqValidationBuilder($question->get_multiple_responses(), $valueIdentifierMap);
         if (isset($feedbackOptions) && !empty($feedbackOptions)) {
             list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation(), $feedbackOptions);

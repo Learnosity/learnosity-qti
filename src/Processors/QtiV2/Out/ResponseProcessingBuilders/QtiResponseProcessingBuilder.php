@@ -42,11 +42,11 @@ class QtiResponseProcessingBuilder
         $responseElseRuleCollection = new ResponseRuleCollection();
         $responseElseRuleCollection->attach($responseElseComponent);
         $responseElse = new ResponseElse($responseElseRuleCollection);
-        
+
         // merge response conditions
         $responseCondition = new ResponseCondition($responseIf, null, $responseElse);
         $responseRuleCollection->attach($responseCondition);
-        
+
         // set response rules to responseProcessing
         $responseProcessing = new ResponseProcessing();
         $responseProcessing->setResponseRules($responseRuleCollection);

@@ -40,7 +40,7 @@ class AssessmentItemBuilder
         $assessmentItem = new AssessmentItem($itemIdentifier, $itemIdentifier, false);
         $assessmentItem->setLabel($itemLabel);
         $assessmentItem->setToolName('Learnosity');
-        
+
         // Store interactions on this array to later be placed on <itemBody>
         $interactions = [];
         $responseDeclarationCollection = new ResponseDeclarationCollection();
@@ -78,15 +78,15 @@ class AssessmentItemBuilder
                 $interactions[$question->get_reference()]['extraContent'] = $extraContent;
             }
         }
-        
+
         // Build <itemBody>
         $assessmentItem->setItemBody($this->itemBodyBuilder->buildItemBody($interactions, $content));
-        
+
         // Map <responseDeclaration>
         if (!empty($responseDeclarationCollection)) {
             $assessmentItem->setResponseDeclarations($responseDeclarationCollection);
         }
-        
+
         // Map <responseProcessing> - combine response processing from questions
         // TODO: Tidy up this stuff
         if (!empty($responseProcessingTemplates)) {
@@ -111,17 +111,12 @@ class AssessmentItemBuilder
         }
         $clazz = new \ReflectionClass(self::MAPPER_CLASS_BASE . ucfirst($type . 'Mapper'));
         $questionTypeMapper = $clazz->newInstance();
-        
+
         // Try to use question `reference` as identifier
         // Otherwise, generate an alternative identifier and store the original reference as `label` to be passed in
         $questionReference = $question->get_reference();
         $interactionIdentifier = Format::isIdentifier($questionReference, false) ? $questionReference : strtoupper($type) . '_' . StringUtil::generateRandomString(12);
-        /* if ($interactionIdentifier !== $questionReference) {
-          LogService::log(
-          "The question `reference` ($questionReference) is not a valid identifier. " .
-          "Replaced it with randomly generated `$interactionIdentifier` and stored the original `reference` as `label` attribute"
-          );
-          } */
+
         $interactionIdentifier = 'RESPONSE';
         $result = $questionTypeMapper->convert($question->get_data(), $interactionIdentifier, $questionReference);
         $result[] = $questionTypeMapper->getExtraContent();
