@@ -29,7 +29,7 @@ class Converter
 {
     const INPUT_FORMAT_QTIV2P1 = 'qtiv2p1';
     const OUTPUT_FORMAT_LRN_JSON = 'json';
-    
+
     const LEARNOSITY_DATA_ITEM = 'item';
     const LEARNOSITY_DATA_QUESTION = 'question';
     const LEARNOSITY_DATA_QUESTION_DATA = 'questiondata';
@@ -49,6 +49,7 @@ class Converter
         // Brute extract all the xml excepts imsmanifest.xml
         $itemReferences = [];
         $failedQtiXmlFilename = [];
+
         $learnosityJsonDirectory = $learnosityDirectory . '/Json';
         FileSystemUtil::createOrReplaceDir($learnosityJsonDirectory);
         $finder = new Finder();
@@ -111,7 +112,7 @@ class Converter
 
         try {
             LogService::flush();
-            
+
             $manifest = $manifestMapper->parse($xmlString);
             list($activities, $activitiesTags, $itemsTags) = $manifestWriter->convert($manifest, $rules);
             
@@ -140,7 +141,7 @@ class Converter
                 throw $e;
             }
         }
-        
+
         $activityData = $activityWriter->convert($activity);
         return [$activityData, $exceptions];
     }
@@ -150,7 +151,7 @@ class Converter
         $exceptions = null;
         $widgetWriter = AppContainer::getApplicationContainer()->get('learnosity_question_writer');
         $passageMapper = new SharedPassageMapper();
-        
+
         $widget = null;
         // Parse `em
         try {
@@ -219,13 +220,13 @@ class Converter
                 throw $e;
             }
         }
-        
+
         // Conversion to JSON
         $itemData = [];
         if ($item instanceof item) {
             $itemData = $itemWriter->convert($item);
         }
-        
+
         // Support additional (related) items being passed back
         $rubricItemData = [];
         if ($rubricItem instanceof item) {
@@ -244,6 +245,7 @@ class Converter
                 $featuresData[] = $questionWriter->convert($feature);
             }
         }
+
         $layoutService = new \LearnosityQti\Services\ItemLayoutService();
         $itemData = $layoutService->migrateItem($itemData, array_merge($questionsData, $featuresData));
 
@@ -282,7 +284,7 @@ class Converter
         } catch (\Exception $e) {
             LogService::log('Unknown error occurred. The QTI XML produced may not be valid');
         }
-        
+
         return [$xmlString, $messages];
     }
 
@@ -328,7 +330,7 @@ class Converter
                 $questions[] = $questionMapper->parse($question);
             }
         }
-        
+
         // Write em` to QTI
         $itemWriter = new ItemWriter();
         return $itemWriter->convert($item, $questions);
@@ -355,7 +357,7 @@ class Converter
             }
             return self::LEARNOSITY_DATA_QUESTION;
         }
-        
+
         // Guess this JSON is a `questiondata`
         return self::LEARNOSITY_DATA_QUESTION_DATA;
     }
