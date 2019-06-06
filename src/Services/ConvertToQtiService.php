@@ -1,4 +1,5 @@
 <?php
+
 namespace LearnosityQti\Services;
 
 use LearnosityQti\AppContainer;
@@ -21,7 +22,6 @@ use qtism\data\storage\xml\XmlDocument;
 
 class ConvertToQtiService
 {
-
     use JobDataTrait;
 
     const RESOURCE_TYPE_ITEM = 'imsqti_item_xmlv2p1';
@@ -32,29 +32,30 @@ class ConvertToQtiService
     protected $outputPath;
     protected $output;
     protected $organisationId;
+    
     /* Runtime options */
-    protected $dryRun = false;
-    protected $shouldAppendLogs = false;
+    protected $dryRun                     = false;
+    protected $shouldAppendLogs           = false;
     protected $shouldGuessItemScoringType = true;
-    protected $shouldUseManifest = true;
+    protected $shouldUseManifest          = true;
     /* Job-specific configurations */
     // Overrides identifiers to be the same as the filename
-    protected $useFileNameAsIdentifier = false;
+    protected $useFileNameAsIdentifier    = false;
     // Uses the identifier found in learning object metadata if available
-    protected $useMetadataIdentifier = true;
+    protected $useMetadataIdentifier      = true;
     // Resource identifiers sometimes (but not always) match the assessmentItem identifier, so this can be useful
-    protected $useResourceIdentifier = false;
+    protected $useResourceIdentifier      = false;
     private $assetsFixer;
 
     public function __construct($inputPath, $outputPath, OutputInterface $output, $organisationId = null)
     {
-        $this->inputPath = $inputPath;
-        $this->outputPath = $outputPath;
-        $this->output = $output;
+        $this->inputPath      = $inputPath;
+        $this->outputPath     = $outputPath;
+        $this->output         = $output;
         $this->organisationId = $organisationId;
-        $this->finalPath = 'final';
-        $this->logPath = 'log';
-        $this->rawPath = 'raw';
+        $this->finalPath      = 'final';
+        $this->logPath        = 'log';
+        $this->rawPath        = 'raw';
     }
 
     public function process()
@@ -64,17 +65,22 @@ class ConvertToQtiService
             'status' => null,
             'message' => []
         ];
+        
         if (!empty($errors)) {
             $result['status'] = false;
             $result['message'] = $errors;
             return $result;
         }
+        
         // Setup output (or -o) subdirectories
         FileSystemHelper::createDirIfNotExists($this->outputPath . '/' . $this->finalPath);
         FileSystemHelper::createDirIfNotExists($this->outputPath . '/' . $this->logPath);
         FileSystemHelper::createDirIfNotExists($this->outputPath . '/' . $this->rawPath);
+        
         $result = $this->parseContent();
+        
         $this->tearDown();
+        
         return $result;
     }
 
@@ -86,12 +92,12 @@ class ConvertToQtiService
     {
         $results = [];
         $jsonFiles = $this->parseInputFolders();
-
         $finalManifest = $this->getJobManifestTemplate();
         $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Processing JSON directory: {$this->inputPath} </info>");
+        
         foreach ($jsonFiles as $file) {
             $tempDirectoryParts = explode('/', dirname($file));
-            $fileName = $tempDirectoryParts[count($tempDirectoryParts) - 1];
+            $fileName = $tempDirectoryParts[count($tempDirectoryParts)-1];
             $results[] = $this->convertLearnosityInDirectory($file);
         }
 
@@ -118,6 +124,7 @@ class ConvertToQtiService
     private function parseInputFolders()
     {
         $folders = [];
+        
         // Look for json files in the current path
         $finder = new Finder();
         $finder->files()->in($this->inputPath . '/activities');
@@ -182,11 +189,13 @@ class ConvertToQtiService
         if ($this->dryRun) {
             return;
         }
+        
         if ($this->shouldAppendLogs) {
             $manifestFileBasename = static::CONVERT_LOG_FILENAME . '_' . date('m-d-y-His');
         } else {
             $manifestFileBasename = static::CONVERT_LOG_FILENAME;
         }
+        
         $this->output->writeln('<info>' . static::INFO_OUTPUT_PREFIX . 'Writing manifest: ' . $this->outputPath . '/' . $manifestFileBasename . '.json</info>');
         $this->writeJsonToFile($manifest, $this->outputPath . '/' . $this->logPath . '/' . $manifestFileBasename . '.json');
     }
@@ -244,16 +253,17 @@ class ConvertToQtiService
 
     private function tearDown()
     {
-        
     }
 
     private function validate()
     {
         $errors = [];
         $jsonFolders = $this->parseInputFolders();
+        
         if (empty($jsonFolders)) {
             array_push($errors, 'No files found in ' . $this->inputPath);
         }
+        
         return $errors;
     }
 }

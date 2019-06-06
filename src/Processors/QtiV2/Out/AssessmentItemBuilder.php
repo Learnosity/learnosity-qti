@@ -1,4 +1,5 @@
 <?php
+
 namespace LearnosityQti\Processors\QtiV2\Out;
 
 use LearnosityQti\Entities\Question;
@@ -18,7 +19,6 @@ use qtism\data\state\ValueCollection;
 
 class AssessmentItemBuilder
 {
-
     const MAPPER_CLASS_BASE = 'LearnosityQti\Processors\QtiV2\Out\QuestionTypes\\';
 
     /**
@@ -29,6 +29,7 @@ class AssessmentItemBuilder
     public function __construct()
     {
         $this->itemBodyBuilder = new ItemBodyBuilder();
+        
         // to add multiple outcomedeclaration in case of feedback
         $this->outcomeDeclarationCollection = new OutcomeDeclarationCollection();
     }
@@ -38,8 +39,8 @@ class AssessmentItemBuilder
         // Initialise our <assessmentItem>
         $assessmentItem = new AssessmentItem($itemIdentifier, $itemIdentifier, false);
         $assessmentItem->setLabel($itemLabel);
-        //$assessmentItem->setOutcomeDeclarations($this->buildOutcomeDeclarations());
         $assessmentItem->setToolName('Learnosity');
+        
         // Store interactions on this array to later be placed on <itemBody>
         $interactions = [];
         $responseDeclarationCollection = new ResponseDeclarationCollection();
@@ -68,9 +69,7 @@ class AssessmentItemBuilder
                     $responseDeclarationCollection->attach($responseDeclaration);
                 }
             }
-
             if (!empty($responseProcessing)) {
-
                 /** @var ResponseProcessing $responseProcessing */
                 $responseProcessingTemplates[] = $responseProcessing->getTemplate();
             }
@@ -79,12 +78,15 @@ class AssessmentItemBuilder
                 $interactions[$question->get_reference()]['extraContent'] = $extraContent;
             }
         }
+        
         // Build <itemBody>
         $assessmentItem->setItemBody($this->itemBodyBuilder->buildItemBody($interactions, $content));
+        
         // Map <responseDeclaration>
         if (!empty($responseDeclarationCollection)) {
             $assessmentItem->setResponseDeclarations($responseDeclarationCollection);
         }
+        
         // Map <responseProcessing> - combine response processing from questions
         // TODO: Tidy up this stuff
         if (!empty($responseProcessingTemplates)) {
@@ -95,8 +97,6 @@ class AssessmentItemBuilder
                 $responseProcessing->setTemplate($isOnlyMatchCorrect ? Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT : Constants::RESPONSE_PROCESSING_TEMPLATE_MAP_RESPONSE);
                 $assessmentItem->setResponseProcessing($responseProcessing);
             } else {
-                //$responseProcess = new ResponseProcessing();
-                //$responseProcess->setResponseRules($responseProcessing);
                 $assessmentItem->setResponseProcessing($responseProcessing);
             }
         }
@@ -111,6 +111,7 @@ class AssessmentItemBuilder
         }
         $clazz = new \ReflectionClass(self::MAPPER_CLASS_BASE . ucfirst($type . 'Mapper'));
         $questionTypeMapper = $clazz->newInstance();
+        
         // Try to use question `reference` as identifier
         // Otherwise, generate an alternative identifier and store the original reference as `label` to be passed in
         $questionReference = $question->get_reference();
@@ -134,7 +135,7 @@ class AssessmentItemBuilder
         $valueCollection = new ValueCollection();
         $valueCollection->attach(new Value($score));
         $outcomeDeclaration->setDefaultValue(new DefaultValue($valueCollection));
-        //$outcomeDeclarationCollection = new OutcomeDeclarationCollection();
+        
         $outcomeDeclarationCollection = $this->outcomeDeclarationCollection;
         $outcomeDeclarationCollection->attach($outcomeDeclaration);
         return $outcomeDeclarationCollection;
