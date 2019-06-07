@@ -32,6 +32,7 @@ class LongtextMapperTest extends AbstractQuestionTypeTest
 
             // And it is a HTML text by default
             $this->assertEquals(TextFormat::XHTML, $interaction->getFormat());
+            
         }
     }
     
@@ -46,7 +47,7 @@ class LongtextMapperTest extends AbstractQuestionTypeTest
             $this->assertEquals(1, $assessmentItem->getResponseDeclarations()->count());
             $this->assertNotNull($assessmentItem->getResponseProcessing());
             
-            $this->assertCount(1,$assessmentItem->getResponseProcessing()->getComponents());
+            $this->assertCount(2,$assessmentItem->getResponseProcessing()->getComponents());
             
             $responseIf = $assessmentItem->getResponseProcessing()->getComponentsByClassName('responseIf', true)->getArrayCopy()[0];
             $this->assertTrue($responseIf instanceof ResponseIf);

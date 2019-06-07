@@ -12,9 +12,10 @@ abstract class AbstractQuestionTypeTest extends AbstractTest {
 
     protected function convertToAssessmentItem(array $data) {
         $content = $data['content'];
+        $features = $data['features'];
         $assessmentItemArray = array();
         foreach ($data['questions'] as $question) {
-
+            $question['feature'] = $features;
             $question['content'] = $content;
             if (in_array($question['data']['type'], LearnosityExportConstant::$supportedQuestionTypes)) {
                 list($xml, $manifest) = Converter::convertLearnosityToQtiItem($question);
