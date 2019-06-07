@@ -56,9 +56,9 @@ class ConvertToQtiService
     protected $useResourceIdentifier      = false;
 
     private $assetsFixer;
-    private static $instance = null;
+    protected static $instance = null;
 
-    private function __construct($inputPath, $outputPath, OutputInterface $output, $format, $organisationId = null)
+    protected function __construct($inputPath, $outputPath, OutputInterface $output, $format, $organisationId = null)
     {
         $this->inputPath      = $inputPath;
         $this->outputPath     = $outputPath;

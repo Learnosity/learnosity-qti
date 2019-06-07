@@ -18,6 +18,15 @@ class OrderlistMapper extends AbstractQuestionTypeMapper
     {
         /** @var orderlist $question */
         $question = $questionType;
+        
+        // Check if distractor_rationale_response_level exists
+        $feedbackOptions = [];
+        $metadata = $question->get_metadata();
+        if (isset($metadata)) {
+            if (!empty($metadata->get_distractor_rationale())) {
+                $feedbackOptions['genral_feedback'] = $metadata->get_distractor_rationale();
+            }
+        }
 
         $simpleChoiceCollection = new SimpleChoiceCollection();
         $indexIdentifiersMap = [];
@@ -32,7 +41,7 @@ class OrderlistMapper extends AbstractQuestionTypeMapper
             $simpleChoiceCollection->attach($simpleChoice);
             $indexIdentifiersMap[$key] = $simpleChoice->getIdentifier();
         }
-
+        
         $interaction = new OrderInteraction($interactionIdentifier, $simpleChoiceCollection);
         $interaction->setLabel($interactionLabel);
         $interaction->setPrompt($this->convertStimulusForPrompt($question->get_stimulus()));
@@ -41,7 +50,7 @@ class OrderlistMapper extends AbstractQuestionTypeMapper
         $interaction->setOrientation(Orientation::VERTICAL);
 
         $builder = new OrderlistValidationBuilder($indexIdentifiersMap);
-        list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation());
+        list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation(),$feedbackOptions);
 
         return [$interaction, $responseDeclaration, $responseProcessing];
     }
