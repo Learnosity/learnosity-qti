@@ -84,7 +84,11 @@ class HotspotMapper extends AbstractQuestionTypeMapper
             $imageWidth = $image->get_width();
             $imageHeight = $image->get_height();
         } else {
-            list($imageWidth, $imageHeight) = CurlUtil::getImageSize(CurlUtil::prepareUrlForCurl($imageSrc));
+            $learnosityService = ConvertToQtiService::getInstance();
+            $inputPath = $learnosityService->getInputPath();
+            $imageRealPath = str_replace("/vendor/learnosity/itembank",$inputPath, $imageSrc);
+            list($imageWidth, $imageHeight) = getimagesize(($imageRealPath));
+            //list($imageWidth, $imageHeight) = CurlUtil::getImageSize(CurlUtil::prepareUrlForCurl($imageSrc));
         }
         $imageObject->setWidth($imageWidth);
         $imageObject->setHeight($imageHeight);
