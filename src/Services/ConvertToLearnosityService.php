@@ -46,7 +46,7 @@ class ConvertToLearnosityService
     protected $useMetadataIdentifier = true;
     // Resource identifiers sometimes (but not always) match the assessmentItem identifier, so this can be useful
     protected $useResourceIdentifier = false;
-    
+
     private $assetsFixer;
     // Hold the class instance.
     private static $instance = null;
@@ -82,34 +82,34 @@ class ConvertToLearnosityService
     {
         return $this->inputPath;
     }
-    
-    public function getMetadataIdentifier()
-    {
+
+    public function isUsingMetadataIdentifier()
+	{
         return $this->useMetadataIdentifier;
     }
-    
-    public function setMetadataIdentifier($useMetadataIdentifier)
-    {
+
+    public function useMetadataIdentifier($useMetadataIdentifier)
+	{
         $this->useMetadataIdentifier = $useMetadataIdentifier;
     }
-    
-    public function getResourceIdentifier()
-    {
+
+    public function isUsingResourceIdentifier()
+	{
         return $this->useResourceIdentifier;
     }
-    
-    public function setResourceIdentifier($useResourceIdentifier)
-    {
+
+    public function useResourceIdentifier($useResourceIdentifier)
+	{
         $this->useResourceIdentifier = $useResourceIdentifier;
     }
-    
-    public function getFileNameAsIdentifier()
-    {
+
+    public function isUsingFileNameAsIdentifier()
+	{
         return $this->useFileNameAsIdentifier;
     }
-    
-    public function setFileNameAsIdentifier($useFileNameAsIdentifier)
-    {
+
+    public function useFileNameAsIdentifier($useFileNameAsIdentifier)
+	{
         $this->useFileNameAsIdentifier = $useFileNameAsIdentifier;
     }
 
@@ -209,7 +209,7 @@ class ConvertToLearnosityService
 
             // build the DOMDocument object
             $manifestDoc = new \DOMDocument();
-            
+
             $manifestDoc->load($fullFilePath);
 
             $itemResources = $this->getItemResourcesByHrefFromDocument($manifestDoc);
@@ -222,12 +222,9 @@ class ConvertToLearnosityService
                 $relatedResource = $resource['resource'];
                 $assessmentItemContents = file_get_contents($currentDir . '/' . $resourceHref);
                 $itemReference = $this->getItemReferenceFromResource(
-                    $relatedResource, 
-                    $this->useMetadataIdentifier, 
-                    $this->useResourceIdentifier, 
-                    $this->useFileNameAsIdentifier
+                    $relatedResource, $this->useMetadataIdentifier, $this->useResourceIdentifier, $this->useFileNameAsIdentifier
                 );
-                
+
                 $itemTagsArray = $this->getTaxonPathEntryForItemTags($relatedResource);
                 $metadata = [];
                 $itemPointValue = $this->getPointValueFromResource($relatedResource);
@@ -235,9 +232,9 @@ class ConvertToLearnosityService
                     $metadata['point_value'] = $itemPointValue;
                 }
 
-                
+
                 $metadata['organisation_id'] = $this->organisationId;
-                
+
                 if (isset($itemReference)) {
                     $this->output->writeln("<comment>Converting assessment item {$itemReference}: $relativeDir/$resourceHref</comment>");
                 } else {
@@ -245,7 +242,7 @@ class ConvertToLearnosityService
                 }
 
                 $convertedContent = $this->convertAssessmentItemInFile($assessmentItemContents, $itemReference, $metadata, $currentDir, $resourceHref, $itemTagsArray);
-              
+
                 if (!empty($convertedContent)) {
                     $results['qtiitems'][basename($relativeDir) . '/' . $resourceHref] = $convertedContent;
                 }
@@ -297,7 +294,7 @@ class ConvertToLearnosityService
     private function getIdentifierFromResourceMetadata(\DOMNode $resource)
     {
         $identifier = null;
-        
+
         $xpath = $this->getXPathForQtiDocument($resource->ownerDocument);
 
         $lomIdentifier = null;
@@ -334,7 +331,7 @@ class ConvertToLearnosityService
         $searchResult = $xpath->query('.//qti:metadata/lom:lom/lom:general/lom:identifier', $resource);
         return $searchResult->length > 0;
     }
-    
+
     /**
      * Checks whether a taxonPath exists in the Learning Object Metadata
      * for this resource.
@@ -414,8 +411,8 @@ class ConvertToLearnosityService
         AssumptionHandler::flush();
 
         $xmlString = CheckValidQti::preProcessing($xmlString);
-        
-        $result     = Converter::convertQtiItemToLearnosity($xmlString, null, null, $resourcePath, $itemReference, $metadata);
+
+		$result     = Converter::convertQtiItemToLearnosity($xmlString, null, null, $resourcePath, $itemReference, $metadata);
         $item       = $result['item'];
         $questions  = $result['questions'];
         $features   = $result['features'];
@@ -469,10 +466,11 @@ class ConvertToLearnosityService
      * @return string|null
      */
     private function getItemReferenceFromResource(
-        \DOMNode $resource, $useMetadataIdentifier = true, 
-        $useResourceIdentifier = false, 
-        $useFileNameAsIdentifier = false
-    ) {
+        \DOMNode $resource,
+		$useMetadataIdentifier = true,
+		$useResourceIdentifier = false,
+		$useFileNameAsIdentifier = false
+	) {
         $itemReference = null;
 
         if ($useMetadataIdentifier && $this->metadataIdentifierExists($resource)) {
@@ -692,7 +690,7 @@ class ConvertToLearnosityService
 
     private function tearDown()
     {
-        
+
     }
 
     private function validate()
