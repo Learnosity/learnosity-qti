@@ -114,7 +114,7 @@ class FileSystemHelper
                 continue;
             }
             // Deep copy directories
-            self::copyFiles("$source/$entry", "$dest/$entry");
+            static::copyFiles("$source/$entry", "$dest/$entry");
         }
         // Clean up
         $dir->close();
