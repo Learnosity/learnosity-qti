@@ -19,7 +19,6 @@ use LearnosityQti\Services\LearnosityToQtiPreProcessingService;
 use LearnosityQti\Services\LogService;
 use LearnosityQti\Utils\FileSystemUtil;
 use LearnosityQti\Utils\StringUtil;
-use LearnosityQti\Utils\SimpleHtmlDom\SimpleHtmlDom;
 use qtism\data\storage\xml\XmlDocument;
 use qtism\data\storage\xml\XmlStorageException;
 use Symfony\Component\Finder\Finder;

@@ -5,7 +5,6 @@ namespace LearnosityQti\Processors\QtiV2\Out\Validation;
 use LearnosityQti\Processors\QtiV2\Out\Constants;
 use LearnosityQti\Processors\QtiV2\Out\ResponseProcessingBuilders\QtiResponseProcessingBuilder;
 use LearnosityQti\Services\LogService;
-use LearnosityQti\Utils\QtiMarshallerUtil;
 use qtism\data\processing\ResponseProcessing;
 
 abstract class AbstractQuestionValidationBuilder
@@ -14,7 +13,7 @@ abstract class AbstractQuestionValidationBuilder
 
     abstract protected function buildResponseDeclaration($responseIdentifier, $validation);
 
-    public function buildValidation($responseIdentifier, $validation, $distractor_rationale_response_level = array(), $isCaseSensitive = true)
+    public function buildValidation($responseIdentifier, $validation, $distractorRationaleResponseLevel = array(), $isCaseSensitive = true)
     {
         // Some basic validation on the `validation` object
         if (empty($validation)) {
@@ -33,7 +32,7 @@ abstract class AbstractQuestionValidationBuilder
         }
 
         // if found distractor_rationale_response_level generate response processing with setoutcome value FEEDBACK
-        if (!empty($distractor_rationale_response_level) && is_array($distractor_rationale_response_level)) {
+        if (!empty($distractorRationaleResponseLevel) && is_array($distractorRationaleResponseLevel)) {
             $score = $validation->get_valid_response()->get_score();
             $responseProcessing = QtiResponseProcessingBuilder::build($score);
         } else {

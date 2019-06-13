@@ -3,19 +3,17 @@
 namespace LearnosityQti\Processors\QtiV2\Out\ResponseProcessingBuilders;
 
 use qtism\common\enums\BaseType;
-use qtism\data\processing\ResponseProcessing;
-use qtism\data\rules\SetOutcomeValue;
-use qtism\data\rules\ResponseRuleCollection;
-use qtism\data\rules\ResponseRule;
-use qtism\data\rules\ResponseCondition;
-use qtism\data\rules\ResponseIf;
-use qtism\data\rules\ResponseElseIf;
-use qtism\data\rules\ResponseElse;
-use qtism\data\expressions\operators\Match;
-use qtism\data\expressions\Variable;
 use qtism\data\expressions\BaseValue;
 use qtism\data\expressions\Correct;
 use qtism\data\expressions\ExpressionCollection;
+use qtism\data\expressions\operators\Match;
+use qtism\data\expressions\Variable;
+use qtism\data\processing\ResponseProcessing;
+use qtism\data\rules\ResponseCondition;
+use qtism\data\rules\ResponseElse;
+use qtism\data\rules\ResponseIf;
+use qtism\data\rules\ResponseRuleCollection;
+use qtism\data\rules\SetOutcomeValue;
 
 class QtiResponseProcessingBuilder
 {
@@ -28,14 +26,14 @@ class QtiResponseProcessingBuilder
         $responseRuleCollection->attach($feedbackResponseComponent);
 
         // creating responseIf condition
-        $responseIfexpressionCollection = new ExpressionCollection();
-        $responseIfexpressionCollection->attach(new Variable('RESPONSE'));
-        $responseIfexpressionCollection->attach(new Correct('RESPONSE'));
+        $responseIfExpressionCollection = new ExpressionCollection();
+        $responseIfExpressionCollection->attach(new Variable('RESPONSE'));
+        $responseIfExpressionCollection->attach(new Correct('RESPONSE'));
 
         $responseIfComponent = new SetOutcomeValue('SCORE', new BaseValue(BaseType::FLOAT, $score));
         $responseIfRuleCollection = new ResponseRuleCollection();
         $responseIfRuleCollection->attach($responseIfComponent);
-        $responseIf = new ResponseIf(new Match($responseIfexpressionCollection), $responseIfRuleCollection);
+        $responseIf = new ResponseIf(new Match($responseIfExpressionCollection), $responseIfRuleCollection);
 
         // generating response else condition
         $responseElseComponent = new SetOutcomeValue('SCORE', new BaseValue(BaseType::FLOAT, 0));

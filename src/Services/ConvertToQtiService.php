@@ -2,23 +2,12 @@
 
 namespace LearnosityQti\Services;
 
-use LearnosityQti\AppContainer;
 use LearnosityQti\Converter;
 use LearnosityQti\Domain\JobDataTrait;
-use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Processors\QtiV2\Out\Constants as LearnosityExportConstant;
-use LearnosityQti\Utils\AssetsFixer;
-use LearnosityQti\Utils\AssumptionHandler;
-use LearnosityQti\Utils\CheckValidQti;
-use LearnosityQti\Utils\ResponseProcessingHandler;
 use LearnosityQti\Utils\General\FileSystemHelper;
-use LearnosityQti\Utils\General\StringHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
-use qtism\data\AssessmentItem;
-use qtism\data\content\ItemBody;
-use qtism\data\storage\xml\XmlDocument;
 
 class ConvertToQtiService
 {
@@ -159,7 +148,7 @@ class ConvertToQtiService
     {
         $result = [];
 
-        foreach ($json['questions'] as $question):
+        foreach ($json['questions'] as $question) {
 
             if (in_array($question['data']['type'], LearnosityExportConstant::$supportedQuestionTypes)) {
                 $result = Converter::convertLearnosityToQtiItem($json);
@@ -172,7 +161,7 @@ class ConvertToQtiService
                 ];
                 $this->output->writeln("<error>Question type `{$question['data']['type']}` not yet supported, ignoring</error>");
             }
-        endforeach;
+        }
         return [
             'qti' => $result,
             'json' => $json
