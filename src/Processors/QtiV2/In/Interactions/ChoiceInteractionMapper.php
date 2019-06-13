@@ -14,7 +14,6 @@ use qtism\data\content\interactions\Orientation;
 use qtism\data\content\interactions\Prompt;
 use qtism\data\content\interactions\SimpleChoice;
 use qtism\data\content\interactions\SimpleChoiceCollection;
-use qtism\data\content\interactions\ChoiceInteraction as QtiChoiceInteraction;
 
 class ChoiceInteractionMapper extends AbstractInteractionMapper
 {
@@ -31,13 +30,13 @@ class ChoiceInteractionMapper extends AbstractInteractionMapper
         // Support for @mcq-metadata
         foreach ($feedbackMetadata as $value) {
             if (!empty($value)) {
-				$metaData = new mcq_metadata();
-				$metaData->set_distractor_rationale_response_level($feedbackMetadata);
-				$mcq->set_metadata($metaData);
-			}
-		}
+                $metaData = new mcq_metadata();
+                $metaData->set_distractor_rationale_response_level($feedbackMetadata);
+                $mcq->set_metadata($metaData);
+            }
+        }
 
-		// Support for @shuffle
+        // Support for @shuffle
         $mustShuffle = $interaction->mustShuffle();
         if ($mustShuffle) {
             $mcq->set_shuffle_options($mustShuffle);
@@ -158,12 +157,12 @@ class ChoiceInteractionMapper extends AbstractInteractionMapper
                 $metadata = HtmlExtractorUtil::getHtmlData(realpath($htmlfile));
             }
         } else {
-			$feeddataArray = array_values((array) $feedbackArray[0][0]);
-			if (!empty($feeddataArray[0])) {
-				$metadata = trim($feeddataArray[0]);
-			}
-		}
+            $feeddataArray = array_values((array) $feedbackArray[0][0]);
+            if (!empty($feeddataArray[0])) {
+                $metadata = trim($feeddataArray[0]);
+            }
+        }
 
-		return $metadata;
+        return $metadata;
     }
 }

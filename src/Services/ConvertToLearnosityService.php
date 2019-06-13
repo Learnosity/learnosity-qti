@@ -84,32 +84,32 @@ class ConvertToLearnosityService
     }
 
     public function isUsingMetadataIdentifier()
-	{
+    {
         return $this->useMetadataIdentifier;
     }
 
     public function useMetadataIdentifier($useMetadataIdentifier)
-	{
+    {
         $this->useMetadataIdentifier = $useMetadataIdentifier;
     }
 
     public function isUsingResourceIdentifier()
-	{
+    {
         return $this->useResourceIdentifier;
     }
 
     public function useResourceIdentifier($useResourceIdentifier)
-	{
+    {
         $this->useResourceIdentifier = $useResourceIdentifier;
     }
 
     public function isUsingFileNameAsIdentifier()
-	{
+    {
         return $this->useFileNameAsIdentifier;
     }
 
     public function useFileNameAsIdentifier($useFileNameAsIdentifier)
-	{
+    {
         $this->useFileNameAsIdentifier = $useFileNameAsIdentifier;
     }
 
@@ -222,7 +222,10 @@ class ConvertToLearnosityService
                 $relatedResource = $resource['resource'];
                 $assessmentItemContents = file_get_contents($currentDir . '/' . $resourceHref);
                 $itemReference = $this->getItemReferenceFromResource(
-                    $relatedResource, $this->useMetadataIdentifier, $this->useResourceIdentifier, $this->useFileNameAsIdentifier
+                    $relatedResource,
+                    $this->useMetadataIdentifier,
+                    $this->useResourceIdentifier,
+                    $this->useFileNameAsIdentifier
                 );
 
                 $itemTagsArray = $this->getTaxonPathEntryForItemTags($relatedResource);
@@ -363,10 +366,10 @@ class ConvertToLearnosityService
      * Converts a single <assessmentItem> file.
      *
      * @param  SplFileInfo $file
-     * @param  string      $itemReference - Optional
+     * @param  string $itemReference - Optional
      *
      * @return array - the results of the conversion
-     */
+    */
     private function convertAssessmentItemInFile($contents, $itemReference = null, array $metadata = [], $currentDir, $resourceHref, $itemTagsArray = [])
     {
         $results = null;
@@ -380,7 +383,6 @@ class ConvertToLearnosityService
             }
 
             $resourcePath = $currentDir . '/' . $resourceHref;
-
             $results = $this->convertAssessmentItem($xmlString, $itemReference, $resourcePath, $metadata, $itemTagsArray);
 
         } catch (\Exception $e) {
@@ -412,7 +414,7 @@ class ConvertToLearnosityService
 
         $xmlString = CheckValidQti::preProcessing($xmlString);
 
-		$result     = Converter::convertQtiItemToLearnosity($xmlString, null, null, $resourcePath, $itemReference, $metadata);
+        $result     = Converter::convertQtiItemToLearnosity($xmlString, null, null, $resourcePath, $itemReference, $metadata);
         $item       = $result['item'];
         $questions  = $result['questions'];
         $features   = $result['features'];
@@ -467,10 +469,10 @@ class ConvertToLearnosityService
      */
     private function getItemReferenceFromResource(
         \DOMNode $resource,
-		$useMetadataIdentifier = true,
-		$useResourceIdentifier = false,
-		$useFileNameAsIdentifier = false
-	) {
+        $useMetadataIdentifier = true,
+        $useResourceIdentifier = false,
+        $useFileNameAsIdentifier = false
+    ) {
         $itemReference = null;
 
         if ($useMetadataIdentifier && $this->metadataIdentifierExists($resource)) {
