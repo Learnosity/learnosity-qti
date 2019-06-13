@@ -26,8 +26,10 @@ class QuestionWriter
             );
         }
 
+        $itemLabel = (!empty($question->get_item_reference())) ? $question->get_item_reference() : '';
+
         $builder = new AssessmentItemBuilder();
-        $assessmentItem = $builder->build($questionIdentifier, '', [$question]);
+        $assessmentItem = $builder->build($questionIdentifier, $itemLabel, [$question]);
 
         $xml = new XmlDocument();
         $xml->setDocumentComponent($assessmentItem);

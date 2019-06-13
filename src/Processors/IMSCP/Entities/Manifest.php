@@ -8,7 +8,19 @@ class Manifest
     protected $resources;
     protected $metadata;
     protected $organizations;
+    
+    /**
+     * Holds the parsed manifest.xml metdata
+     *
+     * @var string
+     */
     protected $manifest;
+    
+    /**
+     * Holds the IMS manifest metadata
+     *
+     * @var string
+     */
     protected $imsManifestMetadata;
 
     /**

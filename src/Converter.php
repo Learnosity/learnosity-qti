@@ -41,7 +41,7 @@ class Converter
         $learnosityImagesDirectory = $learnosityDirectory . '/Images';
         FileSystemUtil::createOrReplaceDir($learnosityImagesDirectory);
         $allImages = array_merge(
-            self::extractFiles('*.jpg', $imscpDirectory, $learnosityImagesDirectory), 
+            self::extractFiles('*.jpg', $imscpDirectory, $learnosityImagesDirectory),
             self::extractFiles('*.jpeg', $imscpDirectory, $learnosityImagesDirectory),
             self::extractFiles('*.gif', $imscpDirectory, $learnosityImagesDirectory)
         );

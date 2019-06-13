@@ -132,7 +132,7 @@ class ConvertToQtiService
         $finalManifest->setResources($resourceInfo);
         $this->persistResultsFile($results, realpath($this->outputPath) . '/' . $this->rawPath . '/');
         $this->flushJobManifest($finalManifest, $results);
-        CopyDirectoreyHelper::copyFiles(realpath($this->inputPath) . '/assets', realpath($this->outputPath) . '/' . $this->rawPath . '/assets');
+        FileSystemHelper::copyFiles(realpath($this->inputPath) . '/assets', realpath($this->outputPath) . '/' . $this->rawPath . '/assets');
         $this->createIMSContntPackage(realpath($this->outputPath) . '/' . $this->rawPath . '/');
     }
 
@@ -317,7 +317,7 @@ class ConvertToQtiService
         }
         $imsMetaMetaDataSchema->appendChild($imsManifestXml->createElement('imsmd:language', LearnosityExportConstant::IMSQTI_LANG));
 
-        $schemaVersion = $imsManifestXml->createElement("schemaversion", $manifestMetadataContent->getSchemaversion());
+        $schemaVersion = $imsManifestXml->createElement("schemaversion", $manifestMetadataContent->getSchemaVersion());
         $manifestMetadata->appendChild($schemaVersion);
         $manifestMetadata->appendChild($qtiMetaData);
         $manifestMetadata->appendChild($qtiLOMData);
@@ -398,7 +398,7 @@ class ConvertToQtiService
     {
         $manifestMetaData = new ImsManifestMetadata();
         $manifestMetaData->setSchema(LearnosityExportConstant::SCHEMA_NAME);
-        $manifestMetaData->setSchemaversion(LearnosityExportConstant::SCHEMA_VERSION);
+        $manifestMetaData->setSchemaVersion(LearnosityExportConstant::SCHEMA_VERSION);
         $manifestMetaData->setTitle("QTI 2.1 Conversion Data");
         $manifestMetaData->setQtiMetadata('ABCVD');
         return $manifestMetaData;

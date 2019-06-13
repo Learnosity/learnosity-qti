@@ -7,7 +7,7 @@ class Question extends BaseEntity
     private $reference;
     private $type;
     private $data;
-    private $widget_type;
+    private $widgetType;
     private $itemReference;
 
     function __construct($type, $reference, BaseQuestionType $data, $itemReference)
@@ -15,7 +15,7 @@ class Question extends BaseEntity
         $this->data          = $data;
         $this->reference     = $reference;
         $this->type          = $type;
-        $this->widget_type   = $data->get_widget_type();
+        $this->widgetType   = $data->get_widget_type();
         $this->itemReference = $itemReference;
     }
   
@@ -61,7 +61,7 @@ class Question extends BaseEntity
 
     /**
      * @override
-     * */
+     **/
     public function to_array()
     {
         $question         = get_object_vars($this);

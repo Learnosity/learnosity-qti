@@ -42,6 +42,4 @@ class Constants
     const IMSQTI_METADATA_SCHEMA = array('LOMv1.0', 'QTIv2.1');
     const SCHEMA_NAME = 'QTIv2.1 Item Bank Package';
     const SCHEMA_VERSION = '2.1';
-    const IMSQTI_RIGHTS = 'Copyright (c) 2016 by Certica Solutions, Inc. All rights reserved.';
-
 }
