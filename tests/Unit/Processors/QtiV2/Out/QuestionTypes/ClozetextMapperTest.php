@@ -7,21 +7,23 @@ use LearnosityQti\Entities\QuestionTypes\clozetext_metadata;
 use LearnosityQti\Entities\QuestionTypes\clozetext_validation;
 use LearnosityQti\Entities\QuestionTypes\clozetext_validation_valid_response;
 use LearnosityQti\Processors\QtiV2\Out\QuestionTypes\ClozetextMapper;
-use qtism\data\content\FeedbackInline;
+use LearnosityQti\Utils\QtiMarshallerUtil;
+use PHPUnit_Framework_TestCase;
 use qtism\data\content\interactions\TextEntryInteraction;
-use qtism\data\processing\ResponseProcessing;
 use qtism\data\rules\ResponseElse;
 use qtism\data\rules\ResponseIf;
+use qtism\data\rules\SetOutcomeValue;
 use qtism\data\state\ResponseDeclaration;
 
+class ClozetextMapperTest extends PHPUnit_Framework_TestCase
+{
 
-class ClozetextMapperTest extends \PHPUnit_Framework_TestCase {
-
-    public function testSimpleCase(){
+    public function testSimpleCase()
+    {
         
         $stimulus = '<strong>This is a clozetext question</strong>';
         $ques_template = 'B comes after {{response}} and C comes after {{response}}';
-        $question = new clozetext('clozetext',$ques_template);
+        $question = new clozetext('clozetext', $ques_template);
         $question->set_stimulus($stimulus);
         
         $response_value = ['response1','response2'];
@@ -63,16 +65,16 @@ class ClozetextMapperTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals('response2', $responseDeclarationTwo->getMapping()->getMapEntries()->getArrayCopy()[0]->getMapKey());
         $this->assertEquals(2.0, $responseDeclarationTwo->getMapping()->getMapEntries()->getArrayCopy()[0]->getMappedValue());
             
-        $this->assertCount(3, $responseProcessing->getComponents()); 
-            
+        $this->assertCount(3, $responseProcessing->getComponents());
     }
  
     
-    public function testWithOneGap(){
+    public function testWithOneGap()
+    {
         
         $stimulus = '<strong>This is a clozetext question</strong>';
         $ques_template = 'B comes after {{response}}';
-        $question = new clozetext('clozetext',$ques_template);
+        $question = new clozetext('clozetext', $ques_template);
         $question->set_stimulus($stimulus);
         
         // add question validation
@@ -94,10 +96,48 @@ class ClozetextMapperTest extends \PHPUnit_Framework_TestCase {
         $this->assertTrue($interactionOne instanceof TextEntryInteraction);
         $this->assertEquals(15, $interactionOne->getExpectedLength());
         
-        // Check has the feedbackInline
-        $feedBackInlinesArray = $interaction->getComponentsByClassName('feedbackInline', true)->getArrayCopy();
-        $this->assertCount(1, $feedBackInlinesArray);
-        $this->assertEquals('Right answer is response1' ,$feedBackInlinesArray[0]->getContent()[0]->getContent());
+        // Assert response declarations
+        /** @var ResponseDeclaration $responseDeclarationOne */
+        $responseDeclarationOne = $responseDeclaration[$interactionOne->getResponseIdentifier()];
+        
+        // Check has the correct identifiers
+        $this->assertEquals($responseDeclarationOne->getIdentifier(), $interactionOne->getResponseIdentifier());
+        
+        // Also correct 'correctResponse' values
+        $this->assertEquals('response1', $responseDeclarationOne->getCorrectResponse()->getValues()->getArrayCopy()[0]->getValue());
+            
+        // Also correct 'mapping' entries
+        $this->assertEquals('response1', $responseDeclarationOne->getMapping()->getMapEntries()->getArrayCopy()[0]->getMapKey());
+        $this->assertEquals(2.0, $responseDeclarationOne->getMapping()->getMapEntries()->getArrayCopy()[0]->getMappedValue());
+        $this->assertCount(2, $responseProcessing->getComponents());
+    }
+
+    public function testWithDistractorRationale()
+    {
+        
+        $stimulus = '<strong>This is a clozetext question</strong>';
+        $ques_template = 'B comes after {{response}}';
+        $question = new clozetext('clozetext', $ques_template);
+        $question->set_stimulus($stimulus);
+        
+        // add question validation
+        $response_value = ['response1'];
+        $validation = $this->addValidresponse($response_value);
+        $question->set_validation($validation);
+        
+        // add metadata
+        $metadata = $this->addMetadata();
+        $question->set_metadata($metadata);
+        
+        $clozetext = new ClozetextMapper();
+        /** @var textEntryInteraction $interaction */
+        list($interaction, $responseDeclaration, $responseProcessing) = $clozetext->convert($question, 'testIdentifier', 'testIdentifierLabel');
+        
+        $interactions = $interaction->getComponentsByClassName('textEntryInteraction', true)->getArrayCopy();
+        /** @var TextEntryInteraction $interactionOne */
+        $interactionOne = $interactions[0];
+        $this->assertTrue($interactionOne instanceof TextEntryInteraction);
+        $this->assertEquals(15, $interactionOne->getExpectedLength());
         
         // Assert response declarations
         /** @var ResponseDeclaration $responseDeclarationOne */
@@ -112,11 +152,28 @@ class ClozetextMapperTest extends \PHPUnit_Framework_TestCase {
         // Also correct 'mapping' entries
         $this->assertEquals('response1', $responseDeclarationOne->getMapping()->getMapEntries()->getArrayCopy()[0]->getMapKey());
         $this->assertEquals(2.0, $responseDeclarationOne->getMapping()->getMapEntries()->getArrayCopy()[0]->getMappedValue());
-        $this->assertCount(2, $responseProcessing->getComponents()); 
+        $this->assertCount(2, $responseProcessing->getComponents());
+
+        $responseIf = $responseProcessing->getComponentsByClassName('responseIf', true)->getArrayCopy()[0];
+        $this->assertTrue($responseIf instanceof ResponseIf);
+        $promptIfString = QtiMarshallerUtil::marshallCollection($responseIf->getComponents());
+        $this->assertEquals('<isNull><variable identifier="RESPONSE"/></isNull><setOutcomeValue identifier="SCORE"><baseValue baseType="float">0</baseValue></setOutcomeValue>', $promptIfString);
+        
+        $responseElse = $responseProcessing->getComponentsByClassName('responseElse', true)->getArrayCopy()[0];
+        $this->assertTrue($responseElse instanceof ResponseElse);
+        $promptElseString = QtiMarshallerUtil::marshallCollection($responseElse->getComponents());
+        $this->assertEquals('<responseCondition><responseIf><match><variable identifier="RESPONSE"/><correct identifier="RESPONSE"/></match><setOutcomeValue identifier="SCORE"><baseValue baseType="float">2</baseValue></setOutcomeValue></responseIf><responseElse><setOutcomeValue identifier="SCORE"><baseValue baseType="float">-1</baseValue></setOutcomeValue></responseElse></responseCondition>', $promptElseString);
+
+        $setoutcome = $responseProcessing->getComponentsByClassName('setOutcomeValue', true)->getArrayCopy()[3];
+        $this->assertTrue($setoutcome instanceof SetOutcomeValue);
+        
+        $identifier = $setoutcome->getIdentifier();
+        $this->assertEquals('FEEDBACK_GENERAL', $identifier);
             
     }
     
-    public function addValidresponse($response_value){
+    public function addValidresponse($response_value)
+    {
         
         // set validation
         $valid_response = new clozetext_validation_valid_response();
@@ -128,16 +185,12 @@ class ClozetextMapperTest extends \PHPUnit_Framework_TestCase {
         return $validation;
     }
     
-    public function addMetadata(){
+    public function addMetadata()
+    {
         
         // set distractor_rationale and distractor_rationale_response_level
         $metadata = new clozetext_metadata();
         $metadata->set_distractor_rationale('It is a general feedback');
-        $distractor_rationale_response_level = ["Right answer is response1"];
-        $metadata->set_distractor_rationale_response_level($distractor_rationale_response_level);
         return $metadata;
     }
- 
 }
-
-

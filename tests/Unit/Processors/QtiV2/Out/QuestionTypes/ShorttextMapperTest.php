@@ -19,6 +19,7 @@ use qtism\data\state\ResponseDeclaration;
 use qtism\data\state\Value;
 use qtism\data\rules\ResponseElse;
 use qtism\data\rules\ResponseIf;
+use qtism\data\rules\SetOutcomeValue;
 
 class ShorttextMapperTest extends \PHPUnit_Framework_TestCase
 {
@@ -47,7 +48,7 @@ class ShorttextMapperTest extends \PHPUnit_Framework_TestCase
         /** @var Value[] $values */
         $values = $responseDeclaration->getCorrectResponse()->getValues()->getArrayCopy(true);
         $this->assertEquals('testhello', $values[0]->getValue());
-        
+
         /** @var MapEntry[] $mapEntries */
         $mapEntries = $responseDeclaration->getMapping()->getMapEntries()->getArrayCopy(true);
         $this->assertEquals('testhello', $mapEntries[0]->getMapKey());
@@ -64,10 +65,10 @@ class ShorttextMapperTest extends \PHPUnit_Framework_TestCase
         $mapper = new ShorttextMapper();
         /** @var TextEntryInteraction $interaction */
         list($interaction, $responseDeclaration, $responseProcessing) = $mapper->convert($question, 'reference', 'reference');
-        
+
         // Not going to test the interaction, too boring
         $this->assertTrue($interaction instanceof Div);
-        
+
         // Shorttext shall have one simple exactMatch <responseDeclaration> and <responseProcessing>
         /** @var ResponseProcessing $responseProcessing */
         $this->assertEquals(Constants::RESPONSE_PROCESSING_TEMPLATE_MAP_RESPONSE, $responseProcessing->getTemplate());
@@ -115,7 +116,7 @@ class ShorttextMapperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, $mapEntries[2]->getMappedValue());
         $this->assertEquals(false, $mapEntries[2]->isCaseSensitive());
     }
-    
+
     public function testSimpleCaseWithDistractorRationale()
     {
         $question = $this->buildShorttextWithValidation([
@@ -123,36 +124,42 @@ class ShorttextMapperTest extends \PHPUnit_Framework_TestCase
             new ValidResponse(2, ['testhello2']),
             new ValidResponse(5, ['testhello3'])
         ]);
-        
+
         $question->set_metadata($this->addDistratorRationale());
-        
+
         $mapper = new ShorttextMapper();
         /** @var TextEntryInteraction $interaction */
         list($interaction, $responseDeclaration, $responseProcessing) = $mapper->convert($question, 'reference', 'reference');
 
         /** @var ResponseProcessing $responseProcessing */
         $this->assertNotNull($responseProcessing);
-        $this->assertCount(1, $responseProcessing->getComponents());
-        
+        $this->assertCount(2, $responseProcessing->getComponents());
+
         $responseIf = $responseProcessing->getComponentsByClassName('responseIf', true)->getArrayCopy()[0];
         $this->assertTrue($responseIf instanceof ResponseIf);
         $promptIfString = QtiMarshallerUtil::marshallCollection($responseIf->getComponents());
-        $this->assertEquals('<isNull><variable identifier="RESPONSE"/></isNull><setOutcomeValue identifier="SCORE"><baseValue baseType="float">0</baseValue></setOutcomeValue><setOutcomeValue identifier="FEEDBACK_GENERAL"><baseValue baseType="identifier">correctOrIncorrect</baseValue></setOutcomeValue>', $promptIfString);
-        
+        $this->assertEquals('<isNull><variable identifier="RESPONSE"/></isNull><setOutcomeValue identifier="SCORE"><baseValue baseType="float">0</baseValue></setOutcomeValue>', $promptIfString);
+
         $responseElse = $responseProcessing->getComponentsByClassName('responseElse', true)->getArrayCopy()[0];
         $this->assertTrue($responseElse instanceof ResponseElse);
         $promptElseString = QtiMarshallerUtil::marshallCollection($responseElse->getComponents());
-        $this->assertEquals('<responseCondition><responseIf><match><variable identifier="RESPONSE"/><correct identifier="RESPONSE"/></match><setOutcomeValue identifier="SCORE"><baseValue baseType="float">5</baseValue></setOutcomeValue><setOutcomeValue identifier="FEEDBACK_GENERAL"><baseValue baseType="identifier">correctOrIncorrect</baseValue></setOutcomeValue></responseIf><responseElse><setOutcomeValue identifier="SCORE"><baseValue baseType="float">0</baseValue></setOutcomeValue><setOutcomeValue identifier="FEEDBACK_GENERAL"><baseValue baseType="identifier">correctOrIncorrect</baseValue></setOutcomeValue></responseElse></responseCondition>', $promptElseString);
-        
+        $this->assertEquals('<responseCondition><responseIf><match><variable identifier="RESPONSE"/><correct identifier="RESPONSE"/></match><setOutcomeValue identifier="SCORE"><baseValue baseType="float">5</baseValue></setOutcomeValue></responseIf><responseElse><setOutcomeValue identifier="SCORE"><baseValue baseType="float">0</baseValue></setOutcomeValue></responseElse></responseCondition>', $promptElseString);
+
+        $setoutcome = $responseProcessing->getComponentsByClassName('setOutcomeValue', true)->getArrayCopy()[3];
+        $this->assertTrue($setoutcome instanceof SetOutcomeValue);
+
+        $identifier = $setoutcome->getIdentifier();
+        $this->assertEquals('FEEDBACK_GENERAL', $identifier);
+
         /** @var ResponseDeclaration $responseDeclaration */
         $this->assertNotNull($responseDeclaration);
         $this->assertTrue($interaction instanceof Div);
-        
+
         // Check on the responseDeclaration and responseProcessing objects to be correctly generated
         $this->assertEquals('', $responseProcessing->getTemplate());
         $this->assertEquals(Cardinality::SINGLE, $responseDeclaration->getCardinality());
         $this->assertEquals(BaseType::STRING, $responseDeclaration->getBaseType());
-        
+
         /** @var MapEntry[] $mapEntries */
         $mapEntries = $responseDeclaration->getMapping()->getMapEntries()->getArrayCopy(true);
         $this->assertEquals('testhello3', $mapEntries[0]->getMapKey());
@@ -177,8 +184,9 @@ class ShorttextMapperTest extends \PHPUnit_Framework_TestCase
 
         return $question;
     }
-    
-    private function addDistratorRationale() {
+
+    private function addDistratorRationale()
+    {
         $metaData = new shorttext_metadata();
         $metaData->set_distractor_rationale("This is genral feedback");
         return $metaData;

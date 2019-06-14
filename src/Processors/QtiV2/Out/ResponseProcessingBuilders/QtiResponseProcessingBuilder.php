@@ -2,23 +2,20 @@
 namespace LearnosityQti\Processors\QtiV2\Out\ResponseProcessingBuilders;
 
 use qtism\common\enums\BaseType;
-use qtism\data\processing\ResponseProcessing;
-use qtism\data\rules\SetOutcomeValue;
-use qtism\data\rules\ResponseRuleCollection;
-use qtism\data\rules\ResponseRule;
-use qtism\data\rules\ResponseCondition;
-use qtism\data\rules\ResponseIf;
-use qtism\data\rules\ResponseElseIf;
-use qtism\data\rules\ResponseElse;
-use qtism\data\expressions\operators\IsNull;
-use qtism\data\expressions\operators\Match;
-use qtism\data\expressions\operators\Sum;
-use qtism\data\expressions\operators\Multiple;
-use qtism\data\expressions\Variable;
 use qtism\data\expressions\BaseValue;
-use qtism\data\expressions\MapResponse;
 use qtism\data\expressions\Correct;
 use qtism\data\expressions\ExpressionCollection;
+use qtism\data\expressions\operators\IsNull;
+use qtism\data\expressions\operators\Match;
+use qtism\data\expressions\operators\Multiple;
+use qtism\data\expressions\operators\Sum;
+use qtism\data\expressions\Variable;
+use qtism\data\processing\ResponseProcessing;
+use qtism\data\rules\ResponseCondition;
+use qtism\data\rules\ResponseElse;
+use qtism\data\rules\ResponseIf;
+use qtism\data\rules\ResponseRuleCollection;
+use qtism\data\rules\SetOutcomeValue;
 
 class QtiResponseProcessingBuilder
 {
@@ -32,15 +29,15 @@ class QtiResponseProcessingBuilder
         if (sizeof($feedBackOptions) > 1) {
             $multipleExpression = new ExpressionCollection();
             $variable = new Variable('FEEDBACK');
-            $basevalue = new BaseValue(BaseType::IDENTIFIER, 'identifier');
+            $baseValue = new BaseValue(BaseType::IDENTIFIER, 'identifier');
             $multipleExpression->attach($variable);
-            $multipleExpression->attach($basevalue);
+            $multipleExpression->attach($baseValue);
             $feedbackResponseComponent = new SetOutcomeValue('FEEDBACK', new Multiple($multipleExpression));
             $responseRuleCollection->attach($feedbackResponseComponent);
         }
 
-        $responseIfexpressionCollection = new ExpressionCollection();
-        $responseIfexpressionCollection->attach(new Variable('RESPONSE'));
+        $responseIfExpressionCollection = new ExpressionCollection();
+        $responseIfExpressionCollection->attach(new Variable('RESPONSE'));
 
         $responseIfRuleCollection = new ResponseRuleCollection();
         $responseIfNullScoreComponent = new SetOutcomeValue('SCORE', new BaseValue(BaseType::FLOAT, 0.0));
@@ -49,16 +46,16 @@ class QtiResponseProcessingBuilder
         // generating response else condition
         $responseElseRuleCollection = new ResponseRuleCollection();
 
-        $responseIf = new ResponseIf(new IsNull($responseIfexpressionCollection), $responseIfRuleCollection);
+        $responseIf = new ResponseIf(new IsNull($responseIfExpressionCollection), $responseIfRuleCollection);
         $responseElse = new ResponseElse($responseElseRuleCollection);
 
         $responseCondition = new ResponseCondition($responseIf, null, $responseElse);
 
         // responseCondition for responseElse starts here
         // creating responseIf condition
-        $responseIfexpressionCollection1 = new ExpressionCollection();
-        $responseIfexpressionCollection1->attach(new Variable('RESPONSE'));
-        $responseIfexpressionCollection1->attach(new Correct('RESPONSE'));
+        $responseIfExpressionCollection1 = new ExpressionCollection();
+        $responseIfExpressionCollection1->attach(new Variable('RESPONSE'));
+        $responseIfExpressionCollection1->attach(new Correct('RESPONSE'));
 
         $responseIfRuleCollection1 = new ResponseRuleCollection();
 
@@ -78,7 +75,7 @@ class QtiResponseProcessingBuilder
         }
         $responseElseRuleCollection1->attach($responseElseComponent1);
 
-        $responseIf1 = new ResponseIf(new Match($responseIfexpressionCollection1), $responseIfRuleCollection1);
+        $responseIf1 = new ResponseIf(new Match($responseIfExpressionCollection1), $responseIfRuleCollection1);
         $responseElse1 = new ResponseElse($responseElseRuleCollection1);
 
         // merge response conditions
@@ -91,7 +88,7 @@ class QtiResponseProcessingBuilder
             $responseFeedbackComponent = new SetOutcomeValue('FEEDBACK_GENERAL', new BaseValue(BaseType::IDENTIFIER, 'correctOrIncorrect'));
             $responseRuleCollection->attach($responseFeedbackComponent);
         }
-        
+
         // set response rules to responseProcessing
         $responseProcessing = new ResponseProcessing();
         $responseProcessing->setResponseRules($responseRuleCollection);
@@ -107,32 +104,26 @@ class QtiResponseProcessingBuilder
         $i = 1;
         foreach ($responseIdentifiers as $rid) {
 
-            $responseIfexpressionCollection = new ExpressionCollection();
-            $responseIfexpressionCollection->attach(new Variable($rid));
+            $responseIfExpressionCollection = new ExpressionCollection();
+            $responseIfExpressionCollection->attach(new Variable($rid));
 
             $responseIfRuleCollection = new ResponseRuleCollection();
             $responseIfNullScoreComponent = new SetOutcomeValue('SCORE' . $i, new BaseValue(BaseType::FLOAT, 0.0));
             $responseIfRuleCollection->attach($responseIfNullScoreComponent);
 
-            // genrate outcome value if distrator_rationale_value is set
-            if (is_array($feedBackOptions) && !empty($feedBackOptions['genral_feedback'])) {
-                $responseFeedbackComponent = new SetOutcomeValue('FEEDBACK_GENERAL', new BaseValue(BaseType::IDENTIFIER, 'correctOrIncorrect'));
-                $responseIfRuleCollection->attach($responseFeedbackComponent);
-            }
-
             // generating response else condition
             $responseElseRuleCollection = new ResponseRuleCollection();
 
-            $responseIf = new ResponseIf(new IsNull($responseIfexpressionCollection), $responseIfRuleCollection);
+            $responseIf = new ResponseIf(new IsNull($responseIfExpressionCollection), $responseIfRuleCollection);
             $responseElse = new ResponseElse($responseElseRuleCollection);
 
             $responseCondition = new ResponseCondition($responseIf, null, $responseElse);
 
             // responseCondition for responseElse starts here
             // creating responseIf condition
-            $responseIfexpressionCollection1 = new ExpressionCollection();
-            $responseIfexpressionCollection1->attach(new Variable($rid));
-            $responseIfexpressionCollection1->attach(new Correct($rid));
+            $responseIfExpressionCollection1 = new ExpressionCollection();
+            $responseIfExpressionCollection1->attach(new Variable($rid));
+            $responseIfExpressionCollection1->attach(new Correct($rid));
 
             $responseIfRuleCollection1 = new ResponseRuleCollection();
 
@@ -157,21 +148,14 @@ class QtiResponseProcessingBuilder
             if (sizeof($feedBackOptions) > 1) {
                 $multipleExpression = new ExpressionCollection();
                 $variable = new Variable('FEEDBACK');
-                $basevalue = new BaseValue(BaseType::IDENTIFIER, 'IDENTIFIER_' . $i);
+                $baseValue = new BaseValue(BaseType::IDENTIFIER, 'IDENTIFIER_' . $i);
                 $multipleExpression->attach($variable);
-                $multipleExpression->attach($basevalue);
+                $multipleExpression->attach($baseValue);
                 $feedbackResponseComponent = new SetOutcomeValue('FEEDBACK', new Multiple($multipleExpression));
                 $responseElseRuleCollection1->attach($feedbackResponseComponent);
             }
 
-            // genrate outcome value if distrator_rationale_value is set
-            if (is_array($feedBackOptions) && !empty($feedBackOptions['genral_feedback'])) {
-                $responseFeedbackComponent = new SetOutcomeValue('FEEDBACK_GENERAL', new BaseValue(BaseType::IDENTIFIER, 'correctOrIncorrect'));
-                $responseIfRuleCollection1->attach($responseFeedbackComponent);
-                $responseElseRuleCollection1->attach($responseFeedbackComponent);
-            }
-
-            $responseIf1 = new ResponseIf(new Match($responseIfexpressionCollection1), $responseIfRuleCollection1);
+            $responseIf1 = new ResponseIf(new Match($responseIfExpressionCollection1), $responseIfRuleCollection1);
             $responseElse1 = new ResponseElse($responseElseRuleCollection1);
 
             // merge response conditions
@@ -191,8 +175,12 @@ class QtiResponseProcessingBuilder
         $scoreResponseComponent = new SetOutcomeValue('SCORE', new Sum($sumexpressionCollection));
         $responseRuleCollection->attach($scoreResponseComponent);
 
+        // genrate outcome value if distrator_rationale_value is set
+        if (is_array($feedBackOptions) && !empty($feedBackOptions['genral_feedback'])) {
+            $responseFeedbackComponent = new SetOutcomeValue('FEEDBACK_GENERAL', new BaseValue(BaseType::IDENTIFIER, 'correctOrIncorrect'));
+            $responseRuleCollection->attach($responseFeedbackComponent);
+        }
+
         return $responseProcessing;
     }
 }
-
-?>

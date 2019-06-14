@@ -8,19 +8,16 @@ use LearnosityQti\Entities\QuestionTypes\clozedropdown_validation;
 use LearnosityQti\Entities\QuestionTypes\clozedropdown_validation_valid_response;
 use LearnosityQti\Processors\QtiV2\Out\QuestionTypes\ClozedropdownMapper;
 use LearnosityQti\Utils\QtiMarshallerUtil;
-use qtism\data\content\FeedbackInline;
 use qtism\data\content\interactions\InlineChoiceInteraction;
-use qtism\data\processing\ResponseProcessing;
 use qtism\data\rules\ResponseCondition;
-use qtism\data\rules\ResponseElse;
-use qtism\data\rules\ResponseIf;
 use qtism\data\state\ResponseDeclaration;
 use qtism\data\rules\SetOutcomeValue;
 
+class ClozedropdownMapperTest extends \PHPUnit_Framework_TestCase
+{
 
-class ClozedropdownMapperTest extends \PHPUnit_Framework_TestCase {
-
-    public function testSimpleCase(){
+    public function testSimpleCase()
+    {
         
         $stimulus = '<strong>This is a clozetext dropdown question</strong>';
         $ques_template = '<p>Potato is a {{response}}, Guava is a {{response}} and red is a {{response}}</p>';
@@ -29,7 +26,7 @@ class ClozedropdownMapperTest extends \PHPUnit_Framework_TestCase {
                     ["Fruit","Vegetable","Color"],
                     ["Color","Fruit"]
                 ];
-        $question = new clozedropdown('clozedropdown',$ques_template,$possible_responses);
+        $question = new clozedropdown('clozedropdown', $ques_template, $possible_responses);
         $question->set_stimulus($stimulus);
         
         // add valid_responses
@@ -75,8 +72,7 @@ class ClozedropdownMapperTest extends \PHPUnit_Framework_TestCase {
         $this->assertNull($responseDeclarationThree->getMapping());
         $this->assertEquals('INLINECHOICE_0', $responseDeclarationThree->getCorrectResponse()->getValues()->getArrayCopy()[0]->getValue());
         $this->assertEquals('Color', QtiMarshallerUtil::marshallCollection($interactionThree->getComponentByIdentifier('INLINECHOICE_0')->getComponents()));
-        
-        $this->assertCount(4, $responseProcessing->getComponents()); 
+        $this->assertCount(4, $responseProcessing->getComponents());
         
         $responseRules = $responseProcessing->getComponents();
         $responseRuleOne = $responseRules[0];
@@ -90,7 +86,8 @@ class ClozedropdownMapperTest extends \PHPUnit_Framework_TestCase {
         $this->assertTrue($responseRuleFour instanceof SetOutcomeValue);
     }
     
-    public function testWithDistractorRationale(){
+    public function testWithDistractorRationale()
+    {
         
         $stimulus = '<strong>This is a clozetext dropdown question</strong>';
         $ques_template = '<p>Potato is a {{response}}, Guava is a {{response}} and red is a {{response}}</p>';
@@ -99,7 +96,7 @@ class ClozedropdownMapperTest extends \PHPUnit_Framework_TestCase {
                     ["Fruit","Vegetable","Color"],
                     ["Color","Fruit"]
                 ];
-        $question = new clozedropdown('clozedropdown',$ques_template,$possible_responses);
+        $question = new clozedropdown('clozedropdown', $ques_template, $possible_responses);
         $question->set_stimulus($stimulus);
         
         // Set valid_response
@@ -115,15 +112,6 @@ class ClozedropdownMapperTest extends \PHPUnit_Framework_TestCase {
         list($interaction, $responseDeclaration, $responseProcessing) = $clozedropdown->convert($question, 'testIdentifier', 'testIdentifierLabel');
         
         $interactions = $interaction->getComponentsByClassName('inlineChoiceInteraction', true)->getArrayCopy();
-        
-        // Check has the feedbackInline
-        $feedBackInlinesArray = $interaction->getComponentsByClassName('feedbackInline', true)->getArrayCopy();
-        $this->assertCount(3, $feedBackInlinesArray);
-        $this->assertEquals('Right answer is Vegetable' ,$feedBackInlinesArray[0]->getContent()[0]->getContent());
-        $this->assertEquals('Right answer is fruit' ,$feedBackInlinesArray[1]->getContent()[0]->getContent());
-        $this->assertEquals('Right answer is Color' ,$feedBackInlinesArray[2]->getContent()[0]->getContent());
-        
-        $this->assertNotNull($interaction->getComponentsByClassName('feedbackInline', true));
         
         /** @var InlineChoiceInteraction $interactionOne */
         $interactionOne = $interactions[0];
@@ -159,31 +147,36 @@ class ClozedropdownMapperTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals('INLINECHOICE_0', $responseDeclarationThree->getCorrectResponse()->getValues()->getArrayCopy()[0]->getValue());
         $this->assertEquals('Color', QtiMarshallerUtil::marshallCollection($interactionThree->getComponentByIdentifier('INLINECHOICE_0')->getComponents()));
         
-        $this->assertCount(4, $responseProcessing->getComponents()); 
-        
+        $this->assertCount(5, $responseProcessing->getComponents());
+  
         $responseRules = $responseProcessing->getComponents();
         $responseRuleOne = $responseRules[0];
         $responseRuleTwo = $responseRules[1];
         $responseRuleThree = $responseRules[2];
         $responseRuleFour = $responseRules[3];
+        $responseRuleFive = $responseRules[4];
         
         $this->assertTrue($responseRuleOne instanceof ResponseCondition);
         $this->assertTrue($responseRuleTwo instanceof ResponseCondition);
         $this->assertTrue($responseRuleThree instanceof ResponseCondition);
         $this->assertTrue($responseRuleFour instanceof SetOutcomeValue);
+        $this->assertTrue($responseRuleFive instanceof SetOutcomeValue);
+        
+        $identifier = $responseRuleFive->getIdentifier();
+        $this->assertEquals('FEEDBACK_GENERAL', $identifier);
     }
     
-    function addQuestionMetadata(){
+    public function addQuestionMetadata()
+    {
         
         // set distractor_rationale and distractor_rationale_response_level
         $metadata = new clozedropdown_metadata();
         $metadata->set_distractor_rationale('This is a general feedback');
-        $distractor_rationale_response_level = ["Right answer is Vegetable","Right answer is fruit","Right answer is Color"];
-        $metadata->set_distractor_rationale_response_level($distractor_rationale_response_level);
         return $metadata;
     }
     
-    function addValidResponse(){
+    public function addValidResponse()
+    {
         
         // set valid response
         $valid_response = new clozedropdown_validation_valid_response();
@@ -193,9 +186,4 @@ class ClozedropdownMapperTest extends \PHPUnit_Framework_TestCase {
         $validation->set_valid_response($valid_response);
         return $validation;
     }
- 
 }
-
-
-
-

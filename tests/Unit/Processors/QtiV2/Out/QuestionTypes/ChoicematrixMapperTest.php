@@ -20,7 +20,6 @@ use qtism\data\rules\SetOutcomeValue;
 use qtism\data\state\ResponseDeclaration;
 use qtism\data\state\Value;
 
-
 class ChoicematrixMapperTest extends \PHPUnit_Framework_TestCase
 {
     public function testSingularResponsesWithNoValidation()
@@ -29,7 +28,12 @@ class ChoicematrixMapperTest extends \PHPUnit_Framework_TestCase
 
         /** @var MatchInteraction $interaction */
         $mapper = new ChoicematrixMapper();
-        list($interaction, $responseDeclaration, $responseProcessing) = $mapper->convert($question, 'testIdentifier', 'testIdentifier');
+        list($interaction, $responseDeclaration, $responseProcessing) = $mapper->convert(
+            $question,
+            'testIdentifier',
+            'testIdentifier'
+        );
+        
         $this->assertEquals('My stimulus string', QtiMarshallerUtil::marshallCollection($interaction->getPrompt()->getComponents()));
         $this->assertFalse($interaction->mustShuffle());
         $this->assertEquals(2, $interaction->getMaxAssociations());
@@ -87,17 +91,17 @@ class ChoicematrixMapperTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals(1, $choice->getMatchMin());
         }
     }
-    
+
     public function testWithDistractorRationale()
     {
         $question = $this->buildSimpleChoiceMatrixQuestion();
         $question->set_multiple_responses(true);
-        
+
         /** @var Choicematrix metadata $metadata */
         $metadata = new choicematrix_metadata();
         $metadata->set_distractor_rationale('This is a general feedback');
         $question->set_metadata($metadata);
-        
+
         /** @var choicematrix_validation $validation */
         $validation = ValidationBuilder::build('choicematrix', 'exactMatch', [
             new ValidResponse(1, [0, [2]]), // Test both using array of array (multiple response mode) and just a single value
@@ -109,25 +113,25 @@ class ChoicematrixMapperTest extends \PHPUnit_Framework_TestCase
         $mapper = new ChoicematrixMapper();
         list($interaction, $responseDeclaration, $responseProcessing) = $mapper->convert($question, 'testIdentifier', 'testIdentifier');
         $this->assertEquals(6, $interaction->getMaxAssociations());
-        
+
         $this->assertCount(2, $responseProcessing->getComponents());
 
         $responseIf = $responseProcessing->getComponentsByClassName('responseIf', true)->getArrayCopy()[0];
         $this->assertTrue($responseIf instanceof ResponseIf);
         $promptIfString = QtiMarshallerUtil::marshallCollection($responseIf->getComponents());
         $this->assertEquals('<isNull><variable identifier="RESPONSE"/></isNull><setOutcomeValue identifier="SCORE"><baseValue baseType="float">0</baseValue></setOutcomeValue>', $promptIfString);
-        
+
         $responseElse = $responseProcessing->getComponentsByClassName('responseElse', true)->getArrayCopy()[0];
         $this->assertTrue($responseElse instanceof ResponseElse);
         $promptElseString = QtiMarshallerUtil::marshallCollection($responseElse->getComponents());
         $this->assertEquals('<responseCondition><responseIf><match><variable identifier="RESPONSE"/><correct identifier="RESPONSE"/></match><setOutcomeValue identifier="SCORE"><baseValue baseType="float">1</baseValue></setOutcomeValue></responseIf><responseElse><setOutcomeValue identifier="SCORE"><baseValue baseType="float">0</baseValue></setOutcomeValue></responseElse></responseCondition>', $promptElseString);
 
-        $setoutcome = $responseProcessing->getComponentsByClassName('setOutcomeValue',true)->getArrayCopy()[3];
+        $setoutcome = $responseProcessing->getComponentsByClassName('setOutcomeValue', true)->getArrayCopy()[3];
         $this->assertTrue($setoutcome instanceof SetOutcomeValue);
-        
+
         $identifier = $setoutcome->getIdentifier();
-        $this->assertEquals('FEEDBACK_GENERAL',$identifier);
-        
+        $this->assertEquals('FEEDBACK_GENERAL', $identifier);
+
         /** @var SimpleAssociableChoice[] $stemAssociableChoices */
         $stemAssociableChoices = $interaction->getSourceChoices()->getSimpleAssociableChoices()->getArrayCopy(true);
         foreach ($stemAssociableChoices as $choice) {
@@ -142,7 +146,7 @@ class ChoicematrixMapperTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals(2, $choice->getMatchMax()); // Stem count
             $this->assertEquals(1, $choice->getMatchMin());
         }
-        
+
         $this->assertNull($responseDeclaration->getMapping());
         $this->assertNotNull($responseProcessing);
     }
