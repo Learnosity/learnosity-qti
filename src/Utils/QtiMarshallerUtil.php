@@ -75,7 +75,7 @@ class QtiMarshallerUtil
                         echo 'File not found: ' . $file . PHP_EOL;
                     }
                 }
-            } elseif(!($component instanceof FeedbackInline)) {
+            } elseif (!($component instanceof FeedbackInline)) {
                 $results[] = self::marshall($component);
             }
         }
