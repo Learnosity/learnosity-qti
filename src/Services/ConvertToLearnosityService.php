@@ -26,7 +26,7 @@ class ConvertToLearnosityService
 
     const RESOURCE_TYPE_ITEM = 'imsqti_item_xmlv2p1';
     const INFO_OUTPUT_PREFIX = '';
-    const CONVERT_LOG_FILENAME = 'convert:to:learnosity.log';
+    const CONVERT_LOG_FILENAME = 'convert-to-learnosity.log';
 
     protected $inputPath;
     protected $outputPath;
@@ -75,9 +75,9 @@ class ConvertToLearnosityService
         }
 
         // Setup output (or -o) subdirectories
-        FileSystemHelper::createDirIfNotExists($this->outputPath . '/' . $this->finalPath);
-        FileSystemHelper::createDirIfNotExists($this->outputPath . '/' . $this->logPath);
-        FileSystemHelper::createDirIfNotExists($this->outputPath . '/' . $this->rawPath);
+        FileSystemHelper::createDirIfNotExists($this->outputPath . DIRECTORY_SEPARATOR . $this->finalPath);
+        FileSystemHelper::createDirIfNotExists($this->outputPath . DIRECTORY_SEPARATOR . $this->logPath);
+        FileSystemHelper::createDirIfNotExists($this->outputPath . DIRECTORY_SEPARATOR . $this->rawPath);
 
         $this->assetsFixer = new AssetsFixer($this->organisationId);
 
@@ -85,7 +85,7 @@ class ConvertToLearnosityService
 
         // Convert the item format (columns etc)
         $ItemLayout = new ItemLayoutService();
-        $ItemLayout->execute($this->outputPath . '/' . $this->rawPath . '/', $this->outputPath . '/' . $this->finalPath, $this->output);
+        $ItemLayout->execute($this->outputPath . DIRECTORY_SEPARATOR . $this->rawPath . DIRECTORY_SEPARATOR, $this->outputPath . DIRECTORY_SEPARATOR . $this->finalPath, $this->output);
 
         $this->tearDown();
 
@@ -103,7 +103,7 @@ class ConvertToLearnosityService
         $finalManifest = $this->getJobManifestTemplate();
 
         foreach ($manifestFolders as $dir) {
-            $tempDirectoryParts = explode('/', dirname($dir));
+            $tempDirectoryParts = explode(DIRECTORY_SEPARATOR, dirname($dir));
             $dirName = $tempDirectoryParts[count($tempDirectoryParts) - 1];
 
             $results = $this->convertQtiContentPackagesInDirectory(dirname($dir), $dirName);
@@ -112,7 +112,7 @@ class ConvertToLearnosityService
             // }
 
             $this->updateJobManifest($finalManifest, $results);
-            $this->persistResultsFile($results, realpath($this->outputPath) . '/' . $this->rawPath . '/' . $dirName);
+            $this->persistResultsFile($results, realpath($this->outputPath) . DIRECTORY_SEPARATOR . $this->rawPath . DIRECTORY_SEPARATOR . $dirName);
         }
 
         $this->flushJobManifest($finalManifest);
@@ -161,7 +161,7 @@ class ConvertToLearnosityService
 
             // build the DOMDocument object
             $manifestDoc = new \DOMDocument();
-            
+
             $manifestDoc->load($fullFilePath);
 
             $itemResources = $this->getItemResourcesByHrefFromDocument($manifestDoc);
@@ -179,7 +179,7 @@ class ConvertToLearnosityService
                     $this->useResourceIdentifier,
                     $this->useFileNameAsIdentifier
                 );
-                
+
                 $itemTagsArray = $this->getTaxonPathEntryForItemTags($relatedResource);
                 $metadata = [];
                 $itemPointValue = $this->getPointValueFromResource($relatedResource);
@@ -187,9 +187,9 @@ class ConvertToLearnosityService
                     $metadata['point_value'] = $itemPointValue;
                 }
 
-                
+
                 $metadata['organisation_id'] = $this->organisationId;
-                
+
                 if (isset($itemReference)) {
                     $this->output->writeln("<comment>Converting assessment item {$itemReference}: $relativeDir/$resourceHref</comment>");
                 } else {
@@ -197,7 +197,7 @@ class ConvertToLearnosityService
                 }
 
                 $convertedContent = $this->convertAssessmentItemInFile($assessmentItemContents, $itemReference, $metadata, $currentDir, $resourceHref, $itemTagsArray);
-              
+
                 if (!empty($convertedContent)) {
                     $results['qtiitems'][basename($relativeDir).'/'.$resourceHref] = $convertedContent;
                 }
@@ -249,7 +249,7 @@ class ConvertToLearnosityService
     private function getIdentifierFromResourceMetadata(\DOMNode $resource)
     {
         $identifier = null;
-        
+
         $xpath = $this->getXPathForQtiDocument($resource->ownerDocument);
 
         $lomIdentifier = null;
@@ -286,7 +286,7 @@ class ConvertToLearnosityService
         $searchResult = $xpath->query('.//qti:metadata/lom:lom/lom:general/lom:identifier', $resource);
         return $searchResult->length > 0;
     }
-    
+
     /**
      * Checks whether a taxonPath exists in the Learning Object Metadata
      * for this resource.
@@ -557,8 +557,8 @@ class ConvertToLearnosityService
         } else {
             $manifestFileBasename = static::CONVERT_LOG_FILENAME;
         }
-        $this->output->writeln('<info>' . static::INFO_OUTPUT_PREFIX . 'Writing manifest: ' . $this->outputPath . '/' . $this->logPath . '/' . $manifestFileBasename . ".json</info>\n");
-        $this->writeJsonToFile($manifest, $this->outputPath . '/' . $this->logPath . '/' . $manifestFileBasename . '.json');
+        $this->output->writeln('<info>' . static::INFO_OUTPUT_PREFIX . 'Writing manifest: ' . $this->outputPath . DIRECTORY_SEPARATOR . $this->logPath . DIRECTORY_SEPARATOR . $manifestFileBasename . ".json</info>\n");
+        $this->writeJsonToFile($manifest, $this->outputPath . DIRECTORY_SEPARATOR . $this->logPath . DIRECTORY_SEPARATOR . $manifestFileBasename . '.json');
     }
 
     /**
