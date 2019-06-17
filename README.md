@@ -33,7 +33,7 @@ Or just do:
 composer global require "learnosity/learnosity-qti"
 ```
 
-Make sure to add $HOME/.composer/vendor/bin directory to your $PATH so the `mo` executable can be located by your system. If not, simple replace all `mo` commands below with `./bin/mo` (from the root of the project).
+Make sure to add $HOME/.composer/vendor/bin directory to your $PATH so the `mo` executable can be located by your system. If not, simply replace all `mo` commands below with `./bin/mo` (from the root of the project).
 
 This package has been tested on PHP 7.1+
 
