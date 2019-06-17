@@ -1,8 +1,6 @@
 # Learnosity QTI
 
-The learnosity-qti package converts QTI 2.1 Assessment Items to Learnosity Item and Question JSON.
-
-This should run on PHP 5.5+
+This package converts between QTI 2.1 Assessment Items and Learnosity JSON.
 
 
 ## Installation via Composer
@@ -56,6 +54,8 @@ Commands:
 
 ### Converting QTI to Learnosity JSON
 
+You must provide a QTI content package including an imsmanifest.xml.
+
 To convert QTI 2.1 to Learnosity JSON, run the following:
 
 ```
@@ -68,6 +68,45 @@ If you want to use different input and/or output paths you can use options:
 
 ```
 mo convert:to:learnosity --input /my/path/to/qti --output /my/path/to/output/folder --organisation_id [integer]
+```
+
+| Option  | Description |
+|---|---|
+| --input  | File system path to the source content being converted |
+| --output  | File system path to where the converted content will be written |
+| &#x2011;&#x2011;organisation_id  | Which Learnosity organisation to use for asset paths (contect Learnosity for your `organisation_id` value) |
+| &#x2011;&#x2011;item-reference-source  | Where to retrieve each items unique identifier.<br><dl><dt>item</dt><dd>(default) uses the identifier attribute on the `<assessmentItem>` element</dd><dt>metadata</dt><dd>uses the `<identifier>` element from the LOM metadata in the manifest, if available. If no `<identifier>` is found, then this parameter operates in "item" mode</dd><dt>filename</dt><dd>uses the identifier attribute on the `<resource>` element in the manifest</dd><dt>resource</dt><dd>uses the basename of the `<assessmentItem>` XML file</dd></dl> |
+
+#### Metadata (LOM)
+Metadata will be taken from the manifest and converted to Learnosity tags. The format is assumed to be:
+
+```
+<imsmd:lom>
+    <imsmd:classification>
+        <imsmd:taxonPath>
+            <imsmd:source>
+                <imsmd:string xml:lang="en">GradeLevel</imsmd:string>
+            </imsmd:source>
+            <imsmd:taxon>
+                <imsmd:entry>
+                    <imsmd:string xml:lang="en">6</imsmd:string>
+                </imsmd:entry>
+            </imsmd:taxon>
+        </imsmd:taxonPath>
+    </imsmd:classification>
+</imsmd:lom>
+```
+
+This will be converted to the following Learnosity JSON (snippet only):
+
+```
+{
+    "tags": {
+        "GradeLevel": [
+            "6"
+        ]
+    }
+}
 ```
 
 Remember you can ask for `help`:
@@ -131,7 +170,7 @@ mo convert:to:qti
 By default this will look for content packages inside the `./data/input` directory, and output results (and log files) to `./data/output`. If you want to use different input and/or output paths you can use options:
 
 ```
-mo convert:to:qti -i /my/path/to/json -o /my/path/to/output/folder
+mo convert:to:qti --input /my/path/to/json --output /my/path/to/output/folder
 ```
 
 Remember you can ask for `help`:
