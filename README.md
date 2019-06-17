@@ -2,6 +2,11 @@
 
 This package converts between QTI 2.1 Assessment Items and Learnosity JSON.
 
+You can choose between 2 main jobs:
+
+* `convert:to:learnosity` - Converts QTI v2.1 to Learnosity JSON
+* `convert:to:qti` - Converts Learnosity JSON to QTI v2.1
+
 
 ## Installation via Composer
 
@@ -30,6 +35,8 @@ composer global require "learnosity/learnosity-qti"
 
 Make sure to add $HOME/.composer/vendor/bin directory to your $PATH so the `mo` executable can be located by your system. If not, simple replace all `mo` commands below with `./bin/mo` (from the root of the project).
 
+This package has been tested on PHP 7.1+
+
 ## Usage
 
 ### The `mo` command line runner
@@ -52,7 +59,7 @@ Commands:
   list                      Lists all commands available
 ```
 
-### Converting QTI to Learnosity JSON
+## Converting QTI to Learnosity JSON
 
 You must provide a QTI content package including an imsmanifest.xml.
 
@@ -64,11 +71,16 @@ mo convert:to:learnosity
 
 By default this will look for content packages inside the `./data/input` directory, and output raw results to `./data/output/raw` and final item JSON to `./data/output/final`. A manifest file will be written to `./data/output/log`.
 
+Note that only the `data` folder is present in this repository, you can create the `data/input` folder to add content packages there. The `data/output` path will be created automatically if you don't override via input options.
+
+### Conversion options
 If you want to use different input and/or output paths you can use options:
 
 ```
 mo convert:to:learnosity --input /my/path/to/qti --output /my/path/to/output/folder --organisation_id [integer]
 ```
+
+All supported input options are as follows:
 
 | Option  | Description |
 |---|---|
@@ -77,7 +89,7 @@ mo convert:to:learnosity --input /my/path/to/qti --output /my/path/to/output/fol
 | &#x2011;&#x2011;organisation_id  | Which Learnosity organisation to use for asset paths (contect Learnosity for your `organisation_id` value) |
 | &#x2011;&#x2011;item-reference-source  | Where to retrieve each items unique identifier.<br><dl><dt>item</dt><dd>(default) uses the identifier attribute on the `<assessmentItem>` element</dd><dt>metadata</dt><dd>uses the `<identifier>` element from the LOM metadata in the manifest, if available. If no `<identifier>` is found, then this parameter operates in "item" mode</dd><dt>filename</dt><dd>uses the identifier attribute on the `<resource>` element in the manifest</dd><dt>resource</dt><dd>uses the basename of the `<assessmentItem>` XML file</dd></dl> |
 
-#### Metadata (LOM)
+### Metadata (LOM)
 Metadata will be taken from the manifest and converted to Learnosity tags. The format is assumed to be:
 
 ```
@@ -109,6 +121,9 @@ This will be converted to the following Learnosity JSON (snippet only):
 }
 ```
 
+Note that `<imsmd:source>` translates to Learnosity tag types, and `<imsmd:taxon>` translates to tag names.
+
+### Help
 Remember you can ask for `help`:
 
 ```
@@ -133,10 +148,11 @@ Help:
   Converts QTI v2.1 to Learnosity JSON, expects to run on folder(s) with a imsmanifest.xml file
 ```
 
-#### Next steps
+### Importing into Learnosity
 Once you have Learnosity JSON (the `final` folder), you can use the Data API to import into your Learnosity hosted item bank.
 
 Example of the output format is:
+
 ```
 {
     "qtiitems": {
@@ -151,15 +167,16 @@ Example of the output format is:
     }
 }
 ```
-Loop over all item objects inside "qtiitems".
-Inside each item object, import the questions (setQuestions) and features (setFeatures) first, then the item (setItems).
+
+Loop over all item objects inside `qtiitems`.
+Inside each item object, import the questions (setQuestions) and features (setFeatures) first, then the item (setItems). Setting items will automatically import any tags that were in the manifest.
 
  * [Import questions](https://docs.learnosity.com/analytics/data/endpoints/itembank_endpoints#setQuestions)
  * [Import features](https://docs.learnosity.com/analytics/data/endpoints/itembank_endpoints#setFeatures)
  * [Import items](https://docs.learnosity.com/analytics/data/endpoints/itembank_endpoints#setItems)
 
 
-### Converting Learnosity JSON to QTI
+## Converting Learnosity JSON to QTI
 
 To convert Learnosity JSON to QTI 2.1, run the following:
 
@@ -167,11 +184,61 @@ To convert Learnosity JSON to QTI 2.1, run the following:
 mo convert:to:qti
 ```
 
-By default this will look for content packages inside the `./data/input` directory, and output results (and log files) to `./data/output`. If you want to use different input and/or output paths you can use options:
+By default this will look for content packages inside the `./data/input` directory, and output raw results to `./data/output/raw` and final item JSON to `./data/output/final`. A manifest file will be written to `./data/output/log`.
+
+Note that only the `data` folder is present in this repository, you can create the `data/input` folder to add content packages there. The `data/output` path will be created automatically if you don't override via input options.
+
+### Conversion options
+If you want to use different input and/or output paths you can use options:
 
 ```
-mo convert:to:qti --input /my/path/to/json --output /my/path/to/output/folder
+mo convert:to:qti --input /my/path/to/learnosity-json --output /my/path/to/output/folder
 ```
+
+All supported input options are as follows:
+
+| Option  | Description |
+|---|---|
+| --input  | File system path to the source content being converted |
+| --output  | File system path to where the converted content will be written |
+
+### Learnosity JSON format
+This conversion tool expects to be given JSON in the format that is returned by the [offline package endpoint of the Data API](https://reference.learnosity.com/data-api/endpoints/itembank_endpoints#getOfflinePackage). The Data API itembank/offlinepackage endpoint returns Activities/Items/Questions/Features in a single directory. It also contains any assets, including images, audio or video, that are part of the content.
+
+The directory returned from the itembank/offlinepackage endpoint contains the following files:
+
+```
+Learnosity/
+ 	itembank/
+		activities/
+			hashedfilename.json
+		assets/
+			image1.jpg
+			image2.jpg
+		items/
+			hashedfilename.json
+			hashedfilename.json
+			hashedfilename.json
+```
+
+Each JSON file within the items folder is named from a (lower case) MD5 hash of the item reference. The contents of each item file will be something like:
+
+```
+{
+    "reference": "",
+    "content": "",
+    "workflow": null,
+    "metadata": {
+        "acknowledgements": null,
+        "scoring_type": "per-question"
+    },
+    "tags": {},
+    "questions": [],
+    "features": []
+}
+```
+
+### Help
 
 Remember you can ask for `help`:
 
@@ -195,9 +262,3 @@ Options:
 Help:
   Converts Learnosity JSON to QTI v2.1
 ```
-
-#### TODO
-* Support Learnosity item JSON (only supports question JSON today)
-* Support pulling down assets to local passage (linked to Learnosity CDN today)
-* Support more QTI-compatible interactions
-* Support imsmanifest.xml and content package generation (today individual `<assessmentItem>` files are created only)
