@@ -123,6 +123,22 @@ This will be converted to the following Learnosity JSON (snippet only):
 
 Note that `<imsmd:source>` translates to Learnosity tag types, and `<imsmd:taxon>` translates to tag names.
 
+### Supported Interactions - QTI to Learnosity
+The following QTI v2.1 interactions are supported:
+
+| QTI Interaction | Learnosity Question Type |
+|---|---|
+|ChoiceInteraction|	Multiple Choice Question|
+|ExtendedTextInteraction|	Long Text|
+|GraphicGapMatchInteraction|	Image Association|
+|GapMatchInteraction|	Cloze Association|
+|HottextInteraction|	Token Highlight|
+|InlineChoiceInteraction|	Cloze Dropdown|
+|MatchInteraction|	Choice Matrix|
+|OrderInteraction|	Order List|
+|TextEntryInteraction|	Cloze Text|
+|HotspotInteraction|	Hotspot|
+
 ### Help
 Remember you can ask for `help`:
 
@@ -237,6 +253,26 @@ Each JSON file within the items folder is named from a (lower case) MD5 hash of 
     "features": []
 }
 ```
+
+### Supported Question Types - Learnosity to QTI
+The following Learnosity question types are supported:
+
+| Learnosity Question Type | QTI Interaction |
+|---|---|
+|Choice Matrix|MatchInteraction|
+|Cloze Association|GapMatchInteraction|
+|Cloze Dropdown|InlineChoiceInteraction|
+|Cloze Text|TextEntryInteraction|
+|Image Cloze Association|GraphicGapMatchInteraction|
+|Image Cloze Association V2|GraphicGapMatchInteraction|
+|Long Text|ExtendedTextInteraction|
+|Long Text V2|ExtendedTextInteraction|
+|Multiple Choice Question|ChoiceInteraction|
+|Order List|OrderInteraction|
+|Plain Text|ExtendedTextInteraction|
+|Short Text|TextEntryInteraction|
+|Token Highlight|HottextInteraction|
+|Hotspot|SelectPointInteraction|
 
 ### Help
 
