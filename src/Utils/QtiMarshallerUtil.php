@@ -58,23 +58,9 @@ class QtiMarshallerUtil
     public static function marshallCollection(QtiComponentCollection $collection)
     {
         $results = [];
-        $html = '';
         foreach ($collection as $component) {
             if ($component instanceof ObjectElement) {
-                $class = new \ReflectionClass(get_class($component));
-                if (property_exists($component, 'data')) {
-                    $property = $class->getProperty('data');
-                    $property->setAccessible(true);
-                    $learnosityServiceObject = ConvertToLearnosityService::getInstance();
-                    $inputPath = $learnosityServiceObject->getInputpath();
-                    $file = $inputPath . '/' . $property->getValue($component);
-                    if (file_exists($file)) {
-                        $html = HtmlExtractorUtil::getHtmlData(realpath($file));
-                        $results[] = $html;
-                    } else {
-                        echo 'File not found: ' . $file . PHP_EOL;
-                    }
-                }
+                $results[] = self::marshallObjectData($component);
             } elseif (!($component instanceof FeedbackInline)) {
                 $results[] = self::marshall($component);
             }
@@ -113,5 +99,32 @@ class QtiMarshallerUtil
         $node = $dom->importNode($element, true);
 
         return $dom->saveXML($node);
+    }
+
+    public function marshallObjectData(QtiComponent $component)
+    {
+        $result = '';
+        $class = new \ReflectionClass(get_class($component));
+        if (property_exists($component, 'data') && property_exists($component, 'type')) {
+            $property = $class->getProperty('data');
+            $property->setAccessible(true);
+            $property_type = $class->getProperty('type');
+            $property_type->setAccessible(true);
+            $type = $property_type->getValue($component);
+            if ($type == 'text/html') {
+                $learnosityServiceObject = ConvertToLearnosityService::getInstance();
+                $inputPath = $learnosityServiceObject->getInputpath();
+                $file = $inputPath . '/' . $property->getValue($component);
+                if (file_exists($file)) {
+                    $result = HtmlExtractorUtil::getHtmlData(realpath($file));
+                } else {
+                    echo 'File not found: ' . $file . PHP_EOL;
+                    return;
+                }
+            } else {
+                $result = self::marshall($component);
+            }
+        }
+        return $result;
     }
 }
