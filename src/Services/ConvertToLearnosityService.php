@@ -389,7 +389,7 @@ class ConvertToLearnosityService
             $message = $e->getMessage();
             $results = ['exception' => $targetFilename . '-' . $message];
             if (!StringHelper::contains($message, 'This is intro or outro')) {
-                $this->output->writeln('  <error>EXCEPTION here with item ' . str_replace($currentDir, '', $resourceHref) . ' : ' . $message . '</error>');
+                $this->output->writeln('  <error>EXCEPTION with item ' . str_replace($currentDir, '', $resourceHref) . ' : ' . $message . '</error>');
             }
         }
 
