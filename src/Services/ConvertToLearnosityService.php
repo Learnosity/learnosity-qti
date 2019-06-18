@@ -20,7 +20,6 @@ use qtism\data\storage\xml\XmlDocument;
 
 class ConvertToLearnosityService
 {
-
     use JobDataTrait;
 
     const RESOURCE_TYPE_ITEM = 'imsqti_item_xmlv2p1';
@@ -390,7 +389,7 @@ class ConvertToLearnosityService
             $message = $e->getMessage();
             $results = ['exception' => $targetFilename . '-' . $message];
             if (!StringHelper::contains($message, 'This is intro or outro')) {
-                $this->output->writeln('  <error>EXCEPTION with item ' . str_replace($currentDir, '', $resourceHref) . ' : ' . $message . '</error>');
+                $this->output->writeln('  <error>EXCEPTION here with item ' . str_replace($currentDir, '', $resourceHref) . ' : ' . $message . '</error>');
             }
         }
 
@@ -693,6 +692,11 @@ class ConvertToLearnosityService
     private function tearDown()
     {
 
+    }
+
+    public function showWarnings($message)
+    {
+        $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX .$message." </info>");
     }
 
     private function validate()

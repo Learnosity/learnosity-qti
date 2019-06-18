@@ -5,6 +5,7 @@ use DOMDocument;
 use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Processors\QtiV2\Marshallers\LearnosityMarshallerFactory;
 use LearnosityQti\Services\ConvertToLearnosityService;
+use LearnosityQti\Services\LogService;
 use qtism\data\content\FeedbackInline;
 use qtism\data\content\TextRun;
 use qtism\data\content\xhtml\ObjectElement;
@@ -50,7 +51,7 @@ class QtiMarshallerUtil
     {
         $results = [];
         foreach ($collection as $component) {
-            $results[] = self::marshallValidQti($component);
+            $results[] = static::marshallValidQti($component);
         }
         return implode('', $results);
     }
@@ -60,9 +61,9 @@ class QtiMarshallerUtil
         $results = [];
         foreach ($collection as $component) {
             if ($component instanceof ObjectElement) {
-                $results[] = self::marshallObjectData($component);
+                $results[] = static::marshallObjectData($component);
             } elseif (!($component instanceof FeedbackInline)) {
-                $results[] = self::marshall($component);
+                $results[] = static::marshall($component);
             }
         }
         return implode('', $results);
@@ -101,28 +102,29 @@ class QtiMarshallerUtil
         return $dom->saveXML($node);
     }
 
-    public function marshallObjectData(QtiComponent $component)
+    public static function marshallObjectData(QtiComponent $component)
     {
         $result = '';
         $class = new \ReflectionClass(get_class($component));
         if (property_exists($component, 'data') && property_exists($component, 'type')) {
             $property = $class->getProperty('data');
             $property->setAccessible(true);
-            $property_type = $class->getProperty('type');
-            $property_type->setAccessible(true);
-            $type = $property_type->getValue($component);
+            $propertyType = $class->getProperty('type');
+            $propertyType->setAccessible(true);
+            $type = $propertyType->getValue($component);
             if ($type == 'text/html') {
                 $learnosityServiceObject = ConvertToLearnosityService::getInstance();
                 $inputPath = $learnosityServiceObject->getInputpath();
                 $file = $inputPath . '/' . $property->getValue($component);
                 if (file_exists($file)) {
-                    $result = HtmlExtractorUtil::getHtmlData(realpath($file));
+                    $result = HtmlExtractorUtil::getHtmlData(($file));
                 } else {
-                    echo 'File not found: ' . $file . PHP_EOL;
-                    return;
+                    $message = "File not found: ".$file;
+                    $learnosityServiceObject->showWarnings($message);
+                    LogService::log("File not found: ".$file);
                 }
             } else {
-                $result = self::marshall($component);
+                $result = static::marshall($component);
             }
         }
         return $result;
