@@ -272,7 +272,7 @@ The following Learnosity question types are supported:
 |Plain Text|ExtendedTextInteraction|
 |Short Text|TextEntryInteraction|
 |Token Highlight|HottextInteraction|
-|Hotspot|SelectPointInteraction|
+|Hotspot|HotspotInteraction|
 
 ### Help
 
