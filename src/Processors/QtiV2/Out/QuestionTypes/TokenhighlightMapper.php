@@ -14,6 +14,13 @@ class TokenhighlightMapper extends AbstractQuestionTypeMapper
 {
     public function convert(BaseQuestionType $question, $interactionIdentifier, $interactionLabel)
     {
+        $metadata = $question->get_metadata();
+        $feedbackOptions = [];
+
+        if (isset($metadata) && !empty($metadata->get_distractor_rationale())) {
+            $feedbackOptions['genral_feedback'] = $metadata->get_distractor_rationale();
+        }
+
         /** @var tokenhighlight $question */
         // Grab those `template` and convert those highlights to <hottext>
         $html = new SimpleHtmlDom();
@@ -40,7 +47,7 @@ class TokenhighlightMapper extends AbstractQuestionTypeMapper
 
         // Build validation
         $builder = new TokenhighlightValidationBuilder($indexIdentifierMap);
-        list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interaction->getResponseIdentifier(), $question->get_validation());
+        list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interaction->getResponseIdentifier(), $question->get_validation(), $feedbackOptions);
         return [$interaction, $responseDeclaration, $responseProcessing];
     }
 }
