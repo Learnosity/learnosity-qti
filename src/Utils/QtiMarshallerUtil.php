@@ -5,7 +5,6 @@ use DOMDocument;
 use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Processors\QtiV2\Marshallers\LearnosityMarshallerFactory;
 use LearnosityQti\Services\ConvertToLearnosityService;
-use LearnosityQti\Services\LogService;
 use qtism\data\content\FeedbackInline;
 use qtism\data\content\TextRun;
 use qtism\data\content\xhtml\ObjectElement;
@@ -116,13 +115,7 @@ class QtiMarshallerUtil
                 $learnosityServiceObject = ConvertToLearnosityService::getInstance();
                 $inputPath = $learnosityServiceObject->getInputpath();
                 $file = $inputPath . '/' . $property->getValue($component);
-                if (file_exists($file)) {
-                    $result = HtmlExtractorUtil::getHtmlData(($file));
-                } else {
-                    $message = "File not found: ".$file;
-                    $learnosityServiceObject->showWarnings($message);
-                    LogService::log("File not found: ".$file);
-                }
+                $result = HtmlExtractorUtil::getHtmlData(($file));
             } else {
                 $result = static::marshall($component);
             }

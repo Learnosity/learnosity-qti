@@ -154,13 +154,7 @@ class ChoiceInteractionMapper extends AbstractInteractionMapper
                 $learnosityServiceObject = ConvertToLearnosityService::getInstance();
                 $inputPath = $learnosityServiceObject->getInputpath();
                 $htmlfile = $inputPath . '/' . $feedInlineArray[1];
-                if (file_exists($htmlfile)) {
-                    $metadata = HtmlExtractorUtil::getHtmlData($htmlfile);
-                } else {
-                    $message = "File not found: ".$htmlfile;
-                    $learnosityServiceObject->showWarnings($message);
-                    LogService::log("File not found: ".$htmlfile);
-                }
+                $metadata = HtmlExtractorUtil::getHtmlData($htmlfile);
             }
         } else {
             $feeddataArray = array_values((array) $feedbackArray[0][0]);
