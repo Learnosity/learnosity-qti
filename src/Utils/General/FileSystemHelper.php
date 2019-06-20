@@ -88,36 +88,32 @@ class FileSystemHelper
      * Copy a file, or recursively copy a folder and its contents
      * @see https://stackoverflow.com/questions/2050859/copy-entire-contents-of-a-directory-to-another-using-php/2050909#2050909
      *
-     * @param       string   $source    Source path
-     * @param       string   $dest      Destination path
+     * @param       string   $sourceDirectory    Source path
+     * @param       string   $destinationDirectory      Destination path
      * @return      bool     Returns TRUE on success, FALSE on failure
      */
-    public static function copyFiles($source, $dest)
+    public static function copyFiles($sourceDirectory, $destinationDirectory)
     {
-        // Check for symlinks
-        if (is_link($source)) {
-            return symlink(readlink($source), $dest);
-        }
         // Simple copy for a file
-        if (is_file($source)) {
-            return copy($source, $dest);
+        if (is_file($sourceDirectory)) {
+            return copy($sourceDirectory, $destinationDirectory);
         }
         // Make destination directory
-        if (!is_dir($dest)) {
-            mkdir($dest);
+        if (!is_dir($destinationDirectory)) {
+            mkdir($destinationDirectory);
         }
         // Loop through the folder
-        $dir = dir($source);
-        while (false !== $entry = $dir->read()) {
+        $dir = opendir($sourceDirectory);
+        while (($file = readdir($dir)) !== false) {
             // Skip pointers
-            if ($entry == '.' || $entry == '..') {
+            if ($file == '.' || $file == '..') {
                 continue;
             }
             // Deep copy directories
-            static::copyFiles("$source/$entry", "$dest/$entry");
+            static::copyFiles("$sourceDirectory/$file", "$destinationDirectory/$file");
         }
         // Clean up
-        $dir->close();
+        closedir($dir);
         return true;
     }
 }

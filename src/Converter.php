@@ -258,19 +258,16 @@ class Converter
 
     public static function convertLearnosityToQtiItem(array $data)
     {
-        $jsonType = self::guessLearnosityJsonDataType($data);
+        if (isset($data['data'])) {
+            if (!isset($data['reference'])) {
+                throw new MappingException('Invalid `item` JSON. Key `reference` shall not be empty');
+            }
+        }
 
-        // Handle `item` which contains both a single item and one or more questions/features
-        if ($jsonType === self::LEARNOSITY_DATA_ITEM) {
-            list($xmlString, $messages) = self::convertLearnosityItem($data);
-        // Handle if just question
-        } elseif ($jsonType === self::LEARNOSITY_DATA_QUESTION) {
+        try {
             list($xmlString, $messages) = self::convertLearnosityQuestion($data);
-        // Handle if just question data
-        } elseif ($jsonType === self::LEARNOSITY_DATA_QUESTION_DATA) {
-            list($xmlString, $messages) = self::convertLearnosityQuestionData($data);
-        } else {
-            throw new \Exception('Unknown JSON format');
+        } catch (\Exception $ex) {
+            LogService::log('Unknown JSON format');
         }
 
         // Validate them before proceeding by feeding it back
@@ -330,31 +327,5 @@ class Converter
         // Write em` to QTI
         $itemWriter = new ItemWriter();
         return $itemWriter->convert($item, $questions);
-    }
-
-    private static function guessLearnosityJsonDataType(array $data)
-    {
-        if ($data == null) {
-            throw new MappingException('Invalid JSON');
-        }
-
-        // Guess this JSON is an `item`
-        if (isset($data['type'])) {
-            if (!isset($data['reference']) && !isset($data['content'])) {
-                throw new MappingException('Invalid `item` JSON. Neither `reference` nor `content` shall not be empty');
-            }
-            return self::LEARNOSITY_DATA_ITEM;
-        }
-
-        // Guess this JSON is a `question`
-        if (isset($data['data'])) {
-            if (!isset($data['reference'])) {
-                throw new MappingException('Invalid `item` JSON. Key `reference` shall not be empty');
-            }
-            return self::LEARNOSITY_DATA_QUESTION;
-        }
-
-        // Guess this JSON is a `questiondata`
-        return self::LEARNOSITY_DATA_QUESTION_DATA;
     }
 }

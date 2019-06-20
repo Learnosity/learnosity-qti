@@ -7,18 +7,18 @@ class Question extends BaseEntity
     private $reference;
     private $type;
     private $data;
-    private $widgetType;
+    private $widget_type;
     private $itemReference;
 
-    function __construct($type, $reference, BaseQuestionType $data, $itemReference)
+    function __construct($type, $reference, BaseQuestionType $data, $itemReference = '')
     {
         $this->data          = $data;
         $this->reference     = $reference;
         $this->type          = $type;
-        $this->widgetType   = $data->get_widget_type();
+        $this->widget_type   = $data->get_widget_type();
         $this->itemReference = $itemReference;
     }
-  
+
     public function get_reference()
     {
         return $this->reference;
