@@ -47,7 +47,7 @@ class McqMapper extends AbstractQuestionTypeMapper
 
                 $choiceContent->attach($component);
                 // attach feedbackInline to simpleChoice
-                if (isset($feedbackOptions) && $feedbackOptions[$i] != '' && $component instanceof TextRun) {
+                if (isset($feedbackOptions) && $feedbackOptions[$i] !== '' && $component instanceof TextRun) {
                     $content = new InlineCollection(array(new TextRun($feedbackOptions[$i])));
                     $feedback = new FeedbackInline('FEEDBACK', 'CHOICE_' . $option->get_value(), 'true');
                     $feedback->setContent($content);

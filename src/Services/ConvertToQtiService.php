@@ -214,11 +214,9 @@ class ConvertToQtiService
 
         foreach ($results as $result) {
             if (!empty($result['qti'])) {
-                
                 foreach ($result['json']['questions'] as $question) {
                     file_put_contents($outputFilePath . '/' . $question['reference'] . '.xml', $result['qti'][0]);
                 }
-            
             }
         }
     }
