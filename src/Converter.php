@@ -309,7 +309,7 @@ class Converter
     private static function convertLearnosityItem(array $itemJson)
     {
         // Separate question(s) and item
-        $itemJson['questionReferences'] = array_column($itemJson['questions'], 'response_id');
+        $itemJson['questionReferences'] = array_column($itemJson['questions'], 'reference');
         $questionsJson = $itemJson['questions'];
         
         // Pre-process these JSON
