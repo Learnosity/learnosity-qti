@@ -213,11 +213,12 @@ class ConvertToQtiService
         $this->output->writeln("\n<info>" . static::INFO_OUTPUT_PREFIX . "Writing conversion results: " . $outputFilePath . '.json' . "</info>\n");
 
         foreach ($results as $result) {
-
-            foreach ($result['json']['questions'] as $question) {
-                if (!empty($result['qti'])) {
+            if (!empty($result['qti'])) {
+                
+                foreach ($result['json']['questions'] as $question) {
                     file_put_contents($outputFilePath . '/' . $question['reference'] . '.xml', $result['qti'][0]);
                 }
+            
             }
         }
     }

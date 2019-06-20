@@ -3,7 +3,7 @@
 namespace LearnosityQti\Processors\QtiV2\Out\Validation;
 
 use LearnosityQti\Processors\QtiV2\Out\Constants;
-use LearnosityQti\Processors\QtiV2\Out\ResponseProcessingBuilders\QtiResponseProcessingBuilder;
+use LearnosityQti\Processors\QtiV2\Out\ResponseProcessing\QtiResponseProcessingBuilder;
 use LearnosityQti\Services\LogService;
 use qtism\data\processing\ResponseProcessing;
 

@@ -4,9 +4,9 @@ namespace LearnosityQti\Processors\QtiV2\Out;
 
 use LearnosityQti\Entities\Question;
 use LearnosityQti\Exceptions\MappingException;
-use LearnosityQti\Services\LogService;
 use LearnosityQti\Utils\StringUtil;
 use qtism\common\enums\BaseType;
+use qtism\common\enums\Cardinality;
 use qtism\common\utils\Format;
 use qtism\data\AssessmentItem;
 use qtism\data\processing\ResponseProcessing;
@@ -138,8 +138,8 @@ class AssessmentItemBuilder
 
     private function buildFeedbackOutcomeDeclarations()
     {
-        // Set <outcomeDeclaration> with  FEEDBACK identifier 
-        $outcomeDeclaration = new OutcomeDeclaration('FEEDBACK', BaseType::IDENTIFIER);
+        // Set <outcomeDeclaration> with  FEEDBACK identifier
+        $outcomeDeclaration = new OutcomeDeclaration('FEEDBACK', BaseType::IDENTIFIER, $cardinality = Cardinality::MULTIPLE);
         $outcomeDeclarationCollection = $this->outcomeDeclarationCollection;
         $outcomeDeclarationCollection->attach($outcomeDeclaration);
         return $outcomeDeclarationCollection;

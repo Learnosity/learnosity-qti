@@ -323,8 +323,6 @@ class Converter
         $item = $itemMapper->parse($itemJson);
         $questions = [];
         foreach ($questionsJson as $question) {
-            $question['reference'] = $question['response_id'];
-
             if (!in_array($question['data']['type'], ['audioplayer', 'videoplayer', 'sharedpassage'])) {
                 $questions[] = $questionMapper->parse($question);
             }

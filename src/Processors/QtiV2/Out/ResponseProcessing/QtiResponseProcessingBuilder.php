@@ -1,12 +1,13 @@
 <?php
 
-namespace LearnosityQti\Processors\QtiV2\Out\ResponseProcessingBuilders;
+namespace LearnosityQti\Processors\QtiV2\Out\ResponseProcessing;
 
 use qtism\common\enums\BaseType;
 use qtism\data\expressions\BaseValue;
 use qtism\data\expressions\Correct;
 use qtism\data\expressions\ExpressionCollection;
 use qtism\data\expressions\operators\Match;
+use qtism\data\expressions\operators\Multiple;
 use qtism\data\expressions\Variable;
 use qtism\data\processing\ResponseProcessing;
 use qtism\data\rules\ResponseCondition;
@@ -20,11 +21,15 @@ class QtiResponseProcessingBuilder
 
     public function build($score)
     {
-        // creating feedback outcome
-        $feedbackResponseComponent = new SetOutcomeValue('FEEDBACK', new Variable('RESPONSE'));
         $responseRuleCollection = new ResponseRuleCollection();
-        $responseRuleCollection->attach($feedbackResponseComponent);
 
+        // creating feedback outcome
+        $multipleExpression = new ExpressionCollection();
+        $variable = new Variable('RESPONSE');
+        $multipleExpression->attach($variable);
+        $feedbackResponseComponent = new SetOutcomeValue('FEEDBACK', new Multiple($multipleExpression));
+        $responseRuleCollection->attach($feedbackResponseComponent);
+        
         // creating responseIf condition
         $responseIfExpressionCollection = new ExpressionCollection();
         $responseIfExpressionCollection->attach(new Variable('RESPONSE'));
