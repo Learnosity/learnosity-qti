@@ -20,11 +20,11 @@ class HtmlExtractorUtil
     public static function getHtmlData($file)
     {
         if (file_exists($file)) {
-            $d = new \DOMDocument;
-            $d->loadHTMLFile($file);
-            $body = $d->getElementsByTagName('body')->item(0);
+            $domDocument = new \DOMDocument;
+            $domDocument->loadHTMLFile($file);
+            $body = $domDocument->getElementsByTagName('body')->item(0);
             if (!empty($body)) {
-                $html = self::extractHtmlFromBody($body, $d);
+                $html = self::extractHtmlFromBody($body, $domDocument);
                 return $html;
             }
         } else {
@@ -34,15 +34,16 @@ class HtmlExtractorUtil
     }
     
     /**
-     * Get html contents from a given body element
+     * Extract content from body element of a html file
      * @param type $body
+     * @param type $domDocument
      * @return type
      */
-    public static function extractHtmlFromBody($body, $d)
+    public static function extractHtmlFromBody($body, \DOMDocument $domDocument)
     {
         $htmlData = '';
         foreach ($body->childNodes as $childNode) {
-            $htmlData .= str_replace(PHP_EOL, "", $d->saveHTML($childNode));
+            $htmlData .= str_replace(PHP_EOL, "", $domDocument->saveHTML($childNode));
         }
         return $htmlData;
     }
