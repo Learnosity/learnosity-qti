@@ -11,6 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ConvertToLearnosityCommand extends Command
 {
+
     protected function configure()
     {
         $this
@@ -109,23 +110,23 @@ class ConvertToLearnosityCommand extends Command
             ]);
         } else {
 
-            $Convert = new ConvertToLearnosityService($inputPath, $outputPath, $output, $organisationId);
+            $Convert = ConvertToLearnosityService::initClass($inputPath, $outputPath, $output, $organisationId);
 
-            $Convert->useMetadataIdentifier = true;
-            $Convert->useResourceIdentifier = false;
-            $Convert->useFileNameAsIdentifier = false;
+            $Convert->useMetadataIdentifier(true);
+            $Convert->useResourceIdentifier(false);
+            $Convert->useFileNameAsIdentifier(false);
             if ($itemReferenceSource === 'item') {
-                $Convert->useMetadataIdentifier = false;
-                $Convert->useResourceIdentifier = false;
-                $Convert->useFileNameAsIdentifier = false;
+                $Convert->useMetadataIdentifier(false);
+                $Convert->useResourceIdentifier(false);
+                $Convert->useFileNameAsIdentifier(false);
             } elseif ($itemReferenceSource === 'filename') {
-                $Convert->useMetadataIdentifier = false;
-                $Convert->useResourceIdentifier = false;
-                $Convert->useFileNameAsIdentifier = true;
+                $Convert->useMetadataIdentifier(false);
+                $Convert->useResourceIdentifier(false);
+                $Convert->useFileNameAsIdentifier(true);
             } elseif ($itemReferenceSource === 'resource') {
-                $Convert->useMetadataIdentifier = false;
-                $Convert->useResourceIdentifier = true;
-                $Convert->useFileNameAsIdentifier = false;
+                $Convert->useMetadataIdentifier(false);
+                $Convert->useResourceIdentifier(true);
+                $Convert->useFileNameAsIdentifier(false);
             }
 
             $result = $Convert->process();
