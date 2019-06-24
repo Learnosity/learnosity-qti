@@ -39,23 +39,23 @@ class McqMapper extends AbstractQuestionTypeMapper
             }
         }
 
-        $i = 0;
         foreach ($question->get_options() as $index => $option) {
+
             /** @var mcq_options_item $option */
             $choiceContent = new FlowStaticCollection();
             foreach (QtiMarshallerUtil::unmarshallElement($option->get_label()) as $component) {
 
                 $choiceContent->attach($component);
                 // attach feedbackInline to simpleChoice
-                if (isset($feedbackOptions) && $feedbackOptions[$i] !== '' && $component instanceof TextRun) {
-                    $content = new InlineCollection(array(new TextRun($feedbackOptions[$i])));
+                if (isset($feedbackOptions) && $feedbackOptions[$index] !== '' && $component instanceof TextRun) {
+                    $content = new InlineCollection(array(new TextRun($feedbackOptions[$index])));
                     $feedback = new FeedbackInline('FEEDBACK', 'CHOICE_' . $option->get_value(), 'true');
                     $feedback->setContent($content);
                     $choiceContent->attach($feedback);
                 }
                 
             }
-            $i++;
+            
             // Use option['value'] as choice `identifier` if it has the correct format,
             // Otherwise, generate a valid using index such `CHOICE_1`, `CHOICE_2`, etc
             $originalOptionValue = $option->get_value();

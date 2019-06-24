@@ -112,11 +112,7 @@ class AssessmentItemBuilder
         $clazz = new \ReflectionClass(self::MAPPER_CLASS_BASE . ucfirst($type . 'Mapper'));
         $questionTypeMapper = $clazz->newInstance();
 
-        // Try to use question `reference` as identifier
-        // Otherwise, generate an alternative identifier and store the original reference as `label` to be passed in
         $questionReference = $question->get_reference();
-        $interactionIdentifier = Format::isIdentifier($questionReference, false) ? $questionReference : strtoupper($type) . '_' . StringUtil::generateRandomString(12);
-
         $interactionIdentifier = 'RESPONSE';
         $result = $questionTypeMapper->convert($question->get_data(), $interactionIdentifier, $questionReference);
         $result[] = $questionTypeMapper->getExtraContent();
