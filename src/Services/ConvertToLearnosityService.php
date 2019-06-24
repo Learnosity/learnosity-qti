@@ -1,5 +1,4 @@
 <?php
-
 namespace LearnosityQti\Services;
 
 use LearnosityQti\AppContainer;
@@ -17,7 +16,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use qtism\data\AssessmentItem;
-use qtism\data\content\ItemBody;
 use qtism\data\storage\xml\XmlDocument;
 
 class ConvertToLearnosityService
@@ -41,15 +39,18 @@ class ConvertToLearnosityService
 
     /* Job-specific configurations */
     // Overrides identifiers to be the same as the filename
-    public $useFileNameAsIdentifier       = false;
+
+    protected $useFileNameAsIdentifier = false;
     // Uses the identifier found in learning object metadata if available
-    public $useMetadataIdentifier         = true;
+    protected $useMetadataIdentifier = true;
     // Resource identifiers sometimes (but not always) match the assessmentItem identifier, so this can be useful
-    public $useResourceIdentifier         = false;
+    protected $useResourceIdentifier = false;
 
     private $assetsFixer;
+    // Hold the class instance.
+    private static $instance = null;
 
-    public function __construct($inputPath, $outputPath, OutputInterface $output, $organisationId)
+    protected function __construct($inputPath, $outputPath, OutputInterface $output, $organisationId)
     {
         $this->inputPath      = $inputPath;
         $this->outputPath     = $outputPath;
@@ -58,6 +59,57 @@ class ConvertToLearnosityService
         $this->finalPath      = 'final';
         $this->logPath        = 'log';
         $this->rawPath        = 'raw';
+    }
+
+    // The object is created from within the class itself
+    // only if the class has no instance.
+    public static function initClass($inputPath, $outputPath, OutputInterface $output, $organisationId)
+    {
+        if (!self::$instance) {
+            self::$instance = new ConvertToLearnosityService($inputPath, $outputPath, $output, $organisationId);
+        }
+        return self::$instance;
+    }
+
+    // Return instance of the class
+    public static function getInstance()
+    {
+        return self::$instance;
+    }
+
+    public function getInputPath()
+    {
+        return $this->inputPath;
+    }
+
+    public function isUsingMetadataIdentifier()
+    {
+        return $this->useMetadataIdentifier;
+    }
+
+    public function useMetadataIdentifier($useMetadataIdentifier)
+    {
+        $this->useMetadataIdentifier = $useMetadataIdentifier;
+    }
+
+    public function isUsingResourceIdentifier()
+    {
+        return $this->useResourceIdentifier;
+    }
+
+    public function useResourceIdentifier($useResourceIdentifier)
+    {
+        $this->useResourceIdentifier = $useResourceIdentifier;
+    }
+
+    public function isUsingFileNameAsIdentifier()
+    {
+        return $this->useFileNameAsIdentifier;
+    }
+
+    public function useFileNameAsIdentifier($useFileNameAsIdentifier)
+    {
+        $this->useFileNameAsIdentifier = $useFileNameAsIdentifier;
     }
 
     public function process()
@@ -105,12 +157,7 @@ class ConvertToLearnosityService
         foreach ($manifestFolders as $dir) {
             $tempDirectoryParts = explode(DIRECTORY_SEPARATOR, dirname($dir));
             $dirName = $tempDirectoryParts[count($tempDirectoryParts) - 1];
-
             $results = $this->convertQtiContentPackagesInDirectory(dirname($dir), $dirName);
-            // if (!isset($results['qtiitems'])) {
-            //     continue;
-            // }
-
             $this->updateJobManifest($finalManifest, $results);
             $this->persistResultsFile($results, realpath($this->outputPath) . DIRECTORY_SEPARATOR . $this->rawPath . DIRECTORY_SEPARATOR . $dirName);
         }
@@ -152,10 +199,10 @@ class ConvertToLearnosityService
         $totalItemCount = 0;
         foreach ($manifestFinderPath as $manifestFile) {
             /** @var SplFileInfo $manifestFile */
-            $currentDir   = realpath($manifestFile->getPath());
+            $currentDir = realpath($manifestFile->getPath());
             $fullFilePath = realpath($manifestFile->getPathname());
-            $relativeDir  = rtrim($relativeSourceDirectoryPath.'/'.$manifestFile->getRelativePath(), '/');
-            $relativePath = rtrim($relativeSourceDirectoryPath.'/'.$manifestFile->getRelativePathname(), '/');
+            $relativeDir = rtrim($relativeSourceDirectoryPath . '/' . $manifestFile->getRelativePath(), '/');
+            $relativePath = rtrim($relativeSourceDirectoryPath . '/' . $manifestFile->getRelativePathname(), '/');
 
             $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Processing manifest file: {$relativePath} </info>");
 
@@ -170,10 +217,10 @@ class ConvertToLearnosityService
             foreach ($itemResources as $resource) {
                 $itemCount++;
                 $totalItemCount++;
-                $resourceHref    = $resource['href'];
+                $resourceHref = $resource['href'];
                 $relatedResource = $resource['resource'];
                 $assessmentItemContents = file_get_contents($currentDir . '/' . $resourceHref);
-                $itemReference   = $this->getItemReferenceFromResource(
+                $itemReference = $this->getItemReferenceFromResource(
                     $relatedResource,
                     $this->useMetadataIdentifier,
                     $this->useResourceIdentifier,
@@ -199,7 +246,7 @@ class ConvertToLearnosityService
                 $convertedContent = $this->convertAssessmentItemInFile($assessmentItemContents, $itemReference, $metadata, $currentDir, $resourceHref, $itemTagsArray);
 
                 if (!empty($convertedContent)) {
-                    $results['qtiitems'][basename($relativeDir).'/'.$resourceHref] = $convertedContent;
+                    $results['qtiitems'][basename($relativeDir) . '/' . $resourceHref] = $convertedContent;
                 }
             }
         }
@@ -318,10 +365,10 @@ class ConvertToLearnosityService
      * Converts a single <assessmentItem> file.
      *
      * @param  SplFileInfo $file
-     * @param  string      $itemReference - Optional
+     * @param  string $itemReference - Optional
      *
      * @return array - the results of the conversion
-     */
+    */
     private function convertAssessmentItemInFile($contents, $itemReference = null, array $metadata = [], $currentDir, $resourceHref, $itemTagsArray = [])
     {
         $results = null;
@@ -335,11 +382,12 @@ class ConvertToLearnosityService
             }
 
             $resourcePath = $currentDir . '/' . $resourceHref;
-            $results      = $this->convertAssessmentItem($xmlString, $itemReference, $resourcePath, $metadata, $itemTagsArray);
+            $results = $this->convertAssessmentItem($xmlString, $itemReference, $resourcePath, $metadata, $itemTagsArray);
+
         } catch (\Exception $e) {
             $targetFilename = $resourceHref;
-            $message        = $e->getMessage();
-            $results        = [ 'exception' => $targetFilename . '-' . $message ];
+            $message = $e->getMessage();
+            $results = ['exception' => $targetFilename . '-' . $message];
             if (!StringHelper::contains($message, 'This is intro or outro')) {
                 $this->output->writeln('  <error>EXCEPTION with item ' . str_replace($currentDir, '', $resourceHref) . ' : ' . $message . '</error>');
             }
@@ -436,7 +484,7 @@ class ConvertToLearnosityService
 
         if ($useFileNameAsIdentifier) {
             // This flag should override anything else that is set above
-            $resourceHref  = $resource->getAttribute('href');
+            $resourceHref = $resource->getAttribute('href');
             $itemReference = $this->getIdentifierFromResourceHref($resourceHref);
         }
         return $itemReference;
@@ -493,7 +541,7 @@ class ConvertToLearnosityService
         $xpath = $this->getXPathForQtiDocument($resource->ownerDocument);
         $pointValueEntries = ($xpath->query('./qti:metadata/lom:lom/lom:classification/lom:taxonPath/lom:source/lom:string[text() = \'cf$Point Value\']/../../lom:taxon/lom:entry', $resource));
         if ($pointValueEntries->length > 0) {
-            $pointValue = (int)$pointValueEntries->item(0)->nodeValue;
+            $pointValue = (int) $pointValueEntries->item(0)->nodeValue;
         }
 
         return $pointValue;
@@ -647,6 +695,12 @@ class ConvertToLearnosityService
 
     private function tearDown()
     {
+
+    }
+
+    public function showWarnings($message)
+    {
+        $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX .$message." </info>");
     }
 
     private function validate()

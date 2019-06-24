@@ -5,3 +5,4 @@ reports
 .DS_Store
 _vault
 data/convert:to:learnosity.log.json
+/nbproject/private/

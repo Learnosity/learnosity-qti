@@ -1,27 +1,40 @@
 <?php
-
 namespace LearnosityQti\Processors\QtiV2\In\Interactions;
 
 use LearnosityQti\Entities\QuestionTypes\mcq;
+use LearnosityQti\Entities\QuestionTypes\mcq_metadata;
 use LearnosityQti\Entities\QuestionTypes\mcq_ui_style;
+use LearnosityQti\Services\ConvertToLearnosityService;
+use LearnosityQti\Utils\HtmlExtractorUtil;
 use LearnosityQti\Utils\QtiMarshallerUtil;
 use LearnosityQti\Processors\QtiV2\In\Validation\ChoiceInteractionValidationBuilder;
 use LearnosityQti\Services\LogService;
+use qtism\data\content\FeedbackInline;
 use qtism\data\content\interactions\Orientation;
 use qtism\data\content\interactions\Prompt;
 use qtism\data\content\interactions\SimpleChoice;
 use qtism\data\content\interactions\SimpleChoiceCollection;
-use qtism\data\content\interactions\ChoiceInteraction as QtiChoiceInteraction;
 
 class ChoiceInteractionMapper extends AbstractInteractionMapper
 {
+
     public function getQuestionType()
     {
         /* @var QtiChoiceInteraction $interaction */
         $interaction = $this->interaction;
 
         $options = $this->buildOptions($interaction->getSimpleChoices());
+        $feedbackMetadata = $this->buildFeedbackMetadata($interaction->getSimpleChoices());
         $mcq = new mcq('mcq', $options);
+
+        // Support for @mcq-metadata
+        foreach ($feedbackMetadata as $value) {
+            if (!empty($value)) {
+                $metaData = new mcq_metadata();
+                $metaData->set_distractor_rationale_response_level($feedbackMetadata);
+                $mcq->set_metadata($metaData);
+            }
+        }
 
         // Support for @shuffle
         $mustShuffle = $interaction->mustShuffle();
@@ -89,5 +102,67 @@ class ChoiceInteractionMapper extends AbstractInteractionMapper
             ];
         }
         return $options;
+    }
+
+    /**
+     * This function is used to create distractor_rationale_response_level from feedbackInline
+     *
+     * @param SimpleChoiceCollection $simpleChoices
+     * @return string
+     */
+    private function buildFeedbackMetadata(SimpleChoiceCollection $simpleChoices)
+    {
+        /* @var $choice SimpleChoice */
+        $metadata = [];
+        foreach ($simpleChoices as $choice) {
+            $flow = $choice->getContent();
+            if (property_exists($flow, 'dataPlaceHolder')) {
+                $class = new \ReflectionClass(get_class($flow));
+                $property = $class->getProperty('dataPlaceHolder');
+                $property->setAccessible(true);
+                $feed = $property->getValue($flow);
+                $count = 0;
+                foreach ($feed as $feeddata) {
+                    if ($feeddata instanceof FeedbackInline) {
+                        $count++;
+                        $metadata[] = $this->buildMetadataForFeedbackInline($feeddata);
+                    }
+                }
+                if ($count == 0) {
+                    $metadata[] = "";
+                }
+            }
+        }
+
+        return $metadata;
+    }
+
+    /**
+     * This function is used to create feedbackInline data
+     *
+     * @param FeedbackInline $feeddata
+     * @return string
+     */
+    protected function buildMetadataForFeedbackInline(FeedbackInline $feeddata)
+    {
+        $metadata = "";
+        $feeddataArray = array_values((array) $feeddata);
+        $feedbackArray = array_values((array) $feeddataArray[3]);
+        if (sizeof($feedbackArray[0]) >= 2) {
+            $feedInlineArray = array_values((array) $feedbackArray[0][1]);
+            if (!empty($feedInlineArray) && $feedInlineArray[2] == 'text/html') {
+                $learnosityServiceObject = ConvertToLearnosityService::getInstance();
+                $inputPath = $learnosityServiceObject->getInputpath();
+                $htmlfile = $inputPath . '/' . $feedInlineArray[1];
+                $metadata = HtmlExtractorUtil::getHtmlData($htmlfile);
+            }
+        } else {
+            $feeddataArray = array_values((array) $feedbackArray[0][0]);
+            if (!empty($feeddataArray[0])) {
+                $metadata = trim($feeddataArray[0]);
+            }
+        }
+
+        return $metadata;
     }
 }
