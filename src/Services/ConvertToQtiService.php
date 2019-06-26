@@ -14,7 +14,6 @@ use LearnosityQti\Processors\IMSCP\Entities\Resource;
 use LearnosityQti\Processors\QtiV2\Out\Constants as LearnosityExportConstant;
 use LearnosityQti\Utils\General\FileSystemHelper;
 use LearnosityQti\Utils\UuidUtil;
-use LearnosityQti\Utils\General\CopyDirectoreyHelper;
 use RecursiveIteratorIterator;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
@@ -28,7 +27,7 @@ class ConvertToQtiService
 
     const RESOURCE_TYPE_ITEM = 'imsqti_item_xmlv2p1';
     const INFO_OUTPUT_PREFIX = '';
-    const CONVERT_LOG_FILENAME = 'converttoqti.log';
+    const CONVERT_LOG_FILENAME = 'convert-to-qti.log';
     const MANIFEST_FILE_NAME = 'imsmanifest.xml';
     const IMS_CONTENT_PACKAGE_NAME = 'qti.zip';
     const IMS_XSD_LOCATION = 'http://www.imsglobal.org/xsd/imscp_v1p1 http://www.imsglobal.org/xsd/qti/qtiv2p1/qtiv2p1_imscpv1p2_v1p0.xsd';

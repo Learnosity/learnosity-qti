@@ -8,7 +8,7 @@ class Question extends BaseEntity
     private $type;
     private $data;
     private $widget_type;
-    private $itemReference;
+    private $item_reference;
 
     function __construct($type, $reference, BaseQuestionType $data, $itemReference = '')
     {
@@ -16,7 +16,7 @@ class Question extends BaseEntity
         $this->reference     = $reference;
         $this->type          = $type;
         $this->widget_type   = $data->get_widget_type();
-        $this->itemReference = $itemReference;
+        $this->item_reference = $itemReference;
     }
 
     public function get_reference()
@@ -51,12 +51,12 @@ class Question extends BaseEntity
 
     public function set_item_reference($itemReference)
     {
-        $this->itemReference = $itemReference;
+        $this->item_reference = $itemReference;
     }
 
     public function get_item_reference()
     {
-        return $this->itemReference;
+        return $this->item_reference;
     }
 
     /**

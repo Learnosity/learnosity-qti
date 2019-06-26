@@ -86,7 +86,6 @@ class FileSystemHelper
     
     /**
      * Copy a file, or recursively copy a folder and its contents
-     * @see https://stackoverflow.com/questions/2050859/copy-entire-contents-of-a-directory-to-another-using-php/2050909#2050909
      *
      * @param       string   $sourceDirectory    Source path
      * @param       string   $destinationDirectory      Destination path
@@ -94,25 +93,23 @@ class FileSystemHelper
      */
     public static function copyFiles($sourceDirectory, $destinationDirectory)
     {
-        // Simple copy for a file
+
         if (is_file($sourceDirectory)) {
             return copy($sourceDirectory, $destinationDirectory);
         }
-        // Make destination directory
+
         if (!is_dir($destinationDirectory)) {
             mkdir($destinationDirectory);
         }
-        // Loop through the folder
+
         $dir = opendir($sourceDirectory);
         while (($file = readdir($dir)) !== false) {
-            // Skip pointers
-            if ($file == '.' || $file == '..') {
-                continue;
+            // Recursively copy directories, ignoring dot paths
+            if (!in_array($file, ['.', '..'])) {
+                static::copyFiles("$sourceDirectory/$file", "$destinationDirectory/$file");
             }
-            // Deep copy directories
-            static::copyFiles("$sourceDirectory/$file", "$destinationDirectory/$file");
         }
-        // Clean up
+
         closedir($dir);
         return true;
     }
