@@ -13,7 +13,7 @@ abstract class AbstractQuestionValidationBuilder
 
     abstract protected function buildResponseDeclaration($responseIdentifier, $validation);
 
-    public function buildValidation($responseIdentifier, $validation, $distractorRationaleResponseLevel = array(), $isCaseSensitive = true)
+    public function buildValidation($responseIdentifier, $validation, $isCaseSensitive = true, $distractorRationaleResponseLevel = array())
     {
         // Some basic validation on the `validation` object
         if (empty($validation)) {
