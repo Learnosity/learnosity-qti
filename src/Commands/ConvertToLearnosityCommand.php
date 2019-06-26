@@ -11,6 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ConvertToLearnosityCommand extends Command
 {
+
     protected function configure()
     {
         $this
@@ -38,6 +39,18 @@ class ConvertToLearnosityCommand extends Command
                 'The identifier of the item bank you want to import content into',
                 ''
             )
+            ->addOption(
+                'item-reference-source',
+                '',
+                InputOption::VALUE_OPTIONAL,
+                'The source to use to extract the reference for the item. ' .
+                    'Valid values are the following: ' . PHP_EOL .
+                    '  item     - uses the identifier attribute on the <assessmentItem> element' . PHP_EOL .
+                    '  metadata - uses the <identifier> element from the LOM metadata in the manifest, if available. If no <identifier> is found, then this parameter operates in "item" mode' . PHP_EOL .
+                    '  resource - uses the identifier attribute on the <resource> element in the manifest' . PHP_EOL .
+                    '  filename - uses the basename of the <assessmentItem> XML file' . PHP_EOL,
+                'metadata'
+            )
         ;
     }
 
@@ -47,6 +60,7 @@ class ConvertToLearnosityCommand extends Command
         $inputPath = $input->getOption('input');
         $outputPath = $input->getOption('output');
         $organisationId = $input->getOption('organisation_id');
+        $itemReferenceSource = $input->getOption('item-reference-source');
 
         // Validate the required options
         if (empty($inputPath) || empty($outputPath)) {
@@ -73,6 +87,14 @@ class ConvertToLearnosityCommand extends Command
             array_push($validationErrors, "The <info>organisation_id</info> option is required for asset uploads.");
         }
 
+        $validItemReferenceSources = ['item', 'metadata', 'filename', 'resource'];
+        if (isset($itemReferenceSource) && !in_array($itemReferenceSource, $validItemReferenceSources)) {
+            array_push(
+                $validationErrors,
+                "The <info>item-reference-source</info> must be one of the following values: " . join(', ', $validItemReferenceSources)
+            );
+        }
+
         if (!empty($validationErrors)) {
             $output->writeln([
                 '',
@@ -87,7 +109,26 @@ class ConvertToLearnosityCommand extends Command
                 "  <info>mo convert:to:learnosity --input /path/to/qti --output /path/to/save/folder --organisation_id [integer]</info>"
             ]);
         } else {
-            $Convert = new ConvertToLearnosityService($inputPath, $outputPath, $output, $organisationId);
+
+            $Convert = ConvertToLearnosityService::initClass($inputPath, $outputPath, $output, $organisationId);
+
+            $Convert->useMetadataIdentifier(true);
+            $Convert->useResourceIdentifier(false);
+            $Convert->useFileNameAsIdentifier(false);
+            if ($itemReferenceSource === 'item') {
+                $Convert->useMetadataIdentifier(false);
+                $Convert->useResourceIdentifier(false);
+                $Convert->useFileNameAsIdentifier(false);
+            } elseif ($itemReferenceSource === 'filename') {
+                $Convert->useMetadataIdentifier(false);
+                $Convert->useResourceIdentifier(false);
+                $Convert->useFileNameAsIdentifier(true);
+            } elseif ($itemReferenceSource === 'resource') {
+                $Convert->useMetadataIdentifier(false);
+                $Convert->useResourceIdentifier(true);
+                $Convert->useFileNameAsIdentifier(false);
+            }
+
             $result = $Convert->process();
             if ($result['status'] === false) {
                 $output->writeln('<error>Error running job</error>');

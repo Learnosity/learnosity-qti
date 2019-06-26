@@ -192,7 +192,7 @@ class Converter
                 $sourceDirectoryPath = dirname($filePath);
             }
             // TODO: Handle additional (related) items being passed back
-            $result = $itemMapper->parse($xmlString, $validate, $sourceDirectoryPath, $metadata);
+            $result = $itemMapper->parse($xmlString, $validate, $sourceDirectoryPath, $metadata, $customItemReference);
             $item = $result['item'];
             $questions = $result['questions'];
             $features = $result['features'];
@@ -246,6 +246,9 @@ class Converter
                 $featuresData[] = $questionWriter->convert($feature);
             }
         }
+
+        $layoutService = new \LearnosityQti\Services\ItemLayoutService();
+        $itemData = $layoutService->migrateItem($itemData, array_merge($questionsData, $featuresData));
 
         return [
             'item' => $itemData,

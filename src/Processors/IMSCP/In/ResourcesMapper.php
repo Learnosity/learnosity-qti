@@ -5,7 +5,7 @@ namespace LearnosityQti\Processors\IMSCP\In;
 use LearnosityQti\Processors\IMSCP\Entities\Dependency;
 use LearnosityQti\Processors\IMSCP\Entities\File;
 use LearnosityQti\Processors\IMSCP\Entities\Resource;
-use qtism\data\storage\xml\marshalling\Marshaller;
+use qtism\data\storage\xml\Utils as XmlUtils;
 
 class ResourcesMapper
 {
@@ -20,20 +20,20 @@ class ResourcesMapper
         $resources = [];
         foreach ($resourcesListElements as $resourceElement) {
             $resource = new Resource();
-            $resource->setHref(Marshaller::getDOMElementAttributeAs($resourceElement, 'href'));
-            $resource->setIdentifier(Marshaller::getDOMElementAttributeAs($resourceElement, 'identifier'));
-            $resource->setType(Marshaller::getDOMElementAttributeAs($resourceElement, 'type'));
+            $resource->setHref(XmlUtils::getDOMElementAttributeAs($resourceElement, 'href'));
+            $resource->setIdentifier(XmlUtils::getDOMElementAttributeAs($resourceElement, 'identifier'));
+            $resource->setType(XmlUtils::getDOMElementAttributeAs($resourceElement, 'type'));
 
             // Mapping to File models
-            $fileListElements = Marshaller::getChildElementsByTagName($resourceElement, 'file');
+            $fileListElements = XmlUtils::getChildElementsByTagName($resourceElement, 'file');
             $resource->setFiles($this->mapFileElements($fileListElements));
 
             // Mapping to Dependency models
-            $dependencyListElements = Marshaller::getChildElementsByTagName($resourceElement, 'dependency');
+            $dependencyListElements = XmlUtils::getChildElementsByTagName($resourceElement, 'dependency');
             $resource->setDependencies($this->mapDependencyElements($dependencyListElements));
 
             // Mapping its metadata
-            $metadataListElements = Marshaller::getChildElementsByTagName($resourceElement, 'metadata');
+            $metadataListElements = XmlUtils::getChildElementsByTagName($resourceElement, 'metadata');
             if (!empty($metadataListElements)) {
                 $metadataMapper = new MetadataMapper();
                 $flattenedMetadatas = $metadataMapper->map($metadataListElements[0]);
@@ -58,7 +58,7 @@ class ResourcesMapper
         if (is_array($fileListElements)) {
             foreach ($fileListElements as $fileElement) {
                 $file = new File();
-                $file->setHref(Marshaller::getDOMElementAttributeAs($fileElement, 'href'));
+                $file->setHref(XmlUtils::getDOMElementAttributeAs($fileElement, 'href'));
                 $files[] = $file;
             }
         }
@@ -78,7 +78,7 @@ class ResourcesMapper
             foreach ($dependencyListElements as $dependencyElement) {
                 $dependency = new Dependency();
                 $dependency->setIdentifierref(
-                    Marshaller::getDOMElementAttributeAs($dependencyElement, 'identifierref')
+                    XmlUtils::getDOMElementAttributeAs($dependencyElement, 'identifierref')
                 );
                 $dependencies[] = $dependency;
             }

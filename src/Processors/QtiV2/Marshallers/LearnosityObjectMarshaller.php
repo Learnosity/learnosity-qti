@@ -19,7 +19,7 @@ class LearnosityObjectMarshaller extends ObjectMarshaller
 
     protected function marshallChildrenKnown(QtiComponent $component, array $elements)
     {
-        /** @var Object $component */
+        /** @var ObjectElement $component */
         switch ($this->getMIMEType($component->getType())) {
             case self::MIME_IMAGE:
                 $this->checkObjectComponents($component, '<img> tag');
@@ -48,7 +48,9 @@ class LearnosityObjectMarshaller extends ObjectMarshaller
                 $fragment->appendXML(QtiMarshallerUtil::marshallCollection(ContentCollectionBuilder::buildFlowCollectionContent($component->getComponents())));
                 $element = self::getDOMCradle()->createElement('div');
                 $element->setAttribute('data-type', 'sharedpassage');
-                $element->appendChild($fragment);
+                if ($fragment->hasChildNodes()) {
+                    $element->appendChild($fragment);
+                }
                 return $element;
                 break;
             default:
@@ -59,7 +61,7 @@ class LearnosityObjectMarshaller extends ObjectMarshaller
         }
     }
 
-    private function checkObjectComponents(Object $object, $conversionTo)
+    private function checkObjectComponents(ObjectElement $object, $conversionTo)
     {
         if (!empty($object->getComponents())) {
             LogService::log('Converting <object> element to ' . $conversionTo . '. Any contents within it are removed');
