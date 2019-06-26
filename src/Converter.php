@@ -19,7 +19,6 @@ use LearnosityQti\Services\LearnosityToQtiPreProcessingService;
 use LearnosityQti\Services\LogService;
 use LearnosityQti\Utils\FileSystemUtil;
 use LearnosityQti\Utils\StringUtil;
-use LearnosityQti\Utils\SimpleHtmlDom\SimpleHtmlDom;
 use qtism\data\storage\xml\XmlDocument;
 use qtism\data\storage\xml\XmlStorageException;
 use Symfony\Component\Finder\Finder;
@@ -175,7 +174,6 @@ class Converter
         if ($widget instanceof Question) {
             $widgetData = $widgetWriter->convert($widget);
         }
-
         return [$widgetData, $exceptions];
     }
 
@@ -266,9 +264,11 @@ class Converter
         // Handle `item` which contains both a single item and one or more questions/features
         if ($jsonType === self::LEARNOSITY_DATA_ITEM) {
             list($xmlString, $messages) = self::convertLearnosityItem($data);
+
         // Handle if just question
         } elseif ($jsonType === self::LEARNOSITY_DATA_QUESTION) {
             list($xmlString, $messages) = self::convertLearnosityQuestion($data);
+
         // Handle if just question data
         } elseif ($jsonType === self::LEARNOSITY_DATA_QUESTION_DATA) {
             list($xmlString, $messages) = self::convertLearnosityQuestionData($data);
@@ -292,7 +292,6 @@ class Converter
         $preprocessingService = new LearnosityToQtiPreProcessingService();
         $questionMapper = new QuestionMapper();
         $questionWriter = new QuestionWriter();
-
         $question = $questionMapper->parse($preprocessingService->processJson($questionJson));
         return $questionWriter->convert($question);
     }
@@ -312,8 +311,7 @@ class Converter
         // Separate question(s) and item
         $itemJson['questionReferences'] = array_column($itemJson['questions'], 'reference');
         $questionsJson = $itemJson['questions'];
-        unset($itemJson['questions']);
-
+        
         // Pre-process these JSON
         $preprocessingService = new LearnosityToQtiPreProcessingService($questionsJson);
         $questionsJson = $preprocessingService->processJson($questionsJson);

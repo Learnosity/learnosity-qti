@@ -2,23 +2,12 @@
 
 namespace LearnosityQti\Services;
 
-use LearnosityQti\AppContainer;
 use LearnosityQti\Converter;
 use LearnosityQti\Domain\JobDataTrait;
-use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Processors\QtiV2\Out\Constants as LearnosityExportConstant;
-use LearnosityQti\Utils\AssetsFixer;
-use LearnosityQti\Utils\AssumptionHandler;
-use LearnosityQti\Utils\CheckValidQti;
-use LearnosityQti\Utils\ResponseProcessingHandler;
 use LearnosityQti\Utils\General\FileSystemHelper;
-use LearnosityQti\Utils\General\StringHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
-use qtism\data\AssessmentItem;
-use qtism\data\content\ItemBody;
-use qtism\data\storage\xml\XmlDocument;
 
 class ConvertToQtiService
 {
@@ -38,7 +27,6 @@ class ConvertToQtiService
     protected $shouldAppendLogs           = false;
     protected $shouldGuessItemScoringType = true;
     protected $shouldUseManifest          = true;
-
     /* Job-specific configurations */
     // Overrides identifiers to be the same as the filename
     protected $useFileNameAsIdentifier    = false;
@@ -46,7 +34,6 @@ class ConvertToQtiService
     protected $useMetadataIdentifier      = true;
     // Resource identifiers sometimes (but not always) match the assessmentItem identifier, so this can be useful
     protected $useResourceIdentifier      = false;
-
     private $assetsFixer;
 
     public function __construct($inputPath, $outputPath, OutputInterface $output, $organisationId = null)
@@ -95,13 +82,11 @@ class ConvertToQtiService
         $results = [];
         $jsonFiles = $this->parseInputFolders();
         $finalManifest = $this->getJobManifestTemplate();
-
         $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Processing JSON directory: {$this->inputPath} </info>");
 
         foreach ($jsonFiles as $file) {
             $tempDirectoryParts = explode('/', dirname($file));
             $fileName = $tempDirectoryParts[count($tempDirectoryParts)-1];
-
             $results[] = $this->convertLearnosityInDirectory($file);
         }
 
@@ -122,23 +107,6 @@ class ConvertToQtiService
     {
         $this->output->writeln("<comment>Converting Learnosity JSON {$file}</comment>");
         return $this->convertAssessmentItem(json_decode(file_get_contents($file), true));
-
-        // $jsonFinder = new Finder();
-        // $jsonFinderPath = $jsonFinder->files()->in($sourceDirectory);
-        // $totalItemCount = 0;
-        // foreach ($jsonFinderPath as $jsonFile) {
-
-        //     /** @var SplFileInfo $jsonFile */
-        //     $currentDir   = realpath($jsonFile->getPath());
-        //     $fullFilePath = realpath($jsonFile->getPathname());
-        //     $relativeDir  = rtrim($relativeSourceDirectoryPath.'/'.$jsonFile->getRelativePath(), '/');
-        //     $relativePath = rtrim($relativeSourceDirectoryPath.'/'.$jsonFile->getRelativePathname(), '/');
-
-        //     $this->output->writeln("<comment>Converting Learnosity JSON {$relativePath}</comment>");
-        //     $qti = $this->convertAssessmentItem(json_decode($jsonFile->getContents(), true));
-
-        //     $results[] = $qti;
-        // }
     }
 
     // Traverse the -i option and find all paths with files
@@ -148,11 +116,22 @@ class ConvertToQtiService
 
         // Look for json files in the current path
         $finder = new Finder();
-        $finder->files()->in($this->inputPath);
+        $finder->files()->in($this->inputPath . '/activities');
         foreach ($finder as $json) {
-            $folders[] = $json->getRealPath();
-        }
+            $activityJson = json_decode(file_get_contents($json));
+            $itemReferences = $activityJson->data->items;
 
+            if (!empty($itemReferences)) {
+                foreach ($itemReferences as $itemref) {
+                    $itemFile = $this->inputPath . '/items/' . md5($itemref) . '.json';
+                    if (file_exists($itemFile)) {
+                        $folders[] = $itemFile;
+                    }
+                }
+            } else {
+                $this->output->writeln("<error>Error converting : No item refrences found in the activity json</error>");
+            }
+        }
         return $folders;
     }
 
@@ -169,18 +148,20 @@ class ConvertToQtiService
     {
         $result = [];
 
-        if (in_array($json['type'], LearnosityExportConstant::$supportedQuestionTypes)) {
-            $result = Converter::convertLearnosityToQtiItem($json);
-        } else {
-            $result = [
-                '',
-                [
-                    'Ignoring ' . $json['type'] . ' , currently unsupported'
-                ]
-            ];
-            $this->output->writeln("  <error>Question type `{$json['type']}` not yet supported, ignoring</error>");
-        }
+        foreach ($json['questions'] as $question) {
 
+            if (in_array($question['data']['type'], LearnosityExportConstant::$supportedQuestionTypes)) {
+                $result = Converter::convertLearnosityToQtiItem($json);
+            } else {
+                $result = [
+                    '',
+                    [
+                        'Ignoring' . $question['data']['type'] . ' , currently unsupported'
+                    ]
+                ];
+                $this->output->writeln("<error>Question type `{$question['data']['type']}` not yet supported, ignoring</error>");
+            }
+        }
         return [
             'qti' => $result,
             'json' => $json
@@ -229,12 +210,13 @@ class ConvertToQtiService
         if ($this->dryRun) {
             return;
         }
-
         $this->output->writeln("\n<info>" . static::INFO_OUTPUT_PREFIX . "Writing conversion results: " . $outputFilePath . '.json' . "</info>\n");
 
         foreach ($results as $result) {
             if (!empty($result['qti'])) {
-                file_put_contents($outputFilePath . '/' . $result['json']['reference'] . '.xml', $result['qti'][0]);
+                foreach ($result['json']['questions'] as $question) {
+                    file_put_contents($outputFilePath . '/' . $question['reference'] . '.xml', $result['qti'][0]);
+                }
             }
         }
     }
