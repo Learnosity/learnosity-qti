@@ -47,7 +47,6 @@ class ConvertToQtiService
     protected $shouldAppendLogs           = false;
     protected $shouldGuessItemScoringType = true;
     protected $shouldUseManifest          = true;
-
     /* Job-specific configurations */
     // Overrides identifiers to be the same as the filename
     protected $useFileNameAsIdentifier = false;
@@ -118,9 +117,7 @@ class ConvertToQtiService
         $results = [];
         $jsonFiles = $this->parseInputFolders();
         $finalManifest = $this->getJobManifestTemplate();
-
         $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Processing JSON directory: {$this->inputPath} </info>");
-
         foreach ($jsonFiles as $file) {
             if (file_exists($file)) {
                 $results[] = $this->convertLearnosityInDirectory($file);
@@ -155,7 +152,6 @@ class ConvertToQtiService
     private function parseInputFolders()
     {
         $folders = [];
-
         // Look for json files in the current path
         $finder = new Finder();
         $finder->files()->in($this->inputPath . '/activities');
@@ -414,9 +410,7 @@ class ConvertToQtiService
         if ($this->dryRun) {
             return;
         }
-
         $this->output->writeln("\n<info>" . static::INFO_OUTPUT_PREFIX . "Writing conversion results: " . $outputFilePath . '.json' . "</info>\n");
-
         foreach ($results as $result) {
             foreach (array_values($result['qti'][0]) as $idx => $qti) {
                 if (!empty($result['json']['questions'][$idx])) {

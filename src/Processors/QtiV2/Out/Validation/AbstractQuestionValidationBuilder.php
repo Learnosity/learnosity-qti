@@ -3,6 +3,7 @@
 namespace LearnosityQti\Processors\QtiV2\Out\Validation;
 
 use LearnosityQti\Processors\QtiV2\Out\Constants;
+use LearnosityQti\Processors\QtiV2\Out\ResponseProcessing\QtiResponseProcessingBuilder;
 use LearnosityQti\Services\LogService;
 use qtism\data\processing\ResponseProcessing;
 
@@ -12,7 +13,7 @@ abstract class AbstractQuestionValidationBuilder
 
     abstract protected function buildResponseDeclaration($responseIdentifier, $validation);
 
-    public function buildValidation($responseIdentifier, $validation, $isCaseSensitive = true)
+    public function buildValidation($responseIdentifier, $validation, $isCaseSensitive = true, $distractorRationaleResponseLevel = array())
     {
         // Some basic validation on the `validation` object
         if (empty($validation)) {
@@ -21,7 +22,7 @@ abstract class AbstractQuestionValidationBuilder
 
         if (empty($validation->get_scoring_type()) || !in_array($validation->get_scoring_type(), $this->supportedScoringType)) {
             // TODO: Need to support more validation type :)
-            LogService::log('Invalid `scoring_type`, only supported `exactMatch`. Fail to build `responseDeclaration` and `responseProcessingTemplate');
+            LogService::log('Invalid `scoring_type`, only supported `exactMatch`. Failed to build `responseDeclaration` and `responseProcessingTemplate');
             return [null, null];
         }
 
@@ -30,7 +31,14 @@ abstract class AbstractQuestionValidationBuilder
             return [null, null];
         }
 
-        $responseProcessing = $this->buildResponseProcessing($validation, $isCaseSensitive);
+        // if found distractor_rationale_response_level generate response processing with setoutcome value FEEDBACK
+        if (!empty($distractorRationaleResponseLevel) && is_array($distractorRationaleResponseLevel)) {
+            $score = $validation->get_valid_response()->get_score();
+            $responseProcessing = QtiResponseProcessingBuilder::build($score);
+        } else {
+            $responseProcessing = $this->buildResponseProcessing($validation, $isCaseSensitive);
+        }
+
         $responseDeclaration = $this->buildResponseDeclaration($responseIdentifier, $validation);
         return [$responseDeclaration, $responseProcessing];
     }
@@ -62,6 +70,7 @@ abstract class AbstractQuestionValidationBuilder
         if ($isCaseSensitive == false) {
             LogService::log('Only support mapping to `matchCorrect` template, thus case sensitivity is ignored');
         }
+
         $responseProcessing = new ResponseProcessing();
         $responseProcessing->setTemplate(Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT);
         return $responseProcessing;
