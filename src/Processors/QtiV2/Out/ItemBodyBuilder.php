@@ -57,6 +57,7 @@ class ItemBodyBuilder
         // Map <itemBody>
         // TODO: Wrap these `content` stuff in a div
         // TODO: to avoid QtiComponentIterator bug ignoring 2nd element with empty content
+        $content = $this->removeUnusedSpanFromContent($interactions, $content);
         $contentCollection = QtiMarshallerUtil::unmarshallElement($content);
         $wrapperCollection = new FlowCollection();
         foreach ($contentCollection as $component) {
@@ -80,10 +81,9 @@ class ItemBodyBuilder
                     $content->attach($interactions[$questionReference]['extraContent']);
                 }
                 $content->attach($interaction);
-
-                $replacement = ContentCollectionBuilder::buildContent($currentContainer, $content)->current();
-                $currentContainer->getComponents()->replace($component, $replacement);
             }
+            $replacement = ContentCollectionBuilder::buildContent($currentContainer, $content)->current();
+            $currentContainer->getComponents()->replace($component, $replacement);
         }
 
         // Extract the actual content from the div wrapper and add that to our <itemBody>
@@ -111,5 +111,28 @@ class ItemBodyBuilder
         $itemBody = new ItemBody();
         $itemBody->setContent(ContentCollectionBuilder::buildBlockCollectionContent($contentCollection));
         return $itemBody;
+    }
+    
+    private function removeUnusedSpanFromContent(array $interactions, $content)
+    {
+
+        $dom = new DOMDocument();
+        $dom->loadHTML($content);
+        $dom->formatOutput = true;
+
+        $xpath = new DOMXpath($dom);
+        $class = 'learnosity-response';
+        $spanTag = $xpath->query("//span[contains(@class,'$class')]");
+
+        foreach ($spanTag as $span) {
+            $questionReference = trim(str_replace('learnosity-response question-', '', $span->getAttribute('class')));
+            if (!isset($interactions[$questionReference])) {
+                $span->parentNode->removeChild($span);
+            }
+        }
+        $dom->removeChild($dom->doctype);
+        $dom->replaceChild($dom->firstChild->firstChild->firstChild, $dom->firstChild);
+        $newHtml = $dom->saveHTML();
+        return $newHtml;
     }
 }
