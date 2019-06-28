@@ -125,7 +125,7 @@ class ConvertToQtiService
                 $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Learnosity JSON file " . basename($file) . " Not found in: {$this->inputPath}/items </info>");
             }
         }
-        
+
         $resourceInfo = $this->updateJobManifest($finalManifest, $results);
         $finalManifest->setResources($resourceInfo);
         $this->persistResultsFile($results, realpath($this->outputPath) . '/' . $this->rawPath . '/');
@@ -346,20 +346,22 @@ class ConvertToQtiService
     {
         $resources = $imsManifestXml->createElement("resources");
         $resourcesContent = $manifestContent->getResources();
-        $i = 0;
-        foreach ($resourcesContent as $resourceContent) {
+        foreach ($resourcesContent as $index => $resourceContent) {
             $resource = $imsManifestXml->createElement("resource");
             $resource->setAttribute("identifier", 'i' . $resourceContent->getIdentifier());
             $resource->setAttribute("type", $resourceContent->getType());
             $resource->setAttribute("href", $resourceContent->getHref());
-            $metadata = $imsManifestXml->createElement("metadata");
 
-            $tagsArray = $results[$i]['tags'][$resourceContent->getIdentifier()];
-            if (is_array($tagsArray) && sizeof($tagsArray) > 0) {
-                $resourceMatadata = $this->addResourceMetaDataInfo($imsManifestXml, $tagsArray);
-                $metadata->appendChild($resourceMatadata);
+            if (!empty($results[$index]['tags'][$resourceContent->getIdentifier()])) {
+                $metadata = $imsManifestXml->createElement("metadata");
+                $tagsArray = $results[$index]['tags'][$resourceContent->getIdentifier()];
+                if (is_array($tagsArray) && sizeof($tagsArray) > 0) {
+                    $resourceMatadata = $this->addResourceMetaDataInfo($imsManifestXml, $tagsArray);
+                    $metadata->appendChild($resourceMatadata);
+                }
+                $resource->appendChild($metadata);
             }
-            $resource->appendChild($metadata);
+
             $filesData = $resourceContent->getFiles();
             foreach ($filesData as $fileContent) {
                 $file = $imsManifestXml->createElement("file");
@@ -367,7 +369,6 @@ class ConvertToQtiService
                 $resource->appendChild($file);
             }
             $resources->appendChild($resource);
-            $i++;
         }
         return $resources;
     }
@@ -412,6 +413,10 @@ class ConvertToQtiService
         }
         $this->output->writeln("\n<info>" . static::INFO_OUTPUT_PREFIX . "Writing conversion results: " . $outputFilePath . '.json' . "</info>\n");
         foreach ($results as $result) {
+            if (empty($result['qti'])) {
+                continue;
+            }
+
             foreach (array_values($result['qti'][0]) as $idx => $qti) {
                 if (!empty($result['json']['questions'][$idx])) {
                     file_put_contents($outputFilePath . '/' . $result['json']['questions'][$idx]['reference'] . '.xml', $qti);
