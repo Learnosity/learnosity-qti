@@ -39,6 +39,7 @@ class ConvertToQtiService
     protected $inputPath;
     protected $outputPath;
     protected $output;
+    protected $format;
     protected $organisationId;
     protected $itemReferences;
 
@@ -55,11 +56,12 @@ class ConvertToQtiService
     // Resource identifiers sometimes (but not always) match the assessmentItem identifier, so this can be useful
     protected $useResourceIdentifier   = false;
 
-    public function __construct($inputPath, $outputPath, OutputInterface $output, $organisationId = null)
+    public function __construct($inputPath, $outputPath, OutputInterface $output, $format, $organisationId = null)
     {
         $this->inputPath      = $inputPath;
         $this->outputPath     = $outputPath;
         $this->output         = $output;
+        $this->format         = $format;
         $this->organisationId = $organisationId;
         $this->finalPath      = 'final';
         $this->logPath        = 'log';
@@ -191,9 +193,15 @@ class ConvertToQtiService
         $result = [];
         $finalXml = [];
         $tagsArray = [];
+        
+        if ($this->format == 'canvas') {
+            $json['content'] = strip_tags($json['content'], "<span>");
+        }
+
         $content = $json['content'];
         $tags = $json['tags'];
         $itemReference = $json['reference'];
+        
         foreach ($json['questions'] as $question) :
             $question['content'] = $content;
             $question['itemreference'] = $itemReference;
@@ -525,21 +533,19 @@ class ConvertToQtiService
     private function getAdditionalFileInfoForManifestResource()
     {
         $learnosityManifestJson = json_decode(file_get_contents($this->inputPath . '/manifest.json'));
-        $activityArray = array();
-        if (!empty($learnosityManifestJson->assets->items)) {
-            $activityArray = $learnosityManifestJson->assets->items;
-        }
         $additionalFileInfoArray = array();
-        $valueArray = array();
-        foreach ($activityArray as $itemValue) {
-            $questionArray = $itemValue;
-            if (is_object($questionArray->questions)) {
-                foreach ($questionArray->questions as $questionKey => $questionValue) {
-                    $valueArray = array();
-                    foreach ($questionValue as $questions => $value) {
-                        $valueArray[] = $value->replacement;
+        if (isset($learnosityManifestJson->assets->items)) {
+            $activityArray = $learnosityManifestJson->assets->items;
+            foreach ($activityArray as $itemReference => $itemValue) {
+                $questionArray = $itemValue;
+                if (is_object($questionArray->questions)) {
+                    foreach ($questionArray->questions as $questionKey => $questionValue) {
+                        $valueArray = array();
+                        foreach ($questionValue as $questions => $value) {
+                            $valueArray[] = $value->replacement;
+                        }
+                        $additionalFileInfoArray[$questionKey] = $valueArray;
                     }
-                    $additionalFileInfoArray[$questionKey] = $valueArray;
                 }
             }
         }
