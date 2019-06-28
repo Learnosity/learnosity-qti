@@ -11,6 +11,9 @@ use LearnosityQti\Services\LogService;
 use LearnosityQti\Utils\QtiMarshallerUtil;
 use qtism\common\utils\Format;
 use qtism\data\content\FlowStaticCollection;
+use qtism\data\content\FeedbackInline;
+use qtism\data\content\InlineCollection;
+use qtism\data\content\TextRun;
 use qtism\data\content\interactions\ChoiceInteraction;
 use qtism\data\content\interactions\Orientation;
 use qtism\data\content\interactions\SimpleChoice;
@@ -18,6 +21,7 @@ use qtism\data\content\interactions\SimpleChoiceCollection;
 
 class McqMapper extends AbstractQuestionTypeMapper
 {
+
     public function convert(BaseQuestionType $questionType, $interactionIdentifier, $interactionLabel)
     {
         /** @var mcq $question */
@@ -26,13 +30,32 @@ class McqMapper extends AbstractQuestionTypeMapper
         // Build <choiceInteraction>
         $valueIdentifierMap = [];
         $simpleChoiceCollection = new SimpleChoiceCollection();
+        $metadata = $question->get_metadata();
+
+        $feedbackOptions = [];
+        if (isset($metadata) && !empty($metadata->get_distractor_rationale_response_level())) {
+            foreach ($metadata->get_distractor_rationale_response_level() as $feed) {
+                $feedbackOptions[] = $feed;
+            }
+        }
+
         foreach ($question->get_options() as $index => $option) {
+
             /** @var mcq_options_item $option */
             $choiceContent = new FlowStaticCollection();
             foreach (QtiMarshallerUtil::unmarshallElement($option->get_label()) as $component) {
-                $choiceContent->attach($component);
-            }
 
+                $choiceContent->attach($component);
+                // attach feedbackInline to simpleChoice
+                if (isset($feedbackOptions[$index]) && $feedbackOptions[$index] !== '' && $component instanceof TextRun) {
+                    $content = new InlineCollection(array(new TextRun($feedbackOptions[$index])));
+                    $feedback = new FeedbackInline('FEEDBACK', 'CHOICE_' . $option->get_value(), 'true');
+                    $feedback->setContent($content);
+                    $choiceContent->attach($feedback);
+                }
+                
+            }
+            
             // Use option['value'] as choice `identifier` if it has the correct format,
             // Otherwise, generate a valid using index such `CHOICE_1`, `CHOICE_2`, etc
             $originalOptionValue = $option->get_value();
@@ -72,8 +95,8 @@ class McqMapper extends AbstractQuestionTypeMapper
         }
 
         $builder = new McqValidationBuilder($question->get_multiple_responses(), $valueIdentifierMap);
-        list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation());
-
+        list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation(), true, $feedbackOptions);
+        
         return [$interaction, $responseDeclaration, $responseProcessing];
     }
 }
