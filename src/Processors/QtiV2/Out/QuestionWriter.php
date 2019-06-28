@@ -17,7 +17,7 @@ class QuestionWriter
 
         // Try to build the identifier using question `reference`
         // Otherwise, generate an alternative identifier and store the original reference as `label`
-        $questionReference = $question->get_reference();
+        $questionReference = 'i' . $question->get_reference();
         $questionIdentifier = Format::isIdentifier($questionReference, false) ? $questionReference : 'ITEM_' . StringUtil::generateRandomString(12);
         if ($questionReference !== $questionIdentifier) {
             LogService::log(
@@ -26,8 +26,10 @@ class QuestionWriter
             );
         }
 
+        $itemLabel = (!empty($question->get_item_reference())) ? $question->get_item_reference() : '';
+
         $builder = new AssessmentItemBuilder();
-        $assessmentItem = $builder->build($questionIdentifier, '', [$question]);
+        $assessmentItem = $builder->build($questionIdentifier, $itemLabel, [$question]);
 
         $xml = new XmlDocument();
         $xml->setDocumentComponent($assessmentItem);

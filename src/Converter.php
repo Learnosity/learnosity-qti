@@ -26,9 +26,9 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class Converter
 {
+
     const INPUT_FORMAT_QTIV2P1 = 'qtiv2p1';
     const OUTPUT_FORMAT_LRN_JSON = 'json';
-
     const LEARNOSITY_DATA_ITEM = 'item';
     const LEARNOSITY_DATA_QUESTION = 'question';
     const LEARNOSITY_DATA_QUESTION_DATA = 'questiondata';
@@ -259,23 +259,16 @@ class Converter
 
     public static function convertLearnosityToQtiItem(array $data)
     {
-        $jsonType = self::guessLearnosityJsonDataType($data);
-
-        // Handle `item` which contains both a single item and one or more questions/features
-        if ($jsonType === self::LEARNOSITY_DATA_ITEM) {
-            list($xmlString, $messages) = self::convertLearnosityItem($data);
-
-        // Handle if just question
-        } elseif ($jsonType === self::LEARNOSITY_DATA_QUESTION) {
-            list($xmlString, $messages) = self::convertLearnosityQuestion($data);
-
-        // Handle if just question data
-        } elseif ($jsonType === self::LEARNOSITY_DATA_QUESTION_DATA) {
-            list($xmlString, $messages) = self::convertLearnosityQuestionData($data);
-        } else {
-            throw new \Exception('Unknown JSON format');
+        if (isset($data['data'])) {
+            if (!isset($data['reference'])) {
+                throw new MappingException('Invalid `item` JSON. Key `reference` shall not be empty');
+            }
         }
-
+        try {
+            list($xmlString, $messages) = self::convertLearnosityQuestion($data);
+        } catch (\Exception $ex) {
+            LogService::log('Unknown JSON format');
+        }
         // Validate them before proceeding by feeding it back
         try {
             $document = new XmlDocument();
@@ -283,7 +276,6 @@ class Converter
         } catch (\Exception $e) {
             LogService::log('Unknown error occurred. The QTI XML produced may not be valid');
         }
-
         return [$xmlString, $messages];
     }
 
@@ -331,31 +323,5 @@ class Converter
         // Write em` to QTI
         $itemWriter = new ItemWriter();
         return $itemWriter->convert($item, $questions);
-    }
-
-    private static function guessLearnosityJsonDataType(array $data)
-    {
-        if ($data == null) {
-            throw new MappingException('Invalid JSON');
-        }
-
-        // Guess this JSON is an `item`
-        if (!isset($data['type'])) {
-            if (!isset($data['reference']) && !isset($data['content'])) {
-                throw new MappingException('Invalid `item` JSON. Neither `reference` nor `content` shall not be empty');
-            }
-            return self::LEARNOSITY_DATA_ITEM;
-        }
-
-        // Guess this JSON is a `question`
-        if (isset($data['data'])) {
-            if (!isset($data['reference'])) {
-                throw new MappingException('Invalid `item` JSON. Key `reference` shall not be empty');
-            }
-            return self::LEARNOSITY_DATA_QUESTION;
-        }
-
-        // Guess this JSON is a `questiondata`
-        return self::LEARNOSITY_DATA_QUESTION_DATA;
     }
 }

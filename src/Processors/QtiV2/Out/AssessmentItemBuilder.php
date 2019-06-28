@@ -111,7 +111,6 @@ class AssessmentItemBuilder
         }
         $clazz = new \ReflectionClass(self::MAPPER_CLASS_BASE . ucfirst($type . 'Mapper'));
         $questionTypeMapper = $clazz->newInstance();
-
         $questionReference = $question->get_reference();
         $interactionIdentifier = 'RESPONSE';
         $result = $questionTypeMapper->convert($question->get_data(), $interactionIdentifier, $questionReference);

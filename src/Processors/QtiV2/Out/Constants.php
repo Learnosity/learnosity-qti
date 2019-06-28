@@ -32,6 +32,14 @@ class Constants
         'clozetext',
     ];
 
-    const RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT = 'http://www.imsglobal.org/question/qtiv2p1/rptemplates/match_correct.xml';
-    const RESPONSE_PROCESSING_TEMPLATE_MAP_RESPONSE = 'http://www.imsglobal.org/question/qtiv2p1/rptemplates/map_response.xml';
+    const RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT = 'http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct';
+    const RESPONSE_PROCESSING_TEMPLATE_MAP_RESPONSE = 'http://www.imsglobal.org/question/qti_v2p1/rptemplates/map_response';
+    const IMSQTI_TOOLNAME = 'Learnosity QTI';
+    const IMSQTI_TOOL_VERSION = '1.0';
+    const IMSQTI_TOOL_VENDOR = 'Learnosity';
+    const IMSQTI_TITLE = 'Learnosity Item Bank Package';
+    const IMSQTI_LANG = 'en';
+    const IMSQTI_METADATA_SCHEMA = array('LOMv1.0', 'QTIv2.1');
+    const SCHEMA_NAME = 'QTIv2.1 Item Bank Package';
+    const SCHEMA_VERSION = '2.1';
 }
