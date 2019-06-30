@@ -2,6 +2,8 @@
 
 namespace LearnosityQti\Processors\QtiV2\Out;
 
+use DOMDocument;
+use DOMXpath;
 use LearnosityQti\Services\LogService;
 use LearnosityQti\Utils\QtiMarshallerUtil;
 use LearnosityQti\Utils\SimpleHtmlDom\SimpleHtmlDom;
@@ -81,9 +83,9 @@ class ItemBodyBuilder
                     $content->attach($interactions[$questionReference]['extraContent']);
                 }
                 $content->attach($interaction);
+				$replacement = ContentCollectionBuilder::buildContent($currentContainer, $content)->current();
+				$currentContainer->getComponents()->replace($component, $replacement);
             }
-            $replacement = ContentCollectionBuilder::buildContent($currentContainer, $content)->current();
-            $currentContainer->getComponents()->replace($component, $replacement);
         }
 
         // Extract the actual content from the div wrapper and add that to our <itemBody>
