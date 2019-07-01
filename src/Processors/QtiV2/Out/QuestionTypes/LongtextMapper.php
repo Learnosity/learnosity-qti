@@ -33,7 +33,7 @@ class LongtextMapper extends AbstractQuestionTypeMapper
 
         $builder = new LongtextValidationBuilder();
         
-        list($responseDeclaration) = $builder->buildValidation($interactionIdentifier, $question->get_validation(), []);
-        return [$interaction, $responseDeclaration, null];
+        list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation(), []);
+        return [$interaction, $responseDeclaration, $responseProcessing];
     }
 }
