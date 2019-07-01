@@ -116,6 +116,7 @@ class ConvertToQtiService
     {
         $results = [];
         $jsonFiles = $this->parseInputFolders();
+        //print_r($jsonFiles);exit;
         $finalManifest = $this->getJobManifestTemplate();
         $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Processing JSON directory: {$this->inputPath} </info>");
         foreach ($jsonFiles as $file) {
@@ -155,16 +156,23 @@ class ConvertToQtiService
         // Look for json files in the current path
         $finder = new Finder();
         $finder->files()->in($this->inputPath . '/activities');
-        foreach ($finder as $json) {
-            $activityJson = json_decode(file_get_contents($json));
-            $this->itemReferences = $activityJson->data->items;
-            if (!empty($this->itemReferences)) {
-                foreach ($this->itemReferences as $itemref) {
-                    $itemref = md5($itemref);
-                    $folders[] = $this->inputPath . '/items/' . $itemref . '.json';
+        if ($finder->count() > 0) {
+            foreach ($finder as $json) {
+                $activityJson = json_decode(file_get_contents($json));
+                $this->itemReferences = $activityJson->data->items;
+                if (!empty($this->itemReferences)) {
+                    foreach ($this->itemReferences as $itemref) {
+                        $itemref = md5($itemref);
+                        $folders[] = $this->inputPath . '/items/' . $itemref . '.json';
+                    }
+                } else {
+                    $this->output->writeln("<error>Error converting : No item refrences found in the activity json</error>");
                 }
-            } else {
-                $this->output->writeln("<error>Error converting : No item refrences found in the activity json</error>");
+            }
+        } else {
+            $finder->files()->in($this->inputPath . '/items');
+            foreach ($finder as $json) {
+                $folders[] = $this->inputPath . '/items/' . $json->getRelativePathname();
             }
         }
         return $folders;
