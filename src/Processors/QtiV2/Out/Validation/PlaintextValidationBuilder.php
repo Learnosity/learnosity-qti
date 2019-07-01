@@ -18,4 +18,24 @@ class PlaintextValidationBuilder extends AbstractQuestionValidationBuilder
         $responseDeclaration->setBaseType(BaseType::STRING);
         return $responseDeclaration;
     }
+
+    public function buildValidation($responseIdentifier, $validation, $isCaseSensitive = true, $distractorRationaleResponseLevel = array())
+    {
+        $responseProcessing = null;
+        if (empty($validation) && (method_exists($validation, 'get_max_score')) && (empty($validation->get_max_score()))) {
+            // TODO: Need to support more validation type :)
+            LogService::log('Invalid value of max_score. Failed to build `responseDeclaration` and `responseProcessingTemplate');
+        }
+
+        // if found distractor_rationale_response_level generate response processing with setoutcome value FEEDBACK
+        if (!empty($distractorRationaleResponseLevel) && is_array($distractorRationaleResponseLevel)) {
+            $score = $validation->get_valid_response()->get_score();
+            $responseProcessing = QtiResponseProcessingBuilder::build($score);
+        } elseif ($validation != null) {
+            $responseProcessing = $this->buildResponseProcessing($validation, $isCaseSensitive);
+        }
+
+        $responseDeclaration = $this->buildResponseDeclaration($responseIdentifier, $validation);
+        return [$responseDeclaration, $responseProcessing];
+    }
 }
