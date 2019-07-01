@@ -4,6 +4,7 @@ namespace LearnosityQti\Processors\QtiV2\Out\QuestionTypes;
 
 use LearnosityQti\Entities\BaseQuestionType;
 use LearnosityQti\Entities\QuestionTypes\longtext;
+use LearnosityQti\Processors\QtiV2\Out\Validation\LongtextValidationBuilder; 
 use qtism\data\content\interactions\ExtendedTextInteraction;
 use qtism\data\content\interactions\TextFormat;
 
