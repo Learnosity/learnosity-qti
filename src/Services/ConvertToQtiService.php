@@ -116,7 +116,6 @@ class ConvertToQtiService
     {
         $results = [];
         $jsonFiles = $this->parseInputFolders();
-        //print_r($jsonFiles);exit;
         $finalManifest = $this->getJobManifestTemplate();
         $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Processing JSON directory: {$this->inputPath} </info>");
         foreach ($jsonFiles as $file) {
