@@ -9,6 +9,7 @@ use LearnosityQti\Utils\QtiMarshallerUtil;
 use LearnosityQti\Utils\SimpleHtmlDom\SimpleHtmlDom;
 use LearnosityQti\Utils\StringUtil;
 use qtism\data\content\xhtml\ObjectElement;
+use LearnosityQti\Processors\QtiV2\Out\Constants as LearnosityExportConstant;
 
 class LearnosityToQtiPreProcessingService
 {
@@ -43,6 +44,11 @@ class LearnosityToQtiPreProcessingService
             $node->outertext = rtrim($node->outertext, '>') . '/>';
         }
 
+        foreach ($html->find('img') as &$node) {
+            $src = $this->getSourceBasedOnMediaFormat($node->attr['src']);
+            $node->outertext = str_replace($node->attr['src'], $src, $node->outertext);
+        }
+
         // Replace these audioplayer and videoplayer feature with <object> nodes
         foreach ($html->find('span.learnosity-feature') as &$node) {
             try {
@@ -53,7 +59,6 @@ class LearnosityToQtiPreProcessingService
                 LogService::log($e->getMessage() . '. Ignoring mapping feature ' . $node->outertext . '`');
             }
         }
-
         return $html->save();
     }
 
@@ -63,7 +68,8 @@ class LearnosityToQtiPreProcessingService
         if (isset($node->attr['data-type']) && isset($node->attr['data-src'])) {
             $src = trim($node->attr['data-src']);
             $type = trim($node->attr['data-type']);
-            if ($type === 'audioplayer' || $type === 'audioplayer') {
+            if ($type === 'audioplayer' || $type === 'videoplayer') {
+                $src = $this->getSourceBasedOnMediaFormat($src);
                 return QtiMarshallerUtil::marshallValidQti(new ObjectElement($src, MimeUtil::guessMimeType(basename($src))));
             }
         // Process regular question feature
@@ -73,7 +79,7 @@ class LearnosityToQtiPreProcessingService
             $feature = $this->widgets[$featureReference];
             $type = $feature['data']['type'];
 
-            if ($type === 'audioplayer' || $type === 'audioplayer') {
+            if ($type === 'audioplayer' || $type === 'videoplayer') {
                 $src = $feature['data']['src'];
                 $object = new ObjectElement($src, MimeUtil::guessMimeType(basename($src)));
                 $object->setLabel($featureReference);
@@ -102,5 +108,24 @@ class LearnosityToQtiPreProcessingService
         }
         // TODO: throw exception
         return null;
+    }
+
+    private function getSourceBasedOnMediaFormat($src)
+    {
+        $fileName = substr($src, strlen('/vendor/learnosity/itembank/assets/'));
+        $mimeType = MimeUtil::guessMimeType($fileName);
+        $mediaFormatArray = explode('/', $mimeType);
+        $href = '';
+        if (is_array($mediaFormatArray) && !empty($mediaFormatArray[0])) {
+            $mediaFormat = $mediaFormatArray[0];
+            if ($mediaFormat == 'video') {
+                $href = '../' . LearnosityExportConstant::VIDEO_FOLDER_NAME . '/' . $fileName;
+            } elseif ($mediaFormat == 'audio') {
+                $href = '../' . LearnosityExportConstant::AUDIO_FOLDER_NAME . '/' . $fileName;
+            } elseif ($mediaFormat == 'image') {
+                $href = '../' . LearnosityExportConstant::IMAGE_FOLDER_NAME . '/' . $fileName;
+            }
+        }
+        return $href;
     }
 }
