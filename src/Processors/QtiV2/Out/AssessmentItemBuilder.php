@@ -4,10 +4,8 @@ namespace LearnosityQti\Processors\QtiV2\Out;
 
 use LearnosityQti\Entities\Question;
 use LearnosityQti\Exceptions\MappingException;
-use LearnosityQti\Utils\StringUtil;
 use qtism\common\enums\BaseType;
 use qtism\common\enums\Cardinality;
-use qtism\common\utils\Format;
 use qtism\data\AssessmentItem;
 use qtism\data\processing\ResponseProcessing;
 use qtism\data\state\DefaultValue;
@@ -57,6 +55,12 @@ class AssessmentItemBuilder
             // The extraContent usually comes from `stimulus` of item that mapped to inline interaction and has no `prompt`
             list($interaction, $responseDeclaration, $responseProcessing, $extraContent) = $this->map($question);
             if (!empty($responseDeclaration)) {
+
+                if ($responseDeclaration instanceof ResponseDeclarationCollection && $responseDeclaration->count()>0) {
+                    for ($i=1; $i<=sizeof($responseDeclaration); $i++) {
+                        $assessmentItem->setOutcomeDeclarations($this->buildScoreOutcomeDeclarations('SCORE'.$i));
+                    }
+                }
                 // TODO: Need to tidy this up
                 // Well sometimes we can have multiple response declarations, ie. clozetext
                 if ($responseDeclaration instanceof ResponseDeclarationCollection) {
@@ -122,6 +126,15 @@ class AssessmentItemBuilder
         $valueCollection->attach(new Value(0));
         $outcomeDeclaration->setDefaultValue(new DefaultValue($valueCollection));
         
+        $outcomeDeclarationCollection = $this->outcomeDeclarationCollection;
+        $outcomeDeclarationCollection->attach($outcomeDeclaration);
+        return $outcomeDeclarationCollection;
+    }
+
+    private function buildScoreOutcomeDeclarations($type)
+    {
+        // Set <outcomeDeclaration> with assumption default value is always 0
+        $outcomeDeclaration = new OutcomeDeclaration($type, BaseType::FLOAT);
         $outcomeDeclarationCollection = $this->outcomeDeclarationCollection;
         $outcomeDeclarationCollection->attach($outcomeDeclaration);
         return $outcomeDeclarationCollection;

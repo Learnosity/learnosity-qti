@@ -13,10 +13,10 @@ abstract class AbstractQuestionValidationBuilder
 
     abstract protected function buildResponseDeclaration($responseIdentifier, $validation);
 
-    public function buildValidation($responseIdentifier, $validation, $isCaseSensitive = true, $distractorRationaleResponseLevel = array())
+    public function buildValidation($responseIdentifier, $validation, $isCaseSensitive = true, $feedBackOptions = array())
     {
         // Some basic validation on the `validation` object
-        if (empty($validation)) {
+        if (empty($validation) && empty($feedBackOptions)) {
             return [null, null];
         }
 
@@ -31,15 +31,41 @@ abstract class AbstractQuestionValidationBuilder
             return [null, null];
         }
 
-        // if found distractor_rationale_response_level generate response processing with setoutcome value FEEDBACK
-        if (!empty($distractorRationaleResponseLevel) && is_array($distractorRationaleResponseLevel)) {
-            $score = $validation->get_valid_response()->get_score();
-            $responseProcessing = QtiResponseProcessingBuilder::build($score);
-        } else {
-            $responseProcessing = $this->buildResponseProcessing($validation, $isCaseSensitive);
+        $responseDeclaration = $this->buildResponseDeclaration($responseIdentifier, $validation);
+        $responseIdentifiers = [];
+        foreach ($responseDeclaration as $key => $value) {
+            $responseIdentifiers[] = $key;
         }
 
-        $responseDeclaration = $this->buildResponseDeclaration($responseIdentifier, $validation);
+        $type = [];
+        $score = 0;
+        $maxscore = 0;
+        $penalty = 0;
+        
+        if (method_exists($validation, 'get_valid_response')) {
+            $score = $validation->get_valid_response()->get_score();
+        }
+
+        if (method_exists($validation, 'get_max_score') && $validation->get_max_score()!='') {
+            $type[] = 'maxscore';
+            $maxscore = $validation->get_max_score();
+        }
+        if (method_exists($validation, 'get_penalty') && $validation->get_penalty()!='') {
+            $type[] = 'penalty';
+            $penalty = $validation->get_penalty();
+        }
+
+        if (sizeof($responseIdentifiers)>1) {
+            $responseProcessing = QtiResponseProcessingBuilder::buildResponseProcessingWithMultipleResponse($score, $maxscore, $penalty, $feedBackOptions, $type, $responseIdentifiers);
+        } else {
+            // if found distractor_rationale_response_level generate response processing with setoutcome value FEEDBACK
+            if (!empty($feedBackOptions) && is_array($feedBackOptions) || in_array('maxscore', $type) || in_array('penalty', $type)) {
+                $responseProcessing = QtiResponseProcessingBuilder::build($score, $maxscore, $penalty, $feedBackOptions, $type);
+            } else {
+                $responseProcessing = $this->buildResponseProcessing($validation, $isCaseSensitive);
+            }
+        }
+
         return [$responseDeclaration, $responseProcessing];
     }
 
