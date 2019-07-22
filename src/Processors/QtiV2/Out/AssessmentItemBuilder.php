@@ -55,12 +55,6 @@ class AssessmentItemBuilder
             // The extraContent usually comes from `stimulus` of item that mapped to inline interaction and has no `prompt`
             list($interaction, $responseDeclaration, $responseProcessing, $extraContent) = $this->map($question);
             if (!empty($responseDeclaration)) {
-
-                if ($responseDeclaration instanceof ResponseDeclarationCollection && $responseDeclaration->count()>0) {
-                    for ($i=1; $i<=sizeof($responseDeclaration); $i++) {
-                        $assessmentItem->setOutcomeDeclarations($this->buildScoreOutcomeDeclarations('SCORE'.$i));
-                    }
-                }
                 // TODO: Need to tidy this up
                 // Well sometimes we can have multiple response declarations, ie. clozetext
                 if ($responseDeclaration instanceof ResponseDeclarationCollection) {
