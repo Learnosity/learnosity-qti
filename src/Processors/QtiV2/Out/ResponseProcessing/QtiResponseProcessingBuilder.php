@@ -121,6 +121,15 @@ class QtiResponseProcessingBuilder
 
         // generating response else condition
         $responseElseRuleCollection = new ResponseRuleCollection();
+		
+		// creating feedback outcome
+        if (sizeof($feedBackOptions) > 1) {
+            $multipleExpression = new ExpressionCollection();
+            $variable = new Variable($rid);
+            $multipleExpression->attach($variable);
+            $feedbackResponseComponent = new SetOutcomeValue('FEEDBACK', new Multiple($multipleExpression));
+            $responseElseRuleCollection1->attach($feedbackResponseComponent);
+        }
 
         if (in_array('penalty', $type)) {
             $responseElseComponent = new SetOutcomeValue('SCORE', new BaseValue(BaseType::FLOAT, 0 - $penalty));
