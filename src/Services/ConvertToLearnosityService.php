@@ -23,6 +23,7 @@ class ConvertToLearnosityService
     use JobDataTrait;
 
     const RESOURCE_TYPE_ITEM = 'imsqti_item_xmlv2p1';
+    const RESOURCE_TYPE_PASSAGE = 'webcontent';
     const INFO_OUTPUT_PREFIX = '';
     const CONVERT_LOG_FILENAME = 'convert-to-learnosity.log';
 
@@ -248,7 +249,7 @@ class ConvertToLearnosityService
                     $this->output->writeln("<comment>Converting assessment item {$itemCount}: $relativeDir/$resourceHref</comment>");
                 }
 
-                $convertedContent = $this->convertAssessmentItemInFile($assessmentItemContents, $itemReference, $metadata, $currentDir, $resourceHref, $itemTagsArray);
+                $convertedContent = $this->convertAssessmentItemInFile($assessmentItemContents, $itemReference, $metadata, $currentDir, $resourceHref, $itemTagsArray, $resource['type']);
 
                 if (!empty($convertedContent)) {
                     $results['qtiitems'][basename($relativeDir) . '/' . $resourceHref] = $convertedContent;
@@ -259,8 +260,8 @@ class ConvertToLearnosityService
     }
 
     /**
-     * Retrieves any <assessmentItem> resource elements found in a given
-     * XML document.
+     * Retrieves any <assessmentItem> or shared passage resource elements 
+     * found in a given manifest XML document.
      *
      * @param  DOMDocument $manifestDoc - the document to search
      *
@@ -278,7 +279,14 @@ class ConvertToLearnosityService
             if ($resourceType === static::RESOURCE_TYPE_ITEM) {
                 $itemResources[] = [
                     'href' => $resourceHref,
-                    'resource' => $resource
+                    'resource' => $resource,
+                    'type' => $resourceType
+                ];
+            } else if ($resourceType === static::RESOURCE_TYPE_PASSAGE) {
+                $itemResources[] = [
+                    'href' => $resourceHref,
+                    'resource' => $resource,
+                    'type' => $resourceType
                 ];
             }
 
@@ -374,22 +382,22 @@ class ConvertToLearnosityService
      *
      * @return array - the results of the conversion
     */
-    private function convertAssessmentItemInFile($contents, $itemReference = null, array $metadata = [], $currentDir, $resourceHref, $itemTagsArray = [])
+    private function convertAssessmentItemInFile($contents, $itemReference = null, array $metadata = [], $currentDir, $resourceHref, $itemTagsArray = [], $resourceType)
     {
         $results = null;
 
         try {
             $xmlString = $contents;
+
             // Check that we're on an <assessmentItem>
-            if (!CheckValidQti::isAssessmentItem($xmlString)) {
+            if ($resourceType == static::RESOURCE_TYPE_ITEM && !CheckValidQti::isAssessmentItem($xmlString)) {
                 $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Not an <assessmentItem>, moving on...</info>");
                 return $results;
             }
 
             $resourcePath = $currentDir . '/' . $resourceHref;
-            $results = $this->convertAssessmentItem($xmlString, $itemReference, $resourcePath, $metadata, $itemTagsArray);
-
-        } catch (\Exception $e) {
+            $results = $this->convertAssessmentItem($xmlString, $itemReference, $resourcePath, $metadata, $itemTagsArray, $resourceType);
+            } catch (\Exception $e) {
             $targetFilename = $resourceHref;
             $message = $e->getMessage();
             $results = ['exception' => $targetFilename . '-' . $message];
@@ -412,26 +420,28 @@ class ConvertToLearnosityService
      *
      * @throws \Exception - if the conversion fails
      */
-    private function convertAssessmentItem($xmlString, $itemReference = null, $resourcePath = null, array $metadata = [], array $itemTagsArray = [])
+    private function convertAssessmentItem($xmlString, $itemReference = null, $resourcePath = null, array $metadata = [], array $itemTagsArray = [], $resourceType)
     {
         AssumptionHandler::flush();
-
         $xmlString = CheckValidQti::preProcessing($xmlString);
 
-        $result     = Converter::convertQtiItemToLearnosity($xmlString, null, null, $resourcePath, $itemReference, $metadata);
-        $item       = $result['item'];
-        $questions  = $result['questions'];
-        $features   = $result['features'];
-        $manifest   = $result['messages'];
+        if($resourceType == static::RESOURCE_TYPE_ITEM) {
+            $result     = Converter::convertQtiItemToLearnosity($xmlString, null, null, $resourcePath, $itemReference, $metadata);
+        } else if($resourceType == static::RESOURCE_TYPE_PASSAGE) {
+            $result = Converter::convertPassageItemToLearnosity($xmlString, null, null, $resourcePath, $itemReference, $metadata);
+        }
+        $item       = !empty($result['item']) ? $result['item'] : array();
+        $questions  = !empty($result['questions']) ? $result['questions'] : array();
+        $features   = !empty($result['features']) ? $result['features'] : array();
+        $manifest   = !empty($result['messages']) ? $result['messages'] : array();
         $rubricItem = !empty($result['rubric']) ? $result['rubric'] : null;
-
-        $questions = !empty($questions) ? $this->assetsFixer->fix($questions) : $questions;
-        $features = !empty($features) ? $this->assetsFixer->fix($features) : $features;
+        $questions  = !empty($questions) ? $this->assetsFixer->fix($questions) : array();
+        $features   = !empty($features) ? $this->assetsFixer->fix($features) : array();
 
         // Return those results!
         list($item, $questions) = CheckValidQti::postProcessing($item, $questions, []);
 
-        if ($this->shouldGuessItemScoringType) {
+        if ($this->shouldGuessItemScoringType && $resourceType == static::RESOURCE_TYPE_ITEM) {
             list($assumedItemScoringType, $scoringTypeManifest) = $this->getItemScoringTypeFromResponseProcessing($xmlString);
             if (isset($assumedItemScoringType)) {
                 $item['metadata']['scoring_type'] = $assumedItemScoringType;
@@ -610,6 +620,7 @@ class ConvertToLearnosityService
         } else {
             $manifestFileBasename = static::CONVERT_LOG_FILENAME;
         }
+
         $this->output->writeln('<info>' . static::INFO_OUTPUT_PREFIX . 'Writing manifest: ' . $this->outputPath . DIRECTORY_SEPARATOR . $this->logPath . DIRECTORY_SEPARATOR . $manifestFileBasename . ".json</info>\n");
         $this->writeJsonToFile($manifest, $this->outputPath . DIRECTORY_SEPARATOR . $this->logPath . DIRECTORY_SEPARATOR . $manifestFileBasename . '.json');
     }
