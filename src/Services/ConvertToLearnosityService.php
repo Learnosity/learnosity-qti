@@ -31,6 +31,7 @@ class ConvertToLearnosityService
     protected $outputPath;
     protected $output;
     protected $organisationId;
+    protected $isConvertPassageContent;
 
     /* Runtime options */
     protected $dryRun                     = false;
@@ -51,23 +52,24 @@ class ConvertToLearnosityService
     // Hold the class instance.
     private static $instance = null;
 
-    protected function __construct($inputPath, $outputPath, OutputInterface $output, $organisationId)
+    protected function __construct($inputPath, $outputPath, OutputInterface $output, $organisationId, $isConvertPassageContent)
     {
-        $this->inputPath      = $inputPath;
-        $this->outputPath     = $outputPath;
-        $this->output         = $output;
-        $this->organisationId = $organisationId;
-        $this->finalPath      = 'final';
-        $this->logPath        = 'log';
-        $this->rawPath        = 'raw';
+        $this->inputPath               = $inputPath;
+        $this->outputPath              = $outputPath;
+        $this->output                  = $output;
+        $this->organisationId          = $organisationId;
+        $this->finalPath               = 'final';
+        $this->logPath                 = 'log';
+        $this->rawPath                 = 'raw';
+        $this->isConvertPassageContent = $isConvertPassageContent;
     }
 
     // The object is created from within the class itself
     // only if the class has no instance.
-    public static function initClass($inputPath, $outputPath, OutputInterface $output, $organisationId)
+    public static function initClass($inputPath, $outputPath, OutputInterface $output, $organisationId, $isConvertPassageContent = 'N')
     {
         if (!self::$instance) {
-            self::$instance = new ConvertToLearnosityService($inputPath, $outputPath, $output, $organisationId);
+            self::$instance = new ConvertToLearnosityService($inputPath, $outputPath, $output, $organisationId, $isConvertPassageContent);
         }
         return self::$instance;
     }
@@ -426,8 +428,8 @@ class ConvertToLearnosityService
         $xmlString = CheckValidQti::preProcessing($xmlString);
 
         if($resourceType == static::RESOURCE_TYPE_ITEM) {
-            $result     = Converter::convertQtiItemToLearnosity($xmlString, null, null, $resourcePath, $itemReference, $metadata);
-        } else if($resourceType == static::RESOURCE_TYPE_PASSAGE) {
+            $result = Converter::convertQtiItemToLearnosity($xmlString, null, null, $resourcePath, $itemReference, $metadata);
+        } else if($resourceType == static::RESOURCE_TYPE_PASSAGE && ($this->isConvertPassageContent == 'Y' || $this->isConvertPassageContent == 'YES')) {
             $result = Converter::convertPassageItemToLearnosity($xmlString, null, null, $resourcePath, $itemReference, $metadata);
         }
         $item       = !empty($result['item']) ? $result['item'] : array();
