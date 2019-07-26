@@ -222,6 +222,9 @@ class ConvertToLearnosityService
                 $totalItemCount++;
                 $resourceHref = $resource['href'];
                 $relatedResource = $resource['resource'];
+                if($resource['type'] == static::RESOURCE_TYPE_PASSAGE && $this->isConvertPassageContent != 'Y' && $this->isConvertPassageContent != 'YES') {
+                    continue;
+                }
                 $assessmentItemContents = file_get_contents($currentDir . '/' . $resourceHref);
                 $itemReference = $this->getItemReferenceFromResource(
                     $relatedResource,
