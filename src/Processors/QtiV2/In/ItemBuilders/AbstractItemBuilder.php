@@ -145,6 +145,9 @@ abstract class AbstractItemBuilder
                     });
                     $metadata->distractor_rationale_author = join('', array_column($value, 'content'));
                     break;
+                case 'distractor_rationale_response_level':
+                    $metadata->set_distractor_rationale_response_level($value);
+                    break;
 
                 case 'rubric_reference':
                     $metadata->set_rubric_reference($value);
@@ -242,10 +245,6 @@ abstract class AbstractItemBuilder
         if (!empty($result['question_metadata'])) {
             $this->setQuestionMetadata($result['question_metadata']);
         }
-        if(!empty($result['distractor_rationale_response_level'])) {
-            $this->setDistractorRationaleResponseLevel($result);
-        }
-
     }
 
     private function processScoringGuidanceContent(array $result)

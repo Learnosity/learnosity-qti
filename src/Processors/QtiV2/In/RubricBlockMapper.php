@@ -70,7 +70,8 @@ class RubricBlockMapper
             case ($rubricBlock->getUse() === 'rationale'):
                 if ($views->contains(View::CANDIDATE)) {
                     $mapper = new DistractorRationaleResponseMapper();
-                    $result = $mapper->parseWithDistractorRationaleResponseComponent($rubricBlock);
+                    $distractorRationalResponseLevelArray = $mapper->parseWithDistractorRationaleResponseComponent($rubricBlock);
+                    $result ['question_metadata'] = $distractorRationalResponseLevelArray;
                 }
                 break;
 
