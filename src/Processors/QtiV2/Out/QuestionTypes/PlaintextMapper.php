@@ -15,7 +15,8 @@ class PlaintextMapper extends AbstractQuestionTypeMapper
         /** @var plaintext $question */
         $question = $questionType;
         $questionData = $question->to_array();
-     
+        
+		// $feedbackOptions is used to create feedback or modelfeedback elements in responseProcessing
         $metadata = $question->get_metadata();
         $feedbackOptions = [];
         

@@ -125,15 +125,6 @@ class AssessmentItemBuilder
         return $outcomeDeclarationCollection;
     }
 
-    private function buildScoreOutcomeDeclarations($type)
-    {
-        // Set <outcomeDeclaration> with assumption default value is always 0
-        $outcomeDeclaration = new OutcomeDeclaration($type, BaseType::FLOAT);
-        $outcomeDeclarationCollection = $this->outcomeDeclarationCollection;
-        $outcomeDeclarationCollection->attach($outcomeDeclaration);
-        return $outcomeDeclarationCollection;
-    }
-
     private function buildFeedbackOutcomeDeclarations()
     {
         // Set <outcomeDeclaration> with  FEEDBACK identifier
