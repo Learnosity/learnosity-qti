@@ -9,7 +9,6 @@ use qtism\data\expressions\operators\IsNull;
 use qtism\data\expressions\operators\Match;
 use qtism\data\expressions\operators\AndOperator;
 use qtism\data\expressions\operators\Multiple;
-use qtism\data\expressions\operators\Sum;
 use qtism\data\expressions\Variable;
 use qtism\data\processing\ResponseProcessing;
 use qtism\data\rules\ResponseCondition;
@@ -121,8 +120,8 @@ class QtiResponseProcessingBuilder
 
         // generating response else condition
         $responseElseRuleCollection = new ResponseRuleCollection();
-		
-		// creating feedback outcome
+
+        // creating feedback outcome
         if (sizeof($feedBackOptions) > 1) {
             $multipleExpression = new ExpressionCollection();
             $variable = new Variable($rid);

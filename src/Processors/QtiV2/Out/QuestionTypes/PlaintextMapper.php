@@ -16,7 +16,7 @@ class PlaintextMapper extends AbstractQuestionTypeMapper
         $question = $questionType;
         $questionData = $question->to_array();
         
-		// $feedbackOptions is used to create feedback or modelfeedback elements in responseProcessing
+        // $feedbackOptions is used to create feedback or modelfeedback elements in responseProcessing
         $metadata = $question->get_metadata();
         $feedbackOptions = [];
         
@@ -29,10 +29,10 @@ class PlaintextMapper extends AbstractQuestionTypeMapper
         $interaction->setPrompt($this->convertStimulusForPrompt($question->get_stimulus()));
         $interaction->setFormat(TextFormat::PLAIN);
         $interaction->setMinStrings(1);
-        if(isset($questionData['max_length'])){
+        if (isset($questionData['max_length'])) {
             $interaction->setExpectedLength($questionData['max_length']);
             $interaction->setMaxStrings($questionData['max_length']);
-        }else{
+        } else {
             $interaction->setMaxStrings(1);
         }
 

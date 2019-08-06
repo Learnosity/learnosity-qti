@@ -18,8 +18,8 @@ class PlaintextValidationBuilder extends AbstractQuestionValidationBuilder
 
         return $responseDeclaration;
     }
-	
-	public function buildValidation($responseIdentifier, $validation, $isCaseSensitive = true, $distractorRationaleResponseLevel = array())
+
+    public function buildValidation($responseIdentifier, $validation, $isCaseSensitive = true, $distractorRationaleResponseLevel = array())
     {
         $responseProcessing = null;
         if (empty($validation) && (method_exists($validation, 'get_max_score')) && (empty($validation->get_max_score()))) {

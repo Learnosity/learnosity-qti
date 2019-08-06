@@ -46,16 +46,16 @@ abstract class AbstractQuestionValidationBuilder
             $score = $validation->get_valid_response()->get_score();
         }
 
-        if (method_exists($validation, 'get_max_score') && $validation->get_max_score()!='') {
+        if (method_exists($validation, 'get_max_score') && $validation->get_max_score() !='') {
             $type[] = 'maxscore';
             $maxscore = $validation->get_max_score();
         }
-        if (method_exists($validation, 'get_penalty') && $validation->get_penalty()!='') {
+        if (method_exists($validation, 'get_penalty') && $validation->get_penalty() !='') {
             $type[] = 'penalty';
             $penalty = $validation->get_penalty();
         }
 
-        if (sizeof($responseIdentifiers)>1) {
+        if (sizeof($responseIdentifiers) > 1) {
             $responseProcessing = QtiResponseProcessingBuilder::buildResponseProcessingWithMultipleResponse($score, $maxscore, $penalty, $feedBackOptions, $type, $responseIdentifiers);
         } else {
             // if found distractor_rationale_response_level generate response processing with setoutcome value FEEDBACK
