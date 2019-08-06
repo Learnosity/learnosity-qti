@@ -11,6 +11,8 @@ class ValidationBuilder
 
     public static function build($questionType, $scoringType, array $responses)
     {
+        
+        
         // Validate the `responses` array
         foreach ($responses as $response) {
             if (!($response instanceof ValidResponse)) {
@@ -50,7 +52,12 @@ class ValidationBuilder
                 $validResponseRef = new \ReflectionClass(self::BASE_NS . $questionType . '_validation_valid_response');
                 $validResponse = $validResponseRef->newInstance();
                 $validResponse->set_score($response->getScore());
-                $validResponse->set_value($response->getValue());
+                if($questionType == 'imageclozeassociationV2') {
+                   $convertArray = self::convertArrayIntoArrayOfArray($response->getValue());
+                   $validResponse->set_value($convertArray);
+                } else {
+                    $validResponse->set_value($response->getValue());
+                }
             } else {
                 $altResponseItemRef = new \ReflectionClass(self::BASE_NS . $questionType . '_validation_alt_responses_item');
                 $altResponseItem = $altResponseItemRef->newInstance();
@@ -72,6 +79,19 @@ class ValidationBuilder
             $validation->set_alt_responses($altResponses);
         }
         return $validation;
+    }
+
+    /**
+     * Function to convert array value into array
+     *
+     * @param type $responseArray response array
+     * @return type converted array
+     */
+    private static function convertArrayIntoArrayOfArray($responseArray){
+        foreach($responseArray as $value) {
+            $convertArray[] = array($value);
+        }
+        return $convertArray;
     }
 
     /**

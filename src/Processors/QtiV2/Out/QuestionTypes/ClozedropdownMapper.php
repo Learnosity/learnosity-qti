@@ -12,8 +12,13 @@ use qtism\data\content\interactions\InlineChoice;
 use qtism\data\content\interactions\InlineChoiceCollection;
 use qtism\data\content\interactions\InlineChoiceInteraction;
 use qtism\data\content\TextOrVariableCollection;
+use qtism\data\content\FlowStaticCollection;
+use qtism\data\content\FlowCollection;
+use qtism\data\content\FeedbackInline;
+use qtism\data\content\InlineCollection;
 use qtism\data\content\TextRun;
 use qtism\data\content\xhtml\text\Div;
+use qtism\data\content\xhtml\text\P;
 
 class ClozedropdownMapper extends AbstractQuestionTypeMapper
 {
@@ -27,7 +32,15 @@ class ClozedropdownMapper extends AbstractQuestionTypeMapper
         // Extra text that can't be mapped since we are in textEntryInteraction which does not have prompt
         $this->extraContent = $question->get_stimulus();
 
-        // Replace {{ response }} with `textEntryInteraction` elements
+        // Check if distractor_rationale exists
+        $metadata = $question->get_metadata();
+        $feedbackOptions = [];
+
+        if(isset($metadata) && !empty($metadata->get_distractor_rationale())){
+            $feedbackOptions['general_feedback'] = $metadata->get_distractor_rationale();
+        }
+
+        // Replace {{ response }} with `inlineInteraction` elements
         $valueIdentifierMapPerInlineChoices = [];
         $index = 0;
         $possibleResponses = $question->get_possible_responses();
@@ -59,13 +72,22 @@ class ClozedropdownMapper extends AbstractQuestionTypeMapper
         }, $question->get_template());
 
         // Wrap this interaction in a block since our `clozedropdown` `template` meant to be blocky and not inline
+        $interactionContent = ContentCollectionBuilder::buildFlowCollectionContent(QtiMarshallerUtil::unmarshallElement($template));
         $div = new Div();
         $div->setClass('lrn-template');
-        $div->setContent(ContentCollectionBuilder::buildFlowCollectionContent(QtiMarshallerUtil::unmarshallElement($template)));
+        $contentCollection = QtiMarshallerUtil::unmarshallElement($this->extraContent);
+        $extracontent = ContentCollectionBuilder::buildFlowCollectionContent($contentCollection);
+        $div->setContent($extracontent);
+
+        $content = new FlowCollection();
+        $content->merge($extracontent);
+        $content->merge($interactionContent);
+
+        $div->setContent($content);
 
         // Build validation
         $validationBuilder = new ClozedropdownValidationBuilder($valueIdentifierMapPerInlineChoices);
-        list($responseDeclaration, $responseProcessing) = $validationBuilder->buildValidation($interactionIdentifier, $question->get_validation());
+        list($responseDeclaration, $responseProcessing) = $validationBuilder->buildValidation($interactionIdentifier, $question->get_validation(), 1, $feedbackOptions);
 
         return [$div, $responseDeclaration, $responseProcessing];
     }
