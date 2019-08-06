@@ -2,16 +2,16 @@
 
 namespace LearnosityQti\Processors\QtiV2\In\ItemBuilders;
 
-use \LearnosityQti\Entities\Item\item;
-use \LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
-use \LearnosityQti\Processors\QtiV2\In\Constants;
-use \qtism\data\content\ItemBody;
-use \qtism\data\QtiComponentCollection;
-use \qtism\data\AssessmentItem;
-use qtism\data\content\RubricBlock;
+use LearnosityQti\Entities\Item\item;
+use LearnosityQti\Entities\Question;
+use LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
 use LearnosityQti\Processors\QtiV2\In\RubricBlockMapper;
 use LearnosityQti\Services\LogService;
-use LearnosityQti\Entities\Question;
+use qtism\data\AssessmentItem;
+use qtism\data\content\ItemBody;
+use qtism\data\content\RubricBlock;
+use qtism\data\QtiComponentCollection;
+use qtism\data\View;
 
 abstract class AbstractItemBuilder
 {
@@ -145,7 +145,12 @@ abstract class AbstractItemBuilder
                     });
                     $metadata->distractor_rationale_author = join('', array_column($value, 'content'));
                     break;
-
+                case 'distractor_rationale_response_level':
+                    $metadata->set_distractor_rationale_response_level($value);
+                    break;
+                case 'distractor_rationale_per_response':
+                    $metadata->distractor_rationale_per_response = $metadataValues['distractor_rationale_per_response'];
+                    break;
                 case 'rubric_reference':
                     $metadata->set_rubric_reference($value);
             }
@@ -185,6 +190,11 @@ abstract class AbstractItemBuilder
     protected function setItemMetadata(array $itemMetadata)
     {
         $this->metadata = array_merge_recursive($this->metadata, $itemMetadata);
+    }
+
+    protected function setDistractorRationaleResponseLevel(array $distractorRationaleResponseLevel)
+    {
+        $this->metadata = array_merge_recursive($this->metadata, $distractorRationaleResponseLevel);
     }
 
     public function setItemPointValue($itemPointValue)
@@ -277,7 +287,11 @@ abstract class AbstractItemBuilder
             });
             $widgetsToInsert = array_merge($widgetsToInsert, $features);
             foreach ($features as $featureReference => $feature) {
-                $this->rubricData['featureReferences'][] = [ 'reference' => $feature->get_reference() ];
+                $view = 0;
+                if ($result['views']->contains(View::SCORER)) {
+                    $view = View::SCORER;
+                }
+                $this->rubricData['featureReferences'][] = ['reference' => $feature->get_reference(), 'view' => $view];
             }
         }
 

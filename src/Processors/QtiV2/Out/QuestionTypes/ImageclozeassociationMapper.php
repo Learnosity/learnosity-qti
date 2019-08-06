@@ -31,6 +31,14 @@ class ImageclozeassociationMapper extends AbstractQuestionTypeMapper
         //TODO: Need validation a question shall have at least 1 {{response}} and 1 item in `possible_responses`
         /** @var imageclozeassociation $question */
         $question = $questionType;
+        $feedbackOptions = [];
+
+        $metadata = $question->get_metadata();
+        if (isset($metadata)) {
+            if (!empty($metadata->get_distractor_rationale())) {
+                $feedbackOptions['general_feedback'] = $metadata->get_distractor_rationale();
+            }
+        }
 
         // Map `possible_responses` to `gapImg`(s)
         $possibleResponses = $question->get_possible_responses();
@@ -49,7 +57,7 @@ class ImageclozeassociationMapper extends AbstractQuestionTypeMapper
         $interaction->setPrompt($this->convertStimulusForPrompt($question->get_stimulus()));
 
         $validationBuilder = new ImageclozeassociationValidationBuilder($possibleResponses);
-        list($responseDeclaration, $responseProcessing) = $validationBuilder->buildValidation($interaction->getResponseIdentifier(), $question->get_validation());
+        list($responseDeclaration, $responseProcessing) = $validationBuilder->buildValidation($interaction->getResponseIdentifier(), $question->get_validation(), 1, $feedbackOptions);
 
         return [$interaction, $responseDeclaration, $responseProcessing];
     }
@@ -103,7 +111,10 @@ class ImageclozeassociationMapper extends AbstractQuestionTypeMapper
     private function buildMainImageObject(imageclozeassociation_image $image)
     {
         $imageSrc = $image->get_src();
-        list($imageWidth, $imageHeight) = CurlUtil::getImageSize(CurlUtil::prepareUrlForCurl($imageSrc));
+        $learnosityService = ConvertToQtiService::getInstance();
+        $inputPath = $learnosityService->getInputPath();
+        $imageRealPath = str_replace("/vendor/learnosity/itembank",$inputPath, $imageSrc); 
+        list($imageWidth, $imageHeight) = getimagesize(($imageRealPath));
         $imageObject = new ObjectElement($imageSrc, MimeUtil::guessMimeType($imageSrc));
         $imageObject->setWidth($imageWidth);
         $imageObject->setHeight($imageHeight);

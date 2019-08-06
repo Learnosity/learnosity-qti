@@ -3,8 +3,11 @@
 namespace LearnosityQti\Processors\QtiV2\Marshallers;
 
 use LearnosityQti\Processors\QtiV2\Out\ContentCollectionBuilder;
+use LearnosityQti\Services\ConvertToLearnosityService;
 use LearnosityQti\Services\LogService;
 use LearnosityQti\Utils\QtiMarshallerUtil;
+use LearnosityQti\Utils\UuidUtil;
+use LearnosityQti\Processors\QtiV2\In\Constants;
 use qtism\data\content\xhtml\ObjectElement;
 use qtism\data\QtiComponent;
 use qtism\data\storage\xml\marshalling\ObjectMarshaller;
@@ -19,6 +22,7 @@ class LearnosityObjectMarshaller extends ObjectMarshaller
 
     protected function marshallChildrenKnown(QtiComponent $component, array $elements)
     {
+        $learnosityServiceObject = ConvertToLearnosityService::getInstance();
         /** @var ObjectElement $component */
         switch ($this->getMIMEType($component->getType())) {
             case self::MIME_IMAGE:
@@ -33,8 +37,10 @@ class LearnosityObjectMarshaller extends ObjectMarshaller
                 $this->checkObjectComponents($component, '`audioplayer` feature');
                 $element = self::getDOMCradle()->createElement('span');
                 $element->setAttribute('class', 'learnosity-feature');
+                $element->setAttribute('data-player', 'button');
+                $element->setAttribute("data-simplefeature_id", UuidUtil::generate());
                 $element->setAttribute('data-type', 'audioplayer');
-                $element->setAttribute('data-src', $component->getData());
+                $element->setAttribute('data-src', $this->getAudioUrl($component->getData()));
                 return $element;
                 break;
             case self::MIME_VIDEO:
@@ -82,5 +88,14 @@ class LearnosityObjectMarshaller extends ObjectMarshaller
             return self::MIME_HTML;
         }
         return self::MIME_NOT_SUPPORTED;
+    }
+
+    private function getAudioUrl($audioPath)
+    {
+        $learnosityServiceObject = ConvertToLearnosityService::getInstance();
+        $organisationId = $learnosityServiceObject->getOrganisationId();
+        $audioArray = explode('/', $audioPath);
+        $audioBaseUrl = Constants::$baseLearnosityAssetsUrl . $organisationId . "/" . end($audioArray);
+        return $audioBaseUrl;
     }
 }

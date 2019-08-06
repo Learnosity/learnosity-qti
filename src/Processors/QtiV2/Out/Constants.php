@@ -17,7 +17,13 @@ class Constants
         'clozetext',
         'clozedropdown',
         'imageclozeassociation',
+        'imageclozeassociationV2',
         'hotspot'
+    ];
+    
+    public static $supportedFeatureTypes = [
+        'videoplayer',
+        'audioplayer'
     ];
 
     /**
@@ -42,4 +48,11 @@ class Constants
     const IMSQTI_METADATA_SCHEMA = array('LOMv1.0', 'QTIv2.1');
     const SCHEMA_NAME = 'QTIv2.1 Item Bank Package';
     const SCHEMA_VERSION = '2.1';
+    const DIRNAME_VIDEO = 'video';
+    const DIRNAME_AUDIO = 'audio';
+    const DIRNAME_IMAGES = 'images';
+    const DIRNAME_ITEMS = 'items';
+    const SHARED_PASSAGE_DIV_CLASS = 'col-xs-6';
+    const SHARED_PASSAGE_FOLDER_NAME = 'sharedpassage';
+    const DIRPATH_ASSETS = '/vendor/learnosity/itembank/assets/';
 }
