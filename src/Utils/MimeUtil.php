@@ -25,8 +25,9 @@ class MimeUtil
         $mimetypes = self::privBuildMimeArray();
 
         // return mime type for extension
-        if (isset($mimetypes[$ext])) {
-            return $mimetypes[$ext];
+        $mimeTypeExtension = strtolower($ext);
+        if (isset($mimetypes[$mimeTypeExtension])) {
+            return $mimetypes[$mimeTypeExtension];
             // if the extension wasn't found return octet-stream
         } else {
             return 'application/octet-stream';
@@ -163,6 +164,7 @@ class MimeUtil
             "etx"     => "text/x-setext",
             "xml"     => "text/xml",
             "xsl"     => "text/xml",
+            "mp4"     => "video/mp4",
             "mpeg"    => "video/mpeg",
             "mpg"     => "video/mpeg",
             "mpe"     => "video/mpeg",

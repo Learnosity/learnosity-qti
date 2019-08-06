@@ -10,15 +10,18 @@ use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Processors\IMSCP\In\ManifestMapper;
 use LearnosityQti\Processors\IMSCP\Out\ManifestWriter;
 use LearnosityQti\Processors\Learnosity\In\ItemMapper;
+use LearnosityQti\Processors\Learnosity\In\FeatureMapper;
 use LearnosityQti\Processors\Learnosity\In\QuestionMapper;
-use LearnosityQti\Processors\QtiV2\In\TestMapper;
 use LearnosityQti\Processors\QtiV2\In\SharedPassageMapper;
+use LearnosityQti\Processors\QtiV2\In\TestMapper;
 use LearnosityQti\Processors\QtiV2\Out\ItemWriter;
+use LearnosityQti\Processors\QtiV2\Out\FeatureWriter;
 use LearnosityQti\Processors\QtiV2\Out\QuestionWriter;
 use LearnosityQti\Services\LearnosityToQtiPreProcessingService;
 use LearnosityQti\Services\LogService;
 use LearnosityQti\Utils\FileSystemUtil;
 use LearnosityQti\Utils\StringUtil;
+use LearnosityQti\Utils\UuidUtil;
 use qtism\data\storage\xml\XmlDocument;
 use qtism\data\storage\xml\XmlStorageException;
 use Symfony\Component\Finder\Finder;
@@ -32,6 +35,7 @@ class Converter
     const LEARNOSITY_DATA_ITEM = 'item';
     const LEARNOSITY_DATA_QUESTION = 'question';
     const LEARNOSITY_DATA_QUESTION_DATA = 'questiondata';
+    const LEARNOSITY_DATA_FEATURE = 'feature';
 
     public static function convertImscpDirectoryToLearnosityDirectory($imscpDirectory, $learnosityDirectory, $baseAssetsUrl = '', $validate = true)
     {
@@ -177,6 +181,36 @@ class Converter
         return [$widgetData, $exceptions];
     }
 
+    public static function convertPassageItemToLearnosity($htmlString, $baseAssetsUrl = '', $validate = true, $filePath = null, $customItemReference = null, $metadata = [])
+    {
+        $questionWriter = AppContainer::getApplicationContainer()->get('learnosity_question_writer');
+        $passageMapper = new SharedPassageMapper();
+        $itemData['status'] = 'published';
+        $itemData['questions'] = array();
+        $itemData['definition']['template'] = 'dynamic';
+        $features = $passageMapper->parseHtml($htmlString);
+        $featuresData = [];
+        if (isset($features['features']) && is_array($features['features'])) {
+            foreach ($features['features'] as $feature) {
+                $featureDataHash = sha1(json_encode($feature->to_array()['data']));
+                $convertedFeature = $questionWriter->convert($feature);
+                $convertedFeature['reference'] = $featureDataHash;
+                unset($convertedFeature['item_reference']);
+                $featuresData[] = $convertedFeature;
+                $itemData['definition']['widgets'][]['reference'] = $featureDataHash;
+                $itemData['features'][]['reference'] = $featureDataHash;
+            }
+        }
+        $itemData['reference'] = $featureDataHash;
+        // Flush out all the error messages stored in this static class, also ensure they are unique
+        $messages = array_values(array_unique(LogService::flush()));
+        return [
+            'item' => $itemData,
+            'features' => $featuresData,
+            'messages' => $messages,
+        ];
+    }
+
     public static function convertQtiItemToLearnosity($xmlString, $baseAssetsUrl = '', $validate = true, $filePath = null, $customItemReference = null, $metadata = [])
     {
         $itemMapper = AppContainer::getApplicationContainer()->get('qtiv2_item_mapper');
@@ -259,13 +293,27 @@ class Converter
 
     public static function convertLearnosityToQtiItem(array $data)
     {
+        $jsonType = self::LEARNOSITY_DATA_QUESTION;
         if (isset($data['data'])) {
             if (!isset($data['reference'])) {
                 throw new MappingException('Invalid `item` JSON. Key `reference` shall not be empty');
             }
         }
+
+        // Guess this JSON is a 'feature'
+        if (isset($data['data']['type']) && in_array($data['data']['type'], ['audioplayer','videoplayer'])) {
+            if (!isset($data['reference'])) {
+                throw new MappingException('Invalid `item` JSON. Key `reference` shall not be empty');
+            }
+            $jsonType =  self::LEARNOSITY_DATA_FEATURE;
+        }
+
         try {
-            list($xmlString, $messages) = self::convertLearnosityQuestion($data);
+            if ($jsonType == self::LEARNOSITY_DATA_FEATURE) {
+                list($xmlString, $messages, $questionReference, $featureHtml) = self::convertLearnosityFeature($data);
+            } else {
+                list($xmlString, $messages, $questionReference, $featureHtml) = self::convertLearnosityQuestion($data);
+            }
         } catch (\Exception $ex) {
             LogService::log('Unknown JSON format');
         }
@@ -276,12 +324,21 @@ class Converter
         } catch (\Exception $e) {
             LogService::log('Unknown error occurred. The QTI XML produced may not be valid');
         }
-        return [$xmlString, $messages];
+        return [$xmlString, $messages, $questionReference, $featureHtml];
+    }
+
+    private static function convertLearnosityFeature(array $featureJson)
+    {
+        $preprocessingService = new LearnosityToQtiPreProcessingService($featureJson);
+        $featureMapper = new FeatureMapper();
+        $featureWriter = new FeatureWriter();
+        $feature = $featureMapper->parse($preprocessingService->processJson($featureJson));
+        return $featureWriter->convert($feature);
     }
 
     private static function convertLearnosityQuestion(array $questionJson)
     {
-        $preprocessingService = new LearnosityToQtiPreProcessingService();
+        $preprocessingService = new LearnosityToQtiPreProcessingService($questionJson['feature']);
         $questionMapper = new QuestionMapper();
         $questionWriter = new QuestionWriter();
         $question = $questionMapper->parse($preprocessingService->processJson($questionJson));

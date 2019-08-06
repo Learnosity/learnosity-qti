@@ -55,6 +55,7 @@ class RegularItemBuilder extends AbstractItemBuilder
                 $component->getQtiClassName(),
                 [$component, $responseDeclaration, $responseProcessingTemplate, $outcomeDeclaration, $this->organisationId]
             );
+
             $question = $mapper->getQuestionType();
 
             $this->questions[$questionReference] = new Question($question->get_type(), $questionReference, $question);
@@ -102,9 +103,12 @@ class RegularItemBuilder extends AbstractItemBuilder
             }
 
             //replace the previous interaction content from this question stimulus
-            $stimulus = '<div>';
-            $stimulus .= str_replace($previousContent, '', $contentList);
-            $stimulus .= '</div>';
+            $stimulus = '';
+            if($contentList != '') {
+                $stimulus = '<div>';
+                $stimulus .= str_replace($previousContent, '', $contentList);
+                $stimulus .= '</div>';
+            }
 
             //store the previous interaction stimulus
             $previousContent = $contentList;
