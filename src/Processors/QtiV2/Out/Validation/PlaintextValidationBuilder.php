@@ -22,7 +22,7 @@ class PlaintextValidationBuilder extends AbstractQuestionValidationBuilder
     public function buildValidation($responseIdentifier, $validation, $isCaseSensitive = true, $distractorRationaleResponseLevel = array())
     {
         $responseProcessing = null;
-        if (empty($validation) && (method_exists($validation, 'get_max_score')) && (empty($validation->get_max_score()))) {
+        if (empty($validation) && method_exists($validation, 'get_max_score') && empty($validation->get_max_score())) {
             // TODO: Need to support more validation type :)
             LogService::log('Invalid value of max_score. Failed to build `responseDeclaration` and `responseProcessingTemplate');
         }

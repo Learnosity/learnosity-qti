@@ -48,12 +48,7 @@ class AssessmentItemBuilder
         foreach ($questions as $question) {
             $questionData = $question->to_array();
             $content = $questionData['content'];
-            if (isset($questionData['data']['validation']['valid_response']['score'])) {
-                $score = $questionData['data']['validation']['valid_response']['score'];
-                $assessmentItem->setOutcomeDeclarations($this->buildOutcomeDeclarations($score));
-            } else {
-                $assessmentItem->setOutcomeDeclarations($this->buildOutcomeDeclarations(0));
-            }
+            $assessmentItem->setOutcomeDeclarations($this->buildOutcomeDeclarations());
             
             // add outcome declaration for MAXSCORE
             if (isset($questionData['data']['validation']['max_score'])) {
@@ -132,12 +127,12 @@ class AssessmentItemBuilder
         return $result;
     }
 
-    private function buildOutcomeDeclarations($score)
+    private function buildOutcomeDeclarations()
     {
         // Set <outcomeDeclaration> with assumption default value is always 0
         $outcomeDeclaration = new OutcomeDeclaration('SCORE', BaseType::FLOAT);
         $valueCollection = new ValueCollection();
-        $valueCollection->attach(new Value($score));
+        $valueCollection->attach(new Value(0));
         $outcomeDeclaration->setDefaultValue(new DefaultValue($valueCollection));
         
         $outcomeDeclarationCollection = $this->outcomeDeclarationCollection;
