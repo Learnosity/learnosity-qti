@@ -16,6 +16,15 @@ class LongtextMapper extends AbstractQuestionTypeMapper
         $question = $questionType;
         
         $questionData = $question->to_array();
+
+        // $feedbackOptions is used to create feedback or modelfeedback elements in responseProcessing
+        $metadata = $question->get_metadata();
+        $feedbackOptions = [];
+
+        if (isset($metadata) && !empty($metadata->get_distractor_rationale())) {
+            $feedbackOptions['genral_feedback'] = $metadata->get_distractor_rationale();
+        }
+
         $interaction = new ExtendedTextInteraction($interactionIdentifier);
         $interaction->setLabel($interactionLabel);
         $interaction->setPrompt($this->convertStimulusForPrompt($question->get_stimulus()));
@@ -34,7 +43,7 @@ class LongtextMapper extends AbstractQuestionTypeMapper
 
         $builder = new LongtextValidationBuilder();
         
-        list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation(), []);
+        list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation(), $feedbackOptions);
         return [$interaction, $responseDeclaration, $responseProcessing];
     }
 }
