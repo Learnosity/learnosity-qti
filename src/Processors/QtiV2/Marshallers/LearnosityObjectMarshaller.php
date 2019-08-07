@@ -25,6 +25,8 @@ class LearnosityObjectMarshaller extends ObjectMarshaller
                 $this->checkObjectComponents($component, '<img> tag');
                 $element = self::getDOMCradle()->createElement('img');
                 $element->setAttribute('src', $component->getData());
+                $element->setAttribute('width', $component->getWidth());
+                $element->setAttribute('height', $component->getHeight());
                 return $element;
                 break;
             case self::MIME_AUDIO:
