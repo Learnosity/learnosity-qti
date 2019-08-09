@@ -53,13 +53,8 @@ class ValidationBuilder
                 $validResponse = $validResponseRef->newInstance();
                 $validResponse->set_score($response->getScore());
                 if($questionType == 'imageclozeassociationV2') {
-                    $a = array();
-                    foreach($response->getValue() as $value){
-                      $b = array();
-                      $b[] = $value;
-                      $a[] = $b;
-                    }
-                    $validResponse->set_value($a);
+                   $convertArray = array_map(array(__CLASS__, 'convertArrayIntoArrayOfArray'), $response->getValue());
+                   $validResponse->set_value($convertArray);
                 } else {
                     $validResponse->set_value($response->getValue());
                 }
@@ -83,8 +78,18 @@ class ValidationBuilder
         if (!empty($altResponses)) {
             $validation->set_alt_responses($altResponses);
         }
-        //print_r($validation);
         return $validation;
+    }
+
+    /**
+     * Function to convert array value into array
+     *
+     * @param type $value value of array
+     * @return type converted array
+     */
+    private function convertArrayIntoArrayOfArray($value){
+        $convertArray[] = $value;
+        return $convertArray;
     }
 
     /**
