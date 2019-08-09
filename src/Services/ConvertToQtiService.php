@@ -533,7 +533,7 @@ class ConvertToQtiService
         $valueArray = array();
         foreach ($activityArray as $itemValue) {
             $questionArray = $itemValue;
-            if (is_object($questionArray->questions)) {
+            if (isset($questionArray->questions) && is_object($questionArray->questions)) {
                 foreach ($questionArray->questions as $questionKey => $questionValue) {
                     $valueArray = array();
                     foreach ($questionValue as $questions => $value) {

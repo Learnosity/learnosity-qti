@@ -4,10 +4,8 @@ namespace LearnosityQti\Processors\QtiV2\Out;
 
 use LearnosityQti\Entities\Question;
 use LearnosityQti\Exceptions\MappingException;
-use LearnosityQti\Utils\StringUtil;
 use qtism\common\enums\BaseType;
 use qtism\common\enums\Cardinality;
-use qtism\common\utils\Format;
 use qtism\data\AssessmentItem;
 use qtism\data\processing\ResponseProcessing;
 use qtism\data\state\DefaultValue;
@@ -40,7 +38,7 @@ class AssessmentItemBuilder
         $assessmentItem = new AssessmentItem($itemIdentifier, $itemIdentifier, false);
         $assessmentItem->setLabel($itemLabel);
         $assessmentItem->setToolName('Learnosity');
-
+        
         // Store interactions on this array to later be placed on <itemBody>
         $interactions = [];
         $responseDeclarationCollection = new ResponseDeclarationCollection();

@@ -8,7 +8,9 @@ use LearnosityQti\Utils\MimeUtil;
 use LearnosityQti\Utils\QtiMarshallerUtil;
 use LearnosityQti\Utils\SimpleHtmlDom\SimpleHtmlDom;
 use LearnosityQti\Utils\StringUtil;
+use qtism\data\content\FlowCollection;
 use qtism\data\content\xhtml\ObjectElement;
+use qtism\data\content\xhtml\text\Div;
 
 class LearnosityToQtiPreProcessingService
 {
@@ -63,28 +65,34 @@ class LearnosityToQtiPreProcessingService
         if (isset($node->attr['data-type']) && isset($node->attr['data-src'])) {
             $src = trim($node->attr['data-src']);
             $type = trim($node->attr['data-type']);
-            if ($type === 'audioplayer' || $type === 'audioplayer') {
+            if ($type === 'audioplayer' || $type === 'videoplayer') {
                 return QtiMarshallerUtil::marshallValidQti(new ObjectElement($src, MimeUtil::guessMimeType(basename($src))));
             }
         // Process regular question feature
         } else {
             $nodeClassAttribute = $node->attr['class'];
             $featureReference = $this->getFeatureReferenceFromClassName($nodeClassAttribute);
-            $feature = $this->widgets[$featureReference];
-            $type = $feature['data']['type'];
-
-            if ($type === 'audioplayer' || $type === 'audioplayer') {
-                $src = $feature['data']['src'];
+            if (isset($this->widgets[$featureReference])) {
+                $feature = $this->widgets[$featureReference];
+                $type = isset($feature['data']['type']) ? $feature['data']['type'] : '';
+                $src = isset($feature['data']['src']) ? $feature['data']['src'] : '';
+            } else {
+                $feature = $this->widgets;
+                $type = isset($feature[1]['type']) ? $feature[1]['type'] : '';
+                $src = isset($feature[1]['src']) ? $feature[1]['src'] : '';
+            }
+            if ($type === 'audioplayer' || $type === 'videoplayer') {
                 $object = new ObjectElement($src, MimeUtil::guessMimeType(basename($src)));
                 $object->setLabel($featureReference);
-                return QtiMarshallerUtil::marshallValidQti($object);
-
-            } else if ($type === 'sharedpassage') {
-                $content = $feature['data']['content'];
-                $object = new ObjectElement('', 'text/html');
-                $object->setContent(ContentCollectionBuilder::buildObjectFlowCollectionContent(QtiMarshallerUtil::unmarshallElement($content)));
+                //return QtiMarshallerUtil::marshallValidQti($object);
+            } elseif ($type === 'sharedpassage') {
+                $flowCollection = new FlowCollection();
+                $div = $this->createDivForSharedPassage();
+                $object = new ObjectElement('sharedpassage/' . $featureReference . '.html', 'text/html');
                 $object->setLabel($featureReference);
-                return QtiMarshallerUtil::marshallValidQti($object);
+                $flowCollection->attach($object);
+                $div->setContent($flowCollection);
+                return QtiMarshallerUtil::marshallValidQti($div);
             }
         }
         throw new MappingException($type . ' not supported');
