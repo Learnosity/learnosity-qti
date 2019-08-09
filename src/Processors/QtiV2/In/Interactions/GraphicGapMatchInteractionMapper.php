@@ -2,9 +2,9 @@
 
 namespace LearnosityQti\Processors\QtiV2\In\Interactions;
 
-use LearnosityQti\Entities\QuestionTypes\imageclozeassociation;
-use LearnosityQti\Entities\QuestionTypes\imageclozeassociation_image;
-use LearnosityQti\Entities\QuestionTypes\imageclozedropdown_response_containers_item;
+use LearnosityQti\Entities\QuestionTypes\imageclozeassociationV2;
+use LearnosityQti\Entities\QuestionTypes\imageclozeassociationV2_image;
+use LearnosityQti\Entities\QuestionTypes\imageclozeassociationV2_response_containers_item;
 use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Processors\QtiV2\In\Validation\GapMatchInteractionValidationBuilder;
 use LearnosityQti\Utils\QtiCoordinateUtil;
@@ -31,26 +31,25 @@ class GraphicGapMatchInteractionMapper extends AbstractInteractionMapper
         $possibleResponseMapping = $this->buildPossibleResponseMapping($interaction);
         $associableHotspots = $this->buildTemplate($interaction, $imageObject);
 
-        $image = new imageclozeassociation_image();
+        $image = new imageclozeassociationV2_image();
         $image->set_src($imageObject->getData());
+        $image->set_width($imageObject->getWidth());
+        $image->set_height($imageObject->getHeight());
 
         $responseContainers = [];
-        $responsePosition = [];
         foreach ($associableHotspots as $associableHotspot) {
-            $responsePosition [] = [
-                'x' => $associableHotspot['x'],
-                'y' => $associableHotspot['y']
-            ];
-            $responseContainer = new imageclozedropdown_response_containers_item();
+            $responseContainer = new imageclozeassociationV2_response_containers_item();
             $responseContainer->set_height($associableHotspot['height'] . 'px');
             $responseContainer->set_width($associableHotspot['width'] . 'px');
+            $responseContainer->set_x($associableHotspot['x']);
+            $responseContainer->set_y($associableHotspot['y']);
+            $responseContainer->set_aria_label('');
             $responseContainers[] = $responseContainer;
         }
 
-        $question = new imageclozeassociation(
+        $question = new imageclozeassociationV2(
             'imageclozeassociationV2',
             $image,
-            $responsePosition,
             array_values($possibleResponseMapping)
         );
         $question->set_response_containers($responseContainers);
@@ -59,12 +58,13 @@ class GraphicGapMatchInteractionMapper extends AbstractInteractionMapper
         // Build dah` validation
         $hotspotIdentifiers = array_keys($associableHotspots);
         $validationBuilder = new GapMatchInteractionValidationBuilder(
-            'imageclozeassociation',
+            'imageclozeassociationV2',
             $hotspotIdentifiers,
             $possibleResponseMapping,
             $this->responseDeclaration
         );
         $validation = $validationBuilder->buildValidation($this->responseProcessingTemplate);
+
         if ($validation) {
             $question->set_validation($validation);
         }

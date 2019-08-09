@@ -11,6 +11,8 @@ class ValidationBuilder
 
     public static function build($questionType, $scoringType, array $responses)
     {
+        
+        
         // Validate the `responses` array
         foreach ($responses as $response) {
             if (!($response instanceof ValidResponse)) {
@@ -50,7 +52,17 @@ class ValidationBuilder
                 $validResponseRef = new \ReflectionClass(self::BASE_NS . $questionType . '_validation_valid_response');
                 $validResponse = $validResponseRef->newInstance();
                 $validResponse->set_score($response->getScore());
-                $validResponse->set_value($response->getValue());
+                if($questionType == 'imageclozeassociationV2') {
+                    $a = array();
+                    foreach($response->getValue() as $value){
+                      $b = array();
+                      $b[] = $value;
+                      $a[] = $b;
+                    }
+                    $validResponse->set_value($a);
+                } else {
+                    $validResponse->set_value($response->getValue());
+                }
             } else {
                 $altResponseItemRef = new \ReflectionClass(self::BASE_NS . $questionType . '_validation_alt_responses_item');
                 $altResponseItem = $altResponseItemRef->newInstance();
@@ -71,6 +83,7 @@ class ValidationBuilder
         if (!empty($altResponses)) {
             $validation->set_alt_responses($altResponses);
         }
+        //print_r($validation);
         return $validation;
     }
 
