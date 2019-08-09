@@ -40,7 +40,9 @@ class LearnosityToQtiPreProcessingService
         /** @var array $selfClosingTags ie. `img, br, input, meta, link, hr, base, embed, spacer` */
         $selfClosingTags = implode(array_keys($html->getSelfClosingTags()), ', ');
         foreach ($html->find($selfClosingTags) as &$node) {
-            $node->outertext = rtrim($node->outertext, '>') . '/>';
+            if (!strpos($node->outertext, '/>')) {
+                $node->outertext = rtrim($node->outertext, '>') . '/>';
+            }
         }
 
         // Replace these audioplayer and videoplayer feature with <object> nodes
