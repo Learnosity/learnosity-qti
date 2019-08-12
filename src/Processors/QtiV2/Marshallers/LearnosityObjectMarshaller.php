@@ -93,7 +93,7 @@ class LearnosityObjectMarshaller extends ObjectMarshaller
         $learnosityServiceObject = ConvertToLearnosityService::getInstance();
         $organisationId = $learnosityServiceObject->getOrganisationId();
         $audioArray = explode('/', $audioPath);
-        $audioBaseUrl = Constants::$baseLearnosityAudioUrl . $organisationId . "/" . end($audioArray);
+        $audioBaseUrl = Constants::$baseLearnosityAssetsUrl . $organisationId . "/" . end($audioArray);
         return $audioBaseUrl;
     }
 }
