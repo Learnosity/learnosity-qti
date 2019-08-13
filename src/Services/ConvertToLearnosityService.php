@@ -397,7 +397,7 @@ class ConvertToLearnosityService
 
             $resourcePath = $currentDir . '/' . $resourceHref;
             $results = $this->convertAssessmentItem($xmlString, $itemReference, $resourcePath, $metadata, $itemTagsArray, $resourceType);
-            } catch (\Exception $e) {
+        } catch (\Exception $e) {
             $targetFilename = $resourceHref;
             $message = $e->getMessage();
             $results = ['exception' => $targetFilename . '-' . $message];
