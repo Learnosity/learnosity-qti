@@ -1,12 +1,10 @@
 <?php
 namespace LearnosityQti\Processors\QtiV2\In;
 
-
-use DOMElement;
+use DOMDocument;
+use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Utils\QtiMarshallerUtil;
 use qtism\data\content\RubricBlock;
-use SplFileInfo;
-use LearnosityQti\Exceptions\MappingException;
 
 class DistractorRationaleResponseMapper
 {
@@ -39,7 +37,7 @@ class DistractorRationaleResponseMapper
     
     private function getDomForXml($xml)
     {
-        $dom = new \DOMDocument();
+        $dom = new DOMDocument();
 
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput       = false;
@@ -54,7 +52,7 @@ class DistractorRationaleResponseMapper
         return $dom;
     }
     
-    private function getInnerXmlFragmentFromDom(\DOMDocument $dom)
+    private function getInnerXmlFragmentFromDom(DOMDocument $dom)
     {
         $fragment = $dom->createDocumentFragment();
         $childNodes = $dom->documentElement->childNodes;
