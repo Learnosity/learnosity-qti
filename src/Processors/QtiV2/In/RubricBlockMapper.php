@@ -7,6 +7,7 @@ use qtism\data\storage\xml\XmlDocument;
 use qtism\data\View;
 use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Processors\QtiV2\In\SharedPassageMapper;
+use LearnosityQti\Processors\QtiV2\In\DistractorRationaleResponseMapper;
 use LearnosityQti\Utils\QtiMarshallerUtil;
 use LearnosityQti\Utils\Xml\EntityUtil as XmlEntityUtil;
 use LearnosityQti\Services\LogService;
@@ -63,6 +64,14 @@ class RubricBlockMapper
                 if ($views->contains(View::CANDIDATE)) {
                     $mapper = new SharedPassageMapper($this->sourceDirectoryPath);
                     $result = $mapper->parseWithRubricBlockComponent($rubricBlock);
+                }
+                break;
+
+            case ($rubricBlock->getUse() === 'rationale'):
+                if ($views->contains(View::CANDIDATE)) {
+                    $mapper = new DistractorRationaleResponseMapper();
+                    $distractorRationalResponseLevelArray = $mapper->parseWithDistractorRationaleResponseComponent($rubricBlock);
+                    $result ['question_metadata'] = $distractorRationalResponseLevelArray;
                 }
                 break;
 
