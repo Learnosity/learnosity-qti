@@ -185,7 +185,7 @@ class ConvertToQtiService
     /**
      * Converts Learnosity JSON to QTI
      *
-     * @param  string $jsonString
+     * @param  string $json
      *
      * @return array - the results of the conversion
      *
