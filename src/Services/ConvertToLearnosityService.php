@@ -82,6 +82,11 @@ class ConvertToLearnosityService
         return $this->inputPath;
     }
 
+    public function getOrganisationId()
+    {
+        return $this->organisationId;
+    }
+
     public function isUsingMetadataIdentifier()
     {
         return $this->useMetadataIdentifier;
