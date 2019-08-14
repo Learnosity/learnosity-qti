@@ -185,7 +185,7 @@ class ConvertToQtiService
     /**
      * Converts Learnosity JSON to QTI
      *
-     * @param  string $json
+     * @param  array $json
      *
      * @return array - the results of the conversion
      *
@@ -207,7 +207,9 @@ class ConvertToQtiService
                 $result = Converter::convertLearnosityToQtiItem($question);
                 $result[0] = str_replace('/vendor/learnosity/itembank/', '', $result[0]);
                 $result[0] = str_replace('xmlns:default="http://www.w3.org/1998/Math/MathML"', '', $result[0]);
-                $result[0] = str_replace('default:', '', $result[0]);
+                //TODO: Change this to only select MathML elements?
+                $result[0] = str_replace('<default:', '<', $result[0]);
+                $result[0] = str_replace('</default:', '</', $result[0]);
                 $finalXml[] = $result;
                 $tagsArray[$question['reference']] = $tags;
             } else {
