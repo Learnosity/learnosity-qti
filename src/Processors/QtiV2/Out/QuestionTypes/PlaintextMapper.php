@@ -20,7 +20,7 @@ class PlaintextMapper extends AbstractQuestionTypeMapper
         $feedbackOptions = [];
 
         if (isset($metadata) && !empty($metadata->get_distractor_rationale())) {
-            $feedbackOptions['genral_feedback'] = $metadata->get_distractor_rationale();
+            $feedbackOptions['general_feedback'] = $metadata->get_distractor_rationale();
         }
 
         $interaction = new ExtendedTextInteraction($interactionIdentifier);
@@ -30,10 +30,7 @@ class PlaintextMapper extends AbstractQuestionTypeMapper
         $interaction->setMinStrings(1);
         
         if (isset($questionData['max_length'])) {
-            $interaction->setExpectedLength($questionData['max_length']);
             $interaction->setMaxStrings($questionData['max_length']);
-        } else {
-            $interaction->setMaxStrings(1);
         }
 
         $placeholderText = $question->get_placeholder();
