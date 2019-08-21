@@ -203,7 +203,12 @@ class ConvertToQtiService
     private function convertLearnosityInDirectory($file)
     {
         $this->output->writeln("<comment>Converting Learnosity JSON {$file}</comment>");
-        return $this->convertAssessmentItem(json_decode(file_get_contents($file), true));
+        $itemContent = $this->checkAndAddNamespaceInMathTag(file_get_contents($file));
+        return $this->convertAssessmentItem(json_decode($itemContent, true));
+    }
+
+    private function checkAndAddNamespaceInMathTag($content){
+        return str_replace("<math>", "<math xmlns='http://www.w3.org/1998/Math/MathML'>", $content);
     }
 
     // Traverse the -i option and find all paths with files
@@ -238,7 +243,7 @@ class ConvertToQtiService
     /**
      * Converts Learnosity JSON to QTI
      *
-     * @param  string $jsonString
+     * @param  array $json
      *
      * @return array - the results of the conversion
      *
@@ -264,6 +269,10 @@ class ConvertToQtiService
             if (in_array($question['data']['type'], LearnosityExportConstant::$supportedQuestionTypes)) {
                 $result = Converter::convertLearnosityToQtiItem($question);
                 $result[0] = str_replace('/vendor/learnosity/itembank/', '', $result[0]);
+                $result[0] = str_replace('xmlns:default="http://www.w3.org/1998/Math/MathML"', '', $result[0]);
+                //TODO: Change this to only select MathML elements?
+                $result[0] = str_replace('<default:', '<', $result[0]);
+                $result[0] = str_replace('</default:', '</', $result[0]);
                 $finalXml[] = $result;
                 $tagsArray[$question['reference']] = $tags;
             } else {
