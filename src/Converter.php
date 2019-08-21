@@ -295,7 +295,7 @@ class Converter
             }
         }
         try {
-            list($xmlString, $messages) = self::convertLearnosityQuestion($data);
+            list($xmlString, $messages, $featureHtml) = self::convertLearnosityQuestion($data);
         } catch (\Exception $ex) {
             LogService::log('Unknown JSON format');
         }
@@ -306,12 +306,12 @@ class Converter
         } catch (\Exception $e) {
             LogService::log('Unknown error occurred. The QTI XML produced may not be valid');
         }
-        return [$xmlString, $messages];
+        return [$xmlString, $messages, $featureHtml];
     }
 
     private static function convertLearnosityQuestion(array $questionJson)
     {
-        $preprocessingService = new LearnosityToQtiPreProcessingService();
+        $preprocessingService = new LearnosityToQtiPreProcessingService($questionJson['feature']);
         $questionMapper = new QuestionMapper();
         $questionWriter = new QuestionWriter();
         $question = $questionMapper->parse($preprocessingService->processJson($questionJson));
