@@ -6,6 +6,7 @@ use LearnosityQti\Entities\QuestionTypes\imageclozeassociationV2;
 use LearnosityQti\Entities\QuestionTypes\imageclozeassociationV2_image;
 use LearnosityQti\Entities\QuestionTypes\imageclozeassociationV2_response_containers_item;
 use LearnosityQti\Exceptions\MappingException;
+use LearnosityQti\Processors\QtiV2\In\Constants;
 use LearnosityQti\Processors\QtiV2\In\Validation\GapMatchInteractionValidationBuilder;
 use LearnosityQti\Utils\QtiCoordinateUtil;
 use LearnosityQti\Utils\QtiMarshallerUtil;
@@ -32,7 +33,11 @@ class GraphicGapMatchInteractionMapper extends AbstractInteractionMapper
         $associableHotspots = $this->buildTemplate($interaction, $imageObject);
 
         $image = new imageclozeassociationV2_image();
-        $image->set_src($imageObject->getData());
+        // Make sure to have the Learnosity base asset URL, with the organisation_id, then the filename.
+        // Nothing else should be in the path
+        $imageArray = explode('/',$imageObject->getData());
+        $imageBaseUrl = Constants::$baseLearnosityAssetsUrl . $this->organisationId . '/' . end($imageArray);
+        $image->set_src($imageBaseUrl);
         $image->set_width($imageObject->getWidth());
         $image->set_height($imageObject->getHeight());
 
