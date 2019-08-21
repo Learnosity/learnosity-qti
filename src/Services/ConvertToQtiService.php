@@ -199,7 +199,6 @@ class ConvertToQtiService
         $content = $json['content'];
         $tags = $json['tags'];
         $itemReference = $json['reference'];
-
         foreach ($json['questions'] as $question) :
             $question['content'] = $content;
             $question['itemreference'] = $itemReference;
