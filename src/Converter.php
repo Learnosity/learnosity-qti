@@ -182,7 +182,12 @@ class Converter
     {
         $questionWriter = AppContainer::getApplicationContainer()->get('learnosity_question_writer');
         $passageMapper = new SharedPassageMapper();
-        $itemReferece = UuidUtil::generate();
+        $bodyContent = preg_match('/<body>(.*?)<\/body>/s', $htmlString, $match);
+        if (is_array($match) && isset($match[1])) {
+            $itemReferece = md5($match[1]);
+        } else {
+            $itemReferece = UuidUtil::generate();
+        }
         $itemData['reference'] = $itemReferece;
         $itemData['status'] = 'published';
         $itemData['questions'] = array();
@@ -192,10 +197,11 @@ class Converter
         if (isset($features['features']) && is_array($features['features'])) {
             foreach ($features['features'] as $feature) {
                 $convertedFeature = $questionWriter->convert($feature);
+                $convertedFeature['reference'] = $itemReferece;
                 unset($convertedFeature['item_reference']);
                 $featuresData[] = $convertedFeature;
-                $itemData['definition']['widgets'][]['reference'] = $convertedFeature['reference'];
-                $itemData['features'][]['reference'] = $convertedFeature['reference'];
+                $itemData['definition']['widgets'][]['reference'] = $itemReferece;
+                $itemData['features'][]['reference'] = $itemReferece;
             }
         }
         // Flush out all the error messages stored in this static class, also ensure they are unique
