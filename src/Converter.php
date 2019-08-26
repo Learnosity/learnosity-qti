@@ -182,13 +182,6 @@ class Converter
     {
         $questionWriter = AppContainer::getApplicationContainer()->get('learnosity_question_writer');
         $passageMapper = new SharedPassageMapper();
-        $bodyContent = preg_match('/<body>(.*?)<\/body>/s', $htmlString, $match);
-        if (is_array($match) && isset($match[1])) {
-            $itemReferece = md5($match[1]);
-        } else {
-            $itemReferece = UuidUtil::generate();
-        }
-        $itemData['reference'] = $itemReferece;
         $itemData['status'] = 'published';
         $itemData['questions'] = array();
         $itemData['definition']['template'] = 'dynamic';
@@ -196,14 +189,16 @@ class Converter
         $featuresData = [];
         if (isset($features['features']) && is_array($features['features'])) {
             foreach ($features['features'] as $feature) {
+                $featureDataHash = sha1(json_encode($feature->to_array()['data']));
                 $convertedFeature = $questionWriter->convert($feature);
-                $convertedFeature['reference'] = $itemReferece;
+                $convertedFeature['reference'] = $featureDataHash;
                 unset($convertedFeature['item_reference']);
                 $featuresData[] = $convertedFeature;
-                $itemData['definition']['widgets'][]['reference'] = $itemReferece;
-                $itemData['features'][]['reference'] = $itemReferece;
+                $itemData['definition']['widgets'][]['reference'] = $featureDataHash;
+                $itemData['features'][]['reference'] = $featureDataHash;
             }
         }
+        $itemData['reference'] = $featureDataHash;
         // Flush out all the error messages stored in this static class, also ensure they are unique
         $messages = array_values(array_unique(LogService::flush()));
         return [
