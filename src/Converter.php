@@ -182,7 +182,6 @@ class Converter
     {
         $questionWriter = AppContainer::getApplicationContainer()->get('learnosity_question_writer');
         $passageMapper = new SharedPassageMapper();
-        $itemData['reference'] = UuidUtil::generate();
         $itemData['status'] = 'published';
         $itemData['questions'] = array();
         $itemData['definition']['template'] = 'dynamic';
@@ -199,6 +198,7 @@ class Converter
                 $itemData['features'][]['reference'] = $featureDataHash;
             }
         }
+        $itemData['reference'] = $featureDataHash;
         // Flush out all the error messages stored in this static class, also ensure they are unique
         $messages = array_values(array_unique(LogService::flush()));
         return [
