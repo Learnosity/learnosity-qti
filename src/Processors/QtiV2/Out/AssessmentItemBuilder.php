@@ -45,12 +45,21 @@ class AssessmentItemBuilder
         $responseProcessingTemplates = [];
         foreach ($questions as $question) {
             $questionData = $question->to_array();
-            if (isset($questionData['data']['validation']['valid_response']['score'])) {
-                $score = $questionData['data']['validation']['valid_response']['score'];
-                $assessmentItem->setOutcomeDeclarations($this->buildOutcomeDeclarations($score));
-            } else {
-                $assessmentItem->setOutcomeDeclarations($this->buildOutcomeDeclarations(0));
+            $content = $questionData['content'];
+            $assessmentItem->setOutcomeDeclarations($this->buildOutcomeDeclarations());
+            
+            // add outcome declaration for MAXSCORE
+            if (isset($questionData['data']['validation']['max_score'])) {
+                $max_score = $questionData['data']['validation']['max_score'];
+                $assessmentItem->setOutcomeDeclarations($this->buildMaxscoreOutcomeDeclarations($max_score));
             }
+            
+            // add outcome declaration for MINSCORE
+            if (isset($questionData['data']['validation']['min_score_if_attempted'])) {
+                $min_score = $questionData['data']['validation']['min_score_if_attempted'];
+                $assessmentItem->setOutcomeDeclarations($this->buildMinscoreOutcomeDeclarations($min_score));
+            }
+
             if (isset($questionData['data']['metadata']['distractor_rationale_response_level'])) {
                 $assessmentItem->setOutcomeDeclarations($this->buildFeedbackOutcomeDeclarations());
             }
@@ -116,14 +125,38 @@ class AssessmentItemBuilder
         return $result;
     }
 
-    private function buildOutcomeDeclarations($score)
+    private function buildOutcomeDeclarations()
     {
         // Set <outcomeDeclaration> with assumption default value is always 0
         $outcomeDeclaration = new OutcomeDeclaration('SCORE', BaseType::FLOAT);
         $valueCollection = new ValueCollection();
-        $valueCollection->attach(new Value($score));
+        $valueCollection->attach(new Value(0));
         $outcomeDeclaration->setDefaultValue(new DefaultValue($valueCollection));
         
+        $outcomeDeclarationCollection = $this->outcomeDeclarationCollection;
+        $outcomeDeclarationCollection->attach($outcomeDeclaration);
+        return $outcomeDeclarationCollection;
+    }
+    
+    private function buildMaxscoreOutcomeDeclarations($score)
+    {
+        // Set <outcomeDeclaration> with MAXSCORE identifier
+        $outcomeDeclaration = new OutcomeDeclaration('MAXSCORE', BaseType::FLOAT);
+        $valueCollection = new ValueCollection();
+        $valueCollection->attach(new Value($score));
+        $outcomeDeclaration->setDefaultValue(new DefaultValue($valueCollection));
+        $outcomeDeclarationCollection = $this->outcomeDeclarationCollection;
+        $outcomeDeclarationCollection->attach($outcomeDeclaration);
+        return $outcomeDeclarationCollection;
+    }
+    
+    private function buildMinscoreOutcomeDeclarations($score)
+    {
+        // Set <outcomeDeclaration> with MINSCORE identifier
+        $outcomeDeclaration = new OutcomeDeclaration('MINSCORE', BaseType::FLOAT);
+        $valueCollection = new ValueCollection();
+        $valueCollection->attach(new Value($score));
+        $outcomeDeclaration->setDefaultValue(new DefaultValue($valueCollection));
         $outcomeDeclarationCollection = $this->outcomeDeclarationCollection;
         $outcomeDeclarationCollection->attach($outcomeDeclaration);
         return $outcomeDeclarationCollection;
