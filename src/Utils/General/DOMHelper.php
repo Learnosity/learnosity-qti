@@ -1,8 +1,9 @@
 <?php
 
-namespace LearnosityQti\Utils;
+namespace LearnosityQti\Utils\General;
 
 use LearnosityQti\Exceptions\MappingException;
+use LearnosityQti\Utils\Xml\EntityUtil as XmlEntityUtil;
 
 class DOMHelper
 {
@@ -49,5 +50,32 @@ class DOMHelper
         libxml_use_internal_errors($previousLibXmlSetting);
 
         return $xml;
+    }
+
+    public static function getInnerXmlFragmentFromDom(\DOMDocument $dom)
+    {
+        $fragment = $dom->createDocumentFragment();
+        $childNodes = $dom->documentElement->childNodes;
+        while (($node = $childNodes->item(0))) {
+            $node->parentNode->removeChild($node);
+            $fragment->appendChild($node);
+        }
+
+        return $fragment;
+    }
+
+    private function getFragmentWrapperDocumentElementForDom(\DOMDocument $dom)
+    {
+        /** @var DOMDocument $dom */
+        $fragmentWrapper = $dom->createDocumentFragment();
+
+        while ($dom->childNodes->length > 0) {
+            /** @var DOMNode $childNode */
+            $fragmentWrapper->appendChild($dom->childNodes->item(0));
+        }
+
+        $dom->replaceChild($fragmentWrapper, $dom);
+
+        return $fragmentWrapper;
     }
 }

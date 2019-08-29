@@ -11,10 +11,9 @@ use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Processors\QtiV2\In\DistractorRationaleResponseMapper;
 use LearnosityQti\Processors\QtiV2\In\SharedPassageMapper;
 use LearnosityQti\Services\LogService;
-use LearnosityQti\Utils\DOMHelper;
+use LearnosityQti\Utils\General\DOMHelper;
 use LearnosityQti\Utils\QtiMarshallerUtil;
 use LearnosityQti\Utils\UuidUtil;
-use LearnosityQti\Utils\Xml\EntityUtil as XmlEntityUtil;
 use qtism\data\content\RubricBlock;
 use qtism\data\storage\xml\XmlDocument;
 use qtism\data\View;
@@ -146,18 +145,6 @@ class RubricBlockMapper
         return $xmlDocument;
     }
 
-    private function getInnerXmlFragmentFromDom(DOMDocument $dom)
-    {
-        $fragment = $dom->createDocumentFragment();
-        $childNodes = $dom->documentElement->childNodes;
-        while (($node = $childNodes->item(0))) {
-            $node->parentNode->removeChild($node);
-            $fragment->appendChild($node);
-        }
-
-        return $fragment;
-    }
-
     /**
      * Retrieves the rubric block from a given XML document.
      *
@@ -250,7 +237,7 @@ class RubricBlockMapper
             $xpath = new DOMXPath($dom);
 
             // Prepare inner rubric content
-            $innerContentNode = $this->getInnerXmlFragmentFromDom($dom);
+            $innerContentNode = DOMHelper::getInnerXmlFragmentFromDom($dom);
             // XXX: The following needs to be done in this order. Need to figure out why
             $innerHTML = $dom->saveXML($innerContentNode);
             $dom->replaceChild($innerContentNode, $dom->documentElement);

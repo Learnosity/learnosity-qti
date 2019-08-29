@@ -1,5 +1,5 @@
 <?php
-include "../../../Utils/General/DOMHelper.php";
+
 namespace LearnosityQti\Processors\QtiV2\In;
 
 use DOMDocument;
@@ -11,7 +11,7 @@ use LearnosityQti\Entities\Question;
 use LearnosityQti\Entities\QuestionTypes\sharedpassage;
 use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Services\LogService;
-use LearnosityQti\Utils\DOMHelper;
+use LearnosityQti\Utils\General\DOMHelper;
 use LearnosityQti\Utils\QtiMarshallerUtil;
 use LearnosityQti\Utils\UuidUtil;
 use qtism\data\content\RubricBlock;
@@ -114,7 +114,7 @@ class SharedPassageMapper
             $xml = QtiMarshallerUtil::marshall($rubricBlock);
             if (strlen(trim($xml)) > 0) {
                 $dom          = DOMHelper::getDomForXml($xml);
-                $innerContent = $this->getInnerXmlFragmentFromDom($dom);
+                $innerContent = DOMHelper::getInnerXmlFragmentFromDom($dom);
                 $results      = $this->parseXml($dom->saveXML($innerContent));
             } elseif ($this->isEmptyAllowed()) {
                 $results      = $this->parseXml($xml);
@@ -221,33 +221,6 @@ class SharedPassageMapper
         $htmlDom->replaceChild($xmlDom, $htmlDom->documentElement);
 
         return $htmlDom;
-    }
-
-    private function getInnerXmlFragmentFromDom(\DOMDocument $dom)
-    {
-        $fragment = $dom->createDocumentFragment();
-        $childNodes = $dom->documentElement->childNodes;
-        while (($node = $childNodes->item(0))) {
-            $node->parentNode->removeChild($node);
-            $fragment->appendChild($node);
-        }
-
-        return $fragment;
-    }
-
-    private function getFragmentWrapperDocumentElementForDom(\DOMDocument $dom)
-    {
-        /** @var DOMDocument $dom */
-        $fragmentWrapper = $dom->createDocumentFragment();
-
-        while ($dom->childNodes->length > 0) {
-            /** @var DOMNode $childNode */
-            $fragmentWrapper->appendChild($dom->childNodes->item(0));
-        }
-
-        $dom->replaceChild($fragmentWrapper, $dom);
-
-        return $fragmentWrapper;
     }
 
     private function parsePassageContentFromDom(DOMDocument $htmlDom)

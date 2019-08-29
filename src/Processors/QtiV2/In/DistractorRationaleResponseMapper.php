@@ -3,8 +3,10 @@ namespace LearnosityQti\Processors\QtiV2\In;
 
 use DOMDocument;
 use LearnosityQti\Exceptions\MappingException;
+use LearnosityQti\Utils\General\DOMHelper;
 use LearnosityQti\Utils\QtiMarshallerUtil;
 use qtism\data\content\RubricBlock;
+
 
 class DistractorRationaleResponseMapper
 {
@@ -21,8 +23,8 @@ class DistractorRationaleResponseMapper
         // Fall back to using all the content in the <rubricBlock> verbatim as a single passage
         $xml = QtiMarshallerUtil::marshall($rubricBlock);
         if (strlen(trim($xml)) > 0) {
-            $dom = $this->getDomForXml($xml);
-            $innerContent = $this->getInnerXmlFragmentFromDom($dom);
+            $dom = DOMHelper::getDomForXml($xml);
+            $innerContent = DOMHelper::getInnerXmlFragmentFromDom($dom);
             $distractorRationale = array();
             foreach ($innerContent->childNodes as $child) {
                 $distractorRationale[] = $child->ownerDocument->saveXML($child);
@@ -33,34 +35,5 @@ class DistractorRationaleResponseMapper
             throw new MappingException('No content found; cannot create distractor rational response level');
         }
         return $results;
-    }
-    
-    private function getDomForXml($xml)
-    {
-        $dom = new DOMDocument();
-
-        $dom->preserveWhiteSpace = false;
-        $dom->formatOutput       = false;
-        $dom->substituteEntities = false;
-
-        $isValid = $dom->loadXML($xml);
-
-        if (!$isValid) {
-            throw new MappingException('Invalid XML; Failed to parse DOM for sharedpassage content');
-        }
-
-        return $dom;
-    }
-    
-    private function getInnerXmlFragmentFromDom(DOMDocument $dom)
-    {
-        $fragment = $dom->createDocumentFragment();
-        $childNodes = $dom->documentElement->childNodes;
-        while (($node = $childNodes->item(0))) {
-            $node->parentNode->removeChild($node);
-            $fragment->appendChild($node);
-        }
-
-        return $fragment;
     }
 }
