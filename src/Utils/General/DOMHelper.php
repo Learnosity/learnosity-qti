@@ -64,7 +64,7 @@ class DOMHelper
         return $fragment;
     }
 
-    private function getFragmentWrapperDocumentElementForDom(\DOMDocument $dom)
+    private static function getFragmentWrapperDocumentElementForDom(\DOMDocument $dom)
     {
         /** @var DOMDocument $dom */
         $fragmentWrapper = $dom->createDocumentFragment();
