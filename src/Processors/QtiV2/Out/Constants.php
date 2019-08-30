@@ -42,4 +42,9 @@ class Constants
     const IMSQTI_METADATA_SCHEMA = array('LOMv1.0', 'QTIv2.1');
     const SCHEMA_NAME = 'QTIv2.1 Item Bank Package';
     const SCHEMA_VERSION = '2.1';
+    const DIRNAME_VIDEO = 'video';
+    const DIRNAME_AUDIO = 'audio';
+    const DIRNAME_IMAGE = 'images';
+    const DIRNAME_ITEMS = 'items';
+    const DIRPATH_ASSET = '/vendor/learnosity/itembank/assets/';
 }

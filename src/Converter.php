@@ -11,14 +11,15 @@ use LearnosityQti\Processors\IMSCP\In\ManifestMapper;
 use LearnosityQti\Processors\IMSCP\Out\ManifestWriter;
 use LearnosityQti\Processors\Learnosity\In\ItemMapper;
 use LearnosityQti\Processors\Learnosity\In\QuestionMapper;
-use LearnosityQti\Processors\QtiV2\In\TestMapper;
 use LearnosityQti\Processors\QtiV2\In\SharedPassageMapper;
+use LearnosityQti\Processors\QtiV2\In\TestMapper;
 use LearnosityQti\Processors\QtiV2\Out\ItemWriter;
 use LearnosityQti\Processors\QtiV2\Out\QuestionWriter;
 use LearnosityQti\Services\LearnosityToQtiPreProcessingService;
 use LearnosityQti\Services\LogService;
 use LearnosityQti\Utils\FileSystemUtil;
 use LearnosityQti\Utils\StringUtil;
+use LearnosityQti\Utils\UuidUtil;
 use qtism\data\storage\xml\XmlDocument;
 use qtism\data\storage\xml\XmlStorageException;
 use Symfony\Component\Finder\Finder;
@@ -175,6 +176,36 @@ class Converter
             $widgetData = $widgetWriter->convert($widget);
         }
         return [$widgetData, $exceptions];
+    }
+
+    public static function convertPassageItemToLearnosity($htmlString, $baseAssetsUrl = '', $validate = true, $filePath = null, $customItemReference = null, $metadata = [])
+    {
+        $questionWriter = AppContainer::getApplicationContainer()->get('learnosity_question_writer');
+        $passageMapper = new SharedPassageMapper();
+        $itemData['status'] = 'published';
+        $itemData['questions'] = array();
+        $itemData['definition']['template'] = 'dynamic';
+        $features = $passageMapper->parseHtml($htmlString);
+        $featuresData = [];
+        if (isset($features['features']) && is_array($features['features'])) {
+            foreach ($features['features'] as $feature) {
+                $featureDataHash = sha1(json_encode($feature->to_array()['data']));
+                $convertedFeature = $questionWriter->convert($feature);
+                $convertedFeature['reference'] = $featureDataHash;
+                unset($convertedFeature['item_reference']);
+                $featuresData[] = $convertedFeature;
+                $itemData['definition']['widgets'][]['reference'] = $featureDataHash;
+                $itemData['features'][]['reference'] = $featureDataHash;
+            }
+        }
+        $itemData['reference'] = $featureDataHash;
+        // Flush out all the error messages stored in this static class, also ensure they are unique
+        $messages = array_values(array_unique(LogService::flush()));
+        return [
+            'item' => $itemData,
+            'features' => $featuresData,
+            'messages' => $messages,
+        ];
     }
 
     public static function convertQtiItemToLearnosity($xmlString, $baseAssetsUrl = '', $validate = true, $filePath = null, $customItemReference = null, $metadata = [])

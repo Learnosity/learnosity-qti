@@ -27,4 +27,5 @@ class Constants
     ];
     
     public static $baseLearnosityAssetsUrl = 'https://assets.learnosity.com/organisations/';
+
 }

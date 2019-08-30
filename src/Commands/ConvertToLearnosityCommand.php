@@ -51,6 +51,15 @@ class ConvertToLearnosityCommand extends Command
                     '  filename - uses the basename of the <assessmentItem> XML file' . PHP_EOL,
                 'metadata'
             )
+            ->addOption(
+                'passage-only-items',
+                '',
+                InputOption::VALUE_OPTIONAL,
+                'If you pass the value as "Y", the conversion library will convert regular '
+                . 'assessment items as well as passage-only items, if defined in '
+                . 'the manifest',
+                'N'
+            )
         ;
     }
 
@@ -61,6 +70,7 @@ class ConvertToLearnosityCommand extends Command
         $outputPath = $input->getOption('output');
         $organisationId = $input->getOption('organisation_id');
         $itemReferenceSource = $input->getOption('item-reference-source');
+        $isConvertPassageContent = strtoupper($input->getOption('passage-only-items'));
 
         // Validate the required options
         if (empty($inputPath) || empty($outputPath)) {
@@ -87,6 +97,14 @@ class ConvertToLearnosityCommand extends Command
             array_push($validationErrors, "The <info>organisation_id</info> option is required for asset uploads.");
         }
 
+        $requiredValuesForPassageConversion = ['Yes or Y', 'No or N'];
+        if($isConvertPassageContent != 'Y' && $isConvertPassageContent != 'YES' && $isConvertPassageContent != 'N' && $isConvertPassageContent != 'NO') {
+            array_push(
+                $validationErrors,
+                "The <info>passage-only-items</info> must be one of the following values: " . join(', ', $requiredValuesForPassageConversion)
+            );
+        }
+
         $validItemReferenceSources = ['item', 'metadata', 'filename', 'resource'];
         if (isset($itemReferenceSource) && !in_array($itemReferenceSource, $validItemReferenceSources)) {
             array_push(
@@ -110,7 +128,7 @@ class ConvertToLearnosityCommand extends Command
             ]);
         } else {
 
-            $Convert = ConvertToLearnosityService::initClass($inputPath, $outputPath, $output, $organisationId);
+            $Convert = ConvertToLearnosityService::initClass($inputPath, $outputPath, $output, $organisationId, $isConvertPassageContent);
 
             $Convert->useMetadataIdentifier(true);
             $Convert->useResourceIdentifier(false);

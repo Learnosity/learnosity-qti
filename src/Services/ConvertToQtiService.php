@@ -14,6 +14,7 @@ use LearnosityQti\Processors\IMSCP\Entities\Resource;
 use LearnosityQti\Processors\QtiV2\Out\Constants as LearnosityExportConstant;
 use LearnosityQti\Utils\General\FileSystemHelper;
 use LearnosityQti\Utils\UuidUtil;
+use LearnosityQti\Utils\MimeUtil;
 use RecursiveIteratorIterator;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
@@ -39,6 +40,7 @@ class ConvertToQtiService
     protected $inputPath;
     protected $outputPath;
     protected $output;
+    protected $format;
     protected $organisationId;
     protected $itemReferences;
 
@@ -55,11 +57,12 @@ class ConvertToQtiService
     // Resource identifiers sometimes (but not always) match the assessmentItem identifier, so this can be useful
     protected $useResourceIdentifier   = false;
 
-    public function __construct($inputPath, $outputPath, OutputInterface $output, $organisationId = null)
+    public function __construct($inputPath, $outputPath, OutputInterface $output, $format, $organisationId = null)
     {
         $this->inputPath      = $inputPath;
         $this->outputPath     = $outputPath;
         $this->output         = $output;
+        $this->format         = $format;
         $this->organisationId = $organisationId;
         $this->finalPath      = 'final';
         $this->logPath        = 'log';
@@ -86,11 +89,68 @@ class ConvertToQtiService
         FileSystemHelper::createDirIfNotExists($this->outputPath . '/' . $this->logPath);
         FileSystemHelper::createDirIfNotExists($this->outputPath . '/' . $this->rawPath);
 
+        $this->createAdditionalFolder($this->outputPath . '/' . $this->rawPath);
+
         $result = $this->parseContent();
 
         $this->tearDown();
 
         return $result;
+    }
+
+    /**
+     * Creates various multimedia directory for stroing image,audio,video and qti xml
+     * files
+     *
+     * @param type $basePath basepath for creating directory
+     */
+    public function createAdditionalFolder($basePath)
+    {
+        FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::DIRNAME_AUDIO);
+        FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::DIRNAME_VIDEO);
+        FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::DIRNAME_IMAGES);
+        FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS);
+        $this->copyAllAssetFiles($this->inputPath . '/' . 'assets', $basePath);
+    }
+
+    /**
+     * Copy each files from assets folder to their respective folder
+     *
+     * @param type $sourcePath source path of the directory
+     * @param type $destinationPath destination directory for copy files
+     */
+    public function copyAllAssetFiles($sourcePath, $destinationPath)
+    {
+        $dir = opendir($sourcePath);
+        while (($file = readdir($dir)) !== false) {
+            if (!in_array($file, ['.', '..'])) {
+                $mimeTypeArray = explode('/', MimeUtil::guessMimeType($file));
+                if (is_array($mimeTypeArray) && !empty($mimeTypeArray[0])) {
+                    $this->copyMediaFilesInFolder($mimeTypeArray[0], $file, $sourcePath, $destinationPath);
+                }
+            }
+        }
+    }
+
+    /**
+     * This function will copy the files from source folder to destination folder
+     *
+     * @param type $mediaType type of the media like jpeg,mp4,mp3 etc
+     * @param type $file file file to be moved
+     * @param type $sourcePath source folder
+     * @param type $destinationPath destination folder path for copying
+     */
+    public function copyMediaFilesInFolder($mediaType, $file, $sourcePath, $destinationPath)
+    {
+        if ($mediaType == 'audio') {
+            FileSystemHelper::copyFiles($sourcePath . '/' . $file, $destinationPath . '/' . LearnosityExportConstant::AUDIO_FOLDER_NAME . '/' . $file);
+        } elseif ($mediaType == 'video') {
+            FileSystemHelper::copyFiles($sourcePath . '/' . $file, $destinationPath . '/' . LearnosityExportConstant::VIDEO_FOLDER_NAME . '/' . $file);
+        } elseif ($mediaType == 'image') {
+            FileSystemHelper::copyFiles($sourcePath . '/' . $file, $destinationPath . '/' . LearnosityExportConstant::IMAGE_FOLDER_NAME . '/' . $file);
+        } else {
+            $this->output->writeln("<error>Media Type not supported only audio, video and image are supported</error>");
+        }
     }
 
     /**
@@ -125,12 +185,10 @@ class ConvertToQtiService
                 $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Learnosity JSON file " . basename($file) . " Not found in: {$this->inputPath}/items </info>");
             }
         }
-
         $resourceInfo = $this->updateJobManifest($finalManifest, $results);
         $finalManifest->setResources($resourceInfo);
         $this->persistResultsFile($results, realpath($this->outputPath) . '/' . $this->rawPath . '/');
         $this->flushJobManifest($finalManifest, $results);
-        FileSystemHelper::copyFiles(realpath($this->inputPath) . '/assets', realpath($this->outputPath) . '/' . $this->rawPath . '/assets');
         $this->createIMSContentPackage(realpath($this->outputPath) . '/' . $this->rawPath . '/');
     }
 
@@ -145,7 +203,12 @@ class ConvertToQtiService
     private function convertLearnosityInDirectory($file)
     {
         $this->output->writeln("<comment>Converting Learnosity JSON {$file}</comment>");
-        return $this->convertAssessmentItem(json_decode(file_get_contents($file), true));
+        $itemContent = $this->checkAndAddNamespaceInMathTag(file_get_contents($file));
+        return $this->convertAssessmentItem(json_decode($itemContent, true));
+    }
+
+    private function checkAndAddNamespaceInMathTag($content){
+        return str_replace("<math>", "<math xmlns='http://www.w3.org/1998/Math/MathML'>", $content);
     }
 
     // Traverse the -i option and find all paths with files
@@ -180,7 +243,7 @@ class ConvertToQtiService
     /**
      * Converts Learnosity JSON to QTI
      *
-     * @param  string $jsonString
+     * @param  array $json
      *
      * @return array - the results of the conversion
      *
@@ -191,15 +254,25 @@ class ConvertToQtiService
         $result = [];
         $finalXml = [];
         $tagsArray = [];
+        
+        if ($this->format == 'canvas') {
+            $json['content'] = strip_tags($json['content'], "<span>");
+        }
+
         $content = $json['content'];
         $tags = $json['tags'];
         $itemReference = $json['reference'];
+        
         foreach ($json['questions'] as $question) :
             $question['content'] = $content;
             $question['itemreference'] = $itemReference;
             if (in_array($question['data']['type'], LearnosityExportConstant::$supportedQuestionTypes)) {
                 $result = Converter::convertLearnosityToQtiItem($question);
                 $result[0] = str_replace('/vendor/learnosity/itembank/', '', $result[0]);
+                $result[0] = str_replace('xmlns:default="http://www.w3.org/1998/Math/MathML"', '', $result[0]);
+                //TODO: Change this to only select MathML elements?
+                $result[0] = str_replace('<default:', '<', $result[0]);
+                $result[0] = str_replace('</default:', '</', $result[0]);
                 $finalXml[] = $result;
                 $tagsArray[$question['reference']] = $tags;
             } else {
@@ -423,10 +496,9 @@ class ConvertToQtiService
             if (empty($result['qti'])) {
                 continue;
             }
-
-            foreach (array_values($result['qti'][0]) as $idx => $qti) {
+            foreach (array_values($result['qti']) as $idx => $qti) {
                 if (!empty($result['json']['questions'][$idx])) {
-                    file_put_contents($outputFilePath . '/' . $result['json']['questions'][$idx]['reference'] . '.xml', $qti);
+                    file_put_contents($outputFilePath . '/' . LearnosityExportConstant::ITEMS_FOLDER_NAME . '/' . $result['json']['questions'][$idx]['reference'] . '.xml', $qti[0]);
                 }
             }
         }
@@ -450,12 +522,12 @@ class ConvertToQtiService
                     $resource = new Resource();
                     $resource->setIdentifier($question['reference']);
                     $resource->setType(Resource::TYPE_PREFIX_ITEM . "xmlv2p1");
-                    $resource->setHref($question['reference'] . ".xml");
+                    $resource->setHref(LearnosityExportConstant::ITEMS_FOLDER_NAME . '/' . $question['reference'] . ".xml");
                     if (array_key_exists($question['reference'], $additionalFileReferenceInfo)) {
                         $files = $this->addAdditionalFileInfo($additionalFileReferenceInfo[$question['reference']], $files);
                     }
                     $file = new File();
-                    $file->setHref($question['reference'] . ".xml");
+                    $file->setHref(LearnosityExportConstant::ITEMS_FOLDER_NAME . '/' . $question['reference'] . ".xml");
                     $files[] = $file;
                     $resource->setFiles($files);
                     $resources[] = $resource;
@@ -510,11 +582,30 @@ class ConvertToQtiService
         $files = array();
         foreach ($filesInfo as $info) {
             $file = new File();
-            $href = substr($info, strlen('/vendor/learnosity/itembank/'));
+            $fileName = substr($info, strlen(LearnosityExportConstant::DIRPATH_ASSET));
+            $mimeType = MimeUtil::guessMimeType($fileName);
+            $href = $this->getAssetHref($fileName, $mimeType);
             $file->setHref($href);
             $files[] = $file;
         }
         return $files;
+    }
+    
+    private function getAssetHref($fileName, $mimeType)
+    {
+        $mediaFormatArray = explode('/', $mimeType);
+        $href = '';
+        if (is_array($mediaFormatArray) && !empty($mediaFormatArray[0])) {
+            $mediaFormat = $mediaFormatArray[0];
+            if ($mediaFormat == 'video') {
+                $href = LearnosityExportConstant::VIDEO_FOLDER_NAME . '/' . $fileName;
+            } elseif ($mediaFormat == 'audio') {
+                $href = LearnosityExportConstant::AUDIO_FOLDER_NAME . '/' . $fileName;
+            } elseif ($mediaFormat == 'image') {
+                $href = LearnosityExportConstant::IMAGE_FOLDER_NAME . '/' . $fileName;
+            }
+        }
+        return $href;
     }
 
     /**
@@ -525,21 +616,19 @@ class ConvertToQtiService
     private function getAdditionalFileInfoForManifestResource()
     {
         $learnosityManifestJson = json_decode(file_get_contents($this->inputPath . '/manifest.json'));
-        $activityArray = array();
-        if (!empty($learnosityManifestJson->assets->items)) {
-            $activityArray = $learnosityManifestJson->assets->items;
-        }
         $additionalFileInfoArray = array();
-        $valueArray = array();
-        foreach ($activityArray as $itemValue) {
-            $questionArray = $itemValue;
-            if (is_object($questionArray->questions)) {
-                foreach ($questionArray->questions as $questionKey => $questionValue) {
-                    $valueArray = array();
-                    foreach ($questionValue as $questions => $value) {
-                        $valueArray[] = $value->replacement;
+        if (isset($learnosityManifestJson->assets->items)) {
+            $activityArray = $learnosityManifestJson->assets->items;
+            foreach ($activityArray as $itemReference => $itemValue) {
+                $questionArray = $itemValue;
+                if (is_object($questionArray->questions)) {
+                    foreach ($questionArray->questions as $questionKey => $questionValue) {
+                        $valueArray = array();
+                        foreach ($questionValue as $questions => $value) {
+                            $valueArray[] = $value->replacement;
+                        }
+                        $additionalFileInfoArray[$questionKey] = $valueArray;
                     }
-                    $additionalFileInfoArray[$questionKey] = $valueArray;
                 }
             }
         }
