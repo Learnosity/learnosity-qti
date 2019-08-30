@@ -41,7 +41,7 @@ class DOMHelper
         $xml = '<?xml version="1.0" encoding="UTF-8">' . "<div>$xml</div>";
 
         $dom->loadHTML($xml, LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
-        $xml = $dom->saveXML($this->getFragmentWrapperDocumentElementForDom($dom));
+        $xml = $dom->saveXML(static::getFragmentWrapperDocumentElementForDom($dom));
 
         // HACK: Handle the fact that XML can't handle named entities (and HTML5 has no DTD for it)
         $xml = XmlEntityUtil::convertNamedEntitiesToHexInString($xml);
