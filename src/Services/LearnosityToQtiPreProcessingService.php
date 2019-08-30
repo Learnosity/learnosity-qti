@@ -84,7 +84,7 @@ class LearnosityToQtiPreProcessingService
             if ($type === 'audioplayer' || $type === 'videoplayer') {
                 $object = new ObjectElement($src, MimeUtil::guessMimeType(basename($src)));
                 $object->setLabel($featureReference);
-                //return QtiMarshallerUtil::marshallValidQti($object);
+                return QtiMarshallerUtil::marshallValidQti($object);
             } elseif ($type === 'sharedpassage') {
                 $flowCollection = new FlowCollection();
                 $div = $this->createDivForSharedPassage();
