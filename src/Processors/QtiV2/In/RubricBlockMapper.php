@@ -67,7 +67,6 @@ class RubricBlockMapper
         /** @var ViewCollection $views */
         $views = $rubricBlock->getViews();
         // Get the correct mapper for the <rubricBlock>
-        print_r($rubricBlock);
         switch (true) {
             case ($rubricBlock->getUse() === 'context'):
                 if ($views->contains(View::CANDIDATE)) {
@@ -76,26 +75,9 @@ class RubricBlockMapper
                 }
                 break;
 
-            case ($rubricBlock->getUse() === 'rationale'):
-                if ($views->contains(View::CANDIDATE)) {
-                    $mapper = new DistractorRationaleResponseMapper();
-                    $distractorRationalResponseLevelArray = $mapper->parseWithDistractorRationaleResponseComponent($rubricBlock);
-                    $result ['question_metadata'] = $distractorRationalResponseLevelArray;
-                } else if ($views->contains(View::AUTHOR)) {
-                    $result = [
-                        'question_metadata' => [
-                            'distractor_rationale_author' => [
-                                [
-                                    'label' => $rubricBlock->getLabel(),
-                                    'content' => QtiMarshallerUtil::marshallCollection($rubricBlock->getContent()),
-                                ]
-                            ],
-                        ],
-                    ];
-                }
-                break;
-
             case ($rubricBlock->getClass() === 'DistractorRationale'):
+                /* falls through */
+            case ($rubricBlock->getUse() === 'rationale'):
                 if ($views->contains(View::CANDIDATE)) {
                     $mapper = new DistractorRationaleResponseMapper();
                     $distractorRationalResponseLevelArray = $mapper->parseWithDistractorRationaleResponseComponent($rubricBlock);
