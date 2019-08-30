@@ -47,7 +47,7 @@ class LearnosityToQtiPreProcessingService
         }
 
         foreach ($html->find('img') as &$node) {
-            $src = $this->getSourceBasedOnMediaFormat($node->attr['src']);
+            $src = $this->getQtiMediaSrcFromLearnositySrc($node->attr['src']);
             $node->outertext = str_replace($node->attr['src'], $src, $node->outertext);
         }
 
@@ -112,20 +112,27 @@ class LearnosityToQtiPreProcessingService
         return null;
     }
 
-    private function getSourceBasedOnMediaFormat($src)
+    /**
+     * This method take the original media source and return the desired media path 
+     * for an item based on their media type.
+     *
+     * @param type $src source of the desired media
+     * @return string media href
+     */
+    private function getQtiMediaSrcFromLearnositySrc($src)
     {
-        $fileName = substr($src, strlen('/vendor/learnosity/itembank/assets/'));
+        $fileName = substr($src, strlen(LearnosityExportConstant::DIRPATH_ASSET));
         $mimeType = MimeUtil::guessMimeType($fileName);
         $mediaFormatArray = explode('/', $mimeType);
         $href = '';
         if (is_array($mediaFormatArray) && !empty($mediaFormatArray[0])) {
             $mediaFormat = $mediaFormatArray[0];
             if ($mediaFormat == 'video') {
-                $href = '../' . LearnosityExportConstant::VIDEO_FOLDER_NAME . '/' . $fileName;
+                $href = '../' . LearnosityExportConstant::DIRNAME_VIDEO . '/' . $fileName;
             } elseif ($mediaFormat == 'audio') {
-                $href = '../' . LearnosityExportConstant::AUDIO_FOLDER_NAME . '/' . $fileName;
+                $href = '../' . LearnosityExportConstant::DIRNAME_AUDIO . '/' . $fileName;
             } elseif ($mediaFormat == 'image') {
-                $href = '../' . LearnosityExportConstant::IMAGE_FOLDER_NAME . '/' . $fileName;
+                $href = '../' . LearnosityExportConstant::DIRNAME_IMAGE . '/' . $fileName;
             }
         }
         return $href;

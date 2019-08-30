@@ -53,7 +53,7 @@ class ValidationBuilder
                 $validResponse = $validResponseRef->newInstance();
                 $validResponse->set_score($response->getScore());
                 if($questionType == 'imageclozeassociationV2') {
-                   $convertArray = array_map(array(__CLASS__, 'convertArrayIntoArrayOfArray'), $response->getValue());
+                   $convertArray = self::convertArrayIntoArrayOfArray($response->getValue());
                    $validResponse->set_value($convertArray);
                 } else {
                     $validResponse->set_value($response->getValue());
@@ -84,11 +84,13 @@ class ValidationBuilder
     /**
      * Function to convert array value into array
      *
-     * @param type $value value of array
+     * @param type $responseArray response array
      * @return type converted array
      */
-    private function convertArrayIntoArrayOfArray($value){
-        $convertArray[] = $value;
+    private static function convertArrayIntoArrayOfArray($responseArray){
+        foreach($responseArray as $value) {
+            $convertArray[] = array($value);
+        }
         return $convertArray;
     }
 
