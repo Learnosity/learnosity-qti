@@ -82,7 +82,7 @@ class QtiResponseProcessingBuilder
         $responseElseRuleCollection->attach($responseCondition1);
 
         // generate outcome value if distrator_rationale_value is set
-        if (is_array($feedBackOptions) && !empty($feedBackOptions['genral_feedback'])) {
+        if (is_array($feedBackOptions) && !empty($feedBackOptions['general_feedback'])) {
             $responseFeedbackComponent = new SetOutcomeValue('FEEDBACK_GENERAL', new BaseValue(BaseType::IDENTIFIER, 'correctOrIncorrect'));
             $responseRuleCollection->attach($responseFeedbackComponent);
         }

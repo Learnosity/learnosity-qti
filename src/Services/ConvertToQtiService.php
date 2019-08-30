@@ -106,21 +106,22 @@ class ConvertToQtiService
      */
     public function createAdditionalFolder($basePath)
     {
-        FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::AUDIO_FOLDER_NAME);
-        FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::VIDEO_FOLDER_NAME);
-        FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::IMAGE_FOLDER_NAME);
-        FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::ITEMS_FOLDER_NAME);
+
+        FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::DIRNAME_AUDIO);
+        FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::DIRNAME_VIDEO);
+        FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::DIRNAME_IMAGES);
+        FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS);
         FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::SHARED_PASSAGE_FOLDER_NAME);
-        $this->moveAssestsFilesIntoRespectiveFolder($this->inputPath . '/' . 'assets', $basePath);
+        $this->copyAllAssetFiles($this->inputPath . '/' . 'assets', $basePath);
     }
 
     /**
-     * Move each files from assets folder to their respective folder
+     * Copy each files from assets folder to their respective folder
      *
      * @param type $sourcePath source path of the directory
      * @param type $destinationPath destination directory for copy files
      */
-    public function moveAssestsFilesIntoRespectiveFolder($sourcePath, $destinationPath)
+    public function copyAllAssetFiles($sourcePath, $destinationPath)
     {
         $dir = opendir($sourcePath);
         while (($file = readdir($dir)) !== false) {
@@ -610,25 +611,31 @@ class ConvertToQtiService
     {
         $files = array();
         foreach ($filesInfo as $info) {
-            $fileName = substr($info, strlen(LearnosityExportConstant::ITEM_ASSET_FOLDER_PATH));
-            $mimeType = MimeUtil::guessMimeType($fileName);
-            $mediaFormatArray = explode('/', $mimeType);
             $file = new File();
-            $href = '';
-            if (is_array($mediaFormatArray) && !empty($mediaFormatArray[0])) {
-                $mediaFormat = $mediaFormatArray[0];
-                if ($mediaFormat == 'video') {
-                    $href = LearnosityExportConstant::VIDEO_FOLDER_NAME . '/' . $fileName;
-                } elseif ($mediaFormat == 'audio') {
-                    $href = LearnosityExportConstant::AUDIO_FOLDER_NAME . '/' . $fileName;
-                } elseif ($mediaFormat == 'image') {
-                    $href = LearnosityExportConstant::IMAGE_FOLDER_NAME . '/' . $fileName;
-                }
-            }
+            $fileName = substr($info, strlen(LearnosityExportConstant::DIRPATH_ASSET));
+            $mimeType = MimeUtil::guessMimeType($fileName);
+            $href = $this->getAssetHref($fileName, $mimeType);
             $file->setHref($href);
             $files[] = $file;
         }
         return $files;
+    }
+    
+    private function getAssetHref($fileName, $mimeType)
+    {
+        $mediaFormatArray = explode('/', $mimeType);
+        $href = '';
+        if (is_array($mediaFormatArray) && !empty($mediaFormatArray[0])) {
+            $mediaFormat = $mediaFormatArray[0];
+            if ($mediaFormat == 'video') {
+                $href = LearnosityExportConstant::VIDEO_FOLDER_NAME . '/' . $fileName;
+            } elseif ($mediaFormat == 'audio') {
+                $href = LearnosityExportConstant::AUDIO_FOLDER_NAME . '/' . $fileName;
+            } elseif ($mediaFormat == 'image') {
+                $href = LearnosityExportConstant::IMAGE_FOLDER_NAME . '/' . $fileName;
+            }
+        }
+        return $href;
     }
 
     /**
