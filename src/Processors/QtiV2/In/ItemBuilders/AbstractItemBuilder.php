@@ -190,9 +190,9 @@ abstract class AbstractItemBuilder
         $this->metadata = array_merge_recursive($this->metadata, $itemMetadata);
     }
 
-    protected function setDistractorRationaleResponseLevel(array $distratorRationalResponseLevel)
+    protected function setDistractorRationaleResponseLevel(array $distractorRationaleResponseLevel)
     {
-        $this->metadata = array_merge_recursive($this->metadata, $distratorRationalResponseLevel);
+        $this->metadata = array_merge_recursive($this->metadata, $distractorRationaleResponseLevel);
     }
 
     public function setItemPointValue($itemPointValue)
