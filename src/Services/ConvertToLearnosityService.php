@@ -255,13 +255,74 @@ class ConvertToLearnosityService
                 }
 
                 $convertedContent = $this->convertAssessmentItemInFile($assessmentItemContents, $itemReference, $metadata, $currentDir, $resourceHref, $itemTagsArray, $resource['type']);
+                $scoringRubric = '';
+                if (isset($convertedContent['rubric'])) {
+                    $rubricReferenceToBeDelete = $this->checkScoringRubricExistInConvertedContent($convertedContent);
+                    if (sizeof($rubricReferenceToBeDelete) > 0) {
+                        foreach ($rubricReferenceToBeDelete as $id => $reference) {
+                            $index = $this->deleteUnusedRubricFromConvertedContent($convertedContent, $reference);
+                            $extraRubricContent = $convertedContent['features'][$index];
+                            unset($convertedContent['features'][$index]);
+                            $scoringRubric = $this->createNewScoringRubricItem($extraRubricContent, $convertedContent['rubric']['reference']);
+                        }
+                    }
+                }
+
+                if (isset($convertedContent['rubric'])) {
+                    unset($convertedContent['rubric']);
+                }
 
                 if (!empty($convertedContent)) {
                     $results['qtiitems'][basename($relativeDir) . '/' . $resourceHref] = $convertedContent;
                 }
+
+                if (!empty($scoringRubric)) {
+                    $results['qtiitems'][basename($relativeDir) . '/' . $scoringRubric['item']['reference']] = $scoringRubric;
+                }
             }
         }
         return $results;
+    }
+
+    private function createNewScoringRubricItem($scoringRubric, $reference)
+    {
+        $itemData['reference'] = $reference;
+        $itemData['status'] = 'published';
+        $itemData['questions'] = array();
+        $itemData['definition']['template'] = 'dynamic';
+        $itemData['definition']['widgets'][]['reference'] = $scoringRubric['reference'];
+        $itemData['features'][]['reference'] = $scoringRubric['reference'];
+        $featuresData['features'] = array($scoringRubric);
+
+        return [
+            'item' => $itemData,
+            'features' => $featuresData,
+            'questions' => array(),
+        ];
+    }
+
+    private function checkScoringRubricExistInConvertedContent($rubricArray)
+    {
+        $rubricReferenceToBeDelete = array();
+        if (isset($rubricArray['rubric']['features'])) {
+            foreach ($rubricArray['rubric']['features'] as $id => $value) {
+                if ($value['view'] == 3) {
+                    $rubricReferenceToBeDelete[] = $value['reference'];
+                }
+            }
+        }
+        return $rubricReferenceToBeDelete;
+    }
+
+    private function deleteUnusedRubricFromConvertedContent($convertedContent, $reference)
+    {
+        $index = '';
+        foreach ($convertedContent['features'] as $id => $featureContent) {
+            if ($featureContent['reference'] == $reference) {
+                $index = $id;
+            }
+        }
+        return $index;
     }
 
     /**
@@ -435,6 +496,7 @@ class ConvertToLearnosityService
         } else if($resourceType == static::RESOURCE_TYPE_PASSAGE && ($this->isConvertPassageContent == 'Y' || $this->isConvertPassageContent == 'YES')) {
             $result = Converter::convertPassageItemToLearnosity($xmlString, null, null, $resourcePath, $itemReference, $metadata);
         }
+
         $item       = !empty($result['item']) ? $result['item'] : array();
         $questions  = !empty($result['questions']) ? $result['questions'] : array();
         $features   = !empty($result['features']) ? $result['features'] : array();
