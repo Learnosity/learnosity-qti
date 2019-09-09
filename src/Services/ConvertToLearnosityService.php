@@ -271,17 +271,52 @@ class ConvertToLearnosityService
                 if (isset($convertedContent['rubric'])) {
                     unset($convertedContent['rubric']);
                 }
-
+                $convertedContent = $this->removeUnusedDataFromItem($convertedContent);
                 if (!empty($convertedContent)) {
                     $results['qtiitems'][basename($relativeDir) . '/' . $resourceHref] = $convertedContent;
                 }
-
+                $scoringRubric = $this->removeUnusedDataFromItem($scoringRubric);
                 if (!empty($scoringRubric)) {
                     $results['qtiitems'][basename($relativeDir) . '/' . $scoringRubric['item']['reference']] = $scoringRubric;
                 }
             }
         }
         return $results;
+    }
+
+    private function removeUnusedDataFromItem($convertedContent)
+    {
+        foreach ($convertedContent['questions'] as $id => $data) {
+            if (isset($data['widget_type'])) {
+                unset($convertedContent['questions'][$id]['widget_type']);
+            }
+            if (isset($data['item_reference'])) {
+                unset($convertedContent['questions'][$id]['item_reference']);
+            }
+            if (isset($data['content'])) {
+                unset($convertedContent['questions'][$id]['content']);
+            }
+            if (isset($convertedContent['item']['metadata']['rubric_reference'])) {
+                unset($convertedContent['item']['metadata']['rubric_reference']);
+            }
+        }
+        return $this->removeUnusedFeatureData($convertedContent);
+    }
+
+    private function removeUnusedFeatureData($convertedContent)
+    {
+        foreach ($convertedContent['features'] as $id => $data) {
+            if (isset($data['widget_type'])) {
+                unset($convertedContent['features'][$id]['widget_type']);
+            }
+            if (isset($data['item_reference'])) {
+                unset($convertedContent['features'][$id]['item_reference']);
+            }
+            if (isset($data['content'])) {
+                unset($convertedContent['features'][$id]['content']);
+            }
+        }
+        return $convertedContent;
     }
 
     private function createNewScoringRubricItem($scoringRubric, $reference)
@@ -292,7 +327,7 @@ class ConvertToLearnosityService
         $itemData['definition']['template'] = 'dynamic';
         $itemData['definition']['widgets'][]['reference'] = $scoringRubric['reference'];
         $itemData['features'][]['reference'] = $scoringRubric['reference'];
-        $featuresData['features'] = array($scoringRubric);
+        $featuresData = array($scoringRubric);
 
         return [
             'item' => $itemData,
