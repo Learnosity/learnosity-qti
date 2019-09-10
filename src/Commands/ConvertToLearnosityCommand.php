@@ -60,6 +60,14 @@ class ConvertToLearnosityCommand extends Command
                 . 'the manifest',
                 'N'
             )
+             ->addOption(
+                'single-item',
+                '',
+                InputOption::VALUE_OPTIONAL,
+                'If you pass the value as "Y", the conversion library will convert only single '
+                 . 'xml file',
+                'N'
+            )
         ;
     }
 
@@ -71,6 +79,7 @@ class ConvertToLearnosityCommand extends Command
         $organisationId = $input->getOption('organisation_id');
         $itemReferenceSource = $input->getOption('item-reference-source');
         $isConvertPassageContent = strtoupper($input->getOption('passage-only-items'));
+        $isSingleItemConvert = strtoupper($input->getOption('single-item'));
 
         // Validate the required options
         if (empty($inputPath) || empty($outputPath)) {
@@ -105,6 +114,14 @@ class ConvertToLearnosityCommand extends Command
             );
         }
 
+        $requiredValuesForSingleItemConversion = ['Yes or Y', 'No or N'];
+        if($isSingleItemConvert != 'Y' && $isSingleItemConvert != 'YES' && $isSingleItemConvert != 'N' && $isSingleItemConvert != 'NO') {
+            array_push(
+                $validationErrors,
+                "The <info>single-item</info> must be one of the following values: " . join(', ', $requiredValuesForSingleItemConversion)
+            );
+        }
+
         $validItemReferenceSources = ['item', 'metadata', 'filename', 'resource'];
         if (isset($itemReferenceSource) && !in_array($itemReferenceSource, $validItemReferenceSources)) {
             array_push(
@@ -128,7 +145,7 @@ class ConvertToLearnosityCommand extends Command
             ]);
         } else {
 
-            $Convert = ConvertToLearnosityService::initClass($inputPath, $outputPath, $output, $organisationId, $isConvertPassageContent);
+            $Convert = ConvertToLearnosityService::initClass($inputPath, $outputPath, $output, $organisationId, $isConvertPassageContent, $isSingleItemConvert);
 
             $Convert->useMetadataIdentifier(true);
             $Convert->useResourceIdentifier(false);

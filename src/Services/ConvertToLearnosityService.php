@@ -32,6 +32,7 @@ class ConvertToLearnosityService
     protected $output;
     protected $organisationId;
     protected $isConvertPassageContent;
+    protected $isSingleItemConvert;
 
     /* Runtime options */
     protected $dryRun                     = false;
@@ -52,7 +53,7 @@ class ConvertToLearnosityService
     // Hold the class instance.
     private static $instance = null;
 
-    protected function __construct($inputPath, $outputPath, OutputInterface $output, $organisationId, $isConvertPassageContent)
+    protected function __construct($inputPath, $outputPath, OutputInterface $output, $organisationId, $isConvertPassageContent, $isSingleItemConvert)
     {
         $this->inputPath               = $inputPath;
         $this->outputPath              = $outputPath;
@@ -62,14 +63,15 @@ class ConvertToLearnosityService
         $this->logPath                 = 'log';
         $this->rawPath                 = 'raw';
         $this->isConvertPassageContent = $isConvertPassageContent;
+        $this->isSingleItemConvert     = $isSingleItemConvert;
     }
 
     // The object is created from within the class itself
     // only if the class has no instance.
-    public static function initClass($inputPath, $outputPath, OutputInterface $output, $organisationId, $isConvertPassageContent = 'N')
+    public static function initClass($inputPath, $outputPath, OutputInterface $output, $organisationId, $isConvertPassageContent = 'N', $isSingleItemConvert = 'N')
     {
         if (!self::$instance) {
-            self::$instance = new ConvertToLearnosityService($inputPath, $outputPath, $output, $organisationId, $isConvertPassageContent);
+            self::$instance = new ConvertToLearnosityService($inputPath, $outputPath, $output, $organisationId, $isConvertPassageContent, $isSingleItemConvert);
         }
         return self::$instance;
     }
@@ -122,13 +124,15 @@ class ConvertToLearnosityService
 
     public function process()
     {
-        $errors = $this->validate();
+        if ($this->isSingleItemConvert != 'N' && $this->isSingleItemConvert != 'NO') {
+            $errors = $this->validate();
+        }
         $result = [
             'status' => null,
             'message' => []
         ];
 
-        if (!empty($errors)) {
+        if (!empty($errors) && ($this->isSingleItemConvert == 'N' || $this->isSingleItemConvert == 'NO')) {
             $result['status'] = false;
             $result['message'] = $errors;
             return $result;
@@ -140,9 +144,26 @@ class ConvertToLearnosityService
         FileSystemHelper::createDirIfNotExists($this->outputPath . DIRECTORY_SEPARATOR . $this->rawPath);
 
         $this->assetsFixer = new AssetsFixer($this->organisationId);
-
-        $result = $this->parseContentPackage();
-
+        if ($this->isSingleItemConvert == 'Y' || $this->isSingleItemConvert == 'YES') {
+            $finder = new Finder();
+            $finder->files()->in($this->inputPath);
+            foreach ($finder as $manifest) {
+                $fileName = $manifest->getFileName();
+                $currentDir = realpath($manifest->getPath());
+                $file = $manifest->getRealPath();
+                $tempDirectoryParts = explode(DIRECTORY_SEPARATOR, dirname($file));
+                $dirName = $tempDirectoryParts[count($tempDirectoryParts) - 1];
+                $assessmentItemContents = file_get_contents($file);
+                $metadata['organisation_id'] = $this->organisationId;
+                $convertedContent = $this->convertAssessmentItemInFile($assessmentItemContents, $currentDir, $fileName, static::RESOURCE_TYPE_ITEM, null, $metadata);
+                if (!empty($convertedContent)) {
+                    $result['qtiitems'][basename($currentDir) . '/' . $fileName] = $convertedContent;
+                }
+            }
+            $this->persistResultsFile($result, realpath($this->outputPath) . DIRECTORY_SEPARATOR . $this->rawPath . DIRECTORY_SEPARATOR . $dirName);
+        } else {
+            $result = $this->parseContentPackage();
+        }
         // Convert the item format (columns etc)
         $ItemLayout = new ItemLayoutService();
         $ItemLayout->execute($this->outputPath . DIRECTORY_SEPARATOR . $this->rawPath . DIRECTORY_SEPARATOR, $this->outputPath . DIRECTORY_SEPARATOR . $this->finalPath, $this->output);
@@ -254,7 +275,7 @@ class ConvertToLearnosityService
                     $this->output->writeln("<comment>Converting assessment item {$itemCount}: $relativeDir/$resourceHref</comment>");
                 }
 
-                $convertedContent = $this->convertAssessmentItemInFile($assessmentItemContents, $itemReference, $metadata, $currentDir, $resourceHref, $itemTagsArray, $resource['type']);
+                $convertedContent = $this->convertAssessmentItemInFile($assessmentItemContents, $currentDir, $resourceHref, $resource['type'], $itemReference, $metadata, $itemTagsArray);
 
                 if (!empty($convertedContent)) {
                     $results['qtiitems'][basename($relativeDir) . '/' . $resourceHref] = $convertedContent;
@@ -301,6 +322,7 @@ class ConvertToLearnosityService
         }
 
         return $itemResources;
+
     }
 
     /**
@@ -387,7 +409,7 @@ class ConvertToLearnosityService
      *
      * @return array - the results of the conversion
     */
-    private function convertAssessmentItemInFile($contents, $itemReference = null, array $metadata = [], $currentDir, $resourceHref, $itemTagsArray = [], $resourceType)
+    private function convertAssessmentItemInFile($contents, $currentDir, $resourceHref, $resourceType, $itemReference = null, array $metadata = [], $itemTagsArray = [])
     {
         $results = null;
 
