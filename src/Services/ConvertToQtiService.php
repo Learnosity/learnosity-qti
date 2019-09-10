@@ -143,11 +143,11 @@ class ConvertToQtiService
     public function copyMediaFilesInFolder($mediaType, $file, $sourcePath, $destinationPath)
     {
         if ($mediaType == 'audio') {
-            FileSystemHelper::copyFiles($sourcePath . '/' . $file, $destinationPath . '/' . LearnosityExportConstant::AUDIO_FOLDER_NAME . '/' . $file);
+            FileSystemHelper::copyFiles($sourcePath . '/' . $file, $destinationPath . '/' . LearnosityExportConstant::DIRNAME_AUDIO . '/' . $file);
         } elseif ($mediaType == 'video') {
-            FileSystemHelper::copyFiles($sourcePath . '/' . $file, $destinationPath . '/' . LearnosityExportConstant::VIDEO_FOLDER_NAME . '/' . $file);
+            FileSystemHelper::copyFiles($sourcePath . '/' . $file, $destinationPath . '/' . LearnosityExportConstant::DIRNAME_VIDEO . '/' . $file);
         } elseif ($mediaType == 'image') {
-            FileSystemHelper::copyFiles($sourcePath . '/' . $file, $destinationPath . '/' . LearnosityExportConstant::IMAGE_FOLDER_NAME . '/' . $file);
+            FileSystemHelper::copyFiles($sourcePath . '/' . $file, $destinationPath . '/' . LearnosityExportConstant::DIRNAME_IMAGES . '/' . $file);
         } else {
             $this->output->writeln("<error>Media Type not supported only audio, video and image are supported</error>");
         }
@@ -254,7 +254,7 @@ class ConvertToQtiService
         $result = [];
         $finalXml = [];
         $tagsArray = [];
-        
+
         if ($this->format == 'canvas') {
             $json['content'] = strip_tags($json['content'], "<span>");
         }
@@ -262,7 +262,7 @@ class ConvertToQtiService
         $content = $json['content'];
         $tags = $json['tags'];
         $itemReference = $json['reference'];
-        
+
         foreach ($json['questions'] as $question) :
             $question['content'] = $content;
             $question['itemreference'] = $itemReference;
@@ -498,7 +498,7 @@ class ConvertToQtiService
             }
             foreach (array_values($result['qti']) as $idx => $qti) {
                 if (!empty($result['json']['questions'][$idx])) {
-                    file_put_contents($outputFilePath . '/' . LearnosityExportConstant::ITEMS_FOLDER_NAME . '/' . $result['json']['questions'][$idx]['reference'] . '.xml', $qti[0]);
+                    file_put_contents($outputFilePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS . '/' . $result['json']['questions'][$idx]['reference'] . '.xml', $qti[0]);
                 }
             }
         }
@@ -522,12 +522,12 @@ class ConvertToQtiService
                     $resource = new Resource();
                     $resource->setIdentifier($question['reference']);
                     $resource->setType(Resource::TYPE_PREFIX_ITEM . "xmlv2p1");
-                    $resource->setHref(LearnosityExportConstant::ITEMS_FOLDER_NAME . '/' . $question['reference'] . ".xml");
+                    $resource->setHref(LearnosityExportConstant::DIRNAME_ITEMS . '/' . $question['reference'] . ".xml");
                     if (array_key_exists($question['reference'], $additionalFileReferenceInfo)) {
                         $files = $this->addAdditionalFileInfo($additionalFileReferenceInfo[$question['reference']], $files);
                     }
                     $file = new File();
-                    $file->setHref(LearnosityExportConstant::ITEMS_FOLDER_NAME . '/' . $question['reference'] . ".xml");
+                    $file->setHref(LearnosityExportConstant::DIRNAME_ITEMS . '/' . $question['reference'] . ".xml");
                     $files[] = $file;
                     $resource->setFiles($files);
                     $resources[] = $resource;
@@ -582,7 +582,7 @@ class ConvertToQtiService
         $files = array();
         foreach ($filesInfo as $info) {
             $file = new File();
-            $fileName = substr($info, strlen(LearnosityExportConstant::DIRPATH_ASSET));
+            $fileName = substr($info, strlen(LearnosityExportConstant::DIRPATH_ASSETS));
             $mimeType = MimeUtil::guessMimeType($fileName);
             $href = $this->getAssetHref($fileName, $mimeType);
             $file->setHref($href);
@@ -590,7 +590,7 @@ class ConvertToQtiService
         }
         return $files;
     }
-    
+
     private function getAssetHref($fileName, $mimeType)
     {
         $mediaFormatArray = explode('/', $mimeType);
@@ -598,11 +598,11 @@ class ConvertToQtiService
         if (is_array($mediaFormatArray) && !empty($mediaFormatArray[0])) {
             $mediaFormat = $mediaFormatArray[0];
             if ($mediaFormat == 'video') {
-                $href = LearnosityExportConstant::VIDEO_FOLDER_NAME . '/' . $fileName;
+                $href = LearnosityExportConstant::DIRNAME_VIDEO . '/' . $fileName;
             } elseif ($mediaFormat == 'audio') {
-                $href = LearnosityExportConstant::AUDIO_FOLDER_NAME . '/' . $fileName;
+                $href = LearnosityExportConstant::DIRNAME_AUDIO . '/' . $fileName;
             } elseif ($mediaFormat == 'image') {
-                $href = LearnosityExportConstant::IMAGE_FOLDER_NAME . '/' . $fileName;
+                $href = LearnosityExportConstant::DIRNAME_IMAGES . '/' . $fileName;
             }
         }
         return $href;

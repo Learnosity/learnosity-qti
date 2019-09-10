@@ -113,7 +113,7 @@ class LearnosityToQtiPreProcessingService
     }
 
     /**
-     * This method take the original media source and return the desired media path 
+     * This method take the original media source and return the desired media path
      * for an item based on their media type.
      *
      * @param type $src source of the desired media
@@ -121,7 +121,7 @@ class LearnosityToQtiPreProcessingService
      */
     private function getQtiMediaSrcFromLearnositySrc($src)
     {
-        $fileName = substr($src, strlen(LearnosityExportConstant::DIRPATH_ASSET));
+        $fileName = substr($src, strlen(LearnosityExportConstant::DIRPATH_ASSETS));
         $mimeType = MimeUtil::guessMimeType($fileName);
         $mediaFormatArray = explode('/', $mimeType);
         $href = '';
@@ -132,7 +132,7 @@ class LearnosityToQtiPreProcessingService
             } elseif ($mediaFormat == 'audio') {
                 $href = '../' . LearnosityExportConstant::DIRNAME_AUDIO . '/' . $fileName;
             } elseif ($mediaFormat == 'image') {
-                $href = '../' . LearnosityExportConstant::DIRNAME_IMAGE . '/' . $fileName;
+                $href = '../' . LearnosityExportConstant::DIRNAME_IMAGES . '/' . $fileName;
             }
         }
         return $href;
