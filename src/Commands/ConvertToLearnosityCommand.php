@@ -87,7 +87,7 @@ class ConvertToLearnosityCommand extends Command
         }
 
         // Make sure we can read the input folder, and write to the output folder
-        if (!empty($inputPath) && !is_dir($inputPath)) {
+        if (!empty($inputPath) && !is_dir($inputPath) && $isSingleItemConvert != 'Y' && $isSingleItemConvert != 'YES') {
             $output->writeln([
                 "Input path isn't a directory (<info>$inputPath</info>)"
             ]);

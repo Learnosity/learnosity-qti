@@ -4,19 +4,20 @@ namespace LearnosityQti\Services;
 use LearnosityQti\AppContainer;
 use LearnosityQti\Converter;
 use LearnosityQti\Domain\JobDataTrait;
-use LearnosityQti\Services\ItemLayoutService;
 use LearnosityQti\Exceptions\MappingException;
+use LearnosityQti\Services\ItemLayoutService;
 use LearnosityQti\Utils\AssetsFixer;
 use LearnosityQti\Utils\AssumptionHandler;
 use LearnosityQti\Utils\CheckValidQti;
-use LearnosityQti\Utils\ResponseProcessingHandler;
 use LearnosityQti\Utils\General\FileSystemHelper;
 use LearnosityQti\Utils\General\StringHelper;
+use LearnosityQti\Utils\ResponseProcessingHandler;
+use qtism\data\AssessmentItem;
+use qtism\data\storage\xml\XmlDocument;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
-use qtism\data\AssessmentItem;
-use qtism\data\storage\xml\XmlDocument;
+use Symfony\Component\HttpFoundation\File\File;
 
 class ConvertToLearnosityService
 {
@@ -124,7 +125,7 @@ class ConvertToLearnosityService
 
     public function process()
     {
-        if ($this->isSingleItemConvert != 'N' && $this->isSingleItemConvert != 'NO') {
+        if ($this->isSingleItemConvert != 'Y' && $this->isSingleItemConvert != 'YES') {
             $errors = $this->validate();
         }
         $result = [
@@ -145,22 +146,20 @@ class ConvertToLearnosityService
 
         $this->assetsFixer = new AssetsFixer($this->organisationId);
         if ($this->isSingleItemConvert == 'Y' || $this->isSingleItemConvert == 'YES') {
-            $finder = new Finder();
-            $finder->files()->in($this->inputPath);
-            foreach ($finder as $manifest) {
-                $fileName = $manifest->getFileName();
-                $currentDir = realpath($manifest->getPath());
-                $file = $manifest->getRealPath();
-                $tempDirectoryParts = explode(DIRECTORY_SEPARATOR, dirname($file));
-                $dirName = $tempDirectoryParts[count($tempDirectoryParts) - 1];
-                $assessmentItemContents = file_get_contents($file);
-                $metadata['organisation_id'] = $this->organisationId;
-                $convertedContent = $this->convertAssessmentItemInFile($assessmentItemContents, $currentDir, $fileName, static::RESOURCE_TYPE_ITEM, null, $metadata);
-                if (!empty($convertedContent)) {
-                    $result['qtiitems'][basename($currentDir) . '/' . $fileName] = $convertedContent;
-                }
+            $resultSigleFile = array();
+            $inputXmlFile = new File($this->inputPath);
+            $fileName = $inputXmlFile->getFileName();
+            $currentDir = realpath($inputXmlFile->getPath());
+            $file = $inputXmlFile->getRealPath();
+            $tempDirectoryParts = explode(DIRECTORY_SEPARATOR, dirname($file));
+            $dirName = $tempDirectoryParts[count($tempDirectoryParts) - 1];
+            $assessmentItemContents = file_get_contents($file);
+            $metadata['organisation_id'] = $this->organisationId;
+            $convertedContent = $this->convertAssessmentItemInFile($assessmentItemContents, $currentDir, $fileName, static::RESOURCE_TYPE_ITEM, null, $metadata);
+            if (!empty($convertedContent)) {
+                $resultSingleFile['qtiitems'][basename($currentDir) . '/' . $fileName] = $convertedContent;
             }
-            $this->persistResultsFile($result, realpath($this->outputPath) . DIRECTORY_SEPARATOR . $this->rawPath . DIRECTORY_SEPARATOR . $dirName);
+            $this->persistResultsFile($resultSingleFile, realpath($this->outputPath) . DIRECTORY_SEPARATOR . $this->rawPath . DIRECTORY_SEPARATOR . $dirName);
         } else {
             $result = $this->parseContentPackage();
         }
