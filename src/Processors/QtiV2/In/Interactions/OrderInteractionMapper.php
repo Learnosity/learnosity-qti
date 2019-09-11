@@ -26,7 +26,9 @@ class OrderInteractionMapper extends AbstractInteractionMapper
         /** @var SimpleChoice $simpleChoice */
         foreach ($interaction->getSimpleChoices() as $simpleChoice) {
             $this->orderMapping[$simpleChoice->getIdentifier()] = count($this->orderMapping);
-            $list[] = preg_replace('/\s+/', '', QtiMarshallerUtil::marshallCollection($simpleChoice->getContent()));
+            $choiceContent = QtiMarshallerUtil::marshallCollection($simpleChoice->getContent());
+            $listContent = trim(str_replace("\n", "", $choiceContent));
+            $list[] = $listContent;
         }
 
         $question = new orderlist('orderlist', $list);
