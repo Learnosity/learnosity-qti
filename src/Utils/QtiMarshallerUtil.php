@@ -67,7 +67,13 @@ class QtiMarshallerUtil
                 $results[] = static::marshall($component);
             }
         }
-        return implode('', $results);
+        // Clean extra whitespace characters from the returned string
+        $cleanedResults = trim(
+            str_replace(
+                ["\r\n", "\n", "\r", "\t"], "", implode('', $results)
+            )
+        );
+        return $cleanedResults;
     }
 
     public static function marshall(QtiComponent $component)
