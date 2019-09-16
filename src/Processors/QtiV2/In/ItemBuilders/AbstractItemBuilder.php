@@ -148,7 +148,9 @@ abstract class AbstractItemBuilder
                 case 'distractor_rationale_response_level':
                     $metadata->set_distractor_rationale_response_level($value);
                     break;
-
+                case 'distractor_rationale_per_response':
+                    $metadata->distractor_rationale_per_response = $metadataValues['distractor_rationale_per_response'];
+                    break;
                 case 'rubric_reference':
                     $metadata->set_rubric_reference($value);
             }
