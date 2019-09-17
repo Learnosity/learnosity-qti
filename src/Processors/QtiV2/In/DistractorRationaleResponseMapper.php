@@ -50,11 +50,8 @@ class DistractorRationaleResponseMapper
             $i = 0 ;
             foreach ($innerContent->childNodes as $child) {
                 $elementId = $child->getAttribute('id');
-                while($child->firstChild instanceof DOMElement){
-                    $child = $child->firstChild;
-                }
                 $distractorRationale[$i]['id'] = $elementId;
-                $distractorRationale[$i]['content'] = $child->ownerDocument->saveXML($child->parentNode);
+                $distractorRationale[$i]['content'] = $child->ownerDocument->saveXML($child);
                 $i++;
             }
             $results['distractor_rationale_per_response'] = $distractorRationale;
