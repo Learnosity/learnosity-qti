@@ -11,6 +11,7 @@ use LearnosityQti\Entities\BaseQuestionTypeAttribute;
 class shorttext_validation extends BaseQuestionTypeAttribute {
     protected $allow_negative_scores;
     protected $penalty;
+    protected $max_score;
     protected $min_score_if_attempted;
     protected $scoring_type;
     protected $unscored;
@@ -59,6 +60,26 @@ class shorttext_validation extends BaseQuestionTypeAttribute {
     */
     public function set_penalty ($penalty) {
         $this->penalty = $penalty;
+    }
+
+    /**
+     * Get Maximum score if attempted \
+     * Positive value indicating the maximum score if a student attempted the question. \
+     * @return number $max_score \
+     */
+    public function get_max_score()
+    {
+        return $this->max_score;
+    }
+
+    /**
+     * Set Minimum score if attempted \
+     * Positive value indicating the minimum score if a student attempted the question. \
+     * @param number $min_score_if_attempted \
+     */
+    public function set_max_score($max_score)
+    {
+        $this->max_score = $max_score;
     }
 
     /**
