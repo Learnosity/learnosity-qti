@@ -17,14 +17,14 @@ use qtism\data\QtiComponentCollection;
 
 class ItemBodyBuilder
 {
-    public function buildItemBody(array $interactions, $content = '')
+    public function buildItemBody(array $interactions, $content = '', $questionType)
     {
         // Try to build the <itemBody> according to items` content if exists
         if (empty($content)) {
             return $this->buildItemBodySimple($interactions);
         }
         try {
-            return $this->buildItemBodyWithItemContent($interactions, $content);
+            return $this->buildItemBodyWithItemContent($interactions, $content, $questionType);
             // If anything fails, <itemBody> can't be mapped due to whatever reasons
             // Probably simply due to its being wrapped in a tag which only accept inline content
             // Simply build it without considering items` content and put the content on the top
@@ -54,7 +54,7 @@ class ItemBodyBuilder
         }
     }
 
-    private function buildItemBodyWithItemContent(array $interactions, $content)
+    private function buildItemBodyWithItemContent(array $interactions, $content, $questionType)
     {
         // Map <itemBody>
         // TODO: Wrap these `content` stuff in a div
@@ -80,7 +80,11 @@ class ItemBodyBuilder
                 $interaction = $interactions[$questionReference]['interaction'];
                 $content = new FlowCollection();
                 if (isset($interactions[$questionReference]['extraContent'])) {
-                    $content->attach($interactions[$questionReference]['extraContent']);
+                    // In case of shorttext and clozetext its throwing error and closing div tag above the interaction
+                    $questionTypeArr = ['shorttext', 'clozetext', 'clozedropdown'];
+                    if (!in_array($questionType, $questionTypeArr)) {
+                        $content->attach($interactions[$questionReference]['extraContent']);
+                    }
                 }
                 $content->attach($interaction);
 				$replacement = ContentCollectionBuilder::buildContent($currentContainer, $content)->current();

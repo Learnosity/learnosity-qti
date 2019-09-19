@@ -37,6 +37,18 @@ class ClozeassociationMapper extends AbstractQuestionTypeMapper
         }
         $content = ContentCollectionBuilder::buildBlockStaticCollectionContent(QtiMarshallerUtil::unmarshallElement($template));
 
+        $metadata = $question->get_metadata();
+        $feedbackOptions = [];
+        if (isset($metadata) && !empty($metadata->get_distractor_rationale_response_level())) {
+            foreach ($metadata->get_distractor_rationale_response_level() as $feed):
+                $feedbackOptions[] = $feed;
+            endforeach;
+        }
+
+        if (isset($metadata) && !empty($metadata->get_distractor_rationale())) {
+            $feedbackOptions['general_feedback'] = $metadata->get_distractor_rationale();
+        }
+
         // Map `possible_responses` to gaps
         // TODO: Detect `img`
         $gapChoices = new GapChoiceCollection();
@@ -53,9 +65,15 @@ class ClozeassociationMapper extends AbstractQuestionTypeMapper
         $interaction = new GapMatchInteraction($interactionIdentifier, $gapChoices, $content);
         $interaction->setLabel($interactionLabel);
         $interaction->setPrompt($this->convertStimulusForPrompt($question->get_stimulus()));
+        $interaction->setShuffle($question->get_shuffle_options() ? true : false);
 
         $validationBuilder = new ClozeassociationValidationBuilder($possibleResponses);
-        list($responseDeclaration, $responseProcessing) = $validationBuilder->buildValidation($interaction->getResponseIdentifier(), $question->get_validation());
+
+        if (isset($feedbackOptions) && !empty($feedbackOptions)) {
+            list($responseDeclaration, $responseProcessing) = $validationBuilder->buildValidation($interactionIdentifier, $question->get_validation(), $feedbackOptions);
+        } else {
+            list($responseDeclaration, $responseProcessing) = $validationBuilder->buildValidation($interactionIdentifier, $question->get_validation(), []);
+        }
 
         return [$interaction, $responseDeclaration, $responseProcessing];
     }

@@ -39,6 +39,10 @@ class McqMapper extends AbstractQuestionTypeMapper
             }
         }
 
+        if (isset($metadata) && !empty($metadata->get_distractor_rationale())) {
+            $feedbackOptions['general_feedback'] = $metadata->get_distractor_rationale();
+        }
+
         foreach ($question->get_options() as $index => $option) {
 
             /** @var mcq_options_item $option */
