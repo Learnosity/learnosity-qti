@@ -17,7 +17,7 @@ class QuestionMapper
 
         /** @var BaseQuestionType $questionType */
         $questionType = EntityBuilder::build($questionTypeClassName, $questionJson['data']);
-        return new Question($questionJson['data']['type'], $questionJson['reference'], $questionType, $questionJson['itemreference'], $questionJson['content']);
+        return new Question($questionJson['data']['type'], $questionJson['reference'], $questionType, $questionJson['itemreference'], $questionJson['content'], $questionJson['feature']);
     }
 
     public function parseDataOnly(array $questionDataJson)
