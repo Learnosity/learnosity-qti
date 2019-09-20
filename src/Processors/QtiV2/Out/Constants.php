@@ -46,5 +46,7 @@ class Constants
     const DIRNAME_AUDIO = 'audio';
     const DIRNAME_IMAGE = 'images';
     const DIRNAME_ITEMS = 'items';
+    const SHARED_PASSAGE_DIV_CLASS = 'col-xs-6';
+    const SHARED_PASSAGE_FOLDER_NAME = 'sharedpassage';
     const DIRPATH_ASSET = '/vendor/learnosity/itembank/assets/';
 }
