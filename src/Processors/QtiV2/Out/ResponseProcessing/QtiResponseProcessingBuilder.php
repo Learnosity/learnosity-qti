@@ -28,8 +28,10 @@ class QtiResponseProcessingBuilder
         // creating feedbackInline outcome for questions which supports feedbackInline
         if (sizeof($feedBackOptions) > 1) {
             $multipleExpression = new ExpressionCollection();
-            $variable = new Variable('RESPONSE');
+            $variable = new Variable('FEEDBACK');
+            $basevalue = new BaseValue(BaseType::IDENTIFIER, 'identifier');
             $multipleExpression->attach($variable);
+            $multipleExpression->attach($basevalue);
             $feedbackResponseComponent = new SetOutcomeValue('FEEDBACK', new Multiple($multipleExpression));
             $responseRuleCollection->attach($feedbackResponseComponent);
         }
@@ -121,7 +123,7 @@ class QtiResponseProcessingBuilder
         // generating response else condition
         $responseElseRuleCollection = new ResponseRuleCollection();
 
-        // creating feedback outcome
+        // creating feedbackInline outcome for questions which supports feedbackInline
         if (sizeof($feedBackOptions) > 1) {
             $multipleExpression = new ExpressionCollection();
             $variable = new Variable($rid);
