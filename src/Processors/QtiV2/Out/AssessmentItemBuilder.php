@@ -1,5 +1,4 @@
 <?php
-
 namespace LearnosityQti\Processors\QtiV2\Out;
 
 use LearnosityQti\Entities\Question;
@@ -9,6 +8,10 @@ use qtism\common\enums\BaseType;
 use qtism\common\enums\Cardinality;
 use qtism\common\utils\Format;
 use qtism\data\AssessmentItem;
+use qtism\data\content\FlowStaticCollection;
+use qtism\data\content\ModalFeedback;
+use qtism\data\content\ModalFeedbackCollection;
+use qtism\data\content\TextRun;
 use qtism\data\processing\ResponseProcessing;
 use qtism\data\state\DefaultValue;
 use qtism\data\state\OutcomeDeclaration;
@@ -19,6 +22,7 @@ use qtism\data\state\ValueCollection;
 
 class AssessmentItemBuilder
 {
+
     const MAPPER_CLASS_BASE = 'LearnosityQti\Processors\QtiV2\Out\QuestionTypes\\';
 
     /**
@@ -29,7 +33,7 @@ class AssessmentItemBuilder
     public function __construct()
     {
         $this->itemBodyBuilder = new ItemBodyBuilder();
-        
+
         // to add multiple outcomedeclaration in case of feedback
         $this->outcomeDeclarationCollection = new OutcomeDeclarationCollection();
     }
@@ -48,31 +52,42 @@ class AssessmentItemBuilder
         foreach ($questions as $question) {
             $questionData = $question->to_array();
             $content = $questionData['content'];
-            $assessmentItem->setOutcomeDeclarations($this->buildOutcomeDeclarations());
-            
+            $questionType = $questionData['type'];
+            $assessmentItem->setOutcomeDeclarations($this->buildScoreOutcomeDeclarations(0, 'SCORE'));
+
             // add outcome declaration for MAXSCORE
             if (isset($questionData['data']['validation']['max_score'])) {
                 $max_score = $questionData['data']['validation']['max_score'];
-                $assessmentItem->setOutcomeDeclarations($this->buildMaxscoreOutcomeDeclarations($max_score));
+                $assessmentItem->setOutcomeDeclarations($this->buildScoreOutcomeDeclarations($max_score, 'MAXSCORE'));
             }
-            
+
             // add outcome declaration for MINSCORE
             if (isset($questionData['data']['validation']['min_score_if_attempted'])) {
                 $min_score = $questionData['data']['validation']['min_score_if_attempted'];
-                $assessmentItem->setOutcomeDeclarations($this->buildMinscoreOutcomeDeclarations($min_score));
+                $assessmentItem->setOutcomeDeclarations($this->buildScoreOutcomeDeclarations($min_score, 'MINSCORE'));
             }
 
+            $baseType = $this->getBaseType($questionData['type']);
+
             if (isset($questionData['data']['metadata']['distractor_rationale_response_level'])) {
-                $assessmentItem->setOutcomeDeclarations($this->buildFeedbackOutcomeDeclarations());
+                $assessmentItem->setOutcomeDeclarations($this->buildFeedbackOutcomeDeclarations('FEEDBACK', Cardinality::MULTIPLE, $baseType));
             }
+
+            if (isset($questionData['data']['metadata']['distractor_rationale'])) {
+                $distractorRational = $questionData['data']['metadata']['distractor_rationale'];
+                $assessmentItem->setOutcomeDeclarations($this->buildFeedbackOutcomeDeclarations('FEEDBACK_GENERAL'));
+                $assessmentItem->setModalFeedbacks(new ModalFeedbackCollection(array($this->buildModalFeedBack($distractorRational, 'FEEDBACK_GENERAL', 'correctOrIncorrect'))));
+            }
+
             /** @var Question $question */
             // Map the `questions` and its validation objects to be placed at <itemBody>
             // The extraContent usually comes from `stimulus` of item that mapped to inline interaction and has no `prompt`
             list($interaction, $responseDeclaration, $responseProcessing, $extraContent) = $this->map($question);
             if (!empty($responseDeclaration)) {
-                // TODO: Need to tidy this up
-                // Well sometimes we can have multiple response declarations, ie. clozetext
-                if ($responseDeclaration instanceof ResponseDeclarationCollection) {
+                if ($responseDeclaration instanceof ResponseDeclarationCollection && $responseDeclaration->count() > 0) {
+                    for ($i = 1; $i <= sizeof($responseDeclaration); $i++) {
+                        $assessmentItem->setOutcomeDeclarations($this->buildScoreOutcomeDeclarations(0.0, 'SCORE' . $i));
+                    }
                     $responseDeclarationCollection->merge($responseDeclaration);
                 } else {
                     $responseDeclarationCollection->attach($responseDeclaration);
@@ -89,7 +104,7 @@ class AssessmentItemBuilder
         }
 
         // Build <itemBody>
-        $assessmentItem->setItemBody($this->itemBodyBuilder->buildItemBody($interactions, $content));
+        $assessmentItem->setItemBody($this->itemBodyBuilder->buildItemBody($interactions, $content, $questionType));
 
         // Map <responseDeclaration>
         if (!empty($responseDeclarationCollection)) {
@@ -127,49 +142,42 @@ class AssessmentItemBuilder
         return $result;
     }
 
-    private function buildOutcomeDeclarations()
+    private function buildScoreOutcomeDeclarations($score, $type)
     {
         // Set <outcomeDeclaration> with assumption default value is always 0
-        $outcomeDeclaration = new OutcomeDeclaration('SCORE', BaseType::FLOAT);
-        $valueCollection = new ValueCollection();
-        $valueCollection->attach(new Value(0));
-        $outcomeDeclaration->setDefaultValue(new DefaultValue($valueCollection));
-        
-        $outcomeDeclarationCollection = $this->outcomeDeclarationCollection;
-        $outcomeDeclarationCollection->attach($outcomeDeclaration);
-        return $outcomeDeclarationCollection;
-    }
-    
-    private function buildMaxscoreOutcomeDeclarations($score)
-    {
-        // Set <outcomeDeclaration> with MAXSCORE identifier
-        $outcomeDeclaration = new OutcomeDeclaration('MAXSCORE', BaseType::FLOAT);
+        $outcomeDeclaration = new OutcomeDeclaration($type, BaseType::FLOAT);
         $valueCollection = new ValueCollection();
         $valueCollection->attach(new Value($score));
         $outcomeDeclaration->setDefaultValue(new DefaultValue($valueCollection));
-        $outcomeDeclarationCollection = $this->outcomeDeclarationCollection;
-        $outcomeDeclarationCollection->attach($outcomeDeclaration);
-        return $outcomeDeclarationCollection;
-    }
-    
-    private function buildMinscoreOutcomeDeclarations($score)
-    {
-        // Set <outcomeDeclaration> with MINSCORE identifier
-        $outcomeDeclaration = new OutcomeDeclaration('MINSCORE', BaseType::FLOAT);
-        $valueCollection = new ValueCollection();
-        $valueCollection->attach(new Value($score));
-        $outcomeDeclaration->setDefaultValue(new DefaultValue($valueCollection));
+
         $outcomeDeclarationCollection = $this->outcomeDeclarationCollection;
         $outcomeDeclarationCollection->attach($outcomeDeclaration);
         return $outcomeDeclarationCollection;
     }
 
-    private function buildFeedbackOutcomeDeclarations()
+    private function buildFeedbackOutcomeDeclarations($identifire, $cardinality = Cardinality::SINGLE, $baseType = BaseType::IDENTIFIER)
     {
         // Set <outcomeDeclaration> with  FEEDBACK identifier
-        $outcomeDeclaration = new OutcomeDeclaration('FEEDBACK', BaseType::IDENTIFIER, $cardinality = Cardinality::MULTIPLE);
+        $outcomeDeclaration = new OutcomeDeclaration($identifire, $baseType, $cardinality);
         $outcomeDeclarationCollection = $this->outcomeDeclarationCollection;
         $outcomeDeclarationCollection->attach($outcomeDeclaration);
         return $outcomeDeclarationCollection;
+    }
+
+    private function buildModalFeedBack($feedBackText, $identifier, $outComeidentifier)
+    {
+        $content = new FlowStaticCollection(array(new TextRun($feedBackText)));
+        $modalFeedback = new ModalFeedback($identifier, $outComeidentifier, $content);
+        return $modalFeedback;
+    }
+
+    private function getBaseType($questionType) {
+        switch ($questionType) {
+            case 'clozeassociation':
+                return BaseType::DIRECTED_PAIR;
+                break;
+            default:
+                return BaseType::IDENTIFIER;
+        }
     }
 }

@@ -106,10 +106,12 @@ class ConvertToQtiService
      */
     public function createAdditionalFolder($basePath)
     {
+
         FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::DIRNAME_AUDIO);
         FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::DIRNAME_VIDEO);
         FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::DIRNAME_IMAGES);
         FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS);
+        FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::SHARED_PASSAGE_FOLDER_NAME);
         $this->copyAllAssetFiles($this->inputPath . '/' . 'assets', $basePath);
     }
 
@@ -260,12 +262,14 @@ class ConvertToQtiService
         }
 
         $content = $json['content'];
+        $features = $json['features'];
         $tags = $json['tags'];
         $itemReference = $json['reference'];
 
         foreach ($json['questions'] as $question) :
             $question['content'] = $content;
             $question['itemreference'] = $itemReference;
+            $question['feature'] = $features;
             if (in_array($question['data']['type'], LearnosityExportConstant::$supportedQuestionTypes)) {
                 $result = Converter::convertLearnosityToQtiItem($question);
                 $result[0] = str_replace('/vendor/learnosity/itembank/', '', $result[0]);
@@ -514,7 +518,11 @@ class ConvertToQtiService
     private function updateJobManifest(Manifest $manifest, array $results)
     {
         $resources = array();
-        $additionalFileReferenceInfo = $this->getAdditionalFileInfoForManifestResource();
+        $featureArray = array();
+        if(is_array($results) && isset($results[0]['qti']) && is_array($results[0]['qti'][0][2])) {
+            $featureArray = $results[0]['qti'][0][2];
+        }
+        $additionalFileReferenceInfo = $this->getAdditionalFileInfoForManifestResource($results);
         foreach ($results as $result) {
             foreach ($result['json']['questions'] as $question) {
                 if (!empty($result['qti'])) {
@@ -526,6 +534,9 @@ class ConvertToQtiService
                     if (array_key_exists($question['reference'], $additionalFileReferenceInfo)) {
                         $files = $this->addAdditionalFileInfo($additionalFileReferenceInfo[$question['reference']], $files);
                     }
+                    if(sizeof($featureArray) > 0 && array_key_exists($question['reference'], $featureArray)) {
+                        $files = $this->addFeatureHtmlFilesInfo($featureArray[$question['reference']], $files);
+                    }
                     $file = new File();
                     $file->setHref(LearnosityExportConstant::DIRNAME_ITEMS . '/' . $question['reference'] . ".xml");
                     $files[] = $file;
@@ -535,6 +546,25 @@ class ConvertToQtiService
             }
         }
         return $resources;
+    }
+
+    /**
+     * This is used to add shared passage html file in manifest json file
+     *
+     * @param type $featureHtmlArray html files of shared passages
+     * @param array $files files to be added
+     * @return File array of files
+     */
+    private function addFeatureHtmlFilesInfo($featureHtmlArray, array $files)
+    {
+        foreach ($featureHtmlArray as $featureId => $featureHtml) {
+            if (file_put_contents($this->outputPath . '/' . $this->rawPath . '/' . LearnosityExportConstant::SHARED_PASSAGE_FOLDER_NAME . '/' . $featureId . '.html', $featureHtml)) {
+                $file = new File();
+                $file->setHref(LearnosityExportConstant::SHARED_PASSAGE_FOLDER_NAME . '/' . $featureId . '.html');
+                $files[] = $file;
+            }
+        }
+        return $files;
     }
 
     /**
@@ -613,7 +643,7 @@ class ConvertToQtiService
      *
      * @return array additional file info
      */
-    private function getAdditionalFileInfoForManifestResource()
+    private function getAdditionalFileInfoForManifestResource(array $results)
     {
         $learnosityManifestJson = json_decode(file_get_contents($this->inputPath . '/manifest.json'));
         $additionalFileInfoArray = array();
