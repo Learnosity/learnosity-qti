@@ -2,6 +2,7 @@
 
 namespace LearnosityQti\Processors\QtiV2\Out\Validation;
 
+use LearnosityQti\Processors\QtiV2\Out\ResponseProcessing\QtiResponseProcessingBuilder;
 use qtism\common\enums\BaseType;
 use qtism\common\enums\Cardinality;
 use qtism\data\state\ResponseDeclaration;
