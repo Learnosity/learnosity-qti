@@ -104,7 +104,6 @@ class RubricBlockMapper
                     ];
                 }
                 break;
-
             case ($rubricBlock->getClass() === 'ScoringGuidance'):
                 /* falls through */
             case (!$views->contains(View::CANDIDATE)):
@@ -114,6 +113,7 @@ class RubricBlockMapper
         }
 
         if (!empty($result)) {
+            $result['views'] = $rubricBlock->getViews();
             return $result;
         } else {
             $rubricUse = $rubricBlock->getUse();
@@ -277,7 +277,6 @@ class RubricBlockMapper
         // rubric content, as opposed to regular item or passage content
         $result['type']  = 'ScoringGuidance';
         $result['label'] = $rubricBlock->getLabel();
-
         return $result;
     }
 
