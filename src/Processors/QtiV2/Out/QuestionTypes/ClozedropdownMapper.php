@@ -32,24 +32,11 @@ class ClozedropdownMapper extends AbstractQuestionTypeMapper
         // Extra text that can't be mapped since we are in textEntryInteraction which does not have prompt
         $this->extraContent = $question->get_stimulus();
 
-        // Check if distractor_rationale_response_level exists
+        // Check if distractor_rationale exists
         $metadata = $question->get_metadata();
         $feedbackOptions = [];
-        $feedbackOptions = $metadata->get_distractor_rationale_response_level();
-        if (!empty($feedbackOptions)) {
-            $p = new P();
-            $choiceContent = new FlowCollection();
-            $i = 1;
-            foreach ($feedbackOptions as $feedback) {
-                $content = new InlineCollection(array(new TextRun($feedback)));
-                $feedbackinline = new FeedbackInline('FEEDBACK', 'IDENTIFIER_' . $i, 'true');
-                $feedbackinline->setContent($content);
-                $choiceContent->attach($feedbackinline);
-                $i++;
-            }
-        }
 
-        if (!empty($metadata->get_distractor_rationale())) {
+        if(isset($metadata) && !empty($metadata->get_distractor_rationale())){
             $feedbackOptions['general_feedback'] = $metadata->get_distractor_rationale();
         }
 
@@ -95,9 +82,7 @@ class ClozedropdownMapper extends AbstractQuestionTypeMapper
         $content = new FlowCollection();
         $content->merge($extracontent);
         $content->merge($interactionContent);
-        if (isset($choiceContent)) {
-            $content->merge($choiceContent);
-        }
+
         $div->setContent($content);
 
         // Build validation
