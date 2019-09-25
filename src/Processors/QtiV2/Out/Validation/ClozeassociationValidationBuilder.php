@@ -40,8 +40,8 @@ class ClozeassociationValidationBuilder extends AbstractQuestionValidationBuilde
                 throw new MappingException('Invalid or missing missing valid response `' . $validResponse . '``');
             }
             if (!empty($validResponse)) {
-                $first = ClozeassociationMapper::GAP_IDENTIFIER_PREFIX . $index;
-                $second = ClozeassociationMapper::GAPCHOICE_IDENTIFIER_PREFIX . $this->possibleResponsesMap[$validResponse];
+                $first = ClozeassociationMapper::GAPCHOICE_IDENTIFIER_PREFIX . $this->possibleResponsesMap[$validResponse];
+                $second = ClozeassociationMapper::GAP_IDENTIFIER_PREFIX . $index;
                 $values->attach(new Value(new QtiDirectedPair($first, $second)));
             }
         }
