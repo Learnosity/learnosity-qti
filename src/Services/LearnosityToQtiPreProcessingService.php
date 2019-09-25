@@ -10,7 +10,8 @@ use LearnosityQti\Utils\SimpleHtmlDom\SimpleHtmlDom;
 use LearnosityQti\Utils\StringUtil;
 use qtism\data\content\FlowCollection;
 use qtism\data\content\xhtml\ObjectElement;
-use qtism\data\content\xhtml\text\Div;
+use LearnosityQti\Processors\QtiV2\Out\Constants as LearnosityExportConstant;
+
 
 class LearnosityToQtiPreProcessingService
 {
@@ -42,7 +43,14 @@ class LearnosityToQtiPreProcessingService
         /** @var array $selfClosingTags ie. `img, br, input, meta, link, hr, base, embed, spacer` */
         $selfClosingTags = implode(array_keys($html->getSelfClosingTags()), ', ');
         foreach ($html->find($selfClosingTags) as &$node) {
-            $node->outertext = rtrim($node->outertext, '>') . '/>';
+            if (!strpos($node->outertext, '/>')) {
+                $node->outertext = rtrim($node->outertext, '>') . '/>';
+            }
+        }
+
+        foreach ($html->find('img') as &$node) {
+            $src = $this->getSourceBasedOnMediaFormat($node->attr['src']);
+            $node->outertext = str_replace($node->attr['src'], $src, $node->outertext);
         }
 
         // Replace these audioplayer and videoplayer feature with <object> nodes
@@ -55,7 +63,6 @@ class LearnosityToQtiPreProcessingService
                 LogService::log($e->getMessage() . '. Ignoring mapping feature ' . $node->outertext . '`');
             }
         }
-
         return $html->save();
     }
 
@@ -66,7 +73,8 @@ class LearnosityToQtiPreProcessingService
             $src = trim($node->attr['data-src']);
             $type = trim($node->attr['data-type']);
             if ($type === 'audioplayer' || $type === 'videoplayer') {
-                return QtiMarshallerUtil::marshallValidQti(new ObjectElement($src, MimeUtil::guessMimeType(basename($src))));
+              $src = $this->getSourceBasedOnMediaFormat($src);
+              return QtiMarshallerUtil::marshallValidQti(new ObjectElement($src, MimeUtil::guessMimeType(basename($src))));
             }
         // Process regular question feature
         } else {
@@ -89,10 +97,14 @@ class LearnosityToQtiPreProcessingService
                 $flowCollection = new FlowCollection();
                 $div = $this->createDivForSharedPassage();
                 $object = new ObjectElement('sharedpassage/' . $featureReference . '.html', 'text/html');
+
+                //return QtiMarshallerUtil::marshallValidQti($object);
+            } else if ($type === 'sharedpassage') {
+                $content = $feature['data']['content'];
+                $object = new ObjectElement('', 'text/html');
+                $object->setContent(ContentCollectionBuilder::buildObjectFlowCollectionContent(QtiMarshallerUtil::unmarshallElement($content)));
                 $object->setLabel($featureReference);
-                $flowCollection->attach($object);
-                $div->setContent($flowCollection);
-                return QtiMarshallerUtil::marshallValidQti($div);
+                return QtiMarshallerUtil::marshallValidQti($object);
             }
         }
         throw new MappingException($type . ' not supported');
@@ -110,5 +122,24 @@ class LearnosityToQtiPreProcessingService
         }
         // TODO: throw exception
         return null;
+    }
+
+    private function getSourceBasedOnMediaFormat($src)
+    {
+        $fileName = substr($src, strlen('/vendor/learnosity/itembank/assets/'));
+        $mimeType = MimeUtil::guessMimeType($fileName);
+        $mediaFormatArray = explode('/', $mimeType);
+        $href = '';
+        if (is_array($mediaFormatArray) && !empty($mediaFormatArray[0])) {
+            $mediaFormat = $mediaFormatArray[0];
+            if ($mediaFormat == 'video') {
+                $href = '../' . LearnosityExportConstant::VIDEO_FOLDER_NAME . '/' . $fileName;
+            } elseif ($mediaFormat == 'audio') {
+                $href = '../' . LearnosityExportConstant::AUDIO_FOLDER_NAME . '/' . $fileName;
+            } elseif ($mediaFormat == 'image') {
+                $href = '../' . LearnosityExportConstant::IMAGE_FOLDER_NAME . '/' . $fileName;
+            }
+        }
+        return $href;
     }
 }

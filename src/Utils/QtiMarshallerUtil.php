@@ -33,7 +33,9 @@ class QtiMarshallerUtil
             $components = new QtiComponentCollection();
             foreach ($dom->documentElement->childNodes as $element) {
                 if ($element instanceof \DOMText) {
-                    $component = new TextRun($element->nodeValue);
+                    if (!empty(trim($element->data))) {
+                        $component = new TextRun($element->nodeValue);
+                    }
                 } else {
                     $marshaller = $marshallerFactory->createMarshaller($element);
                     $component = $marshaller->unmarshall($element);

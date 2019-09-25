@@ -145,6 +145,9 @@ abstract class AbstractItemBuilder
                     });
                     $metadata->distractor_rationale_author = join('', array_column($value, 'content'));
                     break;
+                case 'distractor_rationale_response_level':
+                    $metadata->set_distractor_rationale_response_level($value);
+                    break;
 
                 case 'rubric_reference':
                     $metadata->set_rubric_reference($value);
@@ -185,6 +188,11 @@ abstract class AbstractItemBuilder
     protected function setItemMetadata(array $itemMetadata)
     {
         $this->metadata = array_merge_recursive($this->metadata, $itemMetadata);
+    }
+
+    protected function setDistractorRationaleResponseLevel(array $distratorRationalResponseLevel)
+    {
+        $this->metadata = array_merge_recursive($this->metadata, $distratorRationalResponseLevel);
     }
 
     public function setItemPointValue($itemPointValue)
