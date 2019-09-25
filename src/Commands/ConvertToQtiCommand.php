@@ -34,8 +34,9 @@ class ConvertToQtiCommand extends Command
                 'format',
                 'f',
                 InputOption::VALUE_REQUIRED,
-                'Conversion format for LMS currenlty only supported canvas LMS (if you want to QTI conversion supported for canvas please provide -f=canvas default is qti)',
-                'qti'
+                'A flag to choose how to format the QTI output content package, from a list of supported formats.
+                This option supports the following possible values: (canvas, qti). Pass the canvas option to export QTI content
+                that is compatible with Canvas LMS. The default is qti, which outputs non LMS-specific QTI.'
             )
         ;
     }
@@ -89,7 +90,7 @@ class ConvertToQtiCommand extends Command
                 "  <info>mo convert:to:qti -i /path/to/qti -o /path/to/save/folder -f qti|canvas</info>"
             ]);
         } else {
-            $Convert = new ConvertToQtiService($inputPath, $outputPath, $output, $format);
+            $Convert = ConvertToQtiService::initClass($inputPath, $outputPath, $output , $format);
             $result = $Convert->process();
             if ($result['status'] === false) {
                 $output->writeln('<error>Error running job</error>');
