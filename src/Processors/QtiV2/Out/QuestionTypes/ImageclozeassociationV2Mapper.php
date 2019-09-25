@@ -3,10 +3,11 @@
 namespace LearnosityQti\Processors\QtiV2\Out\QuestionTypes;
 
 use LearnosityQti\Entities\BaseQuestionType;
-use LearnosityQti\Entities\QuestionTypes\imageclozeassociation;
-use LearnosityQti\Entities\QuestionTypes\imageclozeassociation_image;
+use LearnosityQti\Entities\QuestionTypes\imageclozeassociationV2;
+use LearnosityQti\Entities\QuestionTypes\imageclozeassociationV2_image;
 use LearnosityQti\Exceptions\MappingException;
-use LearnosityQti\Processors\QtiV2\Out\Validation\ImageclozeassociationValidationBuilder;
+use LearnosityQti\Processors\QtiV2\Out\Validation\ImageclozeassociationV2ValidationBuilder;
+use LearnosityQti\Services\ConvertToQtiService;
 use LearnosityQti\Utils\CurlUtil;
 use LearnosityQti\Utils\MimeUtil;
 use LearnosityQti\Utils\QtiCoordinateUtil;
@@ -21,7 +22,7 @@ use qtism\data\content\ObjectFlowCollection;
 use qtism\data\content\TextRun;
 use qtism\data\content\xhtml\ObjectElement;
 
-class ImageclozeassociationMapper extends AbstractQuestionTypeMapper
+class ImageclozeassociationV2Mapper extends AbstractQuestionTypeMapper
 {
     const GAPIMG_IDENTIFIER_PREFIX = 'CHOICE_';
     const ASSOCIABLEHOTSPOT_IDENTIFIER_PREFIX = 'ASSOCIABLEHOTSPOT_';
@@ -31,14 +32,15 @@ class ImageclozeassociationMapper extends AbstractQuestionTypeMapper
         //TODO: Need validation a question shall have at least 1 {{response}} and 1 item in `possible_responses`
         /** @var imageclozeassociation $question */
         $question = $questionType;
+        
+        // Check if distractor_rationale_response_level exists
         $feedbackOptions = [];
-
         $metadata = $question->get_metadata();
         if (isset($metadata)) {
             if (!empty($metadata->get_distractor_rationale())) {
-                $feedbackOptions['general_feedback'] = $metadata->get_distractor_rationale();
+                $feedbackOptions['genral_feedback'] = $metadata->get_distractor_rationale();
             }
-        }
+        } 
 
         // Map `possible_responses` to `gapImg`(s)
         $possibleResponses = $question->get_possible_responses();
@@ -47,16 +49,23 @@ class ImageclozeassociationMapper extends AbstractQuestionTypeMapper
 
         // Build the main background image `object`
         $imageObject = $this->buildMainImageObject($question->get_image());
-
+        $response_containers = $question->get_response_containers();
+        $response_coordinates = array(); 
+        $response_positions = array();
+        foreach($response_containers as $res):
+            $response_coordinates['x'] = $res->get_x();
+            $response_coordinates['y'] = $res->get_y();
+            $response_positions[] = $response_coordinates;
+        endforeach;
+        
         // Build associable hotspots based on `response_positions`
-        $associableHotspotCollection = $this->buildAssociableHotspotCollection($question->get_response_positions(), $imageObject->getWidth(), $imageObject->getHeight());
-
+        $associableHotspotCollection = $this->buildAssociableHotspotCollection($response_positions, $imageObject->getWidth(), $imageObject->getHeight());
         // Build dah` interaction
         $interaction = new GraphicGapMatchInteraction($interactionIdentifier, $imageObject, $gapImageCollection, $associableHotspotCollection);
         $interaction->setLabel($interactionLabel);
         $interaction->setPrompt($this->convertStimulusForPrompt($question->get_stimulus()));
 
-        $validationBuilder = new ImageclozeassociationValidationBuilder($possibleResponses);
+        $validationBuilder = new ImageclozeassociationV2ValidationBuilder($possibleResponses);
         list($responseDeclaration, $responseProcessing) = $validationBuilder->buildValidation($interaction->getResponseIdentifier(), $question->get_validation(), $feedbackOptions);
 
         return [$interaction, $responseDeclaration, $responseProcessing];
@@ -108,18 +117,20 @@ class ImageclozeassociationMapper extends AbstractQuestionTypeMapper
         return $gapImageCollection;
     }
 
-    private function buildMainImageObject(imageclozeassociation_image $image)
+    private function buildMainImageObject(imageclozeassociationV2_image $image)
     {
         $imageSrc = $image->get_src();
+
         $learnosityService = ConvertToQtiService::getInstance();
         $inputPath = $learnosityService->getInputPath();
         $imageRealPath = str_replace("/vendor/learnosity/itembank",$inputPath, $imageSrc); 
+        //list($imageWidth, $imageHeight) = CurlUtil::getImageSize(CurlUtil::prepareUrlForCurl($imageSrc));
         list($imageWidth, $imageHeight) = getimagesize(($imageRealPath));
         $imageObject = new ObjectElement($imageSrc, MimeUtil::guessMimeType($imageSrc));
         $imageObject->setWidth($imageWidth);
         $imageObject->setHeight($imageHeight);
 
-        // Map `alt` to object content
+        // Map 'alt' to object content
         if (!is_null($image->get_alt())) {
             $objectFlowCollection = new ObjectFlowCollection();
             $objectFlowCollection->attach(new TextRun($image->get_alt()));
@@ -150,5 +161,6 @@ class ImageclozeassociationMapper extends AbstractQuestionTypeMapper
         $gapImageObject->setWidth($width);
         $gapImageObject->setHeight($height);
         return $gapImageObject;
+        
     }
 }

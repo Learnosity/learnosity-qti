@@ -67,7 +67,7 @@ class AssessmentItemBuilder
                 $assessmentItem->setOutcomeDeclarations($this->buildScoreOutcomeDeclarations($min_score, 'MINSCORE'));
             }
 
-            $baseType = $this->getBaseType($questionData['type']);
+            $baseType = $this->getBaseType($questionData['type'] && $questionType=='mcq');
 
             if (isset($questionData['data']['metadata']['distractor_rationale_response_level'])) {
                 $assessmentItem->setOutcomeDeclarations($this->buildFeedbackOutcomeDeclarations('FEEDBACK', Cardinality::MULTIPLE, $baseType));
