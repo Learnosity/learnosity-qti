@@ -41,7 +41,12 @@ class LongtextV2Mapper extends AbstractQuestionTypeMapper
         }
         
         $builder = new LongtextValidationBuilder();
-        list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation(), $feedbackOptions);
+        if (isset($feedbackOptions) && !empty($feedbackOptions)) {
+            list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation(), $feedbackOptions);
+        } else {
+            list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation());
+        }
+
         return [$interaction, $responseDeclaration, $responseProcessing];
     }
 }

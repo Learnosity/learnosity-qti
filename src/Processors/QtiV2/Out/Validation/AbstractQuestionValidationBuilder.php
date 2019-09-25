@@ -43,6 +43,7 @@ abstract class AbstractQuestionValidationBuilder
         $penalty = 0;
 
         if (method_exists($validation, 'get_valid_response')) {
+            $type[] = 'score';
             $score = $validation->get_valid_response()->get_score();
         }
 
