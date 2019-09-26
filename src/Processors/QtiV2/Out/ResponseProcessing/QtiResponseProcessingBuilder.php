@@ -28,10 +28,8 @@ class QtiResponseProcessingBuilder
         // creating feedbackInline outcome for questions which supports feedbackInline
         if (sizeof($feedBackOptions) > 1) {
             $multipleExpression = new ExpressionCollection();
-            $variable = new Variable('FEEDBACK');
-            $basevalue = new BaseValue(BaseType::IDENTIFIER, 'identifier');
+            $variable = new Variable('RESPONSE');
             $multipleExpression->attach($variable);
-            $multipleExpression->attach($basevalue);
             $feedbackResponseComponent = new SetOutcomeValue('FEEDBACK', new Multiple($multipleExpression));
             $responseRuleCollection->attach($feedbackResponseComponent);
         }

@@ -44,11 +44,7 @@ class ShorttextMapper extends AbstractQuestionTypeMapper
         // Build those validation
         $isCaseSensitive = $question->get_case_sensitive() === null ? false : $question->get_case_sensitive();
         $validationBuilder = new ShorttextValidationBuilder($isCaseSensitive);
-        if (isset($feedbackOptions) && !empty($feedbackOptions)) {
-            list($responseDeclaration, $responseProcessing) = $validationBuilder->buildValidation($interactionIdentifier, $question->get_validation(), $feedbackOptions, $isCaseSensitive);
-        } else {
-            list($responseDeclaration, $responseProcessing) = $validationBuilder->buildValidation($interactionIdentifier, $question->get_validation(), $isCaseSensitive);
-        }
+        list($responseDeclaration, $responseProcessing) = $validationBuilder->buildValidation($interactionIdentifier, $question->get_validation(), $isCaseSensitive, $feedbackOptions);
 
         // TODO: This is a freaking hack
         // Wrap this interaction in a block since our `shorttext` meant to be blocky and not inline

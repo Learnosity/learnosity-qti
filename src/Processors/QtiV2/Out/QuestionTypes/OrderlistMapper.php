@@ -59,7 +59,7 @@ class OrderlistMapper extends AbstractQuestionTypeMapper
         $interaction->setOrientation(Orientation::VERTICAL);
 
         $builder = new OrderlistValidationBuilder($indexIdentifiersMap);
-        list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation(),$feedbackOptions);
+        list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation(), 1, $feedbackOptions);
 
         return [$interaction, $responseDeclaration, $responseProcessing];
     }

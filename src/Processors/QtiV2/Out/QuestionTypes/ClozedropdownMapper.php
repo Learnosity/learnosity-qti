@@ -87,7 +87,7 @@ class ClozedropdownMapper extends AbstractQuestionTypeMapper
 
         // Build validation
         $validationBuilder = new ClozedropdownValidationBuilder($valueIdentifierMapPerInlineChoices);
-        list($responseDeclaration, $responseProcessing) = $validationBuilder->buildValidation($interactionIdentifier, $question->get_validation(), $feedbackOptions);
+        list($responseDeclaration, $responseProcessing) = $validationBuilder->buildValidation($interactionIdentifier, $question->get_validation(), 1, $feedbackOptions);
 
         return [$div, $responseDeclaration, $responseProcessing];
     }

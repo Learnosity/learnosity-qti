@@ -40,7 +40,9 @@ class QtiMarshallerUtil
                     $marshaller = $marshallerFactory->createMarshaller($element);
                     $component = $marshaller->unmarshall($element);
                 }
-                $components->attach($component);
+                if (isset($component)) {
+                    $components->attach($component);
+                }
             }
             return $components;
         } catch (\Exception $e) {

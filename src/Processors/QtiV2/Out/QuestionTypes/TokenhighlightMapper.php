@@ -46,7 +46,7 @@ class TokenhighlightMapper extends AbstractQuestionTypeMapper
 
         // Build validation
         $builder = new TokenhighlightValidationBuilder($indexIdentifierMap);
-        list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interaction->getResponseIdentifier(), $question->get_validation());
+        list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interaction->getResponseIdentifier(), $question->get_validation(), 1, $feedbackOptions);
         return [$interaction, $responseDeclaration, $responseProcessing];
     }
 }

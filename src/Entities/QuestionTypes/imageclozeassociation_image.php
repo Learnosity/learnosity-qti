@@ -13,6 +13,8 @@ class imageclozeassociation_image extends BaseQuestionTypeAttribute {
     protected $alt;
     protected $title;
     protected $scale;
+    protected $width;
+    protected $height;
     
     public function __construct(
             )
@@ -36,6 +38,36 @@ class imageclozeassociation_image extends BaseQuestionTypeAttribute {
     public function set_src ($src) {
         $this->src = $src;
     }
+
+    /**
+	 * Get image width
+	 * @return type
+	 */
+	public function get_width() {
+		return $this->width;
+	}
+
+	/*
+	 * Set image width
+	 */
+	public function set_width() {
+		$this->width = $width;
+	}
+
+	/**
+	 * Get image height
+	 * @return type
+	 */
+	public function get_height() {
+		return $this->height;
+	}
+
+	/**
+	 * Set image height
+	 */
+	public function set_height() {
+		$this->height = $height;
+	}
 
     /**
     * Get Image alternative text \

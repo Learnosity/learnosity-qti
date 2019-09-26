@@ -80,15 +80,18 @@ class LearnosityToQtiPreProcessingService
         } else {
             $nodeClassAttribute = $node->attr['class'];
             $featureReference = $this->getFeatureReferenceFromClassName($nodeClassAttribute);
-            $feature = $this->widgets[$featureReference];
-            $type = $feature['data']['type'];
-
+            if (isset($this->widgets[$featureReference])) {
+                $feature = $this->widgets[$featureReference];
+                $type = isset($feature['data']['type']) ? $feature['data']['type'] : '';
+                $src = isset($feature['data']['src']) ? $feature['data']['src'] : '';
+            } else {
+                $feature = $this->widgets;
+                $type = isset($feature[1]['type']) ? $feature[1]['type'] : '';
+                $src = isset($feature[1]['src']) ? $feature[1]['src'] : '';
+            }
             if ($type === 'audioplayer' || $type === 'videoplayer') {
-                $src = $feature['data']['src'];
-                $object = new ObjectElement('sharedpassage/'.$featureReference.'.html', 'text/html');
-                $object->setLabel($featureReference);
-                return QtiMarshallerUtil::marshallValidQti($object);
-
+                return;
+                
             } else if ($type === 'sharedpassage') {
                 $flowCollection = new FlowCollection();
                 $div = $this->createDivForSharedPassage();
@@ -97,7 +100,9 @@ class LearnosityToQtiPreProcessingService
                 $flowCollection->attach($object);
                 $div->setContent($flowCollection);
                 return QtiMarshallerUtil::marshallValidQti($div);
-            }
+            } else {
+				throw new MappingException($type . 'feature not supported');
+			}
         }
         throw new MappingException($type . ' not supported');
     }

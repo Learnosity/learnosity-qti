@@ -10,10 +10,12 @@ use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Processors\IMSCP\In\ManifestMapper;
 use LearnosityQti\Processors\IMSCP\Out\ManifestWriter;
 use LearnosityQti\Processors\Learnosity\In\ItemMapper;
+use LearnosityQti\Processors\Learnosity\In\FeatureMapper;
 use LearnosityQti\Processors\Learnosity\In\QuestionMapper;
 use LearnosityQti\Processors\QtiV2\In\SharedPassageMapper;
 use LearnosityQti\Processors\QtiV2\In\TestMapper;
 use LearnosityQti\Processors\QtiV2\Out\ItemWriter;
+use LearnosityQti\Processors\QtiV2\Out\FeatureWriter;
 use LearnosityQti\Processors\QtiV2\Out\QuestionWriter;
 use LearnosityQti\Services\LearnosityToQtiPreProcessingService;
 use LearnosityQti\Services\LogService;
@@ -33,6 +35,7 @@ class Converter
     const LEARNOSITY_DATA_ITEM = 'item';
     const LEARNOSITY_DATA_QUESTION = 'question';
     const LEARNOSITY_DATA_QUESTION_DATA = 'questiondata';
+    const LEARNOSITY_DATA_FEATURE = 'feature';
 
     public static function convertImscpDirectoryToLearnosityDirectory($imscpDirectory, $learnosityDirectory, $baseAssetsUrl = '', $validate = true)
     {
@@ -290,13 +293,27 @@ class Converter
 
     public static function convertLearnosityToQtiItem(array $data)
     {
+        $jsonType = self::LEARNOSITY_DATA_QUESTION;
         if (isset($data['data'])) {
             if (!isset($data['reference'])) {
                 throw new MappingException('Invalid `item` JSON. Key `reference` shall not be empty');
             }
         }
+
+        // Guess this JSON is a 'feature'
+        if (isset($data['data']['type']) && in_array($data['data']['type'], ['audioplayer','videoplayer'])) {
+            if (!isset($data['reference'])) {
+                throw new MappingException('Invalid `item` JSON. Key `reference` shall not be empty');
+            }
+            $jsonType =  self::LEARNOSITY_DATA_FEATURE;
+        }
+
         try {
-            list($xmlString, $messages, $featureHtml) = self::convertLearnosityQuestion($data);
+            if ($jsonType == self::LEARNOSITY_DATA_FEATURE) {
+                list($xmlString, $messages, $questionReference, $featureHtml) = self::convertLearnosityFeature($data);
+            } else {
+                list($xmlString, $messages, $questionReference, $featureHtml) = self::convertLearnosityQuestion($data);
+            }
         } catch (\Exception $ex) {
             LogService::log('Unknown JSON format');
         }
@@ -307,7 +324,16 @@ class Converter
         } catch (\Exception $e) {
             LogService::log('Unknown error occurred. The QTI XML produced may not be valid');
         }
-        return [$xmlString, $messages, $featureHtml];
+        return [$xmlString, $messages, $questionReference, $featureHtml];
+    }
+
+    private static function convertLearnosityFeature(array $featureJson)
+    {
+        $preprocessingService = new LearnosityToQtiPreProcessingService($featureJson);
+        $featureMapper = new FeatureMapper();
+        $featureWriter = new FeatureWriter();
+        $feature = $featureMapper->parse($preprocessingService->processJson($featureJson));
+        return $featureWriter->convert($feature);
     }
 
     private static function convertLearnosityQuestion(array $questionJson)

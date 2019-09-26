@@ -66,7 +66,7 @@ class ImageclozeassociationV2Mapper extends AbstractQuestionTypeMapper
         $interaction->setPrompt($this->convertStimulusForPrompt($question->get_stimulus()));
 
         $validationBuilder = new ImageclozeassociationV2ValidationBuilder($possibleResponses);
-        list($responseDeclaration, $responseProcessing) = $validationBuilder->buildValidation($interaction->getResponseIdentifier(), $question->get_validation(), $feedbackOptions);
+        list($responseDeclaration, $responseProcessing) = $validationBuilder->buildValidation($interaction->getResponseIdentifier(), $question->get_validation(), 1, $feedbackOptions);
 
         return [$interaction, $responseDeclaration, $responseProcessing];
     }

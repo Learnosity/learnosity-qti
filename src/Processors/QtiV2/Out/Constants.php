@@ -20,6 +20,11 @@ class Constants
         'imageclozeassociationV2',
         'hotspot'
     ];
+    
+    public static $supportedFeatureTypes = [
+        'videoplayer',
+        'audioplayer'
+    ];
 
     /**
      * Note that only question types that maps to response declaration with `single` baseType would be able to be mapped with `mapping`.
