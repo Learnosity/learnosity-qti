@@ -14,7 +14,8 @@ class Constants
         'gapMatchInteraction',
         'orderInteraction',
         'graphicGapMatchInteraction',
-        'hotspotInteraction'
+        'hotspotInteraction',
+        'mediaInteraction'
     ];
 
     public static $needMergeInteractionTypes = [

@@ -68,7 +68,7 @@ class HotspotMapper extends AbstractQuestionTypeMapper
         }
 
         $builder = new HotspotValidationBuilder($question->get_multiple_responses(), $valueIdentifierMap);
-        list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation(), $feedbackOptions);
+        list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation(), 1, $feedbackOptions);
 
         return [$interaction, $responseDeclaration, $responseProcessing];
     }

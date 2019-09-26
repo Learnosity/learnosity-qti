@@ -35,6 +35,6 @@ class ItemWriter
         // Flush out all the error messages stored in this static class, also ensure they are unique
         $messages = array_values(array_unique(LogService::flush()));
         $featureHtml = array();
-        return [$xml->saveToString(true), $messages, $featureHtml];
+        return [$xml->saveToString(true), $messages, $itemReference, $featureHtml];
     }
 }

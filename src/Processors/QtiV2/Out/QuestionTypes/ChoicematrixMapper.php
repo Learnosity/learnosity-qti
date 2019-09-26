@@ -55,7 +55,7 @@ class ChoicematrixMapper extends AbstractQuestionTypeMapper
         $interaction->setMinAssociations($isMultipleResponses ? 1 : $stemCount);
 
         $builder = new ChoicematrixValidationBuilder($stemIndexIdentifierMap, $optionIndexIdentifierMap);
-        list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation(), $feedbackOptions);
+        list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation(), 1, $feedbackOptions);
 
         return [$interaction, $responseDeclaration, $responseProcessing];
     }

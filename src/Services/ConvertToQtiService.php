@@ -31,7 +31,7 @@ class ConvertToQtiService
     const CONVERT_LOG_FILENAME = 'convert-to-qti.log';
     const MANIFEST_FILE_NAME = 'imsmanifest.xml';
     const IMS_CONTENT_PACKAGE_NAME = 'qti.zip';
-    const IMS_XSD_LOCATION = 'http://www.imsglobal.org/xsd/imscp_v1p1 http://www.imsglobal.org/xsd/qti/qtiv2p1/qtiv2p1_imscpv1p2_v1p0.xsd';
+    const IMS_XSD_LOCATION = 'http://www.imsglobal.org/xsd/imscp_v1p1 http://www.imsglobal.org/xsd/qti/qtiv2p1/qtiv2p1_imscpv1p2_v1p0.xsd http://www.w3.org/Math/XMLSchema/mathml2/mathml2.xsd';
     const IMS_XMLNS_LOCATION = 'http://www.imsglobal.org/xsd/imscp_v1p1';
     const IMS_IMSMD_LOCATION = 'http://ltsc.ieee.org/xsd/LOM';
     const IMS_IMSQTI_LOCATION = 'http://www.imsglobal.org/xsd/imsqti_metadata_v2p1';
@@ -90,6 +90,11 @@ class ConvertToQtiService
     public function getInputPath()
     {
         return $this->inputPath;
+    }
+
+    public function getFormat()
+    {
+        return $this->format;
     }
 
     public function process()
@@ -231,7 +236,8 @@ class ConvertToQtiService
         return $this->convertAssessmentItem(json_decode($itemContent, true));
     }
 
-    private function checkAndAddNamespaceInMathTag($content){
+    private function checkAndAddNamespaceInMathTag($content)
+    {
         return str_replace("<math>", "<math xmlns='http://www.w3.org/1998/Math/MathML'>", $content);
     }
 
@@ -283,38 +289,87 @@ class ConvertToQtiService
         $finalXml = [];
         $tagsArray = [];
 
-        if ($this->format == 'canvas') {
-            $json['content'] = strip_tags($json['content'], "<span>");
-        }
-
         $content = $json['content'];
         $features = $json['features'];
         $tags = $json['tags'];
         $itemReference = $json['reference'];
 
-        foreach ($json['questions'] as $question) :
-            $question['content'] = $content;
-            $question['itemreference'] = $itemReference;
-            $question['feature'] = $features;
-            if (in_array($question['data']['type'], LearnosityExportConstant::$supportedQuestionTypes)) {
-                $result = Converter::convertLearnosityToQtiItem($question);
-                $result[0] = str_replace('/vendor/learnosity/itembank/', '', $result[0]);
-                $result[0] = str_replace('xmlns:default="http://www.w3.org/1998/Math/MathML"', '', $result[0]);
-                //TODO: Change this to only select MathML elements?
-                $result[0] = str_replace('<default:', '<', $result[0]);
-                $result[0] = str_replace('</default:', '</', $result[0]);
-                $finalXml[] = $result;
-                $tagsArray[$question['reference']] = $tags;
-            } else {
-                $result = [
-                    '',
-                    [
-                        'Ignoring' . $question['data']['type'] . ' , currently unsupported'
-                    ]
-                ];
-                $this->output->writeln("<error>Question type `{$question['data']['type']}` not yet supported, ignoring</error>");
+        if (!empty($json['questions']) && (sizeof($features)>=1)) {
+            $referenceArray = $this->getReferenceArray($json);
+            foreach ($json['questions'] as $question) :
+                $question['content'] = $content;
+                $question['itemreference'] = $itemReference;
+                $featureReference = $this->getFeatureReference($question['reference'], $referenceArray);
+                if ($featureReference != "") {
+                    $question['feature'] = $this->getFeature($featureReference, $features);
+                } else {
+                    $question['feature'] = [];
+                }
+                if (in_array($question['data']['type'], LearnosityExportConstant::$supportedQuestionTypes)) {
+                    $result = Converter::convertLearnosityToQtiItem($question);
+                    $result[0] = str_replace('/vendor/learnosity/itembank/', '', $result[0]);
+                    $result[0] = str_replace('xmlns:default="http://www.w3.org/1998/Math/MathML"', '', $result[0]);
+                    //TODO: Change this to only select MathML elements?
+                    $result[0] = str_replace('<default:', '<', $result[0]);
+                    $result[0] = str_replace('</default:', '</', $result[0]);
+                    $finalXml['questions'][] = $result;
+                    $tagsArray[$question['reference']] = $tags;
+                } else {
+                    $result = [
+                        '',
+                        [
+                            'Ignoring' . $question['data']['type'] . ' , currently unsupported'
+                        ]
+                    ];
+                    $this->output->writeln("<error>Question type `{$question['data']['type']}` not yet supported, ignoring</error>");
+                }
+            endforeach;
+        }
+        if (!empty($json['questions']) && empty($json['features'])) {
+            foreach ($json['questions'] as $question) {
+                $question['content'] = $content;
+                $question['itemreference'] = $itemReference;
+                $question['feature'] = [];
+                if (in_array($question['data']['type'], LearnosityExportConstant::$supportedQuestionTypes)) {
+                    $result = Converter::convertLearnosityToQtiItem($question);
+                    $result[0] = str_replace('/vendor/learnosity/itembank/', '', $result[0]);
+                    $result[0] = str_replace('xmlns:default="http://www.w3.org/1998/Math/MathML"', '', $result[0]);
+                    //TODO: Change this to only select MathML elements?
+                    $result[0] = str_replace('<default:', '<', $result[0]);
+                    $result[0] = str_replace('</default:', '</', $result[0]);
+                    $finalXml['questions'][] = $result;
+                    $tagsArray[$question['reference']] = $tags;
+                } else {
+                    $result = [
+                        '',
+                        [
+                            'Ignoring' . $question['data']['type'] . ' , currently unsupported'
+                        ]
+                    ];
+                    $this->output->writeln("<error>Question type `{$question['data']['type']}` not yet supported, ignoring</error>");
+                }
             }
-        endforeach;
+        }
+        if (!empty($json['features']) && empty($json['questions'])) {
+            foreach ($json['features'] as $feature) {
+                $feature['content'] = $content;
+                $feature['itemreference'] = $itemReference;
+                if (in_array($feature['data']['type'], LearnosityExportConstant::$supportedFeatureTypes)) {
+                    $result = Converter::convertLearnosityToQtiItem($feature);
+                    $result[0] = str_replace('/vendor/learnosity/itembank/', '', $result[0]);
+                    $finalXml['features'][] = $result;
+                    $tagsArray[$feature['reference']] = $tags;
+                } else {
+                    $result = [
+                        '',
+                        [
+                            'Ignoring' . $feature['data']['type'] . ' , currently unsupported'
+                        ]
+                    ];
+                    $this->output->writeln("<error>Feature type `{$feature['data']['type']}` not yet supported, ignoring</error>");
+                }
+            }
+        }
         return [
             'qti'  => $finalXml,
             'json' => $json,
@@ -456,7 +511,7 @@ class ConvertToQtiService
     {
         $resources = $imsManifestXml->createElement("resources");
         $resourcesContent = $manifestContent->getResources();
-        foreach ($resourcesContent as $index => $resourceContent) {
+        foreach ($resourcesContent[0] as $index => $resourceContent) {
             $resource = $imsManifestXml->createElement("resource");
             $resource->setAttribute("identifier", 'i' . $resourceContent->getIdentifier());
             $resource->setAttribute("type", $resourceContent->getType());
@@ -523,12 +578,17 @@ class ConvertToQtiService
         }
         $this->output->writeln("\n<info>" . static::INFO_OUTPUT_PREFIX . "Writing conversion results: " . $outputFilePath . '.json' . "</info>\n");
         foreach ($results as $result) {
-            if (empty($result['qti'])) {
-                continue;
-            }
-            foreach (array_values($result['qti']) as $idx => $qti) {
-                if (!empty($result['json']['questions'][$idx])) {
-                    file_put_contents($outputFilePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS . '/' . $result['json']['questions'][$idx]['reference'] . '.xml', $qti[0]);
+            if (!empty($result['qti'])) {
+                if (!empty($result['json']['questions'])) {
+                    foreach ($result['qti']['questions'] as $key => $value) {
+                        file_put_contents($outputFilePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS . '/' . $result['json']['questions'][$key]['reference'] . '.xml', $value[0]);
+                    }
+                }
+
+                if (!empty($result['json']['features']) && empty($result['json']['questions'])) {
+                    foreach ($result['qti']['features'] as $key => $value) {
+                        file_put_contents($outputFilePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS . '/' . $result['json']['features'][$key]['reference'] . '.xml', $value[0]);
+                    }
                 }
             }
         }
@@ -545,33 +605,82 @@ class ConvertToQtiService
     {
         $resources = array();
         $featureArray = array();
-        if(is_array($results) && isset($results[0]['qti']) && is_array($results[0]['qti'][0][2])) {
-            $featureArray = $results[0]['qti'][0][2];
-        }
+    
         $additionalFileReferenceInfo = $this->getAdditionalFileInfoForManifestResource($results);
         foreach ($results as $result) {
-            foreach ($result['json']['questions'] as $question) {
-                if (!empty($result['qti'])) {
-                    $files = array();
-                    $resource = new Resource();
-                    $resource->setIdentifier($question['reference']);
-                    $resource->setType(Resource::TYPE_PREFIX_ITEM . "xmlv2p1");
-                    $resource->setHref(LearnosityExportConstant::DIRNAME_ITEMS . '/' . $question['reference'] . ".xml");
-                    if (array_key_exists($question['reference'], $additionalFileReferenceInfo)) {
-                        $files = $this->addAdditionalFileInfo($additionalFileReferenceInfo[$question['reference']], $files);
-                    }
-                    if(sizeof($featureArray) > 0 && array_key_exists($question['reference'], $featureArray)) {
-                        $files = $this->addFeatureHtmlFilesInfo($featureArray[$question['reference']], $files);
-                    }
-                    $file = new File();
-                    $file->setHref(LearnosityExportConstant::DIRNAME_ITEMS . '/' . $question['reference'] . ".xml");
-                    $files[] = $file;
-                    $resource->setFiles($files);
-                    $resources[] = $resource;
+            if (!empty($result['json']['questions'])) {
+                $resourcesArray[] = $this->addQuestionReference($result['json']['questions'], $result, $additionalFileReferenceInfo);
+            }
+            if (!empty($result['json']['features']) && empty($result['json']['questions'])) {
+                $resourcesArray[] = $this->addFeatureReference($result['json']['features'], $result, $additionalFileReferenceInfo);
+            }
+        }
+        return $resourcesArray;
+    }
+
+    private function addQuestionReference($questions, $result, $additionalFileReferenceInfo)
+    {
+        $resources = array();
+        if (!empty($result['qti']['questions'])) {
+            foreach ($result['qti']['questions'] as $question) {
+                $files = array();
+                $resource = new Resource();
+                $resource->setIdentifier($question['2']);
+                $resource->setType(Resource::TYPE_PREFIX_ITEM."xmlv2p1");
+                $resource->setHref(LearnosityExportConstant::DIRNAME_ITEMS . '/' . $question['2'].".xml");
+                if (array_key_exists($question['2'], $additionalFileReferenceInfo)) {
+                    $files = $this->addAdditionalFileInfo($additionalFileReferenceInfo[$question['2']], $files);
                 }
+                if (!empty($question['3']) && array_key_exists($question['2'], $question['3'])) {
+                    $files = $this->addFeatureHtmlFilesInfo($question['3'][$question['2']], $files);
+                }
+                if (!empty($question['3']) && array_key_exists('features', $question['3'])) {
+                    $files = $this->addAdditionalFileInfo($additionalFileReferenceInfo[$question['3']['features']], $files);
+                }
+                $file = new File();
+                $file->setHref(LearnosityExportConstant::DIRNAME_ITEMS . '/' . $question['2'].".xml");
+                $files[] = $file;
+                $resource->setFiles($files);
+                $resources[] = $resource;
             }
         }
         return $resources;
+    }
+
+    private function addFeatureReference($features, $result, $additionalFileReferenceInfo)
+    {
+        $resources = array();
+        foreach ($features as $feature) {
+            if (!empty($result['qti'])) {
+                $files = array();
+                $resource = new Resource();
+                $resource->setIdentifier($feature['reference']);
+                $resource->setType(Resource::TYPE_PREFIX_ITEM."xmlv2p1");
+                $resource->setHref($feature['reference'].".xml");
+                if (array_key_exists($feature['reference'], $additionalFileReferenceInfo)) {
+                    $files = $this->addAdditionalFileInfo($additionalFileReferenceInfo[$feature['reference']], $files);
+                }
+
+                $file = new File();
+                $file->setHref($feature['reference'].".xml");
+                $files[] = $file;
+                $resource->setFiles($files);
+                $resources[] = $resource;
+            }
+        }
+        return $resources;
+    }
+    
+    private function addFeatureFilesInfo($featureArray, array $files)
+    {
+        foreach ($featureHtmlArray as $featureId => $featureHtml) {
+            if (file_put_contents($this->outputPath . '/' . $this->rawPath . '/' . self::SHARED_PASSAGE_FOLDER_NAME . '/' . $featureId . '.html', $featureHtml)) {
+                $file = new File();
+                $file->setHref(self::SHARED_PASSAGE_FOLDER_NAME . '/' . $featureId . '.html');
+                $files[] = $file;
+            }
+        }
+        return $files;
     }
 
     /**
@@ -677,13 +786,24 @@ class ConvertToQtiService
             $activityArray = $learnosityManifestJson->assets->items;
             foreach ($activityArray as $itemReference => $itemValue) {
                 $questionArray = $itemValue;
-                if (is_object($questionArray->questions)) {
+                if (isset($questionArray->questions) && is_object($questionArray->questions)) {
                     foreach ($questionArray->questions as $questionKey => $questionValue) {
                         $valueArray = array();
-                        foreach ($questionValue as $questions => $value) {
+                        foreach ($questionValue as $value) {
                             $valueArray[] = $value->replacement;
                         }
                         $additionalFileInfoArray[$questionKey] = $valueArray;
+                    }
+                }
+                if (isset($questionArray->features) && is_object($questionArray->features)) {
+                    foreach ($questionArray->features as $featureKey => $featureValue) {
+                        $valueArray = array();
+                        foreach ($featureValue as $value) {
+                            if (isset($value->replacement)) {
+                                $valueArray[] = $value->replacement;
+                            }
+                        }
+                        $additionalFileInfoArray[$featureKey] = $valueArray;
                     }
                 }
             }
@@ -705,5 +825,51 @@ class ConvertToQtiService
         }
 
         return $errors;
+    }
+    
+    private function getReferenceArray($json)
+    {
+        $content = strip_tags($json['content'], "<span>");
+        $contentArr = explode('</span>', $content);
+        $referenceArr = [];
+        for ($i=0; $i< sizeof($contentArr); $i++) {
+            if (strpos($contentArr[$i], 'feature')) {
+                $featureReference = trim(str_replace('<span class="learnosity-feature feature-', '', $contentArr[$i]));
+                $featureReference = trim(str_replace('">', "", $featureReference));
+            }
+                       
+            if (strpos($contentArr[$i], 'question')) {
+                $questionReference = trim(str_replace('<span class="learnosity-response question-', '', $contentArr[$i]));
+                $questionReference = trim(str_replace('">', "", $questionReference));
+                $referenceArr[$i]['questionReference'] = $questionReference;
+                if (isset($featureReference)) {
+                    $referenceArr[$i]['featureReference'] = $featureReference;
+                }
+            }
+        }
+        return $referenceArr;
+    }
+    private function getFeatureReference($questionReference, $referenceArray)
+    {
+        $featureReference = '';
+        foreach ($referenceArray as $reference) {
+            if ($questionReference == $reference['questionReference']) {
+                if (isset($reference['featureReference'])) {
+                    $featureReference = $reference['featureReference'];
+                    continue;
+                }
+            }
+        }
+        return $featureReference;
+    }
+    private function getFeature($featureReference, $features)
+    {
+        $featureArray = [];
+        foreach ($features as $feature) {
+            if ($feature['reference'] == $featureReference) {
+                $featureArray[] = $feature;
+            }
+        }
+        return $featureArray;
     }
 }
