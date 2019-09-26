@@ -89,6 +89,21 @@ class RubricBlockMapper
                 }
                 break;
 
+            case ($rubricBlock->getUse() !== 'rationale');
+                if ($views->contains(View::AUTHOR)) {
+                    $result = [
+                        'question_metadata' => [
+                            'distractor_rationale_author' => [
+                                [
+                                    'label' => $rubricBlock->getLabel(),
+                                    'content' => QtiMarshallerUtil::marshallCollection($rubricBlock->getContent()),
+                                ]
+                            ],
+                        ],
+                    ];
+                }
+                break;
+
             case ($rubricBlock->getUse() === 'stimulus'):
                 if ($views->contains(View::CANDIDATE)) {
                     $contents = QtiMarshallerUtil::marshallCollection($rubricBlock->getContent());
