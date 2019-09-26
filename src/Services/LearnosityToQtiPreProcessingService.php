@@ -94,16 +94,10 @@ class LearnosityToQtiPreProcessingService
                 $object = new ObjectElement($src, MimeUtil::guessMimeType(basename($src)));
                 $object->setLabel($featureReference);
                 return QtiMarshallerUtil::marshallValidQti($object);
-            } elseif ($type === 'sharedpassage') {
-                $flowCollection = new FlowCollection();
-                $div = $this->createDivForSharedPassage();
-                $object = new ObjectElement('sharedpassage/' . $featureReference . '.html', 'text/html');
-
-                //return QtiMarshallerUtil::marshallValidQti($object);
             } else if ($type === 'sharedpassage') {
                 $flowCollection = new FlowCollection();
                 $div = $this->createDivForSharedPassage();
-                $object = new ObjectElement('sharedpassage/'.$featureReference.'.html', 'text/html');
+                $object = new ObjectElement('sharedpassage/' . $featureReference . '.html', 'text/html');
                 $object->setLabel($featureReference);
                 $flowCollection->attach($object);
                 $div->setContent($flowCollection);
