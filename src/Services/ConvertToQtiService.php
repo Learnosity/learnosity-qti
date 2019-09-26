@@ -509,7 +509,7 @@ class ConvertToQtiService
         $resourcesContent = $manifestContent->getResources();
         foreach ($resourcesContent[0] as $index => $resourceContent) {
             $resource = $imsManifestXml->createElement("resource");
-            $resource->setAttribute("identifier", 'i' . $resourceContent->getIdentifier());
+            $resource->setAttribute("identifier", $resourceContent->getIdentifier());
             $resource->setAttribute("type", $resourceContent->getType());
             $resource->setAttribute("href", $resourceContent->getHref());
 
@@ -621,7 +621,7 @@ class ConvertToQtiService
             foreach ($result['qti']['questions'] as $question) {
                 $files = array();
                 $resource = new Resource();
-                $resource->setIdentifier($question['2']);
+                $resource->setIdentifier('i'.$question['2']);
                 $resource->setType(Resource::TYPE_PREFIX_ITEM."xmlv2p1");
                 $resource->setHref(LearnosityExportConstant::DIRNAME_ITEMS . '/' . $question['2'].".xml");
                 if (array_key_exists($question['2'], $additionalFileReferenceInfo)) {
@@ -650,7 +650,7 @@ class ConvertToQtiService
             if (!empty($result['qti'])) {
                 $files = array();
                 $resource = new Resource();
-                $resource->setIdentifier($feature['reference']);
+                $resource->setIdentifier('i'.$feature['reference']);
                 $resource->setType(Resource::TYPE_PREFIX_ITEM."xmlv2p1");
                 $resource->setHref($feature['reference'].".xml");
                 if (array_key_exists($feature['reference'], $additionalFileReferenceInfo)) {
