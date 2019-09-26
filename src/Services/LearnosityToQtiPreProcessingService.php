@@ -13,6 +13,7 @@ use qtism\data\content\xhtml\ObjectElement;
 use qtism\data\content\xhtml\text\Div;
 use LearnosityQti\Processors\QtiV2\Out\Constants as LearnosityExportConstant;
 
+
 class LearnosityToQtiPreProcessingService
 {
     private $widgets = [];
@@ -73,26 +74,30 @@ class LearnosityToQtiPreProcessingService
             $src = trim($node->attr['data-src']);
             $type = trim($node->attr['data-type']);
             if ($type === 'audioplayer' || $type === 'videoplayer') {
-                $src = $this->getSourceBasedOnMediaFormat($src);
-                return QtiMarshallerUtil::marshallValidQti(new ObjectElement($src, MimeUtil::guessMimeType(basename($src))));
+              $src = $this->getSourceBasedOnMediaFormat($src);
+              return QtiMarshallerUtil::marshallValidQti(new ObjectElement($src, MimeUtil::guessMimeType(basename($src))));
             }
         // Process regular question feature
         } else {
             $nodeClassAttribute = $node->attr['class'];
             $featureReference = $this->getFeatureReferenceFromClassName($nodeClassAttribute);
-            $feature = $this->widgets[$featureReference];
-            $type = $feature['data']['type'];
-
+            if (isset($this->widgets[$featureReference])) {
+                $feature = $this->widgets[$featureReference];
+                $type = isset($feature['data']['type']) ? $feature['data']['type'] : '';
+                $src = isset($feature['data']['src']) ? $feature['data']['src'] : '';
+            } else {
+                $feature = $this->widgets;
+                $type = isset($feature[1]['type']) ? $feature[1]['type'] : '';
+                $src = isset($feature[1]['src']) ? $feature[1]['src'] : '';
+            }
             if ($type === 'audioplayer' || $type === 'videoplayer') {
-                $src = $feature['data']['src'];
-                $object = new ObjectElement('sharedpassage/'.$featureReference.'.html', 'text/html');
+                $object = new ObjectElement($src, MimeUtil::guessMimeType(basename($src)));
                 $object->setLabel($featureReference);
                 return QtiMarshallerUtil::marshallValidQti($object);
-
             } else if ($type === 'sharedpassage') {
                 $flowCollection = new FlowCollection();
                 $div = $this->createDivForSharedPassage();
-                $object = new ObjectElement('sharedpassage/'.$featureReference.'.html', 'text/html');
+                $object = new ObjectElement('sharedpassage/' . $featureReference . '.html', 'text/html');
                 $object->setLabel($featureReference);
                 $flowCollection->attach($object);
                 $div->setContent($flowCollection);
