@@ -274,7 +274,7 @@ class ConvertToLearnosityService
                     $this->output->writeln("<comment>Converting assessment item {$itemCount}: $relativeDir/$resourceHref</comment>");
                 }
 
-                $convertedContent = $this->convertAssessmentItemInFile($assessmentItemContents, $itemReference, $metadata, $currentDir, $resourceHref, $itemTagsArray, $resource['type']);
+                $convertedContent = $this->convertAssessmentItemInFile($assessmentItemContents, $currentDir, $resourceHref, $resource['type'], $itemReference, $metadata , $itemTagsArray);
                 $scoringRubric = '';
                 if (isset($convertedContent['rubric'])) {
                     // Check if scoring rubric is present in converted string
@@ -557,6 +557,7 @@ class ConvertToLearnosityService
             }
 
             $resourcePath = $currentDir . '/' . $resourceHref;
+
             $results = $this->convertAssessmentItem($xmlString, $itemReference, $resourcePath, $metadata, $itemTagsArray, $resourceType);
             } catch (\Exception $e) {
             $targetFilename = $resourceHref;
