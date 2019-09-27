@@ -75,14 +75,20 @@ class RubricBlockMapper
                 }
                 break;
 
-            case ($rubricBlock->getClass() === 'DistractorRationale'):
-                /* falls through */
             case ($rubricBlock->getUse() === 'rationale'):
                 if ($views->contains(View::CANDIDATE)) {
                     $mapper = new DistractorRationaleResponseMapper();
                     $distractorRationalResponseLevelArray = $mapper->parseWithDistractorRationaleResponseComponent($rubricBlock);
                     $result ['question_metadata'] = $distractorRationalResponseLevelArray;
-                } else if ($views->contains(View::AUTHOR)) {
+                } else if ($views->contains(View::AUTHOR) || $views->contains(View::SCORER) || $views->contains(View::TUTOR)) {
+                    $mapper = new DistractorRationaleResponseMapper();
+                    $distractorRationalResponseLevelArray = $mapper->parseWithDistractorRationalePerResponseComponent($rubricBlock);
+                    $result ['question_metadata'] = $distractorRationalResponseLevelArray;
+                }
+                break;
+
+            case ($rubricBlock->getClass() === 'DistractorRationale');
+                if ($views->contains(View::AUTHOR)) {
                     $result = [
                         'question_metadata' => [
                             'distractor_rationale_author' => [

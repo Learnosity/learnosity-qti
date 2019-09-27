@@ -2,19 +2,20 @@
 
 namespace LearnosityQti\Processors\QtiV2\In;
 
-use \LearnosityQti\AppContainer;
-use \LearnosityQti\Exceptions\MappingException;
-use \LearnosityQti\Processors\QtiV2\In\Processings\AbstractXmlProcessing;
-use \LearnosityQti\Processors\QtiV2\In\Processings\ProcessingInterface;
-use \LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
-use \LearnosityQti\Services\LogService;
-use \qtism\data\AssessmentItem;
-use \qtism\data\content\ItemBody;
-use \qtism\data\processing\ResponseProcessing;
-use \qtism\data\storage\xml\XmlDocument;
-use qtism\data\content\RubricBlock;
+use LearnosityQti\AppContainer;
+use LearnosityQti\Entities\Question;
+use LearnosityQti\Exceptions\MappingException;
+use LearnosityQti\Processors\QtiV2\In\Processings\AbstractXmlProcessing;
+use LearnosityQti\Processors\QtiV2\In\Processings\ProcessingInterface;
+use LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate;
+use LearnosityQti\Services\LogService;
+use qtism\data\AssessmentItem;
 use qtism\data\content\BlockCollection;
+use qtism\data\content\ItemBody;
+use qtism\data\content\RubricBlock;
+use qtism\data\processing\ResponseProcessing;
 use qtism\data\QtiComponentCollection;
+use qtism\data\storage\xml\XmlDocument;
 
 class ItemMapper
 {
@@ -170,15 +171,40 @@ class ItemMapper
         if ($assessmentItem->getTitle()) {
             $item->set_description($assessmentItem->getTitle());
         }
+
         // Handle additional (related) items being passed back
         $rubric = $itemBuilder->getRubricItem();
 
-        $questions = $itemBuilder->getQuestions();
+        $questions = $this->removeDistractorRationalePerResponse($itemBuilder->getQuestions());
         
         $features = $itemBuilder->getFeatures();
 
         // Support additional (related) items being passed back
         return [$item, $questions, $features, $rubric];
+    }
+
+    private function removeDistractorRationalePerResponse($questions)
+    {
+        foreach ($questions as $questionId => $question) {
+            $choicesIdentifires = array();
+            if (method_exists($question->get_data(), 'get_options') && is_array($question->get_data()->get_options())) {
+                $choiceArray = $question->get_data()->get_options();
+                $choicesIdentifires = array_column($choiceArray, 'value');
+            }
+            if (method_exists($question->get_data(), 'get_metadata') && isset($question->get_data()->get_metadata()->distractor_rationale_per_response) && is_array($question->get_data()->get_metadata()->distractor_rationale_per_response)) {
+                $distractorRationalePerResponses = $question->get_data()->get_metadata()->distractor_rationale_per_response;
+                $newDist = array();
+                foreach ($distractorRationalePerResponses as $distractorRationalePerResponse) {
+                    foreach ($choicesIdentifires as $choiceIdentifire) {
+                        if (stristr($distractorRationalePerResponse['id'], $choiceIdentifire) !== FALSE) {
+                            $newDist[] = $distractorRationalePerResponse['content'];
+                        }
+                    }
+                }
+                $questions[$questionId]->get_data()->get_metadata()->distractor_rationale_per_response = $newDist;
+            }
+        }
+        return $questions;
     }
 
     /**
@@ -363,7 +389,7 @@ class ItemMapper
      *
      * @param  \qtism\data\processing\ResponseProcessing $responseProcessing
      *
-     * @return \LearnosityQti\Processors\QtiV2\In\ResponseProcessingTemplate
+     * @return ResponseProcessingTemplate
      */
     private function getResponseProcessingTemplate(ResponseProcessing $responseProcessing = null)
     {
