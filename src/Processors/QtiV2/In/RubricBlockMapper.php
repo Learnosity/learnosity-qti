@@ -75,8 +75,6 @@ class RubricBlockMapper
                 }
                 break;
 
-            case ($rubricBlock->getClass() === 'DistractorRationale'):
-                /* falls through */
             case ($rubricBlock->getUse() === 'rationale'):
                 if ($views->contains(View::CANDIDATE)) {
                     $mapper = new DistractorRationaleResponseMapper();
@@ -89,7 +87,7 @@ class RubricBlockMapper
                 }
                 break;
 
-            case ($rubricBlock->getUse() !== 'rationale');
+            case ($rubricBlock->getClass() === 'DistractorRationale');
                 if ($views->contains(View::AUTHOR)) {
                     $result = [
                         'question_metadata' => [
