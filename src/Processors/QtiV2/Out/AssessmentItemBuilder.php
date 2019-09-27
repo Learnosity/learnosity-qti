@@ -48,10 +48,10 @@ class AssessmentItemBuilder
         $assessmentItem = new AssessmentItem($itemIdentifier, $itemIdentifier, false);
         $assessmentItem->setLabel($itemLabel);
         $assessmentItem->setToolName('Learnosity');
-
+        
         $learnosityService = ConvertToQtiService::getInstance();
         $format = $learnosityService->getFormat();
-
+        
         // Store interactions on this array to later be placed on <itemBody>
         $interactions = [];
         $responseDeclarationCollection = new ResponseDeclarationCollection();

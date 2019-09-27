@@ -254,7 +254,11 @@ class ConvertToQtiService
                 $this->itemReferences = $activityJson->data->items;
                 if (!empty($this->itemReferences)) {
                     foreach ($this->itemReferences as $itemref) {
-                        $itemref = md5($itemref);
+                        if(isset($itemref) && is_object($itemref) && isset($itemref->id)) {
+                            $itemref = md5($itemref->id);
+                        } else {
+                            $itemref = md5($itemref);
+                        }
                         $folders[] = $this->inputPath . '/items/' . $itemref . '.json';
                     }
                 } else {

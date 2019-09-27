@@ -13,6 +13,7 @@ use qtism\data\content\xhtml\ObjectElement;
 use qtism\data\content\xhtml\text\Div;
 use LearnosityQti\Processors\QtiV2\Out\Constants as LearnosityExportConstant;
 
+
 class LearnosityToQtiPreProcessingService
 {
     private $widgets = [];
@@ -73,8 +74,8 @@ class LearnosityToQtiPreProcessingService
             $src = trim($node->attr['data-src']);
             $type = trim($node->attr['data-type']);
             if ($type === 'audioplayer' || $type === 'videoplayer') {
-                $src = $this->getSourceBasedOnMediaFormat($src);
-                return QtiMarshallerUtil::marshallValidQti(new ObjectElement($src, MimeUtil::guessMimeType(basename($src))));
+              $src = $this->getSourceBasedOnMediaFormat($src);
+              return QtiMarshallerUtil::marshallValidQti(new ObjectElement($src, MimeUtil::guessMimeType(basename($src))));
             }
         // Process regular question feature
         } else {
@@ -90,12 +91,11 @@ class LearnosityToQtiPreProcessingService
                 $src = isset($feature[1]['src']) ? $feature[1]['src'] : '';
             }
             if ($type === 'audioplayer' || $type === 'videoplayer') {
-                return;
-                
+                 return;
             } else if ($type === 'sharedpassage') {
                 $flowCollection = new FlowCollection();
                 $div = $this->createDivForSharedPassage();
-                $object = new ObjectElement('sharedpassage/'.$featureReference.'.html', 'text/html');
+                $object = new ObjectElement('sharedpassage/' . $featureReference . '.html', 'text/html');
                 $object->setLabel($featureReference);
                 $flowCollection->attach($object);
                 $div->setContent($flowCollection);
