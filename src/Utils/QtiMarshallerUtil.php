@@ -5,6 +5,7 @@ use DOMDocument;
 use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Processors\QtiV2\Marshallers\LearnosityMarshallerFactory;
 use LearnosityQti\Services\ConvertToLearnosityService;
+use LearnosityQti\Utils\General\StringHelper;
 use qtism\data\content\FeedbackInline;
 use qtism\data\content\TextRun;
 use qtism\data\content\xhtml\ObjectElement;
@@ -20,6 +21,17 @@ class QtiMarshallerUtil
         try {
             libxml_use_internal_errors(true);
 
+            $found = StringHelper::findStringPositionRecursive($string, '<math');
+            $i = 0;
+            if(is_array($found) && sizeof($found) > 0) {
+                foreach($found as $index => $pos) {
+                    if($i > 0){
+                        $pos += 43*$i;
+                    }
+                    $string = substr_replace($string, "<math xmlns='http://www.w3.org/1998/Math/MathML'", $pos, 5);
+                    $i++;
+                }
+            }
             $dom = new DOMDocument('1.0', 'UTF-8');
             $dom->formatOutput = true;
 

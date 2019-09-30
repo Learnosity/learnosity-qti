@@ -25,8 +25,9 @@ class MimeUtil
         $mimetypes = self::privBuildMimeArray();
 
         // return mime type for extension
-        if (isset($mimetypes[$ext])) {
-            return $mimetypes[$ext];
+        $mimeTypeExtension = strtolower($ext);
+        if (isset($mimetypes[$mimeTypeExtension])) {
+            return $mimetypes[$mimeTypeExtension];
             // if the extension wasn't found return octet-stream
         } else {
             return 'application/octet-stream';
