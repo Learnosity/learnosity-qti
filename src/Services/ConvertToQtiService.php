@@ -214,6 +214,7 @@ class ConvertToQtiService
                 $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Learnosity JSON file " . basename($file) . " Not found in: {$this->inputPath}/items </info>");
             }
         }
+        
         $resourceInfo = $this->updateJobManifest($finalManifest, $results);
         $finalManifest->setResources($resourceInfo);
         $this->persistResultsFile($results, realpath($this->outputPath) . '/' . $this->rawPath . '/');
@@ -508,21 +509,22 @@ class ConvertToQtiService
         $resources = $imsManifestXml->createElement("resources");
         $resourcesContents = $manifestContent->getResources();
         foreach ($resourcesContents as $resourcesContent) {
+           $i = 0;
            foreach ($resourcesContent as $index => $resourceContent) {
                 $resource = $imsManifestXml->createElement("resource");
                 $resource->setAttribute("identifier", $resourceContent->getIdentifier());
                 $resource->setAttribute("type", $resourceContent->getType());
                 $resource->setAttribute("href", $resourceContent->getHref());
-                if (!empty($results[$index]['tags'][$results[0]['json']['questions'][$index]['reference']])) {
+                if (isset($results[$i]) && !empty($results[$i]['tags'][$results[$i]['json']['questions'][$index]['reference']])) {
                     $metadata = $imsManifestXml->createElement("metadata");
-                    $tagsArray = $results[$index]['tags'][$results[0]['json']['questions'][$index]['reference']];
+                    $tagsArray = $results[$i]['tags'][$results[$i]['json']['questions'][$index]['reference']];
                     if (is_array($tagsArray) && sizeof($tagsArray) > 0) {
                         $resourceMatadata = $this->addResourceMetaDataInfo($imsManifestXml, $tagsArray);
                         $metadata->appendChild($resourceMatadata);
                     }
                     $resource->appendChild($metadata);
                 }
-
+                $i++;
                 $filesData = $resourceContent->getFiles();
                 foreach ($filesData as $fileContent) {
                     $file = $imsManifestXml->createElement("file");
@@ -578,7 +580,8 @@ class ConvertToQtiService
             if (!empty($result['qti'])) {
                 if (!empty($result['json']['questions'])) {
                     foreach ($result['qti']['questions'] as $key => $value) {
-                        file_put_contents($outputFilePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS . '/' . $result['json']['questions'][$key]['reference'] . '.xml', $value[0]);
+                        
+                         file_put_contents($outputFilePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS . '/' . $result['json']['questions'][$key]['reference'] . '.xml', $value[0]);
                     }
                 }
 
