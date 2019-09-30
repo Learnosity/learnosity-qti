@@ -515,7 +515,7 @@ class ConvertToQtiService
                 $resource->setAttribute("identifier", $resourceContent->getIdentifier());
                 $resource->setAttribute("type", $resourceContent->getType());
                 $resource->setAttribute("href", $resourceContent->getHref());
-                if (isset($results[$i]) && !empty($results[$i]['tags'][$results[$i]['json']['questions'][$index]['reference']])) {
+                if (isset($results[$i]) && !empty($results[$i]) && !empty($results[$i]['tags'][$results[$i]['json']['questions'][$index]['reference']])) {
                     $metadata = $imsManifestXml->createElement("metadata");
                     $tagsArray = $results[$i]['tags'][$results[$i]['json']['questions'][$index]['reference']];
                     if (is_array($tagsArray) && sizeof($tagsArray) > 0) {

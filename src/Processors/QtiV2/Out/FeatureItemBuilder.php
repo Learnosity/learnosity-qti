@@ -38,6 +38,6 @@ class FeatureItemBuilder
         }
         $body->appendChild($this->doc->createElement('p', $feature['data']['content']));
         $html->appendChild($body);
-        return $this->doctype . $this->doc->saveHTML();
+        return html_entity_decode($this->doctype . $this->doc->saveHTML());
     }
 }
