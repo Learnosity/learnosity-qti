@@ -232,13 +232,8 @@ class ConvertToQtiService
     private function convertLearnosityInDirectory($file)
     {
         $this->output->writeln("<comment>Converting Learnosity JSON {$file}</comment>");
-        $itemContent = $this->checkAndAddNamespaceInMathTag(file_get_contents($file));
+        $itemContent = file_get_contents($file);
         return $this->convertAssessmentItem(json_decode($itemContent, true));
-    }
-
-    private function checkAndAddNamespaceInMathTag($content)
-    {
-        return str_replace("<math>", "<math xmlns='http://www.w3.org/1998/Math/MathML'>", $content);
     }
 
     // Traverse the -i option and find all paths with files

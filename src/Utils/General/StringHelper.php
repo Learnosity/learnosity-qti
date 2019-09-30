@@ -69,4 +69,14 @@ class StringHelper
         $bytes = $length / 2;
         return bin2hex(openssl_random_pseudo_bytes($bytes));
     }
+
+    public static function findStringPositionRecursive($haystack, $needle, $offset = 0, &$results = array()) {                
+       $offset = strpos($haystack, $needle, $offset);
+        if ($offset === false) {
+            return $results;
+        } else {
+            $results[] = $offset;
+            return self::findStringPositionRecursive($haystack, $needle, ($offset + 1), $results);
+        }
+    }
 }
