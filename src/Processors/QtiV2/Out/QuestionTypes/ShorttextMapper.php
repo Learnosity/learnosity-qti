@@ -4,7 +4,9 @@ namespace LearnosityQti\Processors\QtiV2\Out\QuestionTypes;
 
 use LearnosityQti\Entities\BaseQuestionType;
 use LearnosityQti\Entities\QuestionTypes\shorttext;
+use LearnosityQti\Processors\QtiV2\Out\ContentCollectionBuilder;
 use LearnosityQti\Processors\QtiV2\Out\Validation\ShorttextValidationBuilder;
+use LearnosityQti\Utils\QtiMarshallerUtil;
 use qtism\data\content\FlowCollection;
 use qtism\data\content\interactions\TextEntryInteraction;
 use qtism\data\content\xhtml\text\Div;

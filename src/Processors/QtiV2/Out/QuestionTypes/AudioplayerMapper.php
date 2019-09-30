@@ -23,7 +23,9 @@ class AudioplayerMapper extends AbstractQuestionTypeMapper
         $interaction = new MediaInteraction($interactionIdentifier, true, $object);
         $interaction->setAutostart(true);
         $interaction->setMinPlays(1);
-        $interaction->setMaxPlays($questionData['playback_limit']);
+        if(isset($questionData['playback_limit'])) {
+            $interaction->setMaxPlays($questionData['playback_limit']);
+        }
         $interaction->setLabel($interactionLabel);
 
         // Set loop

@@ -365,6 +365,7 @@ class ConvertToQtiService
                 }
             }
         }
+        
         return [
             'qti'  => $finalXml,
             'json' => $json,
@@ -505,30 +506,31 @@ class ConvertToQtiService
     private function addResourceInfoInManifest(Manifest $manifestContent, DOMDocument $imsManifestXml, array $results)
     {
         $resources = $imsManifestXml->createElement("resources");
-        $resourcesContent = $manifestContent->getResources();
-        foreach ($resourcesContent[0] as $index => $resourceContent) {
-            $resource = $imsManifestXml->createElement("resource");
-            $resource->setAttribute("identifier", $resourceContent->getIdentifier());
-            $resource->setAttribute("type", $resourceContent->getType());
-            $resource->setAttribute("href", $resourceContent->getHref());
-
-            if (!empty($results[$index]['tags'][$resourceContent->getIdentifier()])) {
-                $metadata = $imsManifestXml->createElement("metadata");
-                $tagsArray = $results[$index]['tags'][$resourceContent->getIdentifier()];
-                if (is_array($tagsArray) && sizeof($tagsArray) > 0) {
-                    $resourceMatadata = $this->addResourceMetaDataInfo($imsManifestXml, $tagsArray);
-                    $metadata->appendChild($resourceMatadata);
+        $resourcesContents = $manifestContent->getResources();
+        foreach ($resourcesContents as $resourcesContent) {
+           foreach ($resourcesContent as $index => $resourceContent) {
+                $resource = $imsManifestXml->createElement("resource");
+                $resource->setAttribute("identifier", $resourceContent->getIdentifier());
+                $resource->setAttribute("type", $resourceContent->getType());
+                $resource->setAttribute("href", $resourceContent->getHref());
+                if (!empty($results[$index]['tags'][$results[0]['json']['questions'][$index]['reference']])) {
+                    $metadata = $imsManifestXml->createElement("metadata");
+                    $tagsArray = $results[$index]['tags'][$results[0]['json']['questions'][$index]['reference']];
+                    if (is_array($tagsArray) && sizeof($tagsArray) > 0) {
+                        $resourceMatadata = $this->addResourceMetaDataInfo($imsManifestXml, $tagsArray);
+                        $metadata->appendChild($resourceMatadata);
+                    }
+                    $resource->appendChild($metadata);
                 }
-                $resource->appendChild($metadata);
-            }
 
-            $filesData = $resourceContent->getFiles();
-            foreach ($filesData as $fileContent) {
-                $file = $imsManifestXml->createElement("file");
-                $file->setAttribute("href", $fileContent->getHref());
-                $resource->appendChild($file);
+                $filesData = $resourceContent->getFiles();
+                foreach ($filesData as $fileContent) {
+                    $file = $imsManifestXml->createElement("file");
+                    $file->setAttribute("href", $fileContent->getHref());
+                    $resource->appendChild($file);
+                }
+                $resources->appendChild($resource);
             }
-            $resources->appendChild($resource);
         }
         return $resources;
     }
@@ -651,13 +653,13 @@ class ConvertToQtiService
                 $resource = new Resource();
                 $resource->setIdentifier('i'.$feature['reference']);
                 $resource->setType(Resource::TYPE_PREFIX_ITEM."xmlv2p1");
-                $resource->setHref($feature['reference'].".xml");
+                $resource->setHref(LearnosityExportConstant::DIRNAME_ITEMS . '/' . $feature['reference'].".xml");
                 if (array_key_exists($feature['reference'], $additionalFileReferenceInfo)) {
                     $files = $this->addAdditionalFileInfo($additionalFileReferenceInfo[$feature['reference']], $files);
                 }
 
                 $file = new File();
-                $file->setHref($feature['reference'].".xml");
+                $file->setHref(LearnosityExportConstant::DIRNAME_ITEMS . '/' . $feature['reference'].".xml");
                 $files[] = $file;
                 $resource->setFiles($files);
                 $resources[] = $resource;
