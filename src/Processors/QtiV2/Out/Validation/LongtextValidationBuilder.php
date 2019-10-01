@@ -28,11 +28,7 @@ class LongtextValidationBuilder extends AbstractQuestionValidationBuilder
             LogService::log('Invalid value of max_score. Failed to build `responseDeclaration` and `responseProcessingTemplate');
         }
 
-        // if found distractor_rationale_response_level generate response processing with setoutcome value FEEDBACK
-        if (!empty($distractorRationaleResponseLevel) && is_array($distractorRationaleResponseLevel)) {
-            $score = $validation->get_valid_response()->get_score();
-            $responseProcessing = QtiResponseProcessingBuilder::build($score);
-        } elseif ($validation != null) {
+        if ($validation != null) {
             $responseProcessing = $this->buildResponseProcessing($validation, $isCaseSensitive);
         }
 
