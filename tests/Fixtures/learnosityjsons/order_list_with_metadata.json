@@ -32,6 +32,9 @@
                     },
                     "automarkable": false
                 },
+                "metadata": {
+                    "distractor_rationale": "General feedback"
+                },
                 "shuffle_options": true
             }
         }

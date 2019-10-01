@@ -8,18 +8,18 @@ use qtism\data\content\interactions\TextFormat;
 use qtism\data\rules\ResponseElse;
 use qtism\data\rules\ResponseIf;
 
-class PlaintextMapperTest extends AbstractQuestionTypeTest
+class LongtextV2MapperTest extends AbstractQuestionTypeTest
 {
-    public function testSimpleWithNoValidation()
+    public function testVerySimpleCase()
     {
-        $data = json_decode($this->getFixtureFileContents('learnosityjsons/item_plaintext.json'), true);
+        $data = json_decode($this->getFixtureFileContents('learnosityjsons/longtext.json'), true);
         $assessmentItemArray = $this->convertToAssessmentItem($data);
 
-
-        foreach($assessmentItemArray as $assessmentItem) {
-            $this->assertEquals(0, $assessmentItem->getResponseDeclarations()->count());
-            $this->assertNull($assessmentItem->getResponseProcessing());
-
+        foreach($assessmentItemArray as $assessmentItem){
+            
+            // Longtext shall have no <responseDeclaration> and <responseProcessing>
+            $this->assertEquals(1, $assessmentItem->getResponseDeclarations()->count());
+            $this->assertNotNull($assessmentItem->getResponseProcessing());
 
             // Has <extendedTextInteraction> as the first and only interaction
             /** @var ExtendedTextInteraction $interaction */
@@ -28,20 +28,21 @@ class PlaintextMapperTest extends AbstractQuestionTypeTest
 
             // And its prompt is mapped correctly
             $promptString = QtiMarshallerUtil::marshallCollection($interaction->getPrompt()->getComponents());
-            $this->assertEquals('<p>Write an essay</p>', trim($promptString));
+            $this->assertEquals('<p>[This is the stem.]</p>', trim($promptString));
 
             // And it is a HTML text by default
-            $this->assertEquals(TextFormat::PLAIN, $interaction->getFormat());
+            $this->assertEquals(TextFormat::XHTML, $interaction->getFormat());
         }
     }
     
-    public function testSimpleWithValidation()
+    public function testWithValidationAndDistractorRationale()
     {
-        $data = json_decode($this->getFixtureFileContents('learnosityjsons/item_plaintext_withvalidation.json'), true);
+        $data = json_decode($this->getFixtureFileContents('learnosityjsons/longtext_validation.json'), true);
         $assessmentItemArray = $this->convertToAssessmentItem($data);
 
-
-        foreach($assessmentItemArray as $assessmentItem) {
+        foreach($assessmentItemArray as $assessmentItem){
+            
+            // Longtext shall have no <responseDeclaration> and <responseProcessing>
             $this->assertEquals(1, $assessmentItem->getResponseDeclarations()->count());
             $this->assertNotNull($assessmentItem->getResponseProcessing());
             
@@ -49,15 +50,15 @@ class PlaintextMapperTest extends AbstractQuestionTypeTest
             /** @var ExtendedTextInteraction $interaction */
             $interaction = $assessmentItem->getComponentsByClassName('extendedTextInteraction', true)->getArrayCopy()[0];
             $this->assertTrue($interaction instanceof ExtendedTextInteraction);
-            
+
             // And its prompt is mapped correctly
             $promptString = QtiMarshallerUtil::marshallCollection($interaction->getPrompt()->getComponents());
-            $this->assertEquals('Write an short essay on India -', trim($promptString));
-            $this->assertEquals('Please write somethig', $interaction->getPlaceholderText());
-            $this->assertEquals(1000, $interaction->getExpectedLength());
-            $this->assertEquals(1000, $interaction->getMaxStrings());
+            $this->assertEquals('[This is the stem.]', trim($promptString));
+
             // And it is a HTML text by default
-            $this->assertEquals(TextFormat::PLAIN, $interaction->getFormat());
+            $this->assertEquals(TextFormat::XHTML, $interaction->getFormat());
         }
     }
 }
+
+

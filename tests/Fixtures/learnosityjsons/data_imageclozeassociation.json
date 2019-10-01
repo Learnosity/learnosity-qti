@@ -1,41 +1,139 @@
 {
-    "image": {
-        "src": "//assets.learnosity.com/demos/docs/blank_us_map.png",
-        "alt": "learnosity logo is here"
+    "reference": "Imageclozeassociation",
+    "content": "<div class=\"row\"><div class=\"col-xs-12\"><span class=\"learnosity-response question-2261c035-c664-4093-baf0-995a0d58497f\"></span></div></div>",
+    "workflow": null,
+    "metadata": {
+        "acknowledgements": null,
+        "scoring_type": "per-question"
     },
-    "possible_responses": [
-        "Choice A",
-        "Choice B",
-        "<img alt=\"\" src=\"https://avatars2.githubusercontent.com/u/1028818?s=100\" />"
-    ],
-    "response_container": {
-        "pointer": "left"
-    },
-    "response_positions": [
+    "tags": {},
+    "questions": [
         {
-            "x": 0.14,
-            "y": 48
-        },
-        {
-            "x": 35.1,
-            "y": 73.57
-        },
-        {
-            "x": 72.38,
-            "y": 84.58
+            "reference": "2261c035-c664-4093-baf0-995a0d58497f",
+            "data": {
+                "image": {
+                    "src": "/vendor/learnosity/itembank/assets/79ae9dc_blank_us_map_v2.png",
+                    "alt": "Map Image"
+                },
+                "possible_responses": [
+                    "Choice A",
+                    "Choice B",
+                    "Choice C",
+                    "Choice D"
+                ],
+                "response_container": {
+                    "pointer": "left",
+                    "vertical_top": true
+                },
+                "response_positions": [
+                    {
+                        "x": 0.14,
+                        "y": 48
+                    },
+                    {
+                        "x": 35.1,
+                        "y": 73.57
+                    },
+                    {
+                        "x": -2.916666666666667,
+                        "y": 20.24
+                    },
+                    {
+                        "x": 42.65,
+                        "y": 40.48
+                    }
+                ],
+                "stimulus": "Associate choices to their respective blank.",
+                "type": "imageclozeassociation",
+                "case_sensitive": true,
+                "validation": {
+                    "scoring_type": "exactMatch",
+                    "valid_response": {
+                        "score": 1,
+                        "value": [
+                            "Choice B",
+                            "Choice A",
+                            "Choice C",
+                            "Choice D"
+                        ]
+                    }
+                },
+                "metadata": {
+                    "distractor_rationale": "General Feedback",
+                    "prepackaged_question": {
+                        "reference": "2261c035-c664-4093-baf0-995a0d58497f",
+                        "data": {
+                            "image": {
+                                "src": "//assets.learnosity.com/demos/docs/blank_us_map_v2.png",
+                                "alt": "Map Image"
+                            },
+                            "possible_responses": [
+                                "Choice A",
+                                "Choice B",
+                                "Choice C",
+                                "Choice D"
+                            ],
+                            "response_container": {
+                                "pointer": "left",
+                                "vertical_top": true
+                            },
+                            "response_positions": [
+                                {
+                                    "x": 0.14,
+                                    "y": 48
+                                },
+                                {
+                                    "x": 35.1,
+                                    "y": 73.57
+                                },
+                                {
+                                    "x": -2.916666666666667,
+                                    "y": 20.24
+                                },
+                                {
+                                    "x": 42.65,
+                                    "y": 40.48
+                                }
+                            ],
+                            "stimulus": "Associate choices to their respective blank.",
+                            "type": "imageclozeassociation",
+                            "case_sensitive": true,
+                            "validation": {
+                                "scoring_type": "exactMatch",
+                                "valid_response": {
+                                    "score": 1,
+                                    "value": [
+                                        "Choice B",
+                                        "Choice A",
+                                        "Choice C",
+                                        "Choice D"
+                                    ]
+                                }
+                            },
+                            "metadata": {
+                                "distractor_rationale": "General Feedback"
+                            },
+                            "aria_labels": [
+                                "",
+                                "",
+                                "",
+                                ""
+                            ],
+                            "duplicate_responses": true,
+                            "shuffle_options": true
+                        }
+                    }
+                },
+                "aria_labels": [
+                    "",
+                    "",
+                    "",
+                    ""
+                ],
+                "duplicate_responses": true,
+                "shuffle_options": true
+            }
         }
     ],
-    "stimulus": "<p>[This is the stem.]</p>",
-    "type": "imageclozeassociation",
-    "validation": {
-        "scoring_type": "exactMatch",
-        "valid_response": {
-            "score": 1,
-            "value": [
-                "<img alt=\"\" src=\"https://avatars2.githubusercontent.com/u/1028818?s=100\" />",
-                "Choice B",
-                "Choice A"
-            ]
-        }
-    }
+    "features": []
 }

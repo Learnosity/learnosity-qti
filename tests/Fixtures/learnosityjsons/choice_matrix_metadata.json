@@ -35,6 +35,9 @@
                         ]
                     }
                 },
+                "metadata": {
+                    "distractor_rationale": "General Feedback"
+                },
                 "ui_style": {
                     "type": "table",
                     "horizontal_lines": false

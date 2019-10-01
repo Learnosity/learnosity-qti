@@ -2,11 +2,15 @@
 
 namespace LearnosityQti\Tests\Integration\Processors\QtiV2\Out\QuestionTypes;
 
-use LearnosityQti\Processors\QtiV2\Out\Constants;
 use LearnosityQti\Utils\QtiMarshallerUtil;
 use qtism\data\AssessmentItem;
 use qtism\data\content\interactions\TextEntryInteraction;
+use qtism\data\content\ModalFeedbackCollection;
+use qtism\data\content\ModalFeedback;
+use qtism\data\rules\ResponseElse;
+use qtism\data\rules\ResponseIf;
 use qtism\data\state\ResponseDeclaration;
+use ReflectionProperty;
 
 class ClozetextMapperTest extends AbstractQuestionTypeTest
 {
@@ -14,56 +18,117 @@ class ClozetextMapperTest extends AbstractQuestionTypeTest
     {
         /** @var AssessmentItem $assessmentItem */
         $question = json_decode($this->getFixtureFileContents('learnosityjsons/data_clozetext.json'), true);
-        $assessmentItem = $this->convertToAssessmentItem($question);
+        $assessmentItemArray = $this->convertToAssessmentItem($question);
+        foreach ($assessmentItemArray as $assessmentItem) {
+            $interactions = $assessmentItem->getComponentsByClassName('textEntryInteraction', true)->getArrayCopy();
+            /** @var TextEntryInteraction $interactionOne */
+            $interactionOne = $interactions[0];
+            /** @var TextEntryInteraction $interactionTwo */
+            $interactionTwo = $interactions[1];
+            $this->assertTrue($interactionOne instanceof TextEntryInteraction);
+            $this->assertTrue($interactionTwo instanceof TextEntryInteraction);
+            $this->assertEquals(15, $interactionOne->getExpectedLength());
+            $this->assertEquals(15, $interactionTwo->getExpectedLength());
 
-        $interactions = $assessmentItem->getComponentsByClassName('textEntryInteraction', true)->getArrayCopy();
-        /** @var TextEntryInteraction $interactionOne */
-        $interactionOne = $interactions[0];
-        /** @var TextEntryInteraction $interactionTwo */
-        $interactionTwo = $interactions[1];
-        $this->assertTrue($interactionOne instanceof TextEntryInteraction);
-        $this->assertTrue($interactionTwo instanceof TextEntryInteraction);
-        $this->assertEquals(15, $interactionOne->getExpectedLength());
-        $this->assertEquals(15, $interactionTwo->getExpectedLength());
+            $content = QtiMarshallerUtil::marshallCollection($assessmentItem->getItemBody()->getContent());
+            $this->assertNotEmpty($content);
 
-        $content = QtiMarshallerUtil::marshallCollection($assessmentItem->getItemBody()->getContent());
-        $this->assertNotEmpty($content);
+            // Assert response declarations
+            $responseDeclarations = $assessmentItem->getResponseDeclarations()->getArrayCopy();
+            /** @var ResponseDeclaration $responseDeclarationOne */
+            $responseDeclarationOne = $responseDeclarations[0];
+            /** @var ResponseDeclaration $responseDeclarationTwo */
+            $responseDeclarationTwo = $responseDeclarations[1];
 
-        // Assert response declarations
-        $responseDeclarations = $assessmentItem->getResponseDeclarations()->getArrayCopy();
-        /** @var ResponseDeclaration $responseDeclarationOne */
-        $responseDeclarationOne = $responseDeclarations[0];
-        /** @var ResponseDeclaration $responseDeclarationTwo */
-        $responseDeclarationTwo = $responseDeclarations[1];
+            // Check has the correct identifiers
+            $this->assertEquals($responseDeclarationOne->getIdentifier(), $interactionOne->getResponseIdentifier());
+            $this->assertEquals($responseDeclarationTwo->getIdentifier(), $interactionTwo->getResponseIdentifier());
+            // Also correct `correctResponse` values
+            $this->assertEquals('response1', $responseDeclarationOne->getCorrectResponse()->getValues()->getArrayCopy()[0]->getValue());
+            $this->assertEquals('response2', $responseDeclarationTwo->getCorrectResponse()->getValues()->getArrayCopy()[0]->getValue());
+            
+            // Also correct `mapping` entries
+            $this->assertEquals('response1', $responseDeclarationOne->getMapping()->getMapEntries()->getArrayCopy()[0]->getMapKey());
+            $this->assertEquals(2.0, $responseDeclarationOne->getMapping()->getMapEntries()->getArrayCopy()[0]->getMappedValue());
+            
+            $this->assertEquals('response2', $responseDeclarationTwo->getMapping()->getMapEntries()->getArrayCopy()[0]->getMapKey());
+            $this->assertEquals(2.0, $responseDeclarationTwo->getMapping()->getMapEntries()->getArrayCopy()[0]->getMappedValue());
+            
+            $this->assertCount(1, $assessmentItem->getResponseProcessing()->getComponents()); 
+        }
+    }
+	
+	public function testWithDistractorRationale()
+    {
+        /** @var AssessmentItem $assessmentItem */
+        $question = json_decode($this->getFixtureFileContents('learnosityjsons/clozetext.json'), true);
+        /*$mock = $this->getMock('ConvertToQtiService', array('getFormat'));
+            
+	    // Replace protected self reference with mock object
+        $ref = new ReflectionProperty('LearnosityQti\Services\ConvertToQtiService', 'instance');
+	    $ref->setAccessible(true);
+	    $ref->setValue(null, $mock);*/
+            
+        /*$format = $mock->expects($this->once())
+				->method('getFormat')
+				->will($this->returnValue('qti'));*/
+		
+		$assessmentItemArray = $this->convertToAssessmentItem($question);
+        foreach ($assessmentItemArray as $assessmentItem) {
+            $interactions = $assessmentItem->getComponentsByClassName('textEntryInteraction', true)->getArrayCopy();
+            /** @var TextEntryInteraction $interactionOne */
+            $interactionOne = $interactions[0];
+            /** @var TextEntryInteraction $interactionTwo */
+            $interactionTwo = $interactions[1];
+            $this->assertTrue($interactionOne instanceof TextEntryInteraction);
+            $this->assertTrue($interactionTwo instanceof TextEntryInteraction);
+            $this->assertEquals(15, $interactionOne->getExpectedLength());
+            $this->assertEquals(15, $interactionTwo->getExpectedLength());
 
-        // Check has the correct identifiers
-        $this->assertEquals($responseDeclarationOne->getIdentifier(), $interactionOne->getResponseIdentifier());
-        $this->assertEquals($responseDeclarationTwo->getIdentifier(), $interactionTwo->getResponseIdentifier());
+            $content = QtiMarshallerUtil::marshallCollection($assessmentItem->getItemBody()->getContent());
+            $this->assertNotEmpty($content);
 
-        // Also correct `correctResponse` values
-        $this->assertEquals('responseone', $responseDeclarationOne->getCorrectResponse()->getValues()->getArrayCopy()[0]->getValue());
-        $this->assertEquals('otherresponseone', $responseDeclarationOne->getCorrectResponse()->getValues()->getArrayCopy()[1]->getValue());
-        $this->assertEquals('anotherresponseone', $responseDeclarationOne->getCorrectResponse()->getValues()->getArrayCopy()[2]->getValue());
-        $this->assertEquals('responsetwo', $responseDeclarationTwo->getCorrectResponse()->getValues()->getArrayCopy()[0]->getValue());
-        $this->assertEquals('otherresponsetwo', $responseDeclarationTwo->getCorrectResponse()->getValues()->getArrayCopy()[1]->getValue());
-        $this->assertEquals('anotherresponsetwo', $responseDeclarationTwo->getCorrectResponse()->getValues()->getArrayCopy()[2]->getValue());
+            // Assert response declarations
+            $responseDeclarations = $assessmentItem->getResponseDeclarations()->getArrayCopy();
+            /** @var ResponseDeclaration $responseDeclarationOne */
+            $responseDeclarationOne = $responseDeclarations[0];
+            /** @var ResponseDeclaration $responseDeclarationTwo */
+            $responseDeclarationTwo = $responseDeclarations[1];
 
-        // Also correct `mapping` entries
-        $this->assertEquals('responseone', $responseDeclarationOne->getMapping()->getMapEntries()->getArrayCopy()[0]->getMapKey());
-        $this->assertEquals(3, $responseDeclarationOne->getMapping()->getMapEntries()->getArrayCopy()[0]->getMappedValue());
-        $this->assertEquals('otherresponseone', $responseDeclarationOne->getMapping()->getMapEntries()->getArrayCopy()[1]->getMapKey());
-        $this->assertEquals(2, $responseDeclarationOne->getMapping()->getMapEntries()->getArrayCopy()[1]->getMappedValue());
-        $this->assertEquals('anotherresponseone', $responseDeclarationOne->getMapping()->getMapEntries()->getArrayCopy()[2]->getMapKey());
-        $this->assertEquals(1, $responseDeclarationOne->getMapping()->getMapEntries()->getArrayCopy()[2]->getMappedValue());
-
-        $this->assertEquals('responsetwo', $responseDeclarationTwo->getMapping()->getMapEntries()->getArrayCopy()[0]->getMapKey());
-        $this->assertEquals(3, $responseDeclarationTwo->getMapping()->getMapEntries()->getArrayCopy()[0]->getMappedValue());
-        $this->assertEquals('otherresponsetwo', $responseDeclarationTwo->getMapping()->getMapEntries()->getArrayCopy()[1]->getMapKey());
-        $this->assertEquals(2, $responseDeclarationTwo->getMapping()->getMapEntries()->getArrayCopy()[1]->getMappedValue());
-        $this->assertEquals('anotherresponsetwo', $responseDeclarationTwo->getMapping()->getMapEntries()->getArrayCopy()[2]->getMapKey());
-        $this->assertEquals(1, $responseDeclarationTwo->getMapping()->getMapEntries()->getArrayCopy()[2]->getMappedValue());
-
-        // Assert response processing template
-        $this->assertEquals(Constants::RESPONSE_PROCESSING_TEMPLATE_MAP_RESPONSE, $assessmentItem->getResponseProcessing()->getTemplate());
+            // Check has the correct identifiers
+            $this->assertEquals($responseDeclarationOne->getIdentifier(), $interactionOne->getResponseIdentifier());
+            $this->assertEquals($responseDeclarationTwo->getIdentifier(), $interactionTwo->getResponseIdentifier());
+            // Also correct `correctResponse` values
+            $this->assertEquals('response1', $responseDeclarationOne->getCorrectResponse()->getValues()->getArrayCopy()[0]->getValue());
+            $this->assertEquals('response2', $responseDeclarationTwo->getCorrectResponse()->getValues()->getArrayCopy()[0]->getValue());
+            
+            // Also correct `mapping` entries
+            $this->assertEquals('response1', $responseDeclarationOne->getMapping()->getMapEntries()->getArrayCopy()[0]->getMapKey());
+            $this->assertEquals(2.0, $responseDeclarationOne->getMapping()->getMapEntries()->getArrayCopy()[0]->getMappedValue());
+            
+            $this->assertEquals('response2', $responseDeclarationTwo->getMapping()->getMapEntries()->getArrayCopy()[0]->getMapKey());
+            $this->assertEquals(2.0, $responseDeclarationTwo->getMapping()->getMapEntries()->getArrayCopy()[0]->getMappedValue());
+             
+            $this->assertCount(2,$assessmentItem->getResponseProcessing()->getComponents());
+            $this->assertCount(1, $assessmentItem->getResponseProcessing()->getComponentsByClassName('responseIf', true));
+            $responseIf = $assessmentItem->getResponseProcessing()->getComponentsByClassName('responseIf', true)->getArrayCopy()[0];
+            $this->assertTrue($responseIf instanceof ResponseIf);
+            $promptIfString = QtiMarshallerUtil::marshallCollection($responseIf->getComponents());
+            $this->assertEquals('<and><match><variable identifier="RESPONSE_0"/><correct identifier="RESPONSE_0"/></match><match><variable identifier="RESPONSE_1"/><correct identifier="RESPONSE_1"/></match></and><setOutcomeValue identifier="SCORE"><baseValue baseType="float">2</baseValue></setOutcomeValue>', $promptIfString);
+            
+            $this->assertCount(1, $assessmentItem->getResponseProcessing()->getComponentsByClassName('responseElse', true));
+            $responseElse = $assessmentItem->getResponseProcessing()->getComponentsByClassName('responseElse', true)->getArrayCopy()[0];
+            $this->assertTrue($responseElse instanceof ResponseElse);
+            $promptElseString = QtiMarshallerUtil::marshallCollection($responseElse->getComponents());
+            $this->assertEquals('<setOutcomeValue identifier="SCORE"><baseValue baseType="float">-1</baseValue></setOutcomeValue>', $promptElseString);
+            
+            $modalFeedBackCollections = $assessmentItem->getModalFeedbacks();
+            $this->assertTrue($modalFeedBackCollections instanceof ModalFeedbackCollection);
+            foreach($modalFeedBackCollections as $modalFeedback) {
+                $this->assertTrue($modalFeedback instanceof ModalFeedback);
+                $promptFeedbackString = $modalFeedback->getComponents()[0]->getContent();
+                $this->assertEquals('Thanks for attending this test.', $promptFeedbackString);
+            }
+        }
     }
 }
