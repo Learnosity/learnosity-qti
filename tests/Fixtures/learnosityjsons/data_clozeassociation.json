@@ -1,16 +1,47 @@
 {
-    "possible_responses": ["Choice A", "Choice B"],
-    "response_container": {
-        "pointer": "left"
+    "reference": "PAPE_32",
+    "content": "<div class=\"row\"><div class=\"col-xs-12\"><span class=\"learnosity-response question-6e7be426-9931-49a9-911d-c1453cb3aa0b\"></span></div></div>",
+    "workflow": null,
+    "metadata": {
+        "acknowledgements": null,
+        "scoring_type": "per-question"
     },
-    "stimulus": "<p>[This is the stem.]</p>",
-    "template": "<p>Risus {{response}}, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum. Nunc diam enim, porta sed eros vitae. {{response}} dignissim, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum.</p>",
-    "type": "clozeassociation",
-    "validation": {
-        "scoring_type": "exactMatch",
-        "valid_response": {
-            "score": 1,
-            "value": ["Choice A", "Choice B"]
+    "tags": {},
+    "questions": [
+        {
+            "reference": "6e7be426-9931-49a9-911d-c1453cb3aa0b",
+            "data": {
+                "response_container": {
+                    "pointer": "left"
+                },
+                "stimulus": "<p>[This is the stem.]</p>",
+                "template": "<p>Risus {{response}}, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum. Nunc diam enim, porta sed eros vitae. {{response}} dignissim, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum.</p>",
+                "type": "clozeassociation",
+                "case_sensitive": true,
+                "validation": {
+                    "scoring_type": "exactMatch",
+                    "valid_response": {
+                        "score": 1,
+                        "value": ["Choice A", "Choice B"]
+                    },
+                    "unscored": true,
+                    "match_all_possible_responses": true
+                },
+                "metadata": {
+                    "distractor_rationale": "This is overall feedback",
+                    "sample_answer": "This is adition",
+                    "acknowledgements": "This is acknowledgement",
+                    "distractor_rationale_response_level": [
+                        "Response for Choice A",
+                        "Response for Choice B"
+                    ]
+                },
+                "instant_feedback": true,
+                "duplicate_responses": true,
+                "shuffle_options": true,
+                "possible_responses": ["Choice A", "Choice B"]
+            }
         }
-    }
+    ],
+    "features": []
 }

@@ -1,33 +1,91 @@
 {
-    "reference": "choice_RESPONSE",
-    "type": "mcq",
-    "data": {
-        "stimulus": "<p>Listen.</p><div><span class=\"learnosity-feature\" data-type=\"audioplayer\" data-src=\"http://www.kozco.com/tech/LRMonoPhase4.wav\"/></div>What does it say?",
-        "type": "mcq",
-        "validation": {
-            "scoring_type": "exactMatch",
-            "valid_response": {
-                "score": 1,
-                "value": [
-                    "ChoiceA"
-                ]
-            }
-        },
-        "options": [
-            {
-                "label": "You must stay with your luggage at all times.",
-                "value": "ChoiceA"
-            },
-            {
-                "label": "Do not let someone else look after your luggage.",
-                "value": "ChoiceB"
-            },
-            {
-                "label": "Remember your luggage when you leave.",
-                "value": "ChoiceC"
-            }
-        ],
-        "shuffle_options": false
+    "reference": "PAPE_20",
+    "content": "<div class=\"row\"><div class=\"col-xs-12\"><span class=\"learnosity-response question-5e2729c8-52d7-48b7-9d5f-1453bca50a3f\"></span></div></div>",
+    "workflow": null,
+    "metadata": {
+        "acknowledgements": null,
+        "scoring_type": "per-question"
     },
-    "widget_type": "response"
+    "tags": {},
+    "questions": [
+        {
+            "reference": "5e2729c8-52d7-48b7-9d5f-1453bca50a3f",
+            "data": {
+                "options": [
+                    {
+                        "label": "Washington DC",
+                        "value": "0"
+                    },
+                    {
+                        "label": "Delhi",
+                        "value": "1"
+                    },
+                    {
+                        "label": "Maskow",
+                        "value": "2"
+                    },
+                    {
+                        "label": "Canbera",
+                        "value": "3"
+                    }
+                ],
+                "stimulus": "<p>What is the capital of USA ?</p>",
+                "type": "mcq",
+                "validation": {
+                    "scoring_type": "exactMatch",
+                    "valid_response": {
+                        "score": 1,
+                        "value": [
+                            "0"
+                        ]
+                    },
+                    "unscored": true
+                },
+                "ui_style": {
+                    "type": "horizontal"
+                },
+                "metadata": {
+                    "prepackaged_question": {
+                        "reference": "5e2729c8-52d7-48b7-9d5f-1453bca50a3f",
+                        "data": {
+                            "options": [
+                                {
+                                    "label": "Dev Summit&nbsp;",
+                                    "value": "0"
+                                },
+                                {
+                                    "label": "Prastuti",
+                                    "value": "1"
+                                },
+                                {
+                                    "label": "check&nbsp;",
+                                    "value": "2"
+                                },
+                                {
+                                    "label": "check 3",
+                                    "value": "3"
+                                }
+                            ],
+                            "stimulus": "<p>Please check this image -</p><p><img src=\"https://assets.learnosity.com/organisations/383/1758aa3b-e4b0-444b-8d1d-2653f2fde253.jpg\" class=\" lrn-image-center\" alt=\"This is image\" width=\"311\" height=\"200\"></p>",
+                            "type": "mcq",
+                            "validation": {
+                                "scoring_type": "exactMatch",
+                                "valid_response": {
+                                    "score": 1,
+                                    "value": [
+                                        "0"
+                                    ]
+                                },
+                                "unscored": true
+                            },
+                            "ui_style": {
+                                "type": "horizontal"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ],
+    "features": []
 }

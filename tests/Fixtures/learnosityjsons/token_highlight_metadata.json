@@ -21,6 +21,9 @@
 		        "score": 1,
 		        "value": [0, 2]
 		    }
+                },
+                "metadata": {
+                    "distractor_rationale": "general feedback"
                 }
             }
         }

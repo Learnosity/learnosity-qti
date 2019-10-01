@@ -1,0 +1,26 @@
+{
+    "reference": "PAPE_21",
+    "content": "<div class=\"row\"><div class=\"col-xs-12\"><span class=\"learnosity-response question-891484bd-5fbd-4827-8547-b2ef5c6d01b0\"></span></div></div>",
+    "workflow": null,
+    "metadata": {
+        "acknowledgements": null,
+        "scoring_type": "per-question"
+    },
+    "tags": {},
+    "questions": [
+        {
+            "reference": "891484bd-5fbd-4827-8547-b2ef5c6d01b0",
+            "data": {
+                "stimulus": "[This is the stem.]",
+                "type": "longtextV2",
+                "metadata": {
+                    "distractor_rationale": "Thanku"
+                },
+                "validation": {
+                    "max_score": 5
+                }
+            }
+        }
+    ],
+    "features": []
+}

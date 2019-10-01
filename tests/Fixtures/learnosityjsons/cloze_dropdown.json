@@ -17,13 +17,22 @@
                         "Color",
                         "Snacks",
                         "Fruit"
+                    ],
+                    [
+                        "Fruit",
+                        "Vegetable",
+                        "Color"
+                    ],
+                    [
+                        "Color",
+                        "Fruit"
                     ]
                 ],
                 "response_container": {
                     "pointer": "left"
                 },
                 "stimulus": "Cloze with drop down",
-                "template": "<p>Potato is a {{response}}</p><p>&nbsp;</p>",
+                "template": "<p>Potato is a {{response}}&nbsp; Guava is a {{response}} and red is a {{response}}</p><p>&nbsp;</p>",
                 "type": "clozedropdown",
                 "case_sensitive": true,
                 "validation": {
@@ -31,10 +40,20 @@
                     "valid_response": {
                         "score": 1,
                         "value": [
-                            "Vegetable"
-                       ]
+                            "Vegetable",
+                            "Fruit",
+                            "Color"
+                        ]
                     },
                     "match_all_possible_responses": true
+                },
+                "metadata": {
+                    "distractor_rationale": "common feedback",
+                    "distractor_rationale_response_level": [
+                        "Right answer is vegetable",
+                        "Right answer is fruit",
+                        "Right answer is color"
+                    ]
                 },
                 "shuffle_options": true
             }
