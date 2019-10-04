@@ -146,7 +146,7 @@ class ConvertToLearnosityService
 
         $this->assetsFixer = new AssetsFixer($this->organisationId);
         if ($this->isSingleItemConvert == 'Y' || $this->isSingleItemConvert == 'YES') {
-            $resultSigleFile = array();
+            $resultSingleFile = array();
             $inputXmlFile = new File($this->inputPath);
             $fileName = $inputXmlFile->getFileName();
             $currentDir = realpath($inputXmlFile->getPath());
@@ -156,8 +156,32 @@ class ConvertToLearnosityService
             $assessmentItemContents = file_get_contents($file);
             $metadata['organisation_id'] = $this->organisationId;
             $convertedContent = $this->convertAssessmentItemInFile($assessmentItemContents, $currentDir, $fileName, static::RESOURCE_TYPE_ITEM, null, $metadata);
+            $scoringRubric = '';
+            if (isset($convertedContent['rubric'])) {
+                // Check if scoring rubric is present in converted string
+                $rubricReferenceToBeDelete = $this->checkScoringRubricExistInConvertedContent($convertedContent);
+                if (sizeof($rubricReferenceToBeDelete) > 0) {
+                    foreach ($rubricReferenceToBeDelete as $id => $reference) {
+                        $index = $this->deleteUnusedRubricFromConvertedContent($convertedContent, $reference);
+                        $extraRubricContent = $convertedContent['features'][$index];
+                        unset($convertedContent['features'][$index]);
+                        $scoringRubric = $this->createNewScoringRubricItem($extraRubricContent, $convertedContent['rubric']['reference']);
+                    }
+                }
+            }
+
+            if (isset($convertedContent['rubric'])) {
+                unset($convertedContent['rubric']);
+            }
+
             if (!empty($convertedContent)) {
+                $convertedContent = $this->removeUnusedDataFromItem($convertedContent);
                 $resultSingleFile['qtiitems'][basename($currentDir) . '/' . $fileName] = $convertedContent;
+            }
+
+            if (!empty($scoringRubric)) {
+                $scoringRubric = $this->removeUnusedDataFromItem($scoringRubric);
+                $resultSingleFile['qtiitems'][basename($currentDir) . '/' . $scoringRubric['item']['reference']] = $scoringRubric;
             }
             $this->persistResultsFile($resultSingleFile, realpath($this->outputPath) . DIRECTORY_SEPARATOR . $this->rawPath . DIRECTORY_SEPARATOR . $dirName);
         } else {
