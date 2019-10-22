@@ -11,7 +11,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ConvertToLearnosityCommand extends Command
 {
-
     protected function configure()
     {
         $this
@@ -60,7 +59,7 @@ class ConvertToLearnosityCommand extends Command
                 . 'the manifest',
                 'N'
             )
-             ->addOption(
+            ->addOption(
                 'single-item',
                 '',
                 InputOption::VALUE_OPTIONAL,
@@ -107,7 +106,7 @@ class ConvertToLearnosityCommand extends Command
         }
 
         $requiredValuesForPassageConversion = ['Yes or Y', 'No or N'];
-        if($isConvertPassageContent != 'Y' && $isConvertPassageContent != 'YES' && $isConvertPassageContent != 'N' && $isConvertPassageContent != 'NO') {
+        if ($isConvertPassageContent != 'Y' && $isConvertPassageContent != 'YES' && $isConvertPassageContent != 'N' && $isConvertPassageContent != 'NO') {
             array_push(
                 $validationErrors,
                 "The <info>passage-only-items</info> must be one of the following values: " . join(', ', $requiredValuesForPassageConversion)
@@ -115,7 +114,7 @@ class ConvertToLearnosityCommand extends Command
         }
 
         $requiredValuesForSingleItemConversion = ['Yes or Y', 'No or N'];
-        if($isSingleItemConvert != 'Y' && $isSingleItemConvert != 'YES' && $isSingleItemConvert != 'N' && $isSingleItemConvert != 'NO') {
+        if ($isSingleItemConvert != 'Y' && $isSingleItemConvert != 'YES' && $isSingleItemConvert != 'N' && $isSingleItemConvert != 'NO') {
             array_push(
                 $validationErrors,
                 "The <info>single-item</info> must be one of the following values: " . join(', ', $requiredValuesForSingleItemConversion)
@@ -144,7 +143,6 @@ class ConvertToLearnosityCommand extends Command
                 "  <info>mo convert:to:learnosity --input /path/to/qti --output /path/to/save/folder --organisation_id [integer]</info>"
             ]);
         } else {
-
             $Convert = ConvertToLearnosityService::initClass($inputPath, $outputPath, $output, $organisationId, $isConvertPassageContent, $isSingleItemConvert);
 
             $Convert->useMetadataIdentifier(true);

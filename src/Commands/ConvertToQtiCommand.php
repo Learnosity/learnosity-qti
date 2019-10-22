@@ -35,8 +35,8 @@ class ConvertToQtiCommand extends Command
                 'f',
                 InputOption::VALUE_REQUIRED,
                 'A flag to choose how to format the QTI output content package, from a list of supported formats.
-                This option supports the following possible values: (canvas, qti). Pass the canvas option to export QTI content
-                that is compatible with Canvas LMS. The default is qti, which outputs non LMS-specific QTI.'
+                This option supports the following possible values: (canvas, qti). Pass the canvas option to export
+                QTI content that is compatible with Canvas LMS. The default is qti, which outputs non LMS-specific QTI.'
             )
         ;
     }
@@ -52,7 +52,7 @@ class ConvertToQtiCommand extends Command
         if (empty($inputPath) || empty($outputPath)) {
             array_push($validationErrors, "The <info>input</info> and <info>output</info> options are required. Eg:");
         }
-        
+
         // Validate the format options
         if (empty($format)) {
             $format = 'qti';

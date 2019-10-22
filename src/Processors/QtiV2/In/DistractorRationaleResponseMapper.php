@@ -13,7 +13,7 @@ class DistractorRationaleResponseMapper
 
     public function __construct()
     {
-        
+
     }
 
     public function parseWithDistractorRationaleResponseComponent(RubricBlock $rubricBlock)
@@ -54,7 +54,7 @@ class DistractorRationaleResponseMapper
                 $distractorRationale[$i]['content'] = $child->ownerDocument->saveXML($child);
                 $i++;
             }
-            $results['distractor_rationale_per_response'] = $distractorRationale;
+            $results['distractor_rationale_response_level'] = $distractorRationale;
         } else {
             throw new MappingException('No content found; cannot create distractor rational response level');
         }
