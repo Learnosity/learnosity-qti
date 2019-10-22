@@ -80,9 +80,9 @@ class RubricBlockMapper
                     $mapper = new DistractorRationaleResponseMapper();
                     $distractorRationalResponseLevelArray = $mapper->parseWithDistractorRationaleResponseComponent($rubricBlock);
                     $result ['question_metadata'] = $distractorRationalResponseLevelArray;
-                } else if ($views->contains(View::AUTHOR) || $views->contains(View::SCORER) || $views->contains(View::TUTOR)) {
+                } elseif ($views->contains(View::AUTHOR) || $views->contains(View::SCORER) || $views->contains(View::TUTOR)) {
                     $mapper = new DistractorRationaleResponseMapper();
-                    $distractorRationalResponseLevelArray = $mapper->parseWithDistractorRationalePerResponseComponent($rubricBlock);
+                    $distractorRationalResponseLevelArray = $mapper->parseWithDistractorRationaleResponseComponent($rubricBlock);
                     $result ['question_metadata'] = $distractorRationalResponseLevelArray;
                 }
                 break;
@@ -91,7 +91,7 @@ class RubricBlockMapper
                 if ($views->contains(View::AUTHOR)) {
                     $result = [
                         'question_metadata' => [
-                            'distractor_rationale_author' => [
+                            'distractor_rationale_scorer' => [
                                 [
                                     'label' => $rubricBlock->getLabel(),
                                     'content' => QtiMarshallerUtil::marshallCollection($rubricBlock->getContent()),
