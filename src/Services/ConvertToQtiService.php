@@ -249,7 +249,7 @@ class ConvertToQtiService
                 $this->itemReferences = $activityJson->data->items;
                 if (!empty($this->itemReferences)) {
                     foreach ($this->itemReferences as $itemref) {
-                        if(isset($itemref) && is_object($itemref) && isset($itemref->id)) {
+                        if (isset($itemref) && is_object($itemref) && isset($itemref->id)) {
                             $itemref = md5($itemref->id);
                         } else {
                             $itemref = md5($itemref);
@@ -364,7 +364,7 @@ class ConvertToQtiService
                 }
             }
         }
-        
+
         return [
             'qti'  => $finalXml,
             'json' => $json,
@@ -508,7 +508,7 @@ class ConvertToQtiService
         $resourcesContents = $manifestContent->getResources();
         $i = 0;
         foreach ($resourcesContents as $index => $resourcesContent) {
-           foreach ($resourcesContent as $indexResource => $resourceContent) {
+            foreach ($resourcesContent as $indexResource => $resourceContent) {
                 $resource = $imsManifestXml->createElement("resource");
                 $resource->setAttribute("identifier", $resourceContent->getIdentifier());
                 $resource->setAttribute("type", $resourceContent->getType());
@@ -578,8 +578,7 @@ class ConvertToQtiService
             if (!empty($result['qti'])) {
                 if (!empty($result['json']['questions'])) {
                     foreach ($result['qti']['questions'] as $key => $value) {
-                        
-                         file_put_contents($outputFilePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS . '/' . $result['json']['questions'][$key]['reference'] . '.xml', $value[0]);
+                        file_put_contents($outputFilePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS . '/' . $result['json']['questions'][$key]['reference'] . '.xml', $value[0]);
                     }
                 }
 
@@ -603,7 +602,7 @@ class ConvertToQtiService
     {
         $resources = array();
         $featureArray = array();
-    
+
         $additionalFileReferenceInfo = $this->getAdditionalFileInfoForManifestResource($results);
         foreach ($results as $result) {
             if (!empty($result['json']['questions'])) {
@@ -668,7 +667,7 @@ class ConvertToQtiService
         }
         return $resources;
     }
-    
+
     private function addFeatureFilesInfo($featureArray, array $files)
     {
         foreach ($featureHtmlArray as $featureId => $featureHtml) {
@@ -824,7 +823,7 @@ class ConvertToQtiService
 
         return $errors;
     }
-    
+
     private function getReferenceArray($json)
     {
         $content = strip_tags($json['content'], "<span>");
@@ -835,7 +834,7 @@ class ConvertToQtiService
                 $featureReference = trim(str_replace('<span class="learnosity-feature feature-', '', $contentArr[$i]));
                 $featureReference = trim(str_replace('">', "", $featureReference));
             }
-                       
+
             if (strpos($contentArr[$i], 'question')) {
                 $questionReference = trim(str_replace('<span class="learnosity-response question-', '', $contentArr[$i]));
                 $questionReference = trim(str_replace('">', "", $questionReference));

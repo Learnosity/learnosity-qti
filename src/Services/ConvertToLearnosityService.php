@@ -271,7 +271,7 @@ class ConvertToLearnosityService
                 $totalItemCount++;
                 $resourceHref = $resource['href'];
                 $relatedResource = $resource['resource'];
-                if($resource['type'] == static::RESOURCE_TYPE_PASSAGE && $this->isConvertPassageContent != 'Y' && $this->isConvertPassageContent != 'YES') {
+                if ($resource['type'] == static::RESOURCE_TYPE_PASSAGE && $this->isConvertPassageContent != 'Y' && $this->isConvertPassageContent != 'YES') {
                     continue;
                 }
                 $assessmentItemContents = file_get_contents($currentDir . '/' . $resourceHref);
@@ -298,7 +298,7 @@ class ConvertToLearnosityService
                     $this->output->writeln("<comment>Converting assessment item {$itemCount}: $relativeDir/$resourceHref</comment>");
                 }
 
-                $convertedContent = $this->convertAssessmentItemInFile($assessmentItemContents, $currentDir, $resourceHref, $resource['type'], $itemReference, $metadata , $itemTagsArray);
+                $convertedContent = $this->convertAssessmentItemInFile($assessmentItemContents, $currentDir, $resourceHref, $resource['type'], $itemReference, $metadata, $itemTagsArray);
                 $scoringRubric = '';
                 if (isset($convertedContent['rubric'])) {
                     // Check if scoring rubric is present in converted string
@@ -444,7 +444,7 @@ class ConvertToLearnosityService
     }
 
     /**
-     * Retrieves any <assessmentItem> or shared passage resource elements 
+     * Retrieves any <assessmentItem> or shared passage resource elements
      * found in a given manifest XML document.
      *
      * @param  DOMDocument $manifestDoc - the document to search
@@ -480,7 +480,6 @@ class ConvertToLearnosityService
         }
 
         return $itemResources;
-
     }
 
     /**
@@ -583,7 +582,7 @@ class ConvertToLearnosityService
             $resourcePath = $currentDir . '/' . $resourceHref;
 
             $results = $this->convertAssessmentItem($xmlString, $itemReference, $resourcePath, $metadata, $itemTagsArray, $resourceType);
-            } catch (\Exception $e) {
+        } catch (\Exception $e) {
             $targetFilename = $resourceHref;
             $message = $e->getMessage();
             $results = ['exception' => $targetFilename . '-' . $message];
@@ -611,9 +610,9 @@ class ConvertToLearnosityService
         AssumptionHandler::flush();
         $xmlString = CheckValidQti::preProcessing($xmlString);
 
-        if($resourceType == static::RESOURCE_TYPE_ITEM) {
+        if ($resourceType == static::RESOURCE_TYPE_ITEM) {
             $result = Converter::convertQtiItemToLearnosity($xmlString, null, null, $resourcePath, $itemReference, $metadata);
-        } else if($resourceType == static::RESOURCE_TYPE_PASSAGE && ($this->isConvertPassageContent == 'Y' || $this->isConvertPassageContent == 'YES')) {
+        } elseif ($resourceType == static::RESOURCE_TYPE_PASSAGE && ($this->isConvertPassageContent == 'Y' || $this->isConvertPassageContent == 'YES')) {
             $result = Converter::convertPassageItemToLearnosity($xmlString, null, null, $resourcePath, $itemReference, $metadata);
         }
 
@@ -898,7 +897,6 @@ class ConvertToLearnosityService
 
     private function tearDown()
     {
-
     }
 
     public function showWarnings($message)

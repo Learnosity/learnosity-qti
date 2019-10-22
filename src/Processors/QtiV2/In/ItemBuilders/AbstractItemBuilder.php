@@ -85,9 +85,8 @@ abstract class AbstractItemBuilder
     {
         // FIXME: Should this be getting set every time on read?
 
-       if (!empty($this->questionsMetadata)) {
+        if (!empty($this->questionsMetadata)) {
             foreach ($this->questions as $question) {
-
                 /** @var Question $question */
                 $data = $question->get_data();
                 $metadata = $data->get_metadata();

@@ -87,7 +87,7 @@ class RubricBlockMapper
                 }
                 break;
 
-            case ($rubricBlock->getClass() === 'DistractorRationale');
+            case ($rubricBlock->getClass() === 'DistractorRationale'):
                 if ($views->contains(View::AUTHOR)) {
                     $result = [
                         'question_metadata' => [
@@ -269,7 +269,6 @@ class RubricBlockMapper
             }
 
             $result['questions'][$ratingQuestion->get_reference()] = $ratingQuestion;
-
         } catch (MappingException $e) {
             // NOTE: Instead of an exception, we can create a plain shared passage for the content as a fallback.
             // throw new MappingException('Could not map <rubricBlock> with class: \'ScoringGuidance\' - '.$e->getMessage(), $e);
@@ -336,7 +335,7 @@ class RubricBlockMapper
         }
 
         // HACK: Sort rating options by value
-        usort($ratingOptions, function($a, $b) {
+        usort($ratingOptions, function ($a, $b) {
             return strcmp($a['value'], $b['value']);
         });
 

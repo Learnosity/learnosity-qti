@@ -13,7 +13,6 @@ use qtism\data\content\xhtml\ObjectElement;
 use qtism\data\content\xhtml\text\Div;
 use LearnosityQti\Processors\QtiV2\Out\Constants as LearnosityExportConstant;
 
-
 class LearnosityToQtiPreProcessingService
 {
     private $widgets = [];
@@ -74,8 +73,8 @@ class LearnosityToQtiPreProcessingService
             $src = trim($node->attr['data-src']);
             $type = trim($node->attr['data-type']);
             if ($type === 'audioplayer' || $type === 'videoplayer') {
-              $src = $this->getSourceBasedOnMediaFormat($src);
-              return QtiMarshallerUtil::marshallValidQti(new ObjectElement($src, MimeUtil::guessMimeType(basename($src))));
+                $src = $this->getSourceBasedOnMediaFormat($src);
+                return QtiMarshallerUtil::marshallValidQti(new ObjectElement($src, MimeUtil::guessMimeType(basename($src))));
             }
         // Process regular question feature
         } else {
@@ -92,8 +91,7 @@ class LearnosityToQtiPreProcessingService
             }
             if ($type === 'audioplayer' || $type === 'videoplayer') {
                 return;
-
-            } else if ($type === 'sharedpassage') {
+            } elseif ($type === 'sharedpassage') {
                 $flowCollection = new FlowCollection();
                 $div = $this->createDivForSharedPassage();
                 $object = new ObjectElement('sharedpassage/' . $featureReference . '.html', 'text/html');
@@ -102,8 +100,8 @@ class LearnosityToQtiPreProcessingService
                 $div->setContent($flowCollection);
                 return QtiMarshallerUtil::marshallValidQti($div);
             } else {
-				throw new MappingException($type . 'feature not supported');
-			}
+                throw new MappingException($type . 'feature not supported');
+            }
         }
         throw new MappingException($type . ' not supported');
     }

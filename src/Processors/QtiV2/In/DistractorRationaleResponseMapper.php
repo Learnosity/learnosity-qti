@@ -7,13 +7,10 @@ use LearnosityQti\Utils\General\DOMHelper;
 use LearnosityQti\Utils\QtiMarshallerUtil;
 use qtism\data\content\RubricBlock;
 
-
 class DistractorRationaleResponseMapper
 {
-
     public function __construct()
     {
-
     }
 
     public function parseWithDistractorRationaleResponseComponent(RubricBlock $rubricBlock)
