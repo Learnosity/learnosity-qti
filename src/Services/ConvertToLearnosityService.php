@@ -50,7 +50,7 @@ class ConvertToLearnosityService
     // Resource identifiers sometimes (but not always) match the assessmentItem identifier, so this can be useful
     protected $useResourceIdentifier = false;
 
-    private $assetsFixer;
+    protected $assetsFixer;
     // Hold the class instance.
     private static $instance = null;
 
@@ -566,7 +566,7 @@ class ConvertToLearnosityService
      *
      * @return array - the results of the conversion
     */
-    private function convertAssessmentItemInFile($contents, $currentDir, $resourceHref, $resourceType, $itemReference = null, array $metadata = [], $itemTagsArray = [])
+    protected function convertAssessmentItemInFile($contents, $currentDir, $resourceHref, $resourceType, $itemReference = null, array $metadata = [], $itemTagsArray = [])
     {
         $results = null;
 
