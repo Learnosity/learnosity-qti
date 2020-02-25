@@ -2,14 +2,23 @@
 
 namespace LearnosityQti\Processors\QtiV2\In;
 
+use DOMDocument;
+use DOMElement;
+use DOMXPath;
+use LearnosityQti\Entities\Question;
+use LearnosityQti\Entities\QuestionTypes\rating;
+use LearnosityQti\Exceptions\MappingException;
+use LearnosityQti\Processors\QtiV2\In\DistractorRationaleResponseMapper;
+use LearnosityQti\Processors\QtiV2\In\SharedPassageMapper;
+use LearnosityQti\Services\LogService;
+use LearnosityQti\Utils\General\DOMHelper;
+use LearnosityQti\Utils\QtiMarshallerUtil;
+use LearnosityQti\Utils\UuidUtil;
 use qtism\data\content\RubricBlock;
 use qtism\data\storage\xml\XmlDocument;
 use qtism\data\View;
-use LearnosityQti\Exceptions\MappingException;
-use LearnosityQti\Processors\QtiV2\In\SharedPassageMapper;
-use LearnosityQti\Utils\QtiMarshallerUtil;
-use LearnosityQti\Utils\Xml\EntityUtil as XmlEntityUtil;
-use LearnosityQti\Services\LogService;
+use qtism\data\ViewCollection;
+use function ctype_digit;
 
 class RubricBlockMapper
 {
@@ -66,12 +75,15 @@ class RubricBlockMapper
                 }
                 break;
 
-            case ($rubricBlock->getUse() === 'stimulus'):
+            case ($rubricBlock->getUse() === 'rationale'):
                 if ($views->contains(View::CANDIDATE)) {
-                    $contents = QtiMarshallerUtil::marshallCollection($rubricBlock->getContent());
-                    $result = [
-                        'stimulus' => $contents,
-                    ];
+                    $mapper = new DistractorRationaleResponseMapper();
+                    $distractorRationalResponseLevelArray = $mapper->parseWithDistractorRationaleResponseComponent($rubricBlock);
+                    $result ['question_metadata'] = $distractorRationalResponseLevelArray;
+                } elseif ($views->contains(View::AUTHOR) || $views->contains(View::SCORER) || $views->contains(View::TUTOR)) {
+                    $mapper = new DistractorRationaleResponseMapper();
+                    $distractorRationalResponseLevelArray = $mapper->parseWithDistractorRationaleResponseComponent($rubricBlock);
+                    $result ['question_metadata'] = $distractorRationalResponseLevelArray;
                 }
                 break;
 
@@ -79,7 +91,7 @@ class RubricBlockMapper
                 if ($views->contains(View::AUTHOR)) {
                     $result = [
                         'question_metadata' => [
-                            'distractor_rationale_author' => [
+                            'distractor_rationale_scorer' => [
                                 [
                                     'label' => $rubricBlock->getLabel(),
                                     'content' => QtiMarshallerUtil::marshallCollection($rubricBlock->getContent()),
@@ -90,6 +102,14 @@ class RubricBlockMapper
                 }
                 break;
 
+            case ($rubricBlock->getUse() === 'stimulus'):
+                if ($views->contains(View::CANDIDATE)) {
+                    $contents = QtiMarshallerUtil::marshallCollection($rubricBlock->getContent());
+                    $result = [
+                        'stimulus' => $contents,
+                    ];
+                }
+                break;
             case ($rubricBlock->getClass() === 'ScoringGuidance'):
                 /* falls through */
             case (!$views->contains(View::CANDIDATE)):
@@ -99,6 +119,7 @@ class RubricBlockMapper
         }
 
         if (!empty($result)) {
+            $result['views'] = $rubricBlock->getViews();
             return $result;
         } else {
             $rubricUse = $rubricBlock->getUse();
@@ -119,7 +140,7 @@ class RubricBlockMapper
      * @param  boolean $validateXml - whether to validate the XML
      *                              before attempting to deserialize it
      *
-     * @return \qtism\data\storage\xml\XmlDocument
+     * @return XmlDocument
      */
     protected function deserializeXml($xmlString, $validateXml)
     {
@@ -132,41 +153,16 @@ class RubricBlockMapper
         return $xmlDocument;
     }
 
-    private function getDomForXml($xml)
-    {
-        $dom = new \DOMDocument();
-
-        $dom->preserveWhiteSpace = false;
-        $dom->formatOutput       = false;
-        $dom->substituteEntities = false;
-
-        $dom->loadXML($xml);
-
-        return $dom;
-    }
-
-    private function getInnerXmlFragmentFromDom(\DOMDocument $dom)
-    {
-        $fragment = $dom->createDocumentFragment();
-        $childNodes = $dom->documentElement->childNodes;
-        while (($node = $childNodes->item(0))) {
-            $node->parentNode->removeChild($node);
-            $fragment->appendChild($node);
-        }
-
-        return $fragment;
-    }
-
     /**
      * Retrieves the rubric block from a given XML document.
      *
      * The rubric block must be the root element of the document.
      *
-     * @param  \qtism\data\storage\xml\XmlDocument $xmlDocument
+     * @param  XmlDocument $xmlDocument
      *
-     * @return \qtism\data\content\RubricBlock
+     * @return RubricBlock
      *
-     * @throws \LearnosityQti\Exceptions\MappingException
+     * @throws MappingException
      */
     private function getRubricBlockFromXmlDocument(XmlDocument $xmlDocument)
     {
@@ -178,7 +174,7 @@ class RubricBlockMapper
         return $rubricBlock;
     }
 
-    private function parseRubricTableContentFromXmlUsingXPath(\DOMXPath $xpath)
+    private function parseRubricTableContentFromXmlUsingXPath(DOMXPath $xpath)
     {
         $aliasColumns = [
             'score' => 'value',
@@ -244,12 +240,12 @@ class RubricBlockMapper
             $xml = QtiMarshallerUtil::marshall($rubricBlock);
 
             // Prevent/handle XML parse errors (from bad XML input)
-            $xml = $this->sanitizeXml($xml);
-            $dom = $this->getDomForXml($xml);
-            $xpath = new \DOMXPath($dom);
+            $xml = DOMHelper::sanitizeXml($xml);
+            $dom = DOMHelper::getDomForXml($xml);
+            $xpath = new DOMXPath($dom);
 
             // Prepare inner rubric content
-            $innerContentNode = $this->getInnerXmlFragmentFromDom($dom);
+            $innerContentNode = DOMHelper::getInnerXmlFragmentFromDom($dom);
             // XXX: The following needs to be done in this order. Need to figure out why
             $innerHTML = $dom->saveXML($innerContentNode);
             $dom->replaceChild($innerContentNode, $dom->documentElement);
@@ -273,7 +269,6 @@ class RubricBlockMapper
             }
 
             $result['questions'][$ratingQuestion->get_reference()] = $ratingQuestion;
-
         } catch (MappingException $e) {
             // NOTE: Instead of an exception, we can create a plain shared passage for the content as a fallback.
             // throw new MappingException('Could not map <rubricBlock> with class: \'ScoringGuidance\' - '.$e->getMessage(), $e);
@@ -287,7 +282,6 @@ class RubricBlockMapper
         // rubric content, as opposed to regular item or passage content
         $result['type']  = 'ScoringGuidance';
         $result['label'] = $rubricBlock->getLabel();
-
         return $result;
     }
 
@@ -341,32 +335,17 @@ class RubricBlockMapper
         }
 
         // HACK: Sort rating options by value
-        usort($ratingOptions, function($a, $b) {
+        usort($ratingOptions, function ($a, $b) {
             return strcmp($a['value'], $b['value']);
         });
 
         // Create a rating question type
         // FIXME: Need to deal with random reference problem here too (see shared passages)
-        $rating = new \LearnosityQti\Entities\QuestionTypes\rating('rating', $ratingOptions);
+        $rating = new rating('rating', $ratingOptions);
         $rating->set_stimulus($innerHTML);
-        $ratingQuestion = new \LearnosityQti\Entities\Question('rating', \LearnosityQti\Utils\UuidUtil::generate(), $rating);
+        $ratingQuestion = new Question('rating', UuidUtil::generate(), $rating);
 
         return $ratingQuestion;
-    }
-
-    private function sanitizeXml($xml)
-    {
-        $dom = new \DOMDocument('1.0', 'UTF-8');
-        libxml_use_internal_errors(true);
-
-        // HACK: Pass the version and encoding to prevent libxml from decoding HTML entities (esp. &amp; which libxml borks at)
-        $dom->loadHTML('<?xml version="1.0" encoding="UTF-8">'.$xml, LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
-        $xml = $dom->saveXML($dom->documentElement);
-
-        // HACK: Handle the fact that XML can't handle named entities (and HTML5 has no DTD for it)
-        $xml = XmlEntityUtil::convertNamedEntitiesToHexInString($xml);
-
-        return $xml;
     }
 
     private function useRubricPointValueForRubric(RubricBlock $rubricBlock)

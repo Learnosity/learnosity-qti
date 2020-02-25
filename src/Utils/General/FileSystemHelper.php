@@ -83,4 +83,34 @@ class FileSystemHelper
             }
         }
     }
+    
+    /**
+     * Copy a file, or recursively copy a folder and its contents
+     *
+     * @param       string   $sourceDirectory    Source path
+     * @param       string   $destinationDirectory      Destination path
+     * @return      bool     Returns TRUE on success, FALSE on failure
+     */
+    public static function copyFiles($sourceDirectory, $destinationDirectory)
+    {
+
+        if (is_file($sourceDirectory)) {
+            return copy($sourceDirectory, $destinationDirectory);
+        }
+
+        if (!is_dir($destinationDirectory)) {
+            mkdir($destinationDirectory);
+        }
+
+        $dir = opendir($sourceDirectory);
+        while (($file = readdir($dir)) !== false) {
+            // Recursively copy directories, ignoring dot paths
+            if (!in_array($file, ['.', '..'])) {
+                static::copyFiles("$sourceDirectory/$file", "$destinationDirectory/$file");
+            }
+        }
+
+        closedir($dir);
+        return true;
+    }
 }

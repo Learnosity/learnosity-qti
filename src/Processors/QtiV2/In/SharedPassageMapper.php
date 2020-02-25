@@ -4,17 +4,19 @@ namespace LearnosityQti\Processors\QtiV2\In;
 
 use DOMDocument;
 use DOMElement;
+use DOMNode;
+use DOMNodeList;
+use DOMXPath;
 use LearnosityQti\Entities\Question;
 use LearnosityQti\Entities\QuestionTypes\sharedpassage;
-use LearnosityQti\Utils\UuidUtil;
+use LearnosityQti\Exceptions\MappingException;
+use LearnosityQti\Services\LogService;
+use LearnosityQti\Utils\General\DOMHelper;
 use LearnosityQti\Utils\QtiMarshallerUtil;
-use LearnosityQti\Utils\Xml\EntityUtil as XmlEntityUtil;
+use LearnosityQti\Utils\UuidUtil;
 use qtism\data\content\RubricBlock;
-use qtism\data\content\xhtml\ObjectElement;
 use qtism\data\QtiComponentCollection;
 use SplFileInfo;
-use LearnosityQti\Services\LogService;
-use LearnosityQti\Exceptions\MappingException;
 
 class SharedPassageMapper
 {
@@ -111,8 +113,8 @@ class SharedPassageMapper
             // Fall back to using all the content in the <rubricBlock> verbatim as a single passage
             $xml = QtiMarshallerUtil::marshall($rubricBlock);
             if (strlen(trim($xml)) > 0) {
-                $dom          = $this->getDomForXml($xml);
-                $innerContent = $this->getInnerXmlFragmentFromDom($dom);
+                $dom          = DOMHelper::getDomForXml($xml);
+                $innerContent = DOMHelper::getInnerXmlFragmentFromDom($dom);
                 $results      = $this->parseXml($dom->saveXML($innerContent));
             } elseif ($this->isEmptyAllowed()) {
                 $results      = $this->parseXml($xml);
@@ -172,7 +174,7 @@ class SharedPassageMapper
         $htmlDom = new DOMDocument();
         $htmlDom->loadHTML($htmlString);
 
-        /** @var \DOMNodeList $body */
+        /** @var DOMNodeList $body */
         $body = $htmlDom->getElementsByTagName('body');
         if ($body->item(0)) {
             $oldHtmlDom = $htmlDom;
@@ -203,7 +205,7 @@ class SharedPassageMapper
     private function loadXmlAsHtmlDocument($xmlString)
     {
         // Sanitize the XML for DOMDocument usage
-        $xmlString = $this->sanitizeXml($xmlString);
+        $xmlString = DOMHelper::sanitizeXml($xmlString);
 
         // HACK: Load as XML in one DOM and transfer it to another DOM as HTML for modification
         $xmlDom = new DOMDocument();
@@ -219,77 +221,6 @@ class SharedPassageMapper
         $htmlDom->replaceChild($xmlDom, $htmlDom->documentElement);
 
         return $htmlDom;
-    }
-
-    private function getInnerXmlFragmentFromDom(\DOMDocument $dom)
-    {
-        $fragment = $dom->createDocumentFragment();
-        $childNodes = $dom->documentElement->childNodes;
-        while (($node = $childNodes->item(0))) {
-            $node->parentNode->removeChild($node);
-            $fragment->appendChild($node);
-        }
-
-        return $fragment;
-    }
-
-    private function getDomForXml($xml)
-    {
-        $dom = new \DOMDocument();
-
-        $dom->preserveWhiteSpace = false;
-        $dom->formatOutput       = false;
-        $dom->substituteEntities = false;
-
-        $isValid = $dom->loadXML($xml);
-
-        if (!$isValid) {
-            throw new MappingException('Invalid XML; Failed to parse DOM for sharedpassage content');
-        }
-
-        return $dom;
-    }
-
-    private function sanitizeXml($xml)
-    {
-        $xml = trim($xml);
-
-        $dom = new \DOMDocument('1.0', 'UTF-8');
-        $previousLibXmlSetting = libxml_use_internal_errors(true);
-
-        // HACK: Pass the version and encoding to prevent libxml from decoding HTML entities (esp. &amp; which libxml borks at)
-        // Only do this if it hasnt already been passed along in the xml string. Sometimes, we read from a file, and sometimes
-        // we read from a block inside another file.
-        if (strpos($xml, '<?xml ') !== false) {
-            $xml = substr($xml, strpos($xml, '>') + 1);
-        }
-        $xml = '<?xml version="1.0" encoding="UTF-8">' . "<div>$xml</div>";
-
-        $dom->loadHTML($xml, LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
-        $xml = $dom->saveXML($this->getFragmentWrapperDocumentElementForDom($dom));
-
-        // HACK: Handle the fact that XML can't handle named entities (and HTML5 has no DTD for it)
-        $xml = XmlEntityUtil::convertNamedEntitiesToHexInString($xml);
-
-        libxml_clear_errors();
-        libxml_use_internal_errors($previousLibXmlSetting);
-
-        return $xml;
-    }
-
-    private function getFragmentWrapperDocumentElementForDom(\DOMDocument $dom)
-    {
-        /** @var DOMDocument $dom */
-        $fragmentWrapper = $dom->createDocumentFragment();
-
-        while ($dom->childNodes->length > 0) {
-            /** @var DOMNode $childNode */
-            $fragmentWrapper->appendChild($dom->childNodes->item(0));
-        }
-
-        $dom->replaceChild($fragmentWrapper, $dom);
-
-        return $fragmentWrapper;
     }
 
     private function parsePassageContentFromDom(DOMDocument $htmlDom)
@@ -312,7 +243,7 @@ class SharedPassageMapper
         }
 
         // Process all <object> elements
-        $xpath = new \DOMXPath($htmlDom);
+        $xpath = new DOMXPath($htmlDom);
         foreach ($xpath->query('//object') as $objectElement) {
             $this->handleObjectElementInDocument($objectElement, $htmlDom);
         }

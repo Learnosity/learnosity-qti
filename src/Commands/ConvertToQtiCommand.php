@@ -30,6 +30,14 @@ class ConvertToQtiCommand extends Command
                 'An output path where the QTI will be saved',
                 './data/output'
             )
+            ->addOption(
+                'format',
+                'f',
+                InputOption::VALUE_REQUIRED,
+                'A flag to choose how to format the QTI output content package, from a list of supported formats.
+                This option supports the following possible values: (canvas, qti). Pass the canvas option to export
+                QTI content that is compatible with Canvas LMS. The default is qti, which outputs non LMS-specific QTI.'
+            )
         ;
     }
 
@@ -38,10 +46,18 @@ class ConvertToQtiCommand extends Command
         $validationErrors = [];
         $inputPath = $input->getOption('input');
         $outputPath = $input->getOption('output');
+        $format = strtolower($input->getOption('format'));
 
         // Validate the required options
         if (empty($inputPath) || empty($outputPath)) {
             array_push($validationErrors, "The <info>input</info> and <info>output</info> options are required. Eg:");
+        }
+
+        // Validate the format options
+        if (empty($format)) {
+            $format = 'qti';
+        } elseif (!in_array($format, array('qti', 'canvas'))) {
+            array_push($validationErrors, "This <info>format</info> is not supported. Please provide a valid format. Eg: qti|canvas");
         }
 
         // Make sure we can read the input folder, and write to the output folder
@@ -71,10 +87,10 @@ class ConvertToQtiCommand extends Command
             }
 
             $output->writeln([
-                "  <info>mo convert:to:qti -i /path/to/qti -o /path/to/save/folder</info>"
+                "  <info>mo convert:to:qti -i /path/to/qti -o /path/to/save/folder -f qti|canvas</info>"
             ]);
         } else {
-            $Convert = new ConvertToQtiService($inputPath, $outputPath, $output);
+            $Convert = ConvertToQtiService::initClass($inputPath, $outputPath, $output, $format);
             $result = $Convert->process();
             if ($result['status'] === false) {
                 $output->writeln('<error>Error running job</error>');

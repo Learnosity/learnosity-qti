@@ -1,22 +1,37 @@
 <?php
-
 namespace LearnosityQti\Utils;
 
 use DOMDocument;
 use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Processors\QtiV2\Marshallers\LearnosityMarshallerFactory;
+use LearnosityQti\Services\ConvertToLearnosityService;
+use LearnosityQti\Utils\General\StringHelper;
+use qtism\data\content\FeedbackInline;
 use qtism\data\content\TextRun;
+use qtism\data\content\xhtml\ObjectElement;
 use qtism\data\QtiComponent;
 use qtism\data\QtiComponentCollection;
 use qtism\data\storage\xml\marshalling\Qti21MarshallerFactory;
 
 class QtiMarshallerUtil
 {
+
     public static function unmarshallElement($string)
     {
         try {
             libxml_use_internal_errors(true);
 
+            $found = StringHelper::findStringPositionRecursive($string, '<math');
+            $i = 0;
+            if(is_array($found) && sizeof($found) > 0) {
+                foreach($found as $index => $pos) {
+                    if($i > 0){
+                        $pos += 43*$i;
+                    }
+                    $string = substr_replace($string, "<math xmlns='http://www.w3.org/1998/Math/MathML'", $pos, 5);
+                    $i++;
+                }
+            }
             $dom = new DOMDocument('1.0', 'UTF-8');
             $dom->formatOutput = true;
 
@@ -30,12 +45,16 @@ class QtiMarshallerUtil
             $components = new QtiComponentCollection();
             foreach ($dom->documentElement->childNodes as $element) {
                 if ($element instanceof \DOMText) {
-                    $component = new TextRun($element->nodeValue);
+                    if (!empty(trim($element->data))) {
+                        $component = new TextRun($element->nodeValue);
+                    }
                 } else {
                     $marshaller = $marshallerFactory->createMarshaller($element);
                     $component = $marshaller->unmarshall($element);
                 }
-                $components->attach($component);
+                if (isset($component)) {
+                    $components->attach($component);
+                }
             }
             return $components;
         } catch (\Exception $e) {
@@ -47,7 +66,7 @@ class QtiMarshallerUtil
     {
         $results = [];
         foreach ($collection as $component) {
-            $results[] = self::marshallValidQti($component);
+            $results[] = static::marshallValidQti($component);
         }
         return implode('', $results);
     }
@@ -56,9 +75,19 @@ class QtiMarshallerUtil
     {
         $results = [];
         foreach ($collection as $component) {
-            $results[] = self::marshall($component);
+            if ($component instanceof ObjectElement) {
+                $results[] = static::marshallObjectData($component);
+            } elseif (!($component instanceof FeedbackInline)) {
+                $results[] = static::marshall($component);
+            }
         }
-        return implode('', $results);
+        // Clean extra whitespace characters from the returned string
+        $cleanedResults = trim(
+            str_replace(
+                ["\r\n", "\n", "\r", "\t"], "", implode('', $results)
+            )
+        );
+        return $cleanedResults;
     }
 
     public static function marshall(QtiComponent $component)
@@ -84,7 +113,7 @@ class QtiMarshallerUtil
     {
         $marshallerFactory = new Qti21MarshallerFactory();
         $marshaller = $marshallerFactory->createMarshaller($component);
-        $element    = $marshaller->marshall($component);
+        $element = $marshaller->marshall($component);
 
         $dom = new \DOMDocument();
         $dom->preserveWhiteSpace = false;
@@ -92,5 +121,27 @@ class QtiMarshallerUtil
         $node = $dom->importNode($element, true);
 
         return $dom->saveXML($node);
+    }
+
+    public static function marshallObjectData(QtiComponent $component)
+    {
+        $result = '';
+        $class = new \ReflectionClass(get_class($component));
+        if (property_exists($component, 'data') && property_exists($component, 'type')) {
+            $property = $class->getProperty('data');
+            $property->setAccessible(true);
+            $propertyType = $class->getProperty('type');
+            $propertyType->setAccessible(true);
+            $type = $propertyType->getValue($component);
+            if ($type == 'text/html') {
+                $learnosityServiceObject = ConvertToLearnosityService::getInstance();
+                $inputPath = $learnosityServiceObject->getInputpath();
+                $file = $inputPath . '/' . $property->getValue($component);
+                $result = HtmlExtractorUtil::getHtmlData(($file));
+            } else {
+                $result = static::marshall($component);
+            }
+        }
+        return $result;
     }
 }

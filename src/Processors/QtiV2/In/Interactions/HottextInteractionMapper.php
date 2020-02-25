@@ -58,7 +58,7 @@ class HottextInteractionMapper extends AbstractInteractionMapper
 
             // Inject token spans where there are inline hottext nodes
             // HACK: because these tokens are inline, make sure there is space between the token and its inline siblings
-            $content = str_replace($hottextString, ' '.QtiMarshallerUtil::marshall($tokenSpan).' ', $content);
+            $content = str_replace($hottextString, ' ' . QtiMarshallerUtil::marshall($tokenSpan), $content);
         }
         return $content;
     }

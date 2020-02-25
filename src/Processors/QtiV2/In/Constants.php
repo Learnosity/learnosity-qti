@@ -14,7 +14,8 @@ class Constants
         'gapMatchInteraction',
         'orderInteraction',
         'graphicGapMatchInteraction',
-        'hotspotInteraction'
+        'hotspotInteraction',
+        'mediaInteraction'
     ];
 
     public static $needMergeInteractionTypes = [
@@ -25,4 +26,7 @@ class Constants
     public static $unsupportedInteractions = [
         'drawingInteraction'
     ];
+    
+    public static $baseLearnosityAssetsUrl = 'https://assets.learnosity.com/organisations/';
+
 }

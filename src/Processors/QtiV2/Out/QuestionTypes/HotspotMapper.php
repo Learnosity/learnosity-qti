@@ -22,6 +22,15 @@ class HotspotMapper extends AbstractQuestionTypeMapper
         /** @var hotspot $question */
         $question = $questionType;
 
+        // Check if distractor_rationale_response_level exists
+        $feedbackOptions = [];
+        $metadata = $question->get_metadata();
+        if (isset($metadata)) {
+            if (!empty($metadata->get_distractor_rationale())) {
+                $feedbackOptions['genral_feedback'] = $metadata->get_distractor_rationale();
+            }
+        }
+
         // Get main image width and height
         $width = $question->get_image()->get_width();
         $height = $question->get_image()->get_height();
@@ -59,7 +68,7 @@ class HotspotMapper extends AbstractQuestionTypeMapper
         }
 
         $builder = new HotspotValidationBuilder($question->get_multiple_responses(), $valueIdentifierMap);
-        list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation());
+        list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation(), 1, $feedbackOptions);
 
         return [$interaction, $responseDeclaration, $responseProcessing];
     }
@@ -75,7 +84,10 @@ class HotspotMapper extends AbstractQuestionTypeMapper
             $imageWidth = $image->get_width();
             $imageHeight = $image->get_height();
         } else {
-            list($imageWidth, $imageHeight) = CurlUtil::getImageSize(CurlUtil::prepareUrlForCurl($imageSrc));
+            $learnosityService = ConvertToQtiService::getInstance();
+            $inputPath = $learnosityService->getInputPath();
+            $imageRealPath = str_replace("/vendor/learnosity/itembank",$inputPath, $imageSrc);
+            list($imageWidth, $imageHeight) = getimagesize(($imageRealPath));
         }
         $imageObject->setWidth($imageWidth);
         $imageObject->setHeight($imageHeight);

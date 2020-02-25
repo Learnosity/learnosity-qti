@@ -50,6 +50,23 @@ class ConvertToLearnosityCommand extends Command
                     '  filename - uses the basename of the <assessmentItem> XML file' . PHP_EOL,
                 'metadata'
             )
+            ->addOption(
+                'passage-only-items',
+                '',
+                InputOption::VALUE_OPTIONAL,
+                'If you pass the value as "Y", the conversion library will convert regular '
+                . 'assessment items as well as passage-only items, if defined in '
+                . 'the manifest',
+                'N'
+            )
+            ->addOption(
+                'single-item',
+                '',
+                InputOption::VALUE_OPTIONAL,
+                'If you pass the value as "Y", the conversion library will convert only single '
+                 . 'xml file',
+                'N'
+            )
         ;
     }
 
@@ -60,6 +77,8 @@ class ConvertToLearnosityCommand extends Command
         $outputPath = $input->getOption('output');
         $organisationId = $input->getOption('organisation_id');
         $itemReferenceSource = $input->getOption('item-reference-source');
+        $isConvertPassageContent = strtoupper($input->getOption('passage-only-items'));
+        $isSingleItemConvert = strtoupper($input->getOption('single-item'));
 
         // Validate the required options
         if (empty($inputPath) || empty($outputPath)) {
@@ -67,7 +86,7 @@ class ConvertToLearnosityCommand extends Command
         }
 
         // Make sure we can read the input folder, and write to the output folder
-        if (!empty($inputPath) && !is_dir($inputPath)) {
+        if (!empty($inputPath) && !is_dir($inputPath) && $isSingleItemConvert != 'Y' && $isSingleItemConvert != 'YES') {
             $output->writeln([
                 "Input path isn't a directory (<info>$inputPath</info>)"
             ]);
@@ -84,6 +103,22 @@ class ConvertToLearnosityCommand extends Command
 
         if (empty($organisationId)) {
             array_push($validationErrors, "The <info>organisation_id</info> option is required for asset uploads.");
+        }
+
+        $requiredValuesForPassageConversion = ['Yes or Y', 'No or N'];
+        if ($isConvertPassageContent != 'Y' && $isConvertPassageContent != 'YES' && $isConvertPassageContent != 'N' && $isConvertPassageContent != 'NO') {
+            array_push(
+                $validationErrors,
+                "The <info>passage-only-items</info> must be one of the following values: " . join(', ', $requiredValuesForPassageConversion)
+            );
+        }
+
+        $requiredValuesForSingleItemConversion = ['Yes or Y', 'No or N'];
+        if ($isSingleItemConvert != 'Y' && $isSingleItemConvert != 'YES' && $isSingleItemConvert != 'N' && $isSingleItemConvert != 'NO') {
+            array_push(
+                $validationErrors,
+                "The <info>single-item</info> must be one of the following values: " . join(', ', $requiredValuesForSingleItemConversion)
+            );
         }
 
         $validItemReferenceSources = ['item', 'metadata', 'filename', 'resource'];
@@ -108,24 +143,23 @@ class ConvertToLearnosityCommand extends Command
                 "  <info>mo convert:to:learnosity --input /path/to/qti --output /path/to/save/folder --organisation_id [integer]</info>"
             ]);
         } else {
+            $Convert = ConvertToLearnosityService::initClass($inputPath, $outputPath, $output, $organisationId, $isConvertPassageContent, $isSingleItemConvert);
 
-            $Convert = new ConvertToLearnosityService($inputPath, $outputPath, $output, $organisationId);
-
-            $Convert->useMetadataIdentifier = true;
-            $Convert->useResourceIdentifier = false;
-            $Convert->useFileNameAsIdentifier = false;
+            $Convert->useMetadataIdentifier(true);
+            $Convert->useResourceIdentifier(false);
+            $Convert->useFileNameAsIdentifier(false);
             if ($itemReferenceSource === 'item') {
-                $Convert->useMetadataIdentifier = false;
-                $Convert->useResourceIdentifier = false;
-                $Convert->useFileNameAsIdentifier = false;
+                $Convert->useMetadataIdentifier(false);
+                $Convert->useResourceIdentifier(false);
+                $Convert->useFileNameAsIdentifier(false);
             } elseif ($itemReferenceSource === 'filename') {
-                $Convert->useMetadataIdentifier = false;
-                $Convert->useResourceIdentifier = false;
-                $Convert->useFileNameAsIdentifier = true;
+                $Convert->useMetadataIdentifier(false);
+                $Convert->useResourceIdentifier(false);
+                $Convert->useFileNameAsIdentifier(true);
             } elseif ($itemReferenceSource === 'resource') {
-                $Convert->useMetadataIdentifier = false;
-                $Convert->useResourceIdentifier = true;
-                $Convert->useFileNameAsIdentifier = false;
+                $Convert->useMetadataIdentifier(false);
+                $Convert->useResourceIdentifier(true);
+                $Convert->useFileNameAsIdentifier(false);
             }
 
             $result = $Convert->process();
