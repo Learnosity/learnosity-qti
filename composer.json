@@ -22,7 +22,6 @@
         "symfony/console": "^3.4",
         "symfony/dependency-injection": "^3.4",
         "symfony/finder": "^3.4",
-        "symfony/framework-bundle": "^3.4",
         "symfony/yaml": "^3.4",
         "twig/twig": "^1.34",
         "twig/extensions": "^1.5",
