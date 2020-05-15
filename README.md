@@ -284,8 +284,10 @@ It would up to the host page calling the Assessment API to render this content t
 
 ## Unsupported
 Learnosity QTI does not support:
-* `<assessmentItems>` with no interactions (passage-only or rubric-only)
+* `<assessmentItem>` with no interactions (passage-only or rubric-only)
 * Custom CSS stylesheets. These must be loaded separately at run time for the host page initialising the Assessment API.
+
+Note that only `<assessmentItem>` are supported, no other QTI elements like `<assessmentTest>`.
 
 ### Help
 Remember you can ask for `help`:
