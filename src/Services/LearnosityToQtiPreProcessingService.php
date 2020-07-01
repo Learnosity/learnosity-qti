@@ -73,7 +73,7 @@ class LearnosityToQtiPreProcessingService
             $src = trim($node->attr['data-src']);
             $type = trim($node->attr['data-type']);
             if ($type === 'audioplayer' || $type === 'videoplayer') {
-                $src = $this->getSourceBasedOnMediaFormat($src);
+                $src = $this->getQtiMediaSrcFromLearnositySrc($src);
                 return QtiMarshallerUtil::marshallValidQti(new ObjectElement($src, MimeUtil::guessMimeType(basename($src))));
             }
         // Process regular question feature
