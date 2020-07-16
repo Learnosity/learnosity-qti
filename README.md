@@ -1,3 +1,10 @@
+# Notice
+This library is open source and currently is not actively maintained by Learnosity.
+
+Users should fork this repository to fix any issues found or feature requests required.
+
+--
+
 # Learnosity QTI
 
 This package converts between QTI 2.1 Assessment Items and Learnosity JSON.
