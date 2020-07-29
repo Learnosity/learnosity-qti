@@ -187,6 +187,11 @@ abstract class AbstractItemBuilder
         $this->metadata = array_merge_recursive($this->metadata, $itemMetadata);
     }
 
+    protected function setDistractorRationaleResponseLevel(array $distratorRationalResponseLevel)
+    {
+        $this->metadata = array_merge_recursive($this->metadata, $distratorRationalResponseLevel);
+    }
+
     public function setItemPointValue($itemPointValue)
     {
         $this->itemPointValue = $itemPointValue;
@@ -237,6 +242,10 @@ abstract class AbstractItemBuilder
         if (!empty($result['question_metadata'])) {
             $this->setQuestionMetadata($result['question_metadata']);
         }
+        if(!empty($result['distractor_rationale_response_level'])) {
+            $this->setDistractorRationaleResponseLevel($result);
+        }
+
     }
 
     private function processScoringGuidanceContent(array $result)
