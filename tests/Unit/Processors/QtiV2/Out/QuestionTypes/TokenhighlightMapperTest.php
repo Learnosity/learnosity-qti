@@ -5,10 +5,11 @@ namespace LearnosityQti\Tests\Unit\Processors\QtiV2\Out\QuestionTypes;
 use LearnosityQti\Entities\QuestionTypes\tokenhighlight;
 use LearnosityQti\Processors\QtiV2\Out\QuestionTypes\TokenhighlightMapper;
 use LearnosityQti\Utils\QtiMarshallerUtil;
+use PHPUnit\Framework\TestCase;
 use qtism\data\content\interactions\Hottext;
 use qtism\data\content\interactions\HottextInteraction;
 
-class TokenhighlightMapperTest extends \PHPUnit_Framework_TestCase
+class TokenhighlightMapperTest extends TestCase
 {
     public function testWithNoValidation()
     {

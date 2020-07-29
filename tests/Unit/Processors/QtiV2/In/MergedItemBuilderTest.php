@@ -7,10 +7,11 @@ use LearnosityQti\Processors\QtiV2\In\ItemBuilders\MergedItemBuilder;
 use LearnosityQti\Services\LogService;
 use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\ChoiceInteractionBuilder;
 use LearnosityQti\Tests\Unit\Processors\QtiV2\In\Fixtures\ItemBodyBuilder;
+use PHPUnit\Framework\TestCase;
 use qtism\data\content\interactions\TextEntryInteraction;
 use qtism\data\QtiComponentCollection;
 
-class MergedItemBuilderTest extends \PHPUnit_Framework_TestCase
+class MergedItemBuilderTest extends TestCase
 {
     /* @var MergedItemBuilder $mergedItemBuilder */
     private $mergedItemBuilder;
