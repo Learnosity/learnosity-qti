@@ -257,6 +257,7 @@ class ConvertToLearnosityService
                 $convertedContent = $this->convertAssessmentItemInFile($assessmentItemContents, $itemReference, $metadata, $currentDir, $resourceHref, $itemTagsArray, $resource['type']);
                 $scoringRubric = '';
                 if (isset($convertedContent['rubric'])) {
+                    // Check if scoring rubric is present in converted string
                     $rubricReferenceToBeDelete = $this->checkScoringRubricExistInConvertedContent($convertedContent);
                     if (sizeof($rubricReferenceToBeDelete) > 0) {
                         foreach ($rubricReferenceToBeDelete as $id => $reference) {
@@ -284,41 +285,65 @@ class ConvertToLearnosityService
         return $results;
     }
 
+    /**
+     * Remove the widget_type , item_reference, content from the converted content
+     *
+     * @param type $convertedContent converted content
+     * @return type converted content after deleting the data
+     */
     private function removeUnusedDataFromItem($convertedContent)
     {
-        foreach ($convertedContent['questions'] as $id => $data) {
-            if (isset($data['widget_type'])) {
-                unset($convertedContent['questions'][$id]['widget_type']);
-            }
-            if (isset($data['item_reference'])) {
-                unset($convertedContent['questions'][$id]['item_reference']);
-            }
-            if (isset($data['content'])) {
-                unset($convertedContent['questions'][$id]['content']);
-            }
-            if (isset($convertedContent['item']['metadata']['rubric_reference'])) {
-                unset($convertedContent['item']['metadata']['rubric_reference']);
+        if (is_array($convertedContent) && array_key_exists('questions', $convertedContent)) {
+            foreach ($convertedContent['questions'] as $id => $data) {
+                if (isset($data['widget_type'])) {
+                    unset($convertedContent['questions'][$id]['widget_type']);
+                }
+                if (isset($data['item_reference'])) {
+                    unset($convertedContent['questions'][$id]['item_reference']);
+                }
+                if (isset($data['content'])) {
+                    unset($convertedContent['questions'][$id]['content']);
+                }
+                if (isset($convertedContent['item']['metadata']['rubric_reference'])) {
+                    unset($convertedContent['item']['metadata']['rubric_reference']);
+                }
             }
         }
         return $this->removeUnusedFeatureData($convertedContent);
     }
 
+    /**
+     * Removes the widget_type, item_reference and content
+     * from the feature array as these are no longer needed
+     *
+     * @param type $convertedContent converted content
+     * @return type return converted content after deleting
+     */
     private function removeUnusedFeatureData($convertedContent)
     {
-        foreach ($convertedContent['features'] as $id => $data) {
-            if (isset($data['widget_type'])) {
-                unset($convertedContent['features'][$id]['widget_type']);
-            }
-            if (isset($data['item_reference'])) {
-                unset($convertedContent['features'][$id]['item_reference']);
-            }
-            if (isset($data['content'])) {
-                unset($convertedContent['features'][$id]['content']);
+        if (is_array($convertedContent) && array_key_exists('features', $convertedContent)) {
+            foreach ($convertedContent['features'] as $id => $data) {
+                if (isset($data['widget_type'])) {
+                    unset($convertedContent['features'][$id]['widget_type']);
+                }
+                if (isset($data['item_reference'])) {
+                    unset($convertedContent['features'][$id]['item_reference']);
+                }
+                if (isset($data['content'])) {
+                    unset($convertedContent['features'][$id]['content']);
+                }
             }
         }
         return $convertedContent;
     }
 
+    /**
+     * Create a new item with only a shared passage
+     *
+     * @param type $scoringRubric rubric needs to be attached with the item
+     * @param type $reference reference of the rubric
+     * @return type array
+     */
     private function createNewScoringRubricItem($scoringRubric, $reference)
     {
         $itemData['reference'] = $reference;
@@ -336,6 +361,12 @@ class ConvertToLearnosityService
         ];
     }
 
+    /**
+     * Check if a scoring rubric exist based on the rubric view
+     *
+     * @param type $rubricArray rubric array
+     * @return type reference of the deleted rubric
+     */
     private function checkScoringRubricExistInConvertedContent($rubricArray)
     {
         $rubricReferenceToBeDelete = array();
@@ -349,6 +380,13 @@ class ConvertToLearnosityService
         return $rubricReferenceToBeDelete;
     }
 
+    /**
+     * Delete the scoring rubric from converted content
+     *
+     * @param type $convertedContent converted content
+     * @param type $reference reference of the rubric
+     * @return type index of the rubric to be deleted
+     */
     private function deleteUnusedRubricFromConvertedContent($convertedContent, $reference)
     {
         $index = '';
