@@ -214,7 +214,6 @@ class ConvertToQtiService
                 $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Learnosity JSON file " . basename($file) . " Not found in: {$this->inputPath}/items </info>");
             }
         }
-        
         $resourceInfo = $this->updateJobManifest($finalManifest, $results);
         $finalManifest->setResources($resourceInfo);
         $this->persistResultsFile($results, realpath($this->outputPath) . '/' . $this->rawPath . '/');
@@ -284,7 +283,6 @@ class ConvertToQtiService
         $result = [];
         $finalXml = [];
         $tagsArray = [];
-
         $content = $json['content'];
         $features = $json['features'];
         $tags = $json['tags'];
@@ -508,16 +506,16 @@ class ConvertToQtiService
     {
         $resources = $imsManifestXml->createElement("resources");
         $resourcesContents = $manifestContent->getResources();
-        foreach ($resourcesContents as $resourcesContent) {
-           $i = 0;
-           foreach ($resourcesContent as $index => $resourceContent) {
+        $i = 0;
+        foreach ($resourcesContents as $index => $resourcesContent) {
+           foreach ($resourcesContent as $indexResource => $resourceContent) {
                 $resource = $imsManifestXml->createElement("resource");
                 $resource->setAttribute("identifier", $resourceContent->getIdentifier());
                 $resource->setAttribute("type", $resourceContent->getType());
                 $resource->setAttribute("href", $resourceContent->getHref());
-                if (isset($results[$i]) && !empty($results[$i]) && !empty($results[$i]['tags'][$results[$i]['json']['questions'][$index]['reference']])) {
+                if (isset($results[$index]) && !empty($results[$index]) && !empty($results[$index]['tags'][$results[$index]['json']['questions'][$indexResource]['reference']])) {
                     $metadata = $imsManifestXml->createElement("metadata");
-                    $tagsArray = $results[$i]['tags'][$results[$i]['json']['questions'][$index]['reference']];
+                    $tagsArray = $results[$index]['tags'][$results[$index]['json']['questions'][$indexResource]['reference']];
                     if (is_array($tagsArray) && sizeof($tagsArray) > 0) {
                         $resourceMatadata = $this->addResourceMetaDataInfo($imsManifestXml, $tagsArray);
                         $metadata->appendChild($resourceMatadata);
