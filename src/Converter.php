@@ -185,15 +185,17 @@ class Converter
         $itemReferece = UuidUtil::generate();
         $itemData['reference'] = $itemReferece;
         $itemData['status'] = 'published';
-        $itemData['template'] = 'dynamic';
+        $itemData['definition']['template'] = 'dynamic';
         $features = $passageMapper->parseHtml($htmlString);
         $featuresData = [];
         if (isset($features['features']) && is_array($features['features'])) {
             foreach ($features['features'] as $feature) {
-                $featuresData[] = $questionWriter->convert($feature);
+                $convertedFeature = $questionWriter->convert($feature);
+                unset($convertedFeature['item_reference']);
+                $featuresData[] = $convertedFeature;
+                $itemData['definition']['widgets'][]['reference'] = $convertedFeature['reference'];
             }
         }
-
         // Flush out all the error messages stored in this static class, also ensure they are unique
         $messages = array_values(array_unique(LogService::flush()));
 
