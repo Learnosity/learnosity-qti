@@ -408,6 +408,10 @@ class ConvertToQtiService
      */
     private function createIMSContentPackage($contentDirPath)
     {
+        if (!class_exists('ZipArchive')) {
+            return;
+        }
+
         // Get real path for our folder
         $rootPath = $contentDirPath;
 
