@@ -282,6 +282,14 @@ class ConvertToLearnosityService
                     $this->useFileNameAsIdentifier
                 );
 
+                // The QTI package requires that `identifier` be on the <assessmentItem> node
+                // Check that it's there, or add it from the location we retrieved it from
+                if (!empty($itemReference)) {
+                    $assessmentItemContents = $this->checkAssessmentItemIdentifier($assessmentItemContents, $itemReference);
+                } else {
+                    throw new MappingException('Fatal: Cannot find a valid identifier for ' . $resourceHref . '. Perhaps try a different item-reference-source');
+                }
+
                 $itemTagsArray = $this->getTaxonPathEntryForItemTags($relatedResource);
                 $metadata = [];
                 $itemPointValue = $this->getPointValueFromResource($relatedResource);
@@ -701,6 +709,42 @@ class ConvertToLearnosityService
     private function getIdentifierFromResourceHref($resourceHref, $suffix = '.xml')
     {
         return basename($resourceHref, $suffix);
+    }
+
+    /**
+     * Checks an <assessmentItem> string to make sure the `identifier` attribute
+     * is present, if not, add it from where the user specified in the command.
+     *
+     * @param string $xmlString
+     * @param string $itemReference
+     * @return string
+     */
+    private function checkAssessmentItemIdentifier($xmlString, $itemReference)
+    {
+        $document = new \DOMDocument();
+        $document->loadXML($xmlString);
+        $elAssessmentItem = $document->getElementsByTagName('assessmentItem');
+        $foundIdentifer = false;
+
+        // Find the <assessmentItem> element
+        foreach ($elAssessmentItem as $node) {
+            // Iterate over each attribute and check for the `identifier` attribute
+            foreach ($node->attributes as $attribute) {
+                if ($attribute->name === 'identifer') {
+                    $foundIdentifer = true;
+                    if (empty($attribute->value)) {
+                        $attribute->value = $itemReference;
+                    }
+                    exit;
+                }
+            }
+            // We didn't find an `identifier` attribute, add one manually
+            if ($foundIdentifer === false) {
+                $node->setAttribute('identifier', $itemReference);
+            }
+        }
+
+        return $document->saveXML();
     }
 
     /**
