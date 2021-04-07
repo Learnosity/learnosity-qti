@@ -92,7 +92,9 @@ class ConvertToQtiCommand extends Command
         } else {
             $Convert = ConvertToQtiService::initClass($inputPath, $outputPath, $output, $format);
             $result = $Convert->process();
-            if ($result['status'] === false) {
+            if (empty($result)) {
+                $output->writeln('<info>Empty results array, check output directory</info>');
+            } elseif ($result['status'] === false) {
                 $output->writeln('<error>Error running job</error>');
                 foreach ($result['message'] as $m) {
                     $output->writeln($m);
