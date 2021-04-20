@@ -1,4 +1,5 @@
 <?php
+
 namespace LearnosityQti\Entities;
 
 class Feature extends BaseEntity
@@ -17,7 +18,6 @@ class Feature extends BaseEntity
         $this->type = $type;
         $this->widget_type = $data->get_widget_type();
         $this->content = $content;
-        
     }
 
     public function get_reference()

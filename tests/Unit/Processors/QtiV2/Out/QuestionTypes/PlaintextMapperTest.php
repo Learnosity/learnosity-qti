@@ -28,7 +28,7 @@ class PlaintextMapperTest extends \PHPUnit_Framework_TestCase
             $questionReference
         );
 
-        // No validation shall be mapped for longtext
+        // No validation shall be mapped for plaintext
         $this->assertNull($responseDeclaration);
         $this->assertNull($responseProcessing);
 

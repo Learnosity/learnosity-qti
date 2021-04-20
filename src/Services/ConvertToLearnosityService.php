@@ -49,6 +49,8 @@ class ConvertToLearnosityService
     protected $useMetadataIdentifier = true;
     // Resource identifiers sometimes (but not always) match the assessmentItem identifier, so this can be useful
     protected $useResourceIdentifier = false;
+    // Look for the `identifier` attribute within each <assessmentItem>
+    protected $useItemIdentifierAsIdentifier = false;
 
     protected $assetsFixer;
     // Hold the class instance.
@@ -123,6 +125,16 @@ class ConvertToLearnosityService
         $this->useFileNameAsIdentifier = $useFileNameAsIdentifier;
     }
 
+    public function isUsingItemIdentifier()
+    {
+        return $this->useItemIdentifier;
+    }
+
+    public function useItemIdentifier($useItemIdentifier)
+    {
+        $this->useItemIdentifier = $useItemIdentifier;
+    }
+
     public function process()
     {
         if ($this->isSingleItemConvert != 'Y' && $this->isSingleItemConvert != 'YES') {
@@ -185,7 +197,7 @@ class ConvertToLearnosityService
             }
             $this->persistResultsFile($resultSingleFile, realpath($this->outputPath) . DIRECTORY_SEPARATOR . $this->rawPath . DIRECTORY_SEPARATOR . $dirName);
         } else {
-            $result = $this->parseContentPackage();
+            $this->parseContentPackage();
         }
         // Convert the item format (columns etc)
         $ItemLayout = new ItemLayoutService();
@@ -277,9 +289,11 @@ class ConvertToLearnosityService
                 $assessmentItemContents = file_get_contents($currentDir . '/' . $resourceHref);
                 $itemReference = $this->getItemReferenceFromResource(
                     $relatedResource,
+                    $assessmentItemContents,
                     $this->useMetadataIdentifier,
                     $this->useResourceIdentifier,
-                    $this->useFileNameAsIdentifier
+                    $this->useFileNameAsIdentifier,
+                    $this->useItemIdentifier
                 );
 
                 // The QTI package requires that `identifier` be on the <assessmentItem> node
@@ -677,9 +691,11 @@ class ConvertToLearnosityService
      */
     private function getItemReferenceFromResource(
         \DOMNode $resource,
+        $assessmentItemContents,
         $useMetadataIdentifier = true,
         $useResourceIdentifier = false,
-        $useFileNameAsIdentifier = false
+        $useFileNameAsIdentifier = false,
+        $useItemIdentifier = false
     ) {
         $itemReference = null;
 
@@ -696,6 +712,12 @@ class ConvertToLearnosityService
             $resourceHref = $resource->getAttribute('href');
             $itemReference = $this->getIdentifierFromResourceHref($resourceHref);
         }
+
+        // If we haven't already found an item reference (and it was enabled via the command), look for it in assessmentItem
+        if ($useItemIdentifier && empty($itemReference)) {
+            $itemReference = $this->getIdentifierFromAssessmentItem($assessmentItemContents);
+        }
+
         return $itemReference;
     }
 
@@ -709,6 +731,38 @@ class ConvertToLearnosityService
     private function getIdentifierFromResourceHref($resourceHref, $suffix = '.xml')
     {
         return basename($resourceHref, $suffix);
+    }
+
+    /**
+     * Look at an <assessmentItem> XML string to see if there's an `identifier` attribute.
+     * If there is, return that as the item reference (identifier)
+     *
+     * @param string $xmlString
+     * @return string
+     */
+    private function getIdentifierFromAssessmentItem($xmlString)
+    {
+        $document = new \DOMDocument();
+        $document->loadXML($xmlString);
+        $elAssessmentItem = $document->getElementsByTagName('assessmentItem');
+        $identifer = null;
+
+        // Find the <assessmentItem> element
+        foreach ($elAssessmentItem as $node) {
+            if ($node->nodeName === 'assessmentItem') {
+                // Iterate over each attribute and check for the `identifier` attribute
+                foreach ($node->attributes as $attribute) {
+                    if ($attribute->name === 'identifier') {
+                        if (!empty($attribute->value)) {
+                            $identifer = $attribute->value;
+                        }
+                        continue;
+                    }
+                }
+            }
+        }
+
+        return $identifer;
     }
 
     /**

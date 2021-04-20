@@ -82,11 +82,13 @@ trait JobDataTrait
     protected function writeJsonToFile(array $array, $filename, $flags = null)
     {
         if (!empty($array)) {
-            if (!file_put_contents(
-                $filename,
-                json_encode($array, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES|JSON_PRETTY_PRINT),
-                $flags
-            )) {
+            if (
+                !file_put_contents(
+                    $filename,
+                    json_encode($array, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT),
+                    $flags
+                )
+            ) {
                 $error = Json::checkError();
                 throw new Exception('Write JSON to file failed: ' . $filename . '. ' . $error);
             }
@@ -96,11 +98,13 @@ trait JobDataTrait
     protected function writeStringToFile($str, $filename, $flags = null)
     {
         if (is_string($str) && strlen($str)) {
-            if (!file_put_contents(
-                $this->directory . $filename,
-                $str,
-                $flags
-            )) {
+            if (
+                !file_put_contents(
+                    $this->directory . $filename,
+                    $str,
+                    $flags
+                )
+            ) {
                 throw new Exception('Write string to file failed: ' . $filename);
             }
         }

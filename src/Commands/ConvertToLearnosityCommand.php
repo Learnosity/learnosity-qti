@@ -148,10 +148,12 @@ class ConvertToLearnosityCommand extends Command
             $Convert->useMetadataIdentifier(true);
             $Convert->useResourceIdentifier(false);
             $Convert->useFileNameAsIdentifier(false);
+            $Convert->useItemIdentifier(true);
             if ($itemReferenceSource === 'item') {
                 $Convert->useMetadataIdentifier(false);
                 $Convert->useResourceIdentifier(false);
                 $Convert->useFileNameAsIdentifier(false);
+                $Convert->useItemIdentifier(true);
             } elseif ($itemReferenceSource === 'filename') {
                 $Convert->useMetadataIdentifier(false);
                 $Convert->useResourceIdentifier(false);

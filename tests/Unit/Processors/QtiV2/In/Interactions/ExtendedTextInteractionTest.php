@@ -17,7 +17,7 @@ class ExtendedTextInteractionTest extends AbstractInteractionTest
         $question = $mapper->getQuestionType();
 
         $this->assertNotNull($question);
-        $this->assertEquals('longtext', $question->get_type());
+        $this->assertEquals('longtextV2', $question->get_type());
         $this->assertEquals('Please describe yourself in few words', $question->get_stimulus());
         $this->assertNull($question->get_validation());
     }
@@ -69,4 +69,4 @@ class ExtendedTextInteractionTest extends AbstractInteractionTest
         $interaction->setPrompt($prompt);
         return $interaction;
     }
-} 
+}
