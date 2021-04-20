@@ -2,7 +2,7 @@
 
 namespace LearnosityQti\Tests\Unit\Processors\QtiV2\Out\QuestionTypes;
 
-use LearnosityQti\Entities\QuestionTypes\longtext;
+use LearnosityQti\Entities\QuestionTypes\longtextV2;
 use LearnosityQti\Processors\QtiV2\Out\QuestionTypes\LongtextMapper;
 use LearnosityQti\Utils\QtiMarshallerUtil;
 use qtism\data\content\interactions\ExtendedTextInteraction;
@@ -16,7 +16,7 @@ class LongtextMapperTest extends \PHPUnit_Framework_TestCase
         $stimulus = '<strong>stimulushere</strong>';
         $questionReference = 'questionReferenceOne';
 
-        $question = new longtext('longtext');
+        $question = new longtext('longtextV2');
         $question->set_placeholder($placeholder);
         $question->set_stimulus($stimulus);
 

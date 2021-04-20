@@ -232,7 +232,7 @@ class GapMatchInteractionTest extends AbstractInteractionTest
         $q = $mapper->getQuestionType();
         $this->assertEquals('clozeassociation', $q->get_type());
         $this->assertEquals('<p>{{response}}{{response}}</p>', $q->get_template());
-        $this->assertEquals(['Gap A', 'Gap B', '<img src="http://img_C"/>', '<img src="http://img_D"/>'], $q->get_possible_responses());
+        $this->assertEquals(['Gap A', 'Gap B', '<img src="http://img_C" width="-1" height="-1"/>', '<img src="http://img_D" width="-1" height="-1"/>'], $q->get_possible_responses());
         $this->assertTrue($q->get_duplicate_responses());
 
         $validation = $q->get_validation();
@@ -248,20 +248,20 @@ class GapMatchInteractionTest extends AbstractInteractionTest
             $validResponse
         );
         $this->assertEquals(9, $validResponse->get_score());
-        $this->assertEquals(['<img src="http://img_D"/>', 'Gap B'], $validResponse->get_value());
+        $this->assertEquals(['<img src="http://img_D" width="-1" height="-1"/>', 'Gap B'], $validResponse->get_value());
 
         $altResponses = $validation->get_alt_responses();
         $this->assertCount(5, $altResponses);
         $this->assertEquals(8, $altResponses[0]->get_score());
-        $this->assertEquals(['<img src="http://img_D"/>', '<img src="http://img_C"/>'], $altResponses[0]->get_value());
+        $this->assertEquals(['<img src="http://img_D" width="-1" height="-1"/>', '<img src="http://img_C" width="-1" height="-1"/>'], $altResponses[0]->get_value());
         $this->assertEquals(6, $altResponses[1]->get_score());
         $this->assertEquals(['Gap B', 'Gap B'], $altResponses[1]->get_value());
         $this->assertEquals(5, $altResponses[2]->get_score());
         $this->assertEquals(['Gap A', 'Gap B'], $altResponses[2]->get_value());
         $this->assertEquals(5, $altResponses[3]->get_score());
-        $this->assertEquals(['Gap B', '<img src="http://img_C"/>'], $altResponses[3]->get_value());
+        $this->assertEquals(['Gap B', '<img src="http://img_C" width="-1" height="-1"/>'], $altResponses[3]->get_value());
         $this->assertEquals(4, $altResponses[4]->get_score());
-        $this->assertEquals(['Gap A', '<img src="http://img_C"/>'], $altResponses[4]->get_value());
+        $this->assertEquals(['Gap A', '<img src="http://img_C" width="-1" height="-1"/>'], $altResponses[4]->get_value());
     }
 
     public function testWithMatchCorrectResponseSwappedValuePair()
@@ -366,19 +366,19 @@ class GapMatchInteractionTest extends AbstractInteractionTest
             $validResponse
         );
         $this->assertEquals(9, $validResponse->get_score());
-        $this->assertEquals(['<img src="http://img_D"/>', 'Gap B'], $validResponse->get_value());
+        $this->assertEquals(['<img src="http://img_D" width="-1" height="-1"/>', 'Gap B'], $validResponse->get_value());
 
         $altResponses = $validation->get_alt_responses();
         $this->assertCount(5, $altResponses);
         $this->assertEquals(8, $altResponses[0]->get_score());
-        $this->assertEquals(['<img src="http://img_D"/>', '<img src="http://img_C"/>'], $altResponses[0]->get_value());
+        $this->assertEquals(['<img src="http://img_D" width="-1" height="-1"/>', '<img src="http://img_C" width="-1" height="-1"/>'], $altResponses[0]->get_value());
         $this->assertEquals(6, $altResponses[1]->get_score());
         $this->assertEquals(['Gap B', 'Gap B'], $altResponses[1]->get_value());
         $this->assertEquals(5, $altResponses[2]->get_score());
         $this->assertEquals(['Gap A', 'Gap B'], $altResponses[2]->get_value());
         $this->assertEquals(5, $altResponses[3]->get_score());
-        $this->assertEquals(['Gap B', '<img src="http://img_C"/>'], $altResponses[3]->get_value());
+        $this->assertEquals(['Gap B', '<img src="http://img_C" width="-1" height="-1"/>'], $altResponses[3]->get_value());
         $this->assertEquals(4, $altResponses[4]->get_score());
-        $this->assertEquals(['Gap A', '<img src="http://img_C"/>'], $altResponses[4]->get_value());
+        $this->assertEquals(['Gap A', '<img src="http://img_C" width="-1" height="-1"/>'], $altResponses[4]->get_value());
     }
 }

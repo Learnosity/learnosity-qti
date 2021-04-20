@@ -28,7 +28,7 @@ class GraphicGapMatchInteractionTest extends AbstractTest
         $this->assertCount(1, $questions);
         $this->assertContains('<p>Test intro</p>', $questions[0]->get_data()->get_stimulus());
         $this->assertEquals('graphicGapfill_RESPONSE', $questions[0]->get_reference());
-        $this->assertEquals('imageclozeassociation', $questions[0]->get_type());
+        $this->assertEquals('imageclozeassociationV2', $questions[0]->get_type());
         /** @var imageclozeassociation $question */
         $question = $questions[0]->get_data();
         $this->assertEquals([

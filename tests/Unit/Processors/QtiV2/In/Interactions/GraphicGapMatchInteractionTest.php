@@ -65,8 +65,8 @@ class GraphicGapMatchInteractionTest extends AbstractInteractionTest
         $mapper = new GraphicGapMatchInteractionMapper($testInteraction, $responseDeclaration, $responseProcessingTemplate);
         /** @var imageclozeassociation $q */
         $q = $mapper->getQuestionType();
-        $this->assertEquals('imageclozeassociation', $q->get_type());
-        $this->assertEquals(['<img src="img_A.png"/>', '<img src="img_B.png"/>', '<img src="img_C.png"/>'], $q->get_possible_responses());
+        $this->assertEquals('imageclozeassociationV2', $q->get_type());
+        $this->assertEquals(['<img src="img_A.png" width="-1" height="-1"/>', '<img src="img_B.png" width="-1" height="-1"/>', '<img src="img_C.png" width="-1" height="-1"/>'], $q->get_possible_responses());
         $this->assertFalse($q->get_duplicate_responses());
         $this->assertNull($q->get_validation());
 
@@ -112,8 +112,8 @@ class GraphicGapMatchInteractionTest extends AbstractInteractionTest
         $mapper = new GraphicGapMatchInteractionMapper($testInteraction, $responseDeclaration, $responseProcessingTemplate);
         /** @var imageclozeassociation $q */
         $q = $mapper->getQuestionType();
-        $this->assertEquals('imageclozeassociation', $q->get_type());
-        $this->assertEquals(['<img src="img_A.png"/>', '<img src="img_B.png"/>', '<img src="img_C.png"/>'], $q->get_possible_responses());
+        $this->assertEquals('imageclozeassociationV2', $q->get_type());
+        $this->assertEquals(['<img src="img_A.png" width="-1" height="-1"/>', '<img src="img_B.png" width="-1" height="-1"/>', '<img src="img_C.png" width="-1" height="-1"/>'], $q->get_possible_responses());
         $this->assertFalse($q->get_duplicate_responses());
 
         $this->assertEquals([
@@ -179,8 +179,8 @@ class GraphicGapMatchInteractionTest extends AbstractInteractionTest
         /** @var imageclozeassociation $q */
         $q = $mapper->getQuestionType();
 
-        $this->assertEquals('imageclozeassociation', $q->get_type());
-        $this->assertEquals(['<img src="img_A.png"/>', '<img src="img_B.png"/>'], $q->get_possible_responses());
+        $this->assertEquals('imageclozeassociationV2', $q->get_type());
+        $this->assertEquals(['<img src="img_A.png" width="-1" height="-1"/>', '<img src="img_B.png" width="-1" height="-1"/>'], $q->get_possible_responses());
         $this->assertTrue($q->get_duplicate_responses());
 
         $this->assertEquals([
