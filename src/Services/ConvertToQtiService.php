@@ -203,22 +203,34 @@ class ConvertToQtiService
      */
     private function parseContent()
     {
-        $results = [];
-        $jsonFiles = $this->parseInputFolders();
-        $finalManifest = $this->getJobManifestTemplate();
-        $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Processing JSON directory: {$this->inputPath} </info>");
-        foreach ($jsonFiles as $file) {
-            if (file_exists($file)) {
-                $results[] = $this->convertLearnosityInDirectory($file);
-            } else {
-                $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Learnosity JSON file " . basename($file) . " Not found in: {$this->inputPath}/items </info>");
+        $result = [
+            'status' => null,
+            'message' => []
+        ];
+
+        try {
+            $results = [];
+            $jsonFiles = $this->parseInputFolders();
+            $finalManifest = $this->getJobManifestTemplate();
+            $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Processing JSON directory: {$this->inputPath} </info>");
+            foreach ($jsonFiles as $file) {
+                if (file_exists($file)) {
+                    $results[] = $this->convertLearnosityInDirectory($file);
+                } else {
+                    $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Learnosity JSON file " . basename($file) . " Not found in: {$this->inputPath}/items </info>");
+                }
             }
+            $resourceInfo = $this->updateJobManifest($finalManifest, $results);
+            $finalManifest->setResources($resourceInfo);
+            $this->persistResultsFile($results, realpath($this->outputPath) . '/' . $this->rawPath . '/');
+            $this->flushJobManifest($finalManifest, $results);
+            $this->createIMSContentPackage(realpath($this->outputPath) . '/' . $this->rawPath . '/');
+        } catch (Exception $e) {
+            $result['status'] = false;
+            $result['message'] = $e->getMessage();
         }
-        $resourceInfo = $this->updateJobManifest($finalManifest, $results);
-        $finalManifest->setResources($resourceInfo);
-        $this->persistResultsFile($results, realpath($this->outputPath) . '/' . $this->rawPath . '/');
-        $this->flushJobManifest($finalManifest, $results);
-        $this->createIMSContentPackage(realpath($this->outputPath) . '/' . $this->rawPath . '/');
+
+        return $result;
     }
 
     /**
@@ -517,7 +529,11 @@ class ConvertToQtiService
                 $resource->setAttribute("identifier", $resourceContent->getIdentifier());
                 $resource->setAttribute("type", $resourceContent->getType());
                 $resource->setAttribute("href", $resourceContent->getHref());
-                if (isset($results[$index]) && !empty($results[$index]) && !empty($results[$index]['tags'][$results[$index]['json']['questions'][$indexResource]['reference']])) {
+                if (
+                    isset($results[$index]) &&
+                    !empty($results[$index]) &&
+                    (in_array('tags', $results[$index]) && !empty($results[$index]['tags'][$results[$index]['json']['questions'][$indexResource]['reference']]))
+                ) {
                     $metadata = $imsManifestXml->createElement("metadata");
                     $tagsArray = $results[$index]['tags'][$results[$index]['json']['questions'][$indexResource]['reference']];
                     if (is_array($tagsArray) && sizeof($tagsArray) > 0) {
@@ -577,7 +593,7 @@ class ConvertToQtiService
         if ($this->dryRun) {
             return;
         }
-        $this->output->writeln("\n<info>" . static::INFO_OUTPUT_PREFIX . "Writing conversion results: " . $outputFilePath . '.json' . "</info>\n");
+        $this->output->writeln("\n<info>" . static::INFO_OUTPUT_PREFIX . "Writing conversion results: " . $outputFilePath . "</info>\n");
         foreach ($results as $result) {
             if (!empty($result['qti'])) {
                 if (!empty($result['json']['questions'])) {
