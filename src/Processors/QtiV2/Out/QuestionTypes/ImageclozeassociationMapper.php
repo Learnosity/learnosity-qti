@@ -6,7 +6,8 @@ use LearnosityQti\Entities\BaseQuestionType;
 use LearnosityQti\Entities\QuestionTypes\imageclozeassociation;
 use LearnosityQti\Entities\QuestionTypes\imageclozeassociation_image;
 use LearnosityQti\Exceptions\MappingException;
-use LearnosityQti\Processors\QtiV2\Out\Validation\ImageclozeassociationValidationBuilder;
+use LearnosityQti\Processors\QtiV2\Out\Validation\ImageclozeassociationV2ValidationBuilder;
+use LearnosityQti\Services\ConvertToQtiService;
 use LearnosityQti\Utils\CurlUtil;
 use LearnosityQti\Utils\MimeUtil;
 use LearnosityQti\Utils\QtiCoordinateUtil;
@@ -56,7 +57,7 @@ class ImageclozeassociationMapper extends AbstractQuestionTypeMapper
         $interaction->setLabel($interactionLabel);
         $interaction->setPrompt($this->convertStimulusForPrompt($question->get_stimulus()));
 
-        $validationBuilder = new ImageclozeassociationValidationBuilder($possibleResponses);
+        $validationBuilder = new ImageclozeassociationV2ValidationBuilder($possibleResponses);
         list($responseDeclaration, $responseProcessing) = $validationBuilder->buildValidation($interaction->getResponseIdentifier(), $question->get_validation(), 1, $feedbackOptions);
 
         return [$interaction, $responseDeclaration, $responseProcessing];
@@ -113,7 +114,7 @@ class ImageclozeassociationMapper extends AbstractQuestionTypeMapper
         $imageSrc = $image->get_src();
         $learnosityService = ConvertToQtiService::getInstance();
         $inputPath = $learnosityService->getInputPath();
-        $imageRealPath = str_replace("/vendor/learnosity/itembank",$inputPath, $imageSrc); 
+        $imageRealPath = str_replace("/vendor/learnosity/itembank",$inputPath, $imageSrc);
         list($imageWidth, $imageHeight) = getimagesize(($imageRealPath));
         $imageObject = new ObjectElement($imageSrc, MimeUtil::guessMimeType($imageSrc));
         $imageObject->setWidth($imageWidth);
