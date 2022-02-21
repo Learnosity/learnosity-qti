@@ -315,15 +315,18 @@ class Converter
                 list($xmlString, $messages, $questionReference, $featureHtml) = self::convertLearnosityQuestion($data);
             }
         } catch (\Exception $ex) {
-            LogService::log('Unknown JSON format');
+            echo('Unknown JSON format: ' . $ex->getMessage() . PHP_EOL);
         }
         // Validate them before proceeding by feeding it back
         try {
             $document = new XmlDocument();
             $document->loadFromString($xmlString);
         } catch (\Exception $e) {
-            LogService::log('Unknown error occurred. The QTI XML produced may not be valid');
+            LogService::log('Unknown error occurred. The QTI XML produced may not be valid', $ex->getMessage());
         }
+
+        $messages = LogService::flush();
+
         return [$xmlString, $messages, $questionReference, $featureHtml];
     }
 
@@ -360,7 +363,7 @@ class Converter
         // Separate question(s) and item
         $itemJson['questionReferences'] = array_column($itemJson['questions'], 'reference');
         $questionsJson = $itemJson['questions'];
-        
+
         // Pre-process these JSON
         $preprocessingService = new LearnosityToQtiPreProcessingService($questionsJson);
         $questionsJson = $preprocessingService->processJson($questionsJson);
