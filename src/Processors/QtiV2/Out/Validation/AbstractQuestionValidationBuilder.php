@@ -15,6 +15,8 @@ abstract class AbstractQuestionValidationBuilder
 
     public function buildValidation($responseIdentifier, $validation, $isCaseSensitive = true, $feedBackOptions = array())
     {
+        $ResponseProcessingBuilder = new QtiResponseProcessingBuilder();
+
         // Some basic validation on the `validation` object
         if (empty($validation) && empty($feedBackOptions)) {
             return [null, null];
@@ -57,11 +59,11 @@ abstract class AbstractQuestionValidationBuilder
         }
 
         if (sizeof($responseIdentifiers) > 1) {
-            $responseProcessing = QtiResponseProcessingBuilder::buildResponseProcessingWithMultipleResponse($score, $maxscore, $penalty, $feedBackOptions, $type, $responseIdentifiers);
+            $responseProcessing = $ResponseProcessingBuilder->buildResponseProcessingWithMultipleResponse($score, $maxscore, $penalty, $feedBackOptions, $type, $responseIdentifiers);
         } else {
             // if found distractor_rationale_response_level generate response processing with setoutcome value FEEDBACK
             if (!empty($feedBackOptions) && is_array($feedBackOptions) || in_array('maxscore', $type) || in_array('penalty', $type)) {
-                $responseProcessing = QtiResponseProcessingBuilder::build($score, $maxscore, $penalty, $feedBackOptions, $type);
+                $responseProcessing = $ResponseProcessingBuilder->build($score, $maxscore, $penalty, $feedBackOptions, $type);
             } else {
                 $responseProcessing = $this->buildResponseProcessing($validation, $isCaseSensitive);
             }
