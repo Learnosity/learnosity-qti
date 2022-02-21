@@ -30,6 +30,13 @@ class LearnosityToQtiPreProcessingService
                 $item = str_replace('&nbsp;', '&#160;', $item);
                 $item = $this->processHtml($item);
             }
+
+            // Look for `template` attributes and make sure they're wrapped in a block element as QTI expects
+            if ($key === 'template') {
+                if (substr($item, 0, 3) !== '<p>') {
+                    $item = '<div>' . $item . '</div>';
+                }
+            }
         });
         return $json;
     }
