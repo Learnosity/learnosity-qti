@@ -443,6 +443,15 @@ The following Learnosity question types are supported:
 |Short Text| shorttext |TextEntryInteraction|
 |Token Highlight| tokenhighlight |HottextInteraction|
 
+#### Known limitations
+##### General
+You cannot use `<u>` elements in QTI 2.1. We suggest using a `<span>` with a CSS classname instead.
+
+All `template` fields must be wrapped in a block element.
+
+##### Cloze Association
+Cannot use the group possible responses option.
+
 ### Help
 
 Remember you can ask for `help`:
