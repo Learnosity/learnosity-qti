@@ -6,7 +6,7 @@ use qtism\data\expressions\BaseValue;
 use qtism\data\expressions\Correct;
 use qtism\data\expressions\ExpressionCollection;
 use qtism\data\expressions\operators\IsNull;
-use qtism\data\expressions\operators\Match;
+use qtism\data\expressions\operators\MatchOperator;
 use qtism\data\expressions\operators\AndOperator;
 use qtism\data\expressions\operators\Multiple;
 use qtism\data\expressions\Variable;
@@ -73,7 +73,7 @@ class QtiResponseProcessingBuilder
         }
         $responseElseRuleCollection1->attach($responseElseComponent1);
 
-        $responseIf1 = new ResponseIf(new Match($responseIfExpressionCollection1), $responseIfRuleCollection1);
+        $responseIf1 = new ResponseIf(new MatchOperator($responseIfExpressionCollection1), $responseIfRuleCollection1);
         $responseElse1 = new ResponseElse($responseElseRuleCollection1);
 
         // merge response conditions
@@ -103,7 +103,7 @@ class QtiResponseProcessingBuilder
             $matchExpressionCollection->attach(new Variable($rid));
             $matchExpressionCollection->attach(new Correct($rid));
 
-            $match = new Match($matchExpressionCollection);
+            $match = new MatchOperator($matchExpressionCollection);
             $andExpressionCollection->attach($match);
         }
 
