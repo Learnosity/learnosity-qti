@@ -322,7 +322,7 @@ class Converter
             $document = new XmlDocument();
             $document->loadFromString($xmlString);
         } catch (\Exception $e) {
-            LogService::log('Unknown error occurred. The QTI XML produced may not be valid', $ex->getMessage());
+            LogService::log('Unknown error occurred. The QTI XML produced may not be valid', $e->getMessage());
         }
 
         $messages = LogService::flush();
