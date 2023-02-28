@@ -123,7 +123,7 @@ class AssessmentItemBuilder
         }
 
         // Build <itemBody>
-        $assessmentItem->setItemBody($this->itemBodyBuilder->buildItemBody($interactions, $content, $questionType));
+        $assessmentItem->setItemBody($this->itemBodyBuilder->buildItemBody($interactions, $questionType, $content));
 
         // Map <responseDeclaration>
         if (!empty($responseDeclarationCollection)) {
@@ -191,7 +191,7 @@ class AssessmentItemBuilder
 
         // Build <itemBody>
 
-        $assessmentItem->setItemBody($this->itemBodyBuilder->buildItemBody($interactions, $content, $featureType));
+        $assessmentItem->setItemBody($this->itemBodyBuilder->buildItemBody($interactions, $featureType, $content));
         // Map <responseDeclaration>
         if (!empty($responseDeclarationCollection)) {
             $assessmentItem->setResponseDeclarations($responseDeclarationCollection);

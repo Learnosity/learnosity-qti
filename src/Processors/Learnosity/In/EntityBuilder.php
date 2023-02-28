@@ -27,14 +27,15 @@ class EntityBuilder
     private static function buildField(\ReflectionParameter $parameter, $data)
     {
         // If parameter turns out to be an Object then recurse
-        if (!empty($parameter->getClass())) {
+        // if (!empty($parameter->getClass())) {
+        if ($parameter->getType() && !$parameter->getType()->isBuiltin()) {
             return self::build(
-                $parameter->getClass()->getName(),
+                $parameter->getType()->getName(),
                 $data
             );
         }
         // If parameter is type of array, then check whether it is an array of Object
-        if ($parameter->isArray()) {
+        if ($parameter->getType() && $parameter->getType()->getName() === 'array') {
             $possibleObjectClassName = $parameter->getDeclaringClass()->getName() . '_' . $parameter->getName() . '_item';
             if (class_exists($possibleObjectClassName)) {
                 return array_map(function ($values) use ($possibleObjectClassName) {

@@ -19,8 +19,8 @@ class ContentCollectionBuilder
         $reflectionClass = new \ReflectionClass($component);
 
         // TODO: Assumption `setContent` always has content setter on first parameter
-        $parameterClass = $reflectionClass->getMethod('setContent')->getParameters()[0]->getClass();
-        $contentType = $parameterClass->getShortName();
+        $parameterClass = explode('\\', $reflectionClass->getMethod('setContent')->getParameters()[0]->getType()->getName());
+        $contentType = array_pop($parameterClass);
 
         try {
             /** @var QtiComponentCollection $content */
