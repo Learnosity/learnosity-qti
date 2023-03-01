@@ -603,7 +603,7 @@ class ConvertToLearnosityService
 
             $resourcePath = $currentDir . '/' . $resourceHref;
 
-            $results = $this->convertAssessmentItem($xmlString, $itemReference, $resourcePath, $metadata, $itemTagsArray, $resourceType);
+            $results = $this->convertAssessmentItem($xmlString, $resourceType, $itemReference, $resourcePath, $metadata, $itemTagsArray);
         } catch (\Exception $e) {
             $targetFilename = $resourceHref;
             $message = $e->getMessage();
@@ -627,15 +627,15 @@ class ConvertToLearnosityService
      *
      * @throws \Exception - if the conversion fails
      */
-    private function convertAssessmentItem($xmlString, $itemReference = null, $resourcePath = null, array $metadata = [], array $itemTagsArray = [], $resourceType)
+    private function convertAssessmentItem($xmlString, $resourceType, $itemReference = null, $resourcePath = null, array $metadata = [], array $itemTagsArray = [])
     {
         AssumptionHandler::flush();
         $xmlString = CheckValidQti::preProcessing($xmlString);
 
         if ($resourceType == static::RESOURCE_TYPE_ITEM) {
-            $result = Converter::convertQtiItemToLearnosity($xmlString, null, null, $resourcePath, $itemReference, $metadata);
+            $result = Converter::convertQtiItemToLearnosity($xmlString, null, true, $resourcePath, $itemReference, $metadata);
         } elseif ($resourceType == static::RESOURCE_TYPE_PASSAGE && ($this->isConvertPassageContent == 'Y' || $this->isConvertPassageContent == 'YES')) {
-            $result = Converter::convertPassageItemToLearnosity($xmlString, null, null, $resourcePath, $itemReference, $metadata);
+            $result = Converter::convertPassageItemToLearnosity($xmlString, null, true, $resourcePath, $itemReference, $metadata);
         }
 
         $item       = !empty($result['item']) ? $result['item'] : array();
