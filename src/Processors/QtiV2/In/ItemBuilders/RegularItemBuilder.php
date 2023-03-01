@@ -32,17 +32,17 @@ class RegularItemBuilder extends AbstractItemBuilder
         QtiComponentCollection $rubricBlockComponents = null
     ) {
         $this->itemReference = $itemReference;
-        
+
         $questionsXmls = [];
         $responseDeclarationsMap = [];
-        
+
         if ($responseDeclarations) {
             /** @var ResponseDeclaration $responseDeclaration */
             foreach ($responseDeclarations as $responseDeclaration) {
                 $responseDeclarationsMap[$responseDeclaration->getIdentifier()] = $responseDeclaration;
             }
         }
-        
+
         foreach ($interactionComponents as $component) {
 
             /* @var $component Interaction */
@@ -64,7 +64,7 @@ class RegularItemBuilder extends AbstractItemBuilder
                 'responseIdentifier' => $component->getResponseIdentifier()
             ];
         }
-        
+
         if (empty($this->questions)) {
             LogService::log('Item contains no valid, supported questions');
         }
@@ -78,9 +78,18 @@ class RegularItemBuilder extends AbstractItemBuilder
         // HACK: Process whole DOM structure per interaction.
         $dom = new DOMDocument();
         $dom->preserveWhitespace = false;
+
+        // PHP8 (or 7?) doesn't like the XML elements we're loading. For now we'll suppress the invalid in Entity warnings
+        libxml_use_internal_errors(true);
+
         // NOTE: Make sure we wrap in an <itemBody> so we get the correct DOM structure (and documentElement)
         $dom->loadHTML('<?xml version="1.0" encoding="UTF-8"><itemBody>' . $extraContentHtml->save() . '</itemBody>', LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
+
+        // PHP8 (or 7?) doesn't like the XML elements we're loading. For now we'll suppress the invalid in Entity warnings
+        libxml_clear_errors();
+
         $xpath = new DOMXPath($dom);
+
 
         $questionHtmlContents = [];
         $contentList = '';
@@ -93,7 +102,7 @@ class RegularItemBuilder extends AbstractItemBuilder
             $responseIdentifier = $interactionData['responseIdentifier'];
             $toQuery = '//' . strtolower($qtiClassName) . '[@responseidentifier="' . $responseIdentifier . '"]';
             // Clean up interaction HTML content
-            //fetch each interaction content to get the stimulus 
+            //fetch each interaction content to get the stimulus
             $appnodes = $xpath->query('/itembody' . $toQuery . '/preceding-sibling::*');
             for ($j = 0; $j < $appnodes->length; $j++) {
                 if ($appnodes->item($j)->nodeName == strtolower($qtiClassName)) {

@@ -316,6 +316,7 @@ class Converter
             }
         } catch (\Exception $ex) {
             echo('Unknown JSON format: ' . $ex->getMessage() . PHP_EOL);
+            return false;
         }
         // Validate them before proceeding by feeding it back
         try {
