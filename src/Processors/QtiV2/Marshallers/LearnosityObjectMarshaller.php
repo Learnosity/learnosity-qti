@@ -2,6 +2,7 @@
 
 namespace LearnosityQti\Processors\QtiV2\Marshallers;
 
+use DOMElement;
 use LearnosityQti\Processors\QtiV2\Out\ContentCollectionBuilder;
 use LearnosityQti\Services\ConvertToLearnosityService;
 use LearnosityQti\Services\LogService;
@@ -20,7 +21,7 @@ class LearnosityObjectMarshaller extends ObjectMarshaller
     const MIME_HTML = 'html';
     const MIME_NOT_SUPPORTED = 'na';
 
-    protected function marshallChildrenKnown(QtiComponent $component, array $elements)
+    protected function marshallChildrenKnown(QtiComponent $component, array $elements): DOMElement
     {
         $learnosityServiceObject = ConvertToLearnosityService::getInstance();
         /** @var ObjectElement $component */

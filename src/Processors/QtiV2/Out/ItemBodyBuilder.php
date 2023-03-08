@@ -18,7 +18,7 @@ use qtism\data\QtiComponentCollection;
 
 class ItemBodyBuilder
 {
-    public function buildItemBody(array $interactions, $content = '', $questionType)
+    public function buildItemBody(array $interactions, $questionType, $content = '')
     {
         // Try to build the <itemBody> according to items` content if exists
         if (empty($content)) {
@@ -155,7 +155,7 @@ class ItemBodyBuilder
         $itemBody->setContent(ContentCollectionBuilder::buildBlockCollectionContent($contentCollection));
         return $itemBody;
     }
-    
+
     private function removeUnusedSpanFromContent(array $interactions, $content)
     {
 

@@ -11,7 +11,7 @@ use \qtism\data\rules\ResponseCondition;
 use \qtism\data\QtiComponent;
 use \qtism\data\expressions\operators\IsNull;
 use \qtism\data\rules\ResponseRuleCollection;
-use \qtism\data\expressions\operators\Match;
+use \qtism\data\expressions\operators\MatchOperator;
 use \qtism\data\expressions\operators\Equal;
 use \qtism\data\expressions\operators\Sum;
 use \qtism\data\expressions\BaseValue;
@@ -246,7 +246,7 @@ abstract class BaseInteractionValidationBuilder
                 $results['unattempted'] = $outcomeValues[0];
                 break;
 
-            case $expression instanceof Match:
+            case $expression instanceof MatchOperator:
                 // correct answer, get the first response rule as there should only be one.
                 $responseId = $expression->getExpressions()[0]->getIdentifier();
                 $responseRules = $conditionBranch->getResponseRules();
