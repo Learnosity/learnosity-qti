@@ -1,6 +1,6 @@
 <?php
 
-namespace LearnosityQti\Tests\Processors\QtiV2\Out;
+namespace LearnosityQti\Tests\Integration\Processors\QtiV2\Out;
 
 use LearnosityQti\Converter;
 use LearnosityQti\Tests\Integration\Processors\QtiV2\Out\QuestionTypes\AbstractQuestionTypeTest;
