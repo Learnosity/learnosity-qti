@@ -153,11 +153,11 @@ class ItemMapper
         if (isset($metadata['point_value'])) {
             $itemBuilder->setItemPointValue($metadata['point_value']);
         }
-        
+
         if (isset($metadata['organisation_id'])) {
             $itemBuilder->setOrganisationId($metadata['organisation_id']);
         }
-        
+
         $itemBuilder->map(
             $itemReference,
             $itemBody,
@@ -168,6 +168,7 @@ class ItemMapper
         );
 
         $item = $itemBuilder->getItem();
+
         if ($assessmentItem->getTitle()) {
             $item->set_description($assessmentItem->getTitle());
         }
@@ -176,7 +177,7 @@ class ItemMapper
         $rubric = $itemBuilder->getRubricItem();
 
         $questions = $this->removeDistractorRationalePerResponse($itemBuilder->getQuestions());
-        
+
         $features = $itemBuilder->getFeatures();
 
         // Support additional (related) items being passed back

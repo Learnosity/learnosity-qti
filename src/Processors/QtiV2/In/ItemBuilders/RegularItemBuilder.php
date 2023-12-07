@@ -18,7 +18,9 @@ use qtism\data\content\BlockCollection;
 use qtism\data\content\ItemBody;
 use qtism\data\QtiComponentCollection;
 use qtism\data\state\ResponseDeclaration;
+use \AllowDynamicProperties;
 
+#[AllowDynamicProperties]
 class RegularItemBuilder extends AbstractItemBuilder
 {
     const MAPPER_CLASS_BASE = 'LearnosityQti\Processors\QtiV2\In\Interactions\\';
@@ -77,13 +79,13 @@ class RegularItemBuilder extends AbstractItemBuilder
         // Extra stimulus for each question.
         // HACK: Process whole DOM structure per interaction.
         $dom = new DOMDocument();
-        $dom->preserveWhitespace = false;
+        // $dom->preserveWhitespace = false;
 
         // PHP8 (or 7?) doesn't like the XML elements we're loading. For now we'll suppress the invalid in Entity warnings
         libxml_use_internal_errors(true);
 
         // NOTE: Make sure we wrap in an <itemBody> so we get the correct DOM structure (and documentElement)
-        $dom->loadHTML('<?xml version="1.0" encoding="UTF-8"><itemBody>' . $extraContentHtml->save() . '</itemBody>', LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
+        $dom->loadHTML('<?xml version="1.0" encoding="UTF-8"><itemBody>' . $extraContentHtml->save() . '</itemBody>', LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED | LIBXML_NOBLANKS);
 
         // PHP8 (or 7?) doesn't like the XML elements we're loading. For now we'll suppress the invalid in Entity warnings
         libxml_clear_errors();

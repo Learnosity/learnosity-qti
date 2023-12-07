@@ -14,6 +14,8 @@ class ItemLayoutService
     protected $shouldRemoveItemMetadata             = true;
     protected $shouldSplitQuestionFeatureReferences = true;
     protected $shouldRebuildItemDefinition          = true;
+    protected $doItemMigration                      = false;
+    protected $recreateOutputDir                    = false;
 
     private $output;
 

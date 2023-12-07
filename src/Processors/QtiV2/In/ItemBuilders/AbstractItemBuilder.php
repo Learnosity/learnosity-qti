@@ -12,7 +12,9 @@ use qtism\data\content\ItemBody;
 use qtism\data\content\RubricBlock;
 use qtism\data\QtiComponentCollection;
 use qtism\data\View;
+use \AllowDynamicProperties;
 
+#[AllowDynamicProperties]
 abstract class AbstractItemBuilder
 {
     protected $itemReference;

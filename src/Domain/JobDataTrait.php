@@ -79,7 +79,7 @@ trait JobDataTrait
         return $datas;
     }
 
-    protected function writeJsonToFile(array $array, $filename, $flags = null)
+    protected function writeJsonToFile(array $array, $filename, $flags = 0)
     {
         if (!empty($array)) {
             if (
@@ -95,7 +95,7 @@ trait JobDataTrait
         }
     }
 
-    protected function writeStringToFile($str, $filename, $flags = null)
+    protected function writeStringToFile($str, $filename, $flags = 0)
     {
         if (is_string($str) && strlen($str)) {
             if (

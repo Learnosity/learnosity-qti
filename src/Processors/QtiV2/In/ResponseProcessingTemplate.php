@@ -3,7 +3,9 @@
 namespace LearnosityQti\Processors\QtiV2\In;
 
 use \qtism\data\processing\ResponseProcessing;
+use \AllowDynamicProperties;
 
+#[AllowDynamicProperties]
 class ResponseProcessingTemplate
 {
     const MATCH_CORRECT = 'match_correct';

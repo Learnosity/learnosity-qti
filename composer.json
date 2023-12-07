@@ -7,7 +7,7 @@
         "qti",
         "tei"
     ],
-    "license" : [
+    "license": [
         "GPL-2.0"
     ],
     "autoload": {
@@ -18,13 +18,13 @@
     },
     "require": {
         "php": ">=7.4",
-        "symfony/config": "^3.4",
-        "symfony/console": "^3.4",
-        "symfony/dependency-injection": "^3.4",
+        "symfony/config": "~4.4",
+        "symfony/console": "~4.4",
+        "symfony/dependency-injection": "~3.4",
         "symfony/http-foundation": "^5",
-        "symfony/finder": "^3.4",
-        "symfony/yaml": "^3.4",
-        "qtism/qtism": "^19.0",
+        "symfony/finder": "~4.4",
+        "symfony/yaml": "~3.4",
+        "qtism/qtism": "~19.0",
         "learnosity/learnosity-sdk-php": ">=1"
     },
     "require-dev": {
