@@ -148,7 +148,8 @@ class ChoiceInteractionMapper extends AbstractInteractionMapper
         $metadata = "";
         $feeddataArray = array_values((array) $feeddata);
         $feedbackArray = array_values((array) $feeddataArray[3]);
-        if (sizeof($feedbackArray[0]) >= 2) {
+
+        if (is_array($feedbackArray[0]) && sizeof($feedbackArray[0]) >= 2) {
             $feedInlineArray = array_values((array) $feedbackArray[0][1]);
             if (!empty($feedInlineArray) && $feedInlineArray[2] == 'text/html') {
                 $learnosityServiceObject = ConvertToLearnosityService::getInstance();
@@ -156,7 +157,7 @@ class ChoiceInteractionMapper extends AbstractInteractionMapper
                 $htmlfile = $inputPath . '/' . $feedInlineArray[1];
                 $metadata = HtmlExtractorUtil::getHtmlData($htmlfile);
             }
-        } else {
+        } else if (is_array($feedbackArray[0]) && is_array($feedbackArray[0][0])) {
             $feeddataArray = array_values((array) $feedbackArray[0][0]);
             if (!empty($feeddataArray[0])) {
                 $metadata = trim($feeddataArray[0]);

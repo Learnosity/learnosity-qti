@@ -17,6 +17,7 @@ class ResponseProcessingTemplate
     const BUILTIN = 'builtin';
 
     private $template;
+    private $responseProcessing;
 
     private function __construct($template)
     {

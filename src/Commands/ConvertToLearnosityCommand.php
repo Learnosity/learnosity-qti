@@ -70,7 +70,7 @@ class ConvertToLearnosityCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $validationErrors = [];
         $inputPath = $input->getOption('input');
@@ -142,6 +142,8 @@ class ConvertToLearnosityCommand extends Command
             $output->writeln([
                 "  <info>mo convert:to:learnosity --input /path/to/qti --output /path/to/save/folder --organisation_id [integer]</info>"
             ]);
+
+            return Command::SUCCESS;
         } else {
             $Convert = ConvertToLearnosityService::initClass($inputPath, $outputPath, $output, $organisationId, $isConvertPassageContent, $isSingleItemConvert);
 
@@ -171,6 +173,8 @@ class ConvertToLearnosityCommand extends Command
                     $output->writeln($m);
                 }
             }
+
+            return Command::FAILURE;
         }
     }
 }

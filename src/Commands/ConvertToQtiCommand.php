@@ -41,12 +41,12 @@ class ConvertToQtiCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $validationErrors = [];
         $inputPath = $input->getOption('input');
         $outputPath = $input->getOption('output');
-        $format = strtolower($input->getOption('format'));
+        $format = ($input->getOption('format')) ? strtolower($input->getOption('format')) : null;
 
         // Validate the required options
         if (empty($inputPath) || empty($outputPath)) {
@@ -100,6 +100,10 @@ class ConvertToQtiCommand extends Command
                     $output->writeln($m);
                 }
             }
+
+            return Command::FAILURE;
         }
+
+        return Command::SUCCESS;
     }
 }

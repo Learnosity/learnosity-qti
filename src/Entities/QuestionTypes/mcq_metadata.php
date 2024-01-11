@@ -10,12 +10,13 @@ use LearnosityQti\Entities\BaseQuestionTypeAttribute;
 */
 class mcq_metadata extends BaseQuestionTypeAttribute {
     protected $distractor_rationale;
+    protected $distractor_rationale_scorer;
     protected $rubric_reference;
     protected $sample_answer;
     protected $acknowledgements;
     protected $distractor_rationale_response_level;
     protected $response_shuffle_seed;
-    
+
     public function __construct(
             )
     {
@@ -112,6 +113,24 @@ class mcq_metadata extends BaseQuestionTypeAttribute {
     }
 
     /**
+    * MPS: No idea what this is, adding getter and setter because it
+    * throwing a dynamic property error.
+    * @return string $distractor_rationale_scorer \
+    */
+    public function get_distractor_rationale_scorer() {
+        return $this->distractor_rationale_scorer;
+    }
+
+    /**
+    * MPS: No idea what this is, adding getter and setter because it
+    * throwing a dynamic property error.
+    * @param string $distractor_rationale_scorer \
+    */
+    public function set_distractor_rationale_scorer (string $distractor_rationale_scorer) {
+        $this->distractor_rationale_scorer = $distractor_rationale_scorer;
+    }
+
+    /**
     * Get Response shuffle seed \
     * A seed to use to randomise the order of response options. If set, the responses will be shuffled according to this seed,
 	 and all students will see the same randomised order. \
@@ -131,6 +150,5 @@ class mcq_metadata extends BaseQuestionTypeAttribute {
         $this->response_shuffle_seed = $response_shuffle_seed;
     }
 
-    
-}
 
+}

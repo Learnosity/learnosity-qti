@@ -41,6 +41,9 @@ class ConvertToQtiService
     protected $outputPath;
     protected $output;
     protected $format;
+    protected $finalPath;
+    protected $logPath;
+    protected $rawPath;
     protected $organisationId;
     protected $itemReferences;
 
@@ -212,7 +215,7 @@ class ConvertToQtiService
             $results = [];
             $jsonFiles = $this->parseInputFolders();
             $finalManifest = $this->getJobManifestTemplate();
-            $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Processing JSON directory: {$this->inputPath} </info>");
+            $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Processing JSON directory: {$this->inputPath} </info>\n");
             foreach ($jsonFiles as $file) {
                 if (file_exists($file)) {
                     $results[] = $this->convertLearnosityInDirectory($file);

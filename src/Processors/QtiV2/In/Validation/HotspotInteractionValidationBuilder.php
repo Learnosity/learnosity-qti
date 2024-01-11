@@ -2,6 +2,7 @@
 
 namespace LearnosityQti\Processors\QtiV2\In\Validation;
 
+use Exception;
 use LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidationBuilder;
 use LearnosityQti\Processors\Learnosity\In\ValidationBuilder\ValidResponse;
 use qtism\data\state\ResponseDeclaration;
@@ -25,7 +26,13 @@ class HotspotInteractionValidationBuilder extends BaseInteractionValidationBuild
         list($score, $mode) = $this->getValidationScoringData($scores);
 
         $choicesIndexes = array_flip(array_keys($this->choices));
-        $correctResponses = $this->responseDeclaration->getCorrectResponse()->getValues()->getArrayCopy(true);
+
+        if (($this->responseDeclaration->getCorrectResponse())) {
+            $correctResponses = $this->responseDeclaration->getCorrectResponse()->getValues()->getArrayCopy(true);
+        } else {
+            $correctResponses = [];
+            throw new Exception('Could not determine hotspot validation.');
+        }
 
         $values = [];
         /** @var Value $response */

@@ -23,7 +23,11 @@ class MathsProcessing implements ProcessingInterface
                 // ie. <m:math> to just <math>
                 $element->removeAttributeNS($element->namespaceURI, $element->prefix);
                 // Handle default namespace too, if exists
-                $element->removeAttributeNS($element->lookupNamespaceUri(null), null);
+                if ($element->lookupNamespaceUri(null)) {
+                    // MPS commenting out, not sure what `null` is as a 2nd argument, or
+                    // why we'd want to remove the namespece on a <math> element.
+                    // $element->removeAttributeNS($element->lookupNamespaceUri(null), null);
+                }
                 $component->setXmlString($element->ownerDocument->saveXML());
                 // Remove MathML namespace declaration
                 $component->setTargetNamespace('');

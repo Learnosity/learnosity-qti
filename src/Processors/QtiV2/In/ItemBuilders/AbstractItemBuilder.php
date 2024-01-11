@@ -144,7 +144,7 @@ abstract class AbstractItemBuilder
                     usort($value, function ($a, $b) {
                         return strcmp($a['label'], $b['label']);
                     });
-                    $metadata->distractor_rationale_scorer = join('', array_column($value, 'content'));
+                    $metadata->set_distractor_rationale_scorer(join('', array_column($value, 'content')));
                     break;
                 case 'distractor_rationale_response_level':
                     $metadata->set_distractor_rationale_response_level($value);

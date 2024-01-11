@@ -79,7 +79,7 @@ class RegularItemBuilder extends AbstractItemBuilder
         // Extra stimulus for each question.
         // HACK: Process whole DOM structure per interaction.
         $dom = new DOMDocument();
-        // $dom->preserveWhitespace = false;
+        $dom->preserveWhiteSpace = false;
 
         // PHP8 (or 7?) doesn't like the XML elements we're loading. For now we'll suppress the invalid in Entity warnings
         libxml_use_internal_errors(true);

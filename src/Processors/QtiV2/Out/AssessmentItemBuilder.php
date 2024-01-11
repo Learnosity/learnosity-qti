@@ -33,6 +33,7 @@ class AssessmentItemBuilder
      * @var ItemBodyBuilder
      */
     private $itemBodyBuilder;
+    private $outcomeDeclarationCollection;
 
     public function __construct()
     {
