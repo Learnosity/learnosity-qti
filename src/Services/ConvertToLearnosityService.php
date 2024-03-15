@@ -31,10 +31,6 @@ class ConvertToLearnosityService
     protected $inputPath;
     protected $outputPath;
     protected $output;
-    protected $finalPath;
-    protected $logPath;
-    protected $rawPath;
-    protected $useItemIdentifier;
     protected $organisationId;
     protected $isConvertPassageContent;
     protected $isSingleItemConvert;

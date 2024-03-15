@@ -18,8 +18,6 @@ class ItemLayoutService
     protected $recreateOutputDir                    = false;
 
     private $output;
-    private $doItemMigration;
-    private $recreateOutputDir;
 
     public function execute($inputPath, $outputPath, OutputInterface $output)
     {
