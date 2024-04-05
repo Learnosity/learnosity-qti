@@ -38,10 +38,6 @@ class ConvertToLearnosityService
     protected $organisationId;
     protected $isConvertPassageContent;
     protected $isSingleItemConvert;
-    protected $finalPath;
-    protected $logPath;
-    protected $rawPath;
-    protected $useItemIdentifier;
 
     /* Runtime options */
     protected $dryRun                     = false;
