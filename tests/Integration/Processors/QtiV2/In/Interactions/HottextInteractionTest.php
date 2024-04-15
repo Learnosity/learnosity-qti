@@ -1,6 +1,6 @@
 <?php
 
-namespace LearnosityQti\Tests\Integration\Mappers\QtiV2\In\Interactions;
+namespace LearnosityQti\Tests\Integration\Processors\QtiV2\In\Interactions;
 
 use LearnosityQti\AppContainer;
 use LearnosityQti\Entities\QuestionTypes\tokenhighlight;
