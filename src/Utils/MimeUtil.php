@@ -139,6 +139,7 @@ class MimeUtil
             "pgm"     => "image/x-portable-graymap",
             "ppm"     => "image/x-portable-pixmap",
             "rgb"     => "image/x-rgb",
+            "svg"     => "image/svg+xml",
             "xbm"     => "image/x-xbitmap",
             "xpm"     => "image/x-xpixmap",
             "xwd"     => "image/x-windowdump",
