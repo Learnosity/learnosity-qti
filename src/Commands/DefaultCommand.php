@@ -2,6 +2,7 @@
 
 namespace LearnosityQti\Commands;
 
+use MongoDB\Driver\Command;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -29,5 +30,7 @@ class DefaultCommand extends Command
             '<comment>Commands:</comment>',
             "  <info>mo list</info>\tRun this to see the available commands",
         ]);
+
+        return Command::SUCCESS;
     }
 }
