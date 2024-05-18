@@ -16,7 +16,7 @@
         }
     },
     "require": {
-        "php": ">=7.4",
+        "php": ">=8.0",
         "symfony/config": "^6",
         "symfony/console": "^6",
         "symfony/dependency-injection": "^6",
@@ -24,7 +24,9 @@
         "symfony/finder": "^5",
         "symfony/yaml": "^6",
         "qtism/qtism": "^19.0",
-        "learnosity/learnosity-sdk-php": ">=1"
+        "learnosity/learnosity-sdk-php": ">=1",
+        "ext-mongodb": "^1.16",
+      "ext-dom": "*"
     },
     "bin": [
         "bin/mo"

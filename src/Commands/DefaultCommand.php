@@ -2,14 +2,14 @@
 
 namespace LearnosityQti\Commands;
 
-use MongoDB\Driver\Command;
+//use MongoDB\Driver\Command as MongoDbCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class DefaultCommand extends Command
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('mo')
@@ -17,7 +17,7 @@ class DefaultCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln([
             '<comment>Usage:</comment>',
