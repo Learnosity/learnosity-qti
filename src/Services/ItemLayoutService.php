@@ -19,11 +19,9 @@ class ItemLayoutService
 
     private $output;
 
-    public function execute($inputPath, $outputPath, OutputInterface $output)
+    public function execute($inputPath, $outputPath, OutputInterface $output): void
     {
         $this->output            = $output;
-        $this->doItemMigration   = true;
-        $this->recreateOutputDir = true;
 
         if ($this->recreateOutputDir) {
             FileSystemHelper::createOrReplaceDir($outputPath);
@@ -33,7 +31,7 @@ class ItemLayoutService
         }
     }
 
-    protected function doItemMigration($inputDirectory, $outputDirectory)
+    protected function doItemMigration($inputDirectory, $outputDirectory): void
     {
         $fileFinder = new Finder();
 
@@ -59,7 +57,7 @@ class ItemLayoutService
      *
      * @return string - migrated items JSON
      */
-    protected function migrateBatchItemsJson($itemsJson)
+    protected function migrateBatchItemsJson($itemsJson): string
     {
         return json_encode($this->migrateBatchItems(json_decode($itemsJson, true)));
     }
@@ -71,7 +69,7 @@ class ItemLayoutService
      *
      * @return array - migrated items
      */
-    protected function migrateBatchItems(array $batchItems)
+    protected function migrateBatchItems(array $batchItems): array
     {
         if (empty($batchItems['qtiitems'])) {
             return $batchItems;
@@ -82,7 +80,7 @@ class ItemLayoutService
         foreach ($batchItems['qtiitems'] as $fileKey => &$qtiItem) {
             $itemIndex++;
             $this->output->writeln(
-                "<comment>Setting layout for ({$itemIndex}/{$totalItemsCount}): {$fileKey}</comment>"
+                "<comment>Setting layout for ($itemIndex/$totalItemsCount): $fileKey</comment>"
             );
 
             // Get the widgets JSON related to the item first before performing the migration
@@ -104,7 +102,7 @@ class ItemLayoutService
                 // Do the migration on the assessment item
                 $qtiItem['item'] = $this->migrateItem($qtiItem['item'], $widgetsJson);
             } else {
-                $this->output->writeln("<error>Not a valid item: ({$fileKey}); skipping...</error>");
+                $this->output->writeln("<error>Not a valid item: ($fileKey); skipping...</error>");
             }
         }
 
@@ -118,7 +116,7 @@ class ItemLayoutService
      *
      * @return string - migrated item JSON result
      */
-    protected function migrateItemJson($itemJson)
+    protected function migrateItemJson($itemJson): string
     {
         return json_encode($this->migrateItem(json_decode($itemJson, true)));
     }
@@ -126,11 +124,12 @@ class ItemLayoutService
     /**
      * Migrates an item.
      *
-     * @param  array  $item
+     * @param array $item
+     * @param array $widgetsJson
      *
      * @return array - migrated item result
      */
-    public function migrateItem(array $item, array $widgetsJson = [])
+    public function migrateItem(array $item, array $widgetsJson = []): array
     {
         if (isset($item['definition'])) {
             return $item;
@@ -164,11 +163,12 @@ class ItemLayoutService
     /**
      * Migrates a rubric item.
      *
-     * @param  array  $item
+     * @param array $item
+     * @param array $widgetsJson
      *
      * @return array - migrated rubric item result
      */
-    protected function migrateRubricItem(array $item, array $widgetsJson = [])
+    protected function migrateRubricItem(array $item, array $widgetsJson = []): array
     {
         if (isset($item['definition'])) {
             return $item;
@@ -196,7 +196,7 @@ class ItemLayoutService
         return $item;
     }
 
-    private function persistResultsFile(array $results, $outputFilePath)
+    private function persistResultsFile(array $results, $outputFilePath): void
     {
         $innerPath = explode('/', $outputFilePath);
         array_pop($innerPath);
@@ -204,7 +204,7 @@ class ItemLayoutService
         file_put_contents($outputFilePath . '.json', json_encode($results));
     }
 
-    private function tearDown()
+    private function tearDown(): void
     {
         if (!$this->doItemMigration) {
             $this->output->writeln('<comment>No item migration run</comment>');
