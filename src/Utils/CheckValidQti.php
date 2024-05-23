@@ -9,7 +9,7 @@ class CheckValidQti
 {
     public static function isSharedPassage($xmlString)
     {
-        return HtmlHelper::hasElementWithAttribute($xmlString, 'rubricBlock', 'use', 'sharedstimulus');
+        return (new General\HtmlHelper)->hasElementWithAttribute($xmlString, 'rubricBlock', 'use', 'sharedstimulus');
     }
 
     public static function isAssessmentItem($xmlString)

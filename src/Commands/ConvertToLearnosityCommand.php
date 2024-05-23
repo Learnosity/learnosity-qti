@@ -2,16 +2,16 @@
 
 namespace LearnosityQti\Commands;
 
+use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Services\ConvertToLearnosityService;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ConvertToLearnosityCommand extends Command
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('convert:to:learnosity')
@@ -70,6 +70,9 @@ class ConvertToLearnosityCommand extends Command
         ;
     }
 
+    /**
+     * @throws MappingException
+     */
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $validationErrors = [];
@@ -82,7 +85,7 @@ class ConvertToLearnosityCommand extends Command
 
         // Validate the required options
         if (empty($inputPath) || empty($outputPath)) {
-            array_push($validationErrors, "The <info>input</info> and <info>output</info> options are required. Eg:");
+            $validationErrors[] = "The <info>input</info> and <info>output</info> options are required. Eg:";
         }
 
         // Make sure we can read the input folder, and write to the output folder
@@ -102,31 +105,28 @@ class ConvertToLearnosityCommand extends Command
         }
 
         if (empty($organisationId)) {
-            array_push($validationErrors, "The <info>organisation_id</info> option is required for asset uploads.");
+            $validationErrors[] = "The <info>organisation_id</info> option is required for asset uploads.";
         }
 
         $requiredValuesForPassageConversion = ['Yes or Y', 'No or N'];
         if ($isConvertPassageContent != 'Y' && $isConvertPassageContent != 'YES' && $isConvertPassageContent != 'N' && $isConvertPassageContent != 'NO') {
-            array_push(
-                $validationErrors,
-                "The <info>passage-only-items</info> must be one of the following values: " . join(', ', $requiredValuesForPassageConversion)
-            );
+            $validationErrors[] = "The <info>passage-only-items</info> must be one of the following values: " . join(
+                    ', ', $requiredValuesForPassageConversion
+                );
         }
 
         $requiredValuesForSingleItemConversion = ['Yes or Y', 'No or N'];
         if ($isSingleItemConvert != 'Y' && $isSingleItemConvert != 'YES' && $isSingleItemConvert != 'N' && $isSingleItemConvert != 'NO') {
-            array_push(
-                $validationErrors,
-                "The <info>single-item</info> must be one of the following values: " . join(', ', $requiredValuesForSingleItemConversion)
-            );
+            $validationErrors[] = "The <info>single-item</info> must be one of the following values: " . join(
+                    ', ', $requiredValuesForSingleItemConversion
+                );
         }
 
         $validItemReferenceSources = ['item', 'metadata', 'filename', 'resource'];
         if (isset($itemReferenceSource) && !in_array($itemReferenceSource, $validItemReferenceSources)) {
-            array_push(
-                $validationErrors,
-                "The <info>item-reference-source</info> must be one of the following values: " . join(', ', $validItemReferenceSources)
-            );
+            $validationErrors[] = "The <info>item-reference-source</info> must be one of the following values: " . join(
+                    ', ', $validItemReferenceSources
+                );
         }
 
         if (!empty($validationErrors)) {

@@ -34,7 +34,8 @@ class ConvertToLearnosityService
 {
     use JobDataTrait;
 
-    const RESOURCE_TYPE_ITEM = 'imsqti_item_xmlv2p1';
+    const RESOURCE_TYPE_ITEM_2P1 = 'imsqti_item_xmlv2p1';
+    const RESOURCE_TYPE_ITEM_2P0 = 'imsqti_item_xmlv2p0';
     const RESOURCE_TYPE_PASSAGE = 'webcontent';
     const INFO_OUTPUT_PREFIX = '';
     const CONVERT_LOG_FILENAME = 'convert-to-learnosity.log';
@@ -43,8 +44,8 @@ class ConvertToLearnosityService
     protected string $outputPath;
     protected OutputInterface $output;
     protected string|int $organisationId;
-    protected bool $isConvertPassageContent;
-    protected bool $isSingleItemConvert;
+    protected string $isConvertPassageContent;
+    protected string $isSingleItemConvert = 'N';
 
     /* Runtime options */
     protected bool $dryRun                     = false;
@@ -204,7 +205,7 @@ class ConvertToLearnosityService
             $dirName = $tempDirectoryParts[count($tempDirectoryParts) - 1];
             $assessmentItemContents = file_get_contents($file);
             $metadata['organisation_id'] = $this->organisationId;
-            $convertedContent = $this->convertAssessmentItemInFile($assessmentItemContents, $currentDir, $fileName, static::RESOURCE_TYPE_ITEM, null, $metadata);
+            $convertedContent = $this->convertAssessmentItemInFile($assessmentItemContents, $currentDir, $fileName, static::RESOURCE_TYPE_ITEM_2P1, null, $metadata);
             $scoringRubric = '';
 
             if (isset($convertedContent['rubric'])) {
@@ -339,7 +340,7 @@ class ConvertToLearnosityService
                 $relatedResource = $resource['resource'];
 
                 if (
-                    $resource['type'] == static::RESOURCE_TYPE_PASSAGE
+                    $resource['type'] === static::RESOURCE_TYPE_PASSAGE
                     && $this->isConvertPassageContent != 'Y'
                     && $this->isConvertPassageContent != 'YES') {
                     continue;
@@ -429,11 +430,11 @@ class ConvertToLearnosityService
      * Remove the widget_type , item_reference, content from the converted content.
      * Return converted content after deleting the data.
      *
-     * @param array $convertedContent converted content
+     * @param string|array $convertedContent converted content
      */
-    private function removeUnusedDataFromItem(array $convertedContent): array
+    private function removeUnusedDataFromItem(string|array $convertedContent): array|string
     {
-        if (array_key_exists('questions', $convertedContent)) {
+        if (is_array($convertedContent) && array_key_exists('questions', $convertedContent)) {
             foreach ($convertedContent['questions'] as $id => $data) {
                 if (isset($data['widget_type'])) {
                     unset($convertedContent['questions'][$id]['widget_type']);
@@ -449,6 +450,7 @@ class ConvertToLearnosityService
                 }
             }
         }
+
         return $this->removeUnusedFeatureData($convertedContent);
     }
 
@@ -457,11 +459,11 @@ class ConvertToLearnosityService
      * from the feature array as these are no longer needed
      * return converted content after deleting
      *
-     * @param array $convertedContent converted content
+     * @param array|string $convertedContent converted content
      */
-    private function removeUnusedFeatureData(array $convertedContent): array
+    private function removeUnusedFeatureData(array|string $convertedContent): array|string
     {
-        if (array_key_exists('features', $convertedContent)) {
+        if (is_array($convertedContent) && array_key_exists('features', $convertedContent)) {
             foreach ($convertedContent['features'] as $id => $data) {
                 if (isset($data['widget_type'])) {
                     unset($convertedContent['features'][$id]['widget_type']);
@@ -474,6 +476,7 @@ class ConvertToLearnosityService
                 }
             }
         }
+
         return $convertedContent;
     }
 
@@ -564,7 +567,7 @@ class ConvertToLearnosityService
             $resourceHref = $resource->getAttribute('href');
             $resourceType = $resource->getAttribute('type');
 
-            if ($resourceType === static::RESOURCE_TYPE_ITEM) {
+            if ($resourceType === static::RESOURCE_TYPE_ITEM_2P1|| $resourceType === static::RESOURCE_TYPE_ITEM_2P0) {
                 $itemResources[] = [
                     'href' => $resourceHref,
                     'resource' => $resource,
@@ -690,10 +693,16 @@ class ConvertToLearnosityService
             $xmlString = $contents;
 
             // Check that we're on an <assessmentItem>
-            if ($resourceType == static::RESOURCE_TYPE_ITEM && !CheckValidQti::isAssessmentItem($xmlString)) {
-                $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Not an <assessmentItem>, moving on...</info>");
-                return null;
-            }
+//            if (
+//                (
+//                    $resourceType === static::RESOURCE_TYPE_ITEM_2P1 ||
+//                    $resourceType === static::RESOURCE_TYPE_ITEM_2P0
+//                )
+//                && !CheckValidQti::isAssessmentItem($xmlString)
+//            ) {
+//                $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Not an <assessmentItem>, moving on...</info>");
+//                return null;
+//            }
 
             $resourcePath = $currentDir . '/' . $resourceHref;
 
@@ -738,7 +747,7 @@ class ConvertToLearnosityService
         AssumptionHandler::flush();
         $xmlString = CheckValidQti::preProcessing($xmlString);
 
-        if ($resourceType == static::RESOURCE_TYPE_ITEM) {
+        if ($resourceType === static::RESOURCE_TYPE_ITEM_2P1 || $resourceType === static::RESOURCE_TYPE_ITEM_2P0) {
             $result = Converter::convertQtiItemToLearnosity($xmlString, null, true, $resourcePath, $itemReference, $metadata);
         } elseif ($resourceType == static::RESOURCE_TYPE_PASSAGE && ($this->isConvertPassageContent == 'Y' || $this->isConvertPassageContent == 'YES')) {
             $result = Converter::convertPassageItemToLearnosity($xmlString, null, true, $resourcePath, $itemReference, $metadata);
@@ -755,7 +764,7 @@ class ConvertToLearnosityService
         // Return those results!
         list($item, $questions) = CheckValidQti::postProcessing($item, $questions, []);
 
-        if ($this->shouldGuessItemScoringType && $resourceType == static::RESOURCE_TYPE_ITEM) {
+        if ($this->shouldGuessItemScoringType && ($resourceType === static::RESOURCE_TYPE_ITEM_2P1 || $resourceType === static::RESOURCE_TYPE_ITEM_2P0)) {
             list($assumedItemScoringType, $scoringTypeManifest) = $this->getItemScoringTypeFromResponseProcessing($xmlString);
             if (isset($assumedItemScoringType)) {
                 $item['metadata']['scoring_type'] = $assumedItemScoringType;
@@ -904,7 +913,6 @@ class ConvertToLearnosityService
                     if (empty($attribute->value)) {
                         $attribute->value = $itemReference;
                     }
-                    exit;
                 }
             }
             // We didn't find an `identifier` attribute, add one manually

@@ -211,9 +211,21 @@ class Converter
         ];
     }
 
-    public static function convertQtiItemToLearnosity($xmlString, $baseAssetsUrl = '', $validate = true, $filePath = null, $customItemReference = null, $metadata = [])
-    {
+    /**
+     * @throws XmlStorageException
+     * @throws InvalidQtiException
+     */
+    public static function convertQtiItemToLearnosity(
+        $xmlString,
+        $baseAssetsUrl = '',
+        $validate = true,
+        $filePath = null,
+        $customItemReference = null,
+        $metadata = [],
+    ): array {
+        /** @var Processors\QtiV2\In\ItemMapper $itemMapper */
         $itemMapper = AppContainer::getApplicationContainer()->get('qtiv2_item_mapper');
+
         $itemWriter = AppContainer::getApplicationContainer()->get('learnosity_item_writer');
         $questionWriter = AppContainer::getApplicationContainer()->get('learnosity_question_writer');
 
@@ -224,12 +236,19 @@ class Converter
                 $sourceDirectoryPath = dirname($filePath);
             }
             // TODO: Handle additional (related) items being passed back
-            $result = $itemMapper->parse($xmlString, $validate, $sourceDirectoryPath, $metadata, $customItemReference);
+            $result = $itemMapper->parse(
+                $xmlString,
+                $validate,
+                $sourceDirectoryPath,
+                $metadata,
+                $customItemReference,
+            );
+
             $item = $result['item'];
             $questions = $result['questions'];
             $features = $result['features'];
             $messages = $result['messages'];
-            $rubricItem = isset($result['rubric']) ? $result['rubric'] : null;
+            $rubricItem = $result['rubric'] ?? null;
             if (!empty($customItemReference)) {
                 $item->set_reference($customItemReference);
             }

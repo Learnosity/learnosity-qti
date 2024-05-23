@@ -37,45 +37,59 @@ class ItemMapper
      * The result of a successful parse operation is Learnosity item and
      * questions data that corresponds to the QTI-formatted input.
      *
-     * @param  string  $xmlString - XML input to parse
-     * @param  boolean $validateXml - whether to validate the XML
+     * @param string $xmlString - XML input to parse
+     * @param boolean $validateXml - whether to validate the XML
      *                              before attempting to deserialize it
      *
-     * @return mixed[] - a tuple containing a Learnosity item as the
+     * @return array - a tuple containing a Learnosity item as the
      *                   first element, associated questions as the second, and
      *                   log messages resulting from the operation as the last element
+     * @throws MappingException
      */
-    public function parse($xmlString, $validateXml = true, $sourceDirectoryPath = null, $metadata = [], $customItemReference = null)
-    {
+    public function parse(
+        string $xmlString,
+        bool $validateXml = true,
+        $sourceDirectoryPath = null,
+        $metadata = [],
+        $customItemReference = null
+    ): array {
         // TODO: Remove this, and move it higher up
         LogService::flush();
 
         $xmlString = $this->processXml($xmlString, $this->getXmlProcessings());
 
         // Load the contents of the XML into a QTI-validated document
-        /** @var XmlDocument $xmlDocument */
         $xmlDocument = $this->deserializeXml($xmlString, $validateXml);
 
-        /** @var AssessmentItem $assessmentItem */
         $assessmentItem = $this->getAssessmentItemFromXmlDocument($xmlDocument);
 
         // Convert the QTI assessment item into Learnosity output
 
-        return $this->parseWithAssessmentItemComponent($assessmentItem, $sourceDirectoryPath, $metadata, $customItemReference);
+        return $this->parseWithAssessmentItemComponent(
+            $assessmentItem,
+            $sourceDirectoryPath,
+            $metadata,
+            $customItemReference,
+        );
 
     }
 
     /**
      * Parse a QTI assessment item into Learnosity item and question data.
      *
-     * @param  \qtism\data\AssessmentItem $assessmentItem - item component to parse
+     * @param AssessmentItem $assessmentItem - item component to parse
      *
-     * @return mixed[] - a tuple containing a Learnosity item as the
+     * @return array - a tuple containing a Learnosity item as the
      *                   first element, associated questions as the second, and
      *                   log messages resulting from the operation as the last element
+     * @throws MappingException
      */
-    public function parseWithAssessmentItemComponent(AssessmentItem $assessmentItem, $sourceDirectoryPath = null, $metadata = [], $customItemReference = null)
-    {
+    public function parseWithAssessmentItemComponent(
+        AssessmentItem $assessmentItem,
+        $sourceDirectoryPath = null,
+        $metadata = [],
+        $customItemReference = null
+    ): array {
         // TODO: Move this logging service upper to converter class level
         // Make sure we clean up the log
         // LogService::flush();
@@ -115,7 +129,7 @@ class ItemMapper
      * Takes a QTI assessment item and generates corresponding
      * Learnosity item and question data.
      *
-     * @param  \qtism\data\AssessmentItem $assessmentItem
+     * @param AssessmentItem $assessmentItem
      *
      * @return mixed[] - a tuple containing a Learnosity item as the
      *                   first element, and associated questions as the second
@@ -279,10 +293,10 @@ class ItemMapper
     /**
      * Process a QTI assessment item prior to conversion.
      *
-     * @param  \qtism\data\AssessmentItem $assessmentItem - item component to process
+     * @param AssessmentItem $assessmentItem - item component to process
      * @param  ProcessingInterface[] $processings - list of processing tasks
      *
-     * @return \qtism\data\AssessmentItem
+     * @return AssessmentItem
      */
     protected function processQtiAssessmentItem(AssessmentItem $assessmentItem, array $processings)
     {
@@ -337,9 +351,9 @@ class ItemMapper
     /**
      * Validates a QTI assessment item for conversion.
      *
-     * @param  \qtism\data\AssessmentItem $assessmentItem - item component to validate
+     * @param AssessmentItem $assessmentItem - item component to validate
      *
-     * @return \qtism\data\AssessmentItem
+     * @return AssessmentItem
      *
      * @throws \LearnosityQti\Exceptions\MappingException
      */
@@ -370,7 +384,7 @@ class ItemMapper
      *
      * @param  \qtism\data\storage\xml\XmlDocument $xmlDocument
      *
-     * @return \qtism\data\AssessmentItem
+     * @return AssessmentItem
      *
      * @throws \LearnosityQti\Exceptions\MappingException
      */
