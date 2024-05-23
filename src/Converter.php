@@ -214,6 +214,7 @@ class Converter
     /**
      * @throws XmlStorageException
      * @throws InvalidQtiException
+     * @throws MappingException
      */
     public static function convertQtiItemToLearnosity(
         $xmlString,

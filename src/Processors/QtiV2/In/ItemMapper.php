@@ -2,6 +2,7 @@
 
 namespace LearnosityQti\Processors\QtiV2\In;
 
+use Exception;
 use LearnosityQti\AppContainer;
 use LearnosityQti\Entities\Question;
 use LearnosityQti\Exceptions\MappingException;
@@ -16,6 +17,7 @@ use qtism\data\content\RubricBlock;
 use qtism\data\processing\ResponseProcessing;
 use qtism\data\QtiComponentCollection;
 use qtism\data\storage\xml\XmlDocument;
+use qtism\data\storage\xml\XmlStorageException;
 
 class ItemMapper
 {
@@ -225,18 +227,25 @@ class ItemMapper
     /**
      * Deserialize an XML string into a QTI-validated document.
      *
-     * @param  string $xmlString - the XML content to deserialize
-     * @param  boolean $validateXml - whether to validate the XML
+     * @param string $xmlString - the XML content to deserialize
+     * @param boolean $validateXml - whether to validate the XML
      *                              before attempting to deserialize it
      *
-     * @return \qtism\data\storage\xml\XmlDocument
+     * @return XmlDocument
+     * @throws XmlStorageException
      */
-    protected function deserializeXml($xmlString, $validateXml)
-    {
+    protected function deserializeXml(
+        string $xmlString,
+        bool $validateXml,
+    ): XmlDocument {
         $xmlDocument = new XmlDocument();
         if (!$validateXml) {
-            LogService::log('QTI pre-validation is turned off, some invalid attributes might be stripped from XML content upon conversion');
+            LogService::log(
+                'QTI pre-validation is turned off, some invalid attributes might
+                 be stripped from XML content upon conversion'
+            );
         }
+
         $xmlDocument->loadFromString($xmlString, $validateXml);
 
         return $xmlDocument;
@@ -246,8 +255,9 @@ class ItemMapper
      * Returns a list of objects that are used for processing the XML.
      *
      * @return AbstractXmlProcessing[]
+     * @throws Exception
      */
-    protected function getXmlProcessings()
+    protected function getXmlProcessings(): array
     {
         return [
             AppContainer::getApplicationContainer()->get('xml_assessment_items_processing'),
@@ -382,7 +392,7 @@ class ItemMapper
      *
      * The assessment item must be the root element of the document.
      *
-     * @param  \qtism\data\storage\xml\XmlDocument $xmlDocument
+     * @param XmlDocument $xmlDocument
      *
      * @return AssessmentItem
      *

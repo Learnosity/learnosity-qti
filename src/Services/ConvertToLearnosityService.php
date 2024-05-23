@@ -748,7 +748,7 @@ class ConvertToLearnosityService
         $xmlString = CheckValidQti::preProcessing($xmlString);
 
         if ($resourceType === static::RESOURCE_TYPE_ITEM_2P1 || $resourceType === static::RESOURCE_TYPE_ITEM_2P0) {
-            $result = Converter::convertQtiItemToLearnosity($xmlString, null, true, $resourcePath, $itemReference, $metadata);
+            $result = Converter::convertQtiItemToLearnosity($xmlString, null, false, $resourcePath, $itemReference, $metadata);
         } elseif ($resourceType == static::RESOURCE_TYPE_PASSAGE && ($this->isConvertPassageContent == 'Y' || $this->isConvertPassageContent == 'YES')) {
             $result = Converter::convertPassageItemToLearnosity($xmlString, null, true, $resourcePath, $itemReference, $metadata);
         }
