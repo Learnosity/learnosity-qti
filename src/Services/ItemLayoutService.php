@@ -5,27 +5,33 @@ namespace LearnosityQti\Services;
 use \LearnosityQti\Utils\General\FileSystemHelper;
 use \LearnosityQti\Utils\Item\ItemDefinitionBuilder;
 use \LearnosityQti\Utils\Item\ItemService;
+use SplFileInfo;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;
 
 class ItemLayoutService
 {
-    protected $shouldRemoveItemContent              = true;
-    protected $shouldRemoveItemMetadata             = true;
-    protected $shouldSplitQuestionFeatureReferences = true;
-    protected $shouldRebuildItemDefinition          = true;
-    protected $doItemMigration                      = false;
-    protected $recreateOutputDir                    = false;
+    protected bool $shouldRemoveItemContent              = true;
+    protected bool $shouldRemoveItemMetadata             = true;
+    protected bool $shouldSplitQuestionFeatureReferences = true;
+    protected bool $shouldRebuildItemDefinition          = true;
+    protected bool $doItemMigration                      = false;
+    protected bool $recreateOutputDir                    = false;
+    protected bool $doImport                             = false;
 
-    private $output;
+    private mixed $output;
 
-    public function execute($inputPath, $outputPath, OutputInterface $output): void
-    {
-        $this->output            = $output;
+    public function execute(
+        $inputPath,
+        $outputPath,
+        OutputInterface $output
+    ): void {
+        $this->output = $output;
 
         if ($this->recreateOutputDir) {
             FileSystemHelper::createOrReplaceDir($outputPath);
         }
+
         if ($this->doItemMigration) {
             $this->doItemMigration($inputPath, $outputPath);
         }
@@ -37,29 +43,44 @@ class ItemLayoutService
 
         // Process an item batch at a time
         foreach ($fileFinder->files()->in($inputDirectory)->name('*.json') as $inputFile) {
-            /** @var \SplFileInfo $inputFile */
-            $this->output->writeln("<info>Setting item layouts from conversion file: {$inputFile->getRelativePathname()}</info>");
+            /** @var SplFileInfo $inputFile */
+            $this->output->writeln(
+                "<info>Setting item layouts from conversion file: {$inputFile->getRelativePathname()}</info>"
+            );
 
             $json = $inputFile->getContents();
             $encodedResult = $this->migrateBatchItemsJson($json);
 
-            $inputDirPath = $inputFile->getRelativePath() . '/' . $inputFile->getBasename('.json');
-            $this->persistResultsFile(json_decode($encodedResult, true), $outputDirectory . '/' . $inputDirPath);
+            $inputDirPath = $inputFile->getRelativePath()
+                . '/'
+                . $inputFile->getBasename('.json');
+
+            $this->persistResultsFile(
+                json_decode($encodedResult, true),
+                $outputDirectory . '/' . $inputDirPath,
+            );
         }
 
-        $this->output->writeln('<info>Writing item JSON: ' . realpath($outputDirectory) . $inputDirPath . ".json</info>");
+        $this->output->writeln(
+            '<info>Writing item JSON: '
+            . realpath($outputDirectory)
+            . $inputDirPath
+            . ".json</info>"
+        );
     }
 
     /**
      * Migrates a batch of items in JSON.
      *
-     * @param  string $itemsJson
+     * @param string $itemsJson
      *
      * @return string - migrated items JSON
      */
-    protected function migrateBatchItemsJson($itemsJson): string
+    protected function migrateBatchItemsJson(string $itemsJson): string
     {
-        return json_encode($this->migrateBatchItems(json_decode($itemsJson, true)));
+        return json_encode(
+            $this->migrateBatchItems(json_decode($itemsJson, true))
+        );
     }
 
     /**
@@ -112,11 +133,11 @@ class ItemLayoutService
     /**
      * Migrates a JSON item.
      *
-     * @param  string $itemJson
+     * @param string $itemJson
      *
      * @return string - migrated item JSON result
      */
-    protected function migrateItemJson($itemJson): string
+    protected function migrateItemJson(string $itemJson): string
     {
         return json_encode($this->migrateItem(json_decode($itemJson, true)));
     }
@@ -143,7 +164,12 @@ class ItemLayoutService
         }
 
         if ($this->shouldRebuildItemDefinition) {
-            $definitionBuilder = new ItemDefinitionBuilder($item, $widgetsJson, true);
+            $definitionBuilder = new ItemDefinitionBuilder(
+                $item,
+                $widgetsJson,
+                true,
+            );
+
             $item['definition'] = $definitionBuilder->buildItemDefinition();
         }
 
@@ -168,8 +194,10 @@ class ItemLayoutService
      *
      * @return array - migrated rubric item result
      */
-    protected function migrateRubricItem(array $item, array $widgetsJson = []): array
-    {
+    protected function migrateRubricItem(
+        array $item,
+        array $widgetsJson = []
+    ): array {
         if (isset($item['definition'])) {
             return $item;
         }
@@ -206,11 +234,14 @@ class ItemLayoutService
 
     private function tearDown(): void
     {
-        if (!$this->doItemMigration) {
+        if (! $this->doItemMigration) {
             $this->output->writeln('<comment>No item migration run</comment>');
         }
-        if (!$this->doImport) {
-            $this->output->writeln('<comment>No import run, are you happy with the JSON? If so set, `$this->doImport = true`</comment>');
+
+        if (! $this->doImport) {
+            $this->output->writeln(
+                '<comment>No import run, are you happy with the JSON? If so set, `$this->doImport = true`</comment>'
+            );
         }
     }
 }

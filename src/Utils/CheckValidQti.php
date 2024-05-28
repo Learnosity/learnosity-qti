@@ -60,8 +60,12 @@ class CheckValidQti
         return $xmlString;
     }
 
-    public static function postProcessing($item, array $questions, $itemTags, $convertClozeTextToClozeFormula = null)
-    {
+    public static function postProcessing(
+        $item,
+        array $questions,
+        $itemTags,
+        $convertClozeTextToClozeFormula = null
+    ): array {
         // Convert `clozetext` to `clozeformula`
         foreach ($questions as &$question) {
             if ($question['type'] === 'clozetext' &&
@@ -90,19 +94,19 @@ class CheckValidQti
                 ];
 
                 foreach ($question['data']['validation']['valid_response']['value'] as $valid) {
-                    array_push($clozeFormulaNew['validation']['valid_response']['value'], [
+                    $clozeFormulaNew['validation']['valid_response']['value'][] = [
                         [
-                            'method' => 'equivSymbolic',
-                            'value' => (string)$valid,
+                            'method'  => 'equivSymbolic',
+                            'value'   => (string)$valid,
                             'options' => [
-                                'inverseResult' => false,
+                                'inverseResult'           => false,
                                 'allowThousandsSeparator' => true,
-                                'decimalPlaces' => 10,
-                                'setThousandsSeparator' => [','],
-                                'setDecimalSeparator' => '.'
+                                'decimalPlaces'           => 10,
+                                'setThousandsSeparator'   => [','],
+                                'setDecimalSeparator'     => '.'
                             ]
                         ]
-                    ]);
+                    ];
                 }
 
                 if (!empty($question['data']['stimulus'])) {

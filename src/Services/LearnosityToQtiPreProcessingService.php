@@ -15,14 +15,14 @@ use LearnosityQti\Processors\QtiV2\Out\Constants as LearnosityExportConstant;
 
 class LearnosityToQtiPreProcessingService
 {
-    private $widgets = [];
+    private array $widgets;
 
     public function __construct(array $widgets = [])
     {
         $this->widgets = array_column($widgets, null, 'reference');
     }
 
-    public function processJson(array $json)
+    public function processJson(array $json): array
     {
         array_walk_recursive($json, function (&$item, $key) {
             if (is_string($item)) {
@@ -33,11 +33,12 @@ class LearnosityToQtiPreProcessingService
 
             // Look for `template` attributes and make sure they're wrapped in a block element as QTI expects
             if ($key === 'template') {
-                if (substr($item, 0, 3) !== '<p>') {
+                if (!str_starts_with($item, '<p>')) {
                     $item = '<div>' . $item . '</div>';
                 }
             }
         });
+
         return $json;
     }
 
@@ -49,31 +50,41 @@ class LearnosityToQtiPreProcessingService
         // Replace <br> with <br />, <img ....> with <img />, etc
         /** @var array $selfClosingTags ie. `img, br, input, meta, link, hr, base, embed, spacer` */
         $selfClosingTags = implode(', ', array_keys($html->getSelfClosingTags()));
-        foreach ($html->find($selfClosingTags) as &$node) {
+
+        foreach ($html->find($selfClosingTags) as $node) {
             if (!strpos($node->outertext, '/>')) {
                 $node->outertext = rtrim($node->outertext, '>') . '/>';
             }
         }
 
-        foreach ($html->find('img') as &$node) {
+        foreach ($html->find('img') as $node) {
             $src = $this->getQtiMediaSrcFromLearnositySrc($node->attr['src']);
             $node->outertext = str_replace($node->attr['src'], $src, $node->outertext);
         }
 
         // Replace these audioplayer and videoplayer feature with <object> nodes
-        foreach ($html->find('span.learnosity-feature') as &$node) {
+        foreach ($html->find('span.learnosity-feature') as $node) {
             try {
                 // Replace <span..> with <object..>
                 $replacement = $this->getFeatureReplacementString($node);
                 $node->outertext = $replacement;
             } catch (MappingException $e) {
-                LogService::log($e->getMessage() . '. Ignoring mapping feature ' . $node->outertext . '`');
+                LogService::log(
+                    $e->getMessage()
+                    . '. Ignoring mapping feature '
+                    . $node->outertext
+                    . '`'
+                );
             }
         }
+
         return $html->save();
     }
 
-    private function getFeatureReplacementString($node)
+    /**
+     * @throws MappingException
+     */
+    private function getFeatureReplacementString($node): bool|int|string
     {
         // Process inline feature
         if (isset($node->attr['data-type']) && isset($node->attr['data-src'])) {
@@ -81,7 +92,9 @@ class LearnosityToQtiPreProcessingService
             $type = trim($node->attr['data-type']);
             if ($type === 'audioplayer' || $type === 'videoplayer') {
                 $src = $this->getQtiMediaSrcFromLearnositySrc($src);
-                return QtiMarshallerUtil::marshallValidQti(new ObjectElement($src, MimeUtil::guessMimeType(basename($src))));
+                return QtiMarshallerUtil::marshallValidQti(
+                    new ObjectElement($src, MimeUtil::guessMimeType(basename($src)))
+                );
             }
         // Process regular question feature
         } else {
@@ -89,15 +102,13 @@ class LearnosityToQtiPreProcessingService
             $featureReference = $this->getFeatureReferenceFromClassName($nodeClassAttribute);
             if (isset($this->widgets[$featureReference])) {
                 $feature = $this->widgets[$featureReference];
-                $type = isset($feature['data']['type']) ? $feature['data']['type'] : '';
-                $src = isset($feature['data']['src']) ? $feature['data']['src'] : '';
+                $type = $feature['data']['type'] ?? '';
             } else {
                 $feature = $this->widgets;
-                $type = isset($feature[1]['type']) ? $feature[1]['type'] : '';
-                $src = isset($feature[1]['src']) ? $feature[1]['src'] : '';
+                $type = $feature[1]['type'] ?? '';
             }
             if ($type === 'audioplayer' || $type === 'videoplayer') {
-                return;
+                return 0;
             } elseif ($type === 'sharedpassage') {
                 $flowCollection = new FlowCollection();
                 $div = $this->createDivForSharedPassage();
@@ -113,14 +124,14 @@ class LearnosityToQtiPreProcessingService
         throw new MappingException($type . ' not supported');
     }
 
-    private function createDivForSharedPassage()
+    private function createDivForSharedPassage(): Div
     {
         $div = new Div();
         $div->setClass(LearnosityExportConstant::SHARED_PASSAGE_DIV_CLASS);
         return $div;
     }
 
-    private function getFeatureReferenceFromClassName($classname)
+    private function getFeatureReferenceFromClassName($classname): array|string|null
     {
         // Parse classname, ie `learnosity-feature feature-DEMOFEATURE123`
         // Then, return `DEMOFEATURE123`
@@ -138,10 +149,11 @@ class LearnosityToQtiPreProcessingService
      * This method take the original media source and return the desired media path
      * for an item based on their media type.
      *
-     * @param type $src source of the desired media
+     * @param string $src source of the desired media
+     *
      * @return string media href
      */
-    private function getQtiMediaSrcFromLearnositySrc($src)
+    private function getQtiMediaSrcFromLearnositySrc(string $src): string
     {
         $fileName = substr($src, strlen(LearnosityExportConstant::DIRPATH_ASSETS));
         $mimeType = MimeUtil::guessMimeType($fileName);

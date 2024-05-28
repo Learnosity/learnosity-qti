@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ConvertToQtiCommand extends Command
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('convert:to:qti')
@@ -50,14 +50,15 @@ class ConvertToQtiCommand extends Command
 
         // Validate the required options
         if (empty($inputPath) || empty($outputPath)) {
-            array_push($validationErrors, "The <info>input</info> and <info>output</info> options are required. Eg:");
+            $validationErrors[] = "The <info>input</info> and <info>output</info> options are required. Eg:";
         }
 
         // Validate the format options
         if (empty($format)) {
             $format = 'qti';
         } elseif (!in_array($format, array('qti', 'canvas'))) {
-            array_push($validationErrors, "This <info>format</info> is not supported. Please provide a valid format. Eg: qti|canvas");
+            $validationErrors[]
+                = "This <info>format</info> is not supported. Please provide a valid format. Eg: qti|canvas";
         }
 
         // Make sure we can read the input folder, and write to the output folder

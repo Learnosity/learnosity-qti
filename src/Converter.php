@@ -18,6 +18,7 @@ use LearnosityQti\Processors\QtiV2\In\TestMapper;
 use LearnosityQti\Processors\QtiV2\Out\ItemWriter;
 use LearnosityQti\Processors\QtiV2\Out\FeatureWriter;
 use LearnosityQti\Processors\QtiV2\Out\QuestionWriter;
+use LearnosityQti\Services\ItemLayoutService;
 use LearnosityQti\Services\LearnosityToQtiPreProcessingService;
 use LearnosityQti\Services\LogService;
 use LearnosityQti\Utils\FileSystemUtil;
@@ -37,17 +38,16 @@ class Converter
     const LEARNOSITY_DATA_QUESTION_DATA = 'questiondata';
     const LEARNOSITY_DATA_FEATURE = 'feature';
 
-    public static function convertImscpDirectoryToLearnosityDirectory($imscpDirectory, $learnosityDirectory, $baseAssetsUrl = '', $validate = true)
-    {
+    public static function convertImscpDirectoryToLearnosityDirectory(
+        $imscpDirectory,
+        $learnosityDirectory,
+        $baseAssetsUrl = '',
+        $validate = true
+    ): array {
         // Brute extract all images from the target IMSCP folder
         // TODO: Need more than just jpg and gif
         $learnosityImagesDirectory = $learnosityDirectory . '/Images';
         FileSystemUtil::createOrReplaceDir($learnosityImagesDirectory);
-        $allImages = array_merge(
-            self::extractFiles('*.jpg', $imscpDirectory, $learnosityImagesDirectory),
-            self::extractFiles('*.jpeg', $imscpDirectory, $learnosityImagesDirectory),
-            self::extractFiles('*.gif', $imscpDirectory, $learnosityImagesDirectory)
-        );
 
         // Brute extract all the xml excepts imsmanifest.xml
         $itemReferences = [];
@@ -56,17 +56,30 @@ class Converter
         $learnosityJsonDirectory = $learnosityDirectory . '/Json';
         FileSystemUtil::createOrReplaceDir($learnosityJsonDirectory);
         $finder = new Finder();
+
         /** @var SplFileInfo $file */
         foreach ($finder->files()->in($imscpDirectory)->name('*.xml') as $file) {
             $filename = $file->getFilename();
+
             if ($filename === 'imsmanifest.xml') {
                 continue;
             }
-            $resultPath = $learnosityJsonDirectory . '/' . basename($filename, '.xml') . '.json';
+
+            $resultPath = $learnosityJsonDirectory
+                . '/'
+                . basename($filename, '.xml')
+                . '.json';
             try {
-                // Write the JSON result to a folder named with its original XML filename
-                // FIXME: This will fail now that the signature of the following method has changed significantly
-                list($item, $questions, $manifest) = self::convertQtiItemToLearnosity($file->getContents(), $baseAssetsUrl, $validate);
+                // Write the JSON result to a folder named with its original XML
+                // filename.
+                // FIXME: This will fail now that the signature of the following
+                //        method has changed significantly.
+                list($item, $questions, $manifest) = self::convertQtiItemToLearnosity(
+                    $file->getContents(),
+                    $baseAssetsUrl,
+                    $validate,
+                );
+
                 $result = [
                     'meta' => [
                         'status' => 'success',
@@ -91,11 +104,15 @@ class Converter
                 $failedQtiXmlFilename[] = $filename;
             }
         }
+
         return $itemReferences;
     }
 
-    private static function extractFiles($filename, $searchDirectory, $resultDirectory)
-    {
+    private static function extractFiles(
+        $filename,
+        $searchDirectory,
+        $resultDirectory
+    ): array {
         $filenames = [];
         $finder = new Finder();
         /** @var SplFileInfo $file */
@@ -103,13 +120,21 @@ class Converter
             copy($file->getPathname(), $resultDirectory . '/' . $file->getFilename());
             $filenames[] = $file->getFilename();
         }
+
         return $filenames;
     }
 
-    public static function convertQtiManifestToLearnosity($xmlString, array $rules = [])
-    {
+    /**
+     * @throws MappingException
+     * @throws Exception
+     */
+    public static function convertQtiManifestToLearnosity(
+        $xmlString,
+        array $rules = []
+    ): array {
         /** @var ManifestMapper $manifestMapper */
         $manifestMapper = AppContainer::getApplicationContainer()->get('imscp_manifest_mapper');
+
         /** @var ManifestWriter $manifestWriter */
         $manifestWriter = AppContainer::getApplicationContainer()->get('learnosity_manifest_writer');
 
@@ -126,70 +151,81 @@ class Converter
         }
     }
 
-    public static function convertQtiTestToLearnosity($xmlString, $validate = true)
-    {
+    /**
+     * @throws XmlStorageException
+     * @throws MappingException
+     * @throws InvalidQtiException
+     * @throws Exception
+     */
+    public static function convertQtiTestToLearnosity(
+        $xmlString,
+        $validate = true
+    ): array {
         $testMapper = AppContainer::getApplicationContainer()->get('qtiv2_test_mapper');
         $activityWriter = AppContainer::getApplicationContainer()->get('learnosity_activity_writer');
 
-        try {
-            /** @var TestMapper $testMapper */
-            list($activity, $exceptions) = $testMapper->parse($xmlString, $validate);
-        } catch (XmlStorageException $e) {
-            // Check invalid schema error message and intercept to rethrow as known `InvalidQtiException` exception
-            $exceptionMessage = $e->getMessage();
-            if (StringUtil::startsWith($exceptionMessage, 'The document could not be validated with schema')) {
-                $exceptionMessage = preg_replace('/The document could not be validated with schema(.*)/', 'The document could not be validated with standard QTI schema: ', $exceptionMessage);
-                throw new InvalidQtiException($exceptionMessage);
-            } else {
-                throw $e;
-            }
-        }
+        /** @var TestMapper $testMapper */
+        list($activity, $exceptions) = $testMapper->parse($xmlString, $validate);
 
         $activityData = $activityWriter->convert($activity);
         return [$activityData, $exceptions];
     }
 
+    /**
+     * @throws XmlStorageException
+     * @throws InvalidQtiException
+     * @throws Exception
+     */
     public static function convertQtiPassageToLearnosity($xmlString)
     {
         $exceptions = null;
-        $widgetWriter = AppContainer::getApplicationContainer()->get('learnosity_question_writer');
+
+        $widgetWriter = AppContainer::getApplicationContainer()->get(
+            'learnosity_question_writer'
+        );
+
         $passageMapper = new SharedPassageMapper();
 
         $widget = null;
         // Parse `em
-        try {
-            $result = $passageMapper->parseXml($xmlString);
-            if (!empty($result['features'])) {
-                $widget = array_values($result['features'])[0];
-            }
-        } catch (XmlStorageException $e) {
-            // Check invalid schema error message and intercept to rethrow as known `InvalidQtiException` exception
-            $exceptionMessage = $e->getMessage();
-            if (StringUtil::startsWith($exceptionMessage, 'The document could not be validated with XML Schema')) {
-                $exceptionMessage = preg_replace('/The document could not be validated with schema(.*)/', 'The document could not be validated with standard QTI schema: ', $exceptionMessage);
-                throw new InvalidQtiException($exceptionMessage);
-            } else {
-                throw $e;
-            }
+        $result = $passageMapper->parseXml($xmlString);
+
+        if (!empty($result['features'])) {
+            $widget = array_values($result['features'])[0];
         }
 
-        // Conversion to JSON
+        // Conversion to JSON.
         $widgetData = [];
+
         if ($widget instanceof Question) {
             $widgetData = $widgetWriter->convert($widget);
         }
+
         return [$widgetData, $exceptions];
     }
 
-    public static function convertPassageItemToLearnosity($htmlString, $baseAssetsUrl = '', $validate = true, $filePath = null, $customItemReference = null, $metadata = [])
-    {
-        $questionWriter = AppContainer::getApplicationContainer()->get('learnosity_question_writer');
+    /**
+     * @throws Exception
+     */
+    public static function convertPassageItemToLearnosity(
+        $htmlString,
+        $baseAssetsUrl = '',
+        $validate = true,
+        $filePath = null,
+        $customItemReference = null,
+        $metadata = []
+    ): array {
+        $questionWriter = AppContainer::getApplicationContainer()->get(
+            'learnosity_question_writer',
+        );
+
         $passageMapper = new SharedPassageMapper();
         $itemData['status'] = 'published';
         $itemData['questions'] = array();
         $itemData['definition']['template'] = 'dynamic';
         $features = $passageMapper->parseHtml($htmlString);
         $featuresData = [];
+
         if (isset($features['features']) && is_array($features['features'])) {
             foreach ($features['features'] as $feature) {
                 $featureDataHash = sha1(json_encode($feature->to_array()['data']));
@@ -201,9 +237,13 @@ class Converter
                 $itemData['features'][]['reference'] = $featureDataHash;
             }
         }
+
         $itemData['reference'] = $featureDataHash;
-        // Flush out all the error messages stored in this static class, also ensure they are unique
+
+        // Flush out all the error messages stored in this static class, also
+        // ensure they are unique.
         $messages = array_values(array_unique(LogService::flush()));
+
         return [
             'item' => $itemData,
             'features' => $featuresData,
@@ -215,6 +255,7 @@ class Converter
      * @throws XmlStorageException
      * @throws InvalidQtiException
      * @throws MappingException
+     * @throws Exception
      */
     public static function convertQtiItemToLearnosity(
         $xmlString,
@@ -230,13 +271,14 @@ class Converter
         $itemWriter = AppContainer::getApplicationContainer()->get('learnosity_item_writer');
         $questionWriter = AppContainer::getApplicationContainer()->get('learnosity_question_writer');
 
-        // Parse `em
+        // Parse `em.
         try {
             $sourceDirectoryPath = null;
             if (isset($filePath)) {
                 $sourceDirectoryPath = dirname($filePath);
             }
-            // TODO: Handle additional (related) items being passed back
+
+            // TODO: Handle additional (related) items being passed back.
             $result = $itemMapper->parse(
                 $xmlString,
                 $validate,
@@ -250,12 +292,15 @@ class Converter
             $features = $result['features'];
             $messages = $result['messages'];
             $rubricItem = $result['rubric'] ?? null;
+
             if (!empty($customItemReference)) {
                 $item->set_reference($customItemReference);
             }
+
             if (!empty($rubricItem)) {
                 $rubricItem->set_reference($item->get_reference().'_rubric');
                 $item->get_metadata()->rubric_reference = $rubricItem->get_reference();
+
                 foreach ($questions as $question) {
                     $questionMetadata = $question->get_data()->get_metadata();
                     if (!empty($questionMetadata)) {
@@ -264,10 +309,19 @@ class Converter
                 }
             }
         } catch (XmlStorageException $e) {
-            // Check invalid schema error message and intercept to rethrow as known `InvalidQtiException` exception
+            // Check invalid schema error message and intercept to rethrow as
+            // known `InvalidQtiException` exception.
             $exceptionMessage = $e->getMessage();
-            if (StringUtil::startsWith($exceptionMessage, 'The document could not be validated with XML Schema')) {
-                $exceptionMessage = preg_replace('/The document could not be validated with schema(.*)/', 'The document could not be validated with standard QTI schema: ', $exceptionMessage);
+            if (StringUtil::startsWith(
+                $exceptionMessage,
+                'The document could not be validated with XML Schema'
+            )) {
+                $exceptionMessage = preg_replace(
+                    '/The document could not be validated with schema(.*)/',
+                    'The document could not be validated with standard QTI schema: ',
+                    $exceptionMessage
+                );
+
                 throw new InvalidQtiException($exceptionMessage);
             } else {
                 throw $e;
@@ -276,31 +330,39 @@ class Converter
 
         // Conversion to JSON
         $itemData = [];
+
         if ($item instanceof item) {
             $itemData = $itemWriter->convert($item);
         }
 
-        // Support additional (related) items being passed back
+        // Support additional (related) items being passed back.
         $rubricItemData = [];
+
         if ($rubricItem instanceof item) {
             $rubricItemData = $itemWriter->convert($rubricItem);
         }
 
         $questionsData = [];
+
         if (is_array($questions)) {
             foreach ($questions as $question) {
                 $questionsData[] = $questionWriter->convert($question);
             }
         }
+
         $featuresData = [];
+
         if (is_array($features)) {
             foreach ($features as $feature) {
                 $featuresData[] = $questionWriter->convert($feature);
             }
         }
 
-        $layoutService = new \LearnosityQti\Services\ItemLayoutService();
-        $itemData = $layoutService->migrateItem($itemData, array_merge($questionsData, $featuresData));
+        $layoutService = new ItemLayoutService();
+        $itemData = $layoutService->migrateItem(
+            $itemData,
+            array_merge($questionsData, $featuresData)
+        );
 
         return [
             'item' => $itemData,
@@ -311,21 +373,32 @@ class Converter
         ];
     }
 
-    public static function convertLearnosityToQtiItem(array $data)
+    /**
+     * @throws MappingException
+     */
+    public static function convertLearnosityToQtiItem(array $data): bool|array
     {
         $jsonType = self::LEARNOSITY_DATA_QUESTION;
         if (isset($data['data'])) {
             if (!isset($data['reference'])) {
-                throw new MappingException('Invalid `item` JSON. Key `reference` shall not be empty');
+                throw new MappingException(
+                    'Invalid `item` JSON. Key `reference` shall not be empty'
+                );
             }
         }
 
         // Guess this JSON is a 'feature'
-        if (isset($data['data']['type']) && in_array($data['data']['type'], ['audioplayer','videoplayer'])) {
+        if (
+            isset($data['data']['type'])
+            && in_array($data['data']['type'], ['audioplayer','videoplayer'])
+        ) {
             if (!isset($data['reference'])) {
-                throw new MappingException('Invalid `item` JSON. Key `reference` shall not be empty');
+                throw new MappingException(
+                    'Invalid `item` JSON. Key `reference` shall not be empty'
+                );
             }
-            $jsonType =  self::LEARNOSITY_DATA_FEATURE;
+
+            $jsonType = self::LEARNOSITY_DATA_FEATURE;
         }
 
         try {
@@ -334,16 +407,19 @@ class Converter
             } else {
                 list($xmlString, $messages, $questionReference, $featureHtml) = self::convertLearnosityQuestion($data);
             }
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             echo('Unknown JSON format: ' . $ex->getMessage() . PHP_EOL);
             return false;
         }
-        // Validate them before proceeding by feeding it back
+        // Validate them before proceeding by feeding it back.
         try {
             $document = new XmlDocument();
             $document->loadFromString($xmlString);
-        } catch (\Exception $e) {
-            LogService::log('Unknown error occurred. The QTI XML produced may not be valid', $e->getMessage());
+        } catch (Exception $e) {
+            LogService::log(
+                'Unknown error occurred. The QTI XML produced may not be valid: '
+                . $e->getMessage()
+            );
         }
 
         $messages = LogService::flush();
@@ -351,58 +427,89 @@ class Converter
         return [$xmlString, $messages, $questionReference, $featureHtml];
     }
 
-    private static function convertLearnosityFeature(array $featureJson)
+    private static function convertLearnosityFeature(array $featureJson): array
     {
-        $preprocessingService = new LearnosityToQtiPreProcessingService($featureJson);
+        $preprocessingService = new LearnosityToQtiPreProcessingService(
+            $featureJson,
+        );
         $featureMapper = new FeatureMapper();
         $featureWriter = new FeatureWriter();
-        $feature = $featureMapper->parse($preprocessingService->processJson($featureJson));
+        $feature = $featureMapper->parse($preprocessingService->processJson(
+            $featureJson,
+        ));
+
         return $featureWriter->convert($feature);
     }
 
-    private static function convertLearnosityQuestion(array $questionJson)
-    {
-        $preprocessingService = new LearnosityToQtiPreProcessingService($questionJson['feature']);
+    private static function convertLearnosityQuestion(
+        array $questionJson
+    ): array {
+        $preprocessingService = new LearnosityToQtiPreProcessingService(
+            $questionJson['feature']
+        );
+
         $questionMapper = new QuestionMapper();
         $questionWriter = new QuestionWriter();
-        $question = $questionMapper->parse($preprocessingService->processJson($questionJson));
+        $question = $questionMapper->parse($preprocessingService->processJson(
+            $questionJson,
+        ));
+
         return $questionWriter->convert($question);
     }
 
-    private static function convertLearnosityQuestionData(array $questionDataJson)
-    {
+    private static function convertLearnosityQuestionData(
+        array $questionDataJson
+    ) {
         $preprocessingService = new LearnosityToQtiPreProcessingService();
         $questionMapper = new QuestionMapper();
         $questionWriter = new QuestionWriter();
 
-        $question = $questionMapper->parseDataOnly($preprocessingService->processJson($questionDataJson));
+        $question = $questionMapper->parseDataOnly(
+            $preprocessingService->processJson($questionDataJson)
+        );
+
         return $questionWriter->convert($question);
     }
 
+    /**
+     * @throws MappingException
+     */
     private static function convertLearnosityItem(array $itemJson)
     {
-        // Separate question(s) and item
-        $itemJson['questionReferences'] = array_column($itemJson['questions'], 'reference');
+        // Separate question(s) and item.
+        $itemJson['questionReferences'] = array_column(
+            $itemJson['questions'],
+            'reference',
+        );
+
         $questionsJson = $itemJson['questions'];
 
-        // Pre-process these JSON
-        $preprocessingService = new LearnosityToQtiPreProcessingService($questionsJson);
+        // Pre-process these JSON.
+        $preprocessingService = new LearnosityToQtiPreProcessingService(
+            $questionsJson
+        );
+
         $questionsJson = $preprocessingService->processJson($questionsJson);
         $itemJson = $preprocessingService->processJson($itemJson);
 
-        // Map those bad boys to Learnosity entities
+        // Map those bad boys to Learnosity entities.
         $itemMapper = new ItemMapper();
         $questionMapper = new QuestionMapper();
         $item = $itemMapper->parse($itemJson);
         $questions = [];
+
         foreach ($questionsJson as $question) {
-            if (!in_array($question['data']['type'], ['audioplayer', 'videoplayer', 'sharedpassage'])) {
+            if (!in_array(
+                $question['data']['type'],
+                ['audioplayer', 'videoplayer', 'sharedpassage']
+            )) {
                 $questions[] = $questionMapper->parse($question);
             }
         }
 
-        // Write em` to QTI
+        // Write em` to QTI.
         $itemWriter = new ItemWriter();
+
         return $itemWriter->convert($item, $questions);
     }
 }
