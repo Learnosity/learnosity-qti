@@ -3,7 +3,6 @@
 namespace LearnosityQti\Services;
 
 use LearnosityQti\Exceptions\MappingException;
-use LearnosityQti\Processors\QtiV2\Out\ContentCollectionBuilder;
 use LearnosityQti\Utils\MimeUtil;
 use LearnosityQti\Utils\QtiMarshallerUtil;
 use LearnosityQti\Utils\SimpleHtmlDom\SimpleHtmlDom;

@@ -2,9 +2,9 @@
 
 namespace LearnosityQti\Services;
 
-use \LearnosityQti\Utils\General\FileSystemHelper;
-use \LearnosityQti\Utils\Item\ItemDefinitionBuilder;
-use \LearnosityQti\Utils\Item\ItemService;
+use LearnosityQti\Utils\General\FileSystemHelper;
+use LearnosityQti\Utils\Item\ItemDefinitionBuilder;
+use LearnosityQti\Utils\Item\ItemService;
 use SplFileInfo;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Finder\Finder;

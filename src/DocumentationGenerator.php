@@ -16,9 +16,9 @@ use Twig_Extensions_Extension_Text;
 
 class DocumentationGenerator
 {
-    private $twig;
-    private $documentationPath;
-    private $schemasService;
+    private \Twig_Environment $twig;
+    private string $documentationPath;
+    private SchemasService $schemasService;
 
     public function __construct(SchemasService $schemasService)
     {
@@ -32,12 +32,12 @@ class DocumentationGenerator
         $this->schemasService = $schemasService;
     }
 
-    public function generateDocumentation()
+    public function generateDocumentation(): void
     {
         $this->renderFile('documentation.html.twig', $this->documentationPath, $this->generateDocumentationData());
     }
 
-    public function generateDocumentationData()
+    public function generateDocumentationData(): array
     {
         $learnosityToQtiDocumenation = $this->generateLearnosityToQtiDocumentation();
         $qtiToLearnosityDocumentation = $this->generateQtiToLearnosityDocumentation();
@@ -48,7 +48,7 @@ class DocumentationGenerator
         ];
     }
 
-    private function generateLearnosityToQtiDocumentation()
+    private function generateLearnosityToQtiDocumentation(): array
     {
         $questionTypeDocumentation = [];
         $responsesSchemas = $this->schemasService->getResponsesSchemas();
@@ -57,7 +57,7 @@ class DocumentationGenerator
                 /** @var QuestionTypeDocumentationInterface $mapperClass */
                 $mapperClass = 'LearnosityQti\Processors\QtiV2\Out\Documentation\QuestionTypes\\' . ucfirst($questionType) . 'Documentation';
                 $documentation = $mapperClass::getDocumentation();
-                foreach (array_keys($this->generateAtributeTable($data['attributes'])) as $flattenedAttributeName) {
+                foreach (array_keys($this->generateAttributeTable($data['attributes'])) as $flattenedAttributeName) {
                     // TODO: Need to check new or non-existing attribute name in case our schemas change
                     if (!in_array($flattenedAttributeName, array_keys($documentation))) {
                         $documentation[$flattenedAttributeName] = LearnosityDoc::none();
@@ -76,15 +76,19 @@ class DocumentationGenerator
                 ];
             }
         }
+
         return [
             'questionTypes' => $questionTypeDocumentation,
             'unsupportedQuestionTypes' => array_keys(array_diff_key($responsesSchemas, $questionTypeDocumentation))
         ];
     }
 
-    private function generateAtributeTable(array $attributes, $prefix = '')
-    {
+    private function generateAttributeTable(
+        array $attributes,
+        $prefix = ''
+    ): array {
         $result = [];
+
         foreach ($attributes as $name => $attribute) {
             $flattenedName = empty($prefix) ? $name : $prefix . '.' . $name;
             // If normal data type
@@ -101,15 +105,16 @@ class DocumentationGenerator
             }
             // If array then look for its items then recurse
             if ($attribute['type'] === 'array' && $attribute['items']['type'] === 'object' && isset($attribute['items']['attributes'])) {
-                $result = array_merge($result, $this->generateAtributeTable($attribute['items']['attributes'], $flattenedName . '[]'));
+                $result = array_merge($result, $this->generateAttributeTable($attribute['items']['attributes'], $flattenedName . '[]'));
             } elseif ($attribute['type'] === 'object' && isset($attribute['attributes'])) {
-                $result = array_merge($result, $this->generateAtributeTable($attribute['attributes'], $flattenedName));
+                $result = array_merge($result, $this->generateAttributeTable($attribute['attributes'], $flattenedName));
             }
         }
+
         return $result;
     }
 
-    private function generateQtiToLearnosityDocumentation()
+    private function generateQtiToLearnosityDocumentation(): array
     {
         // Generate interaction documentation
         $interactionDocumentation = [];
@@ -120,6 +125,7 @@ class DocumentationGenerator
                 'interactionMapping' => $mapperClass::getInteractionDocumentation()
             ];
         }
+
         return [
             'interactions' => $interactionDocumentation,
             'assessmentItem' => AssessmentItemDocumentation::getInteractionDocumentation(),
@@ -127,12 +133,13 @@ class DocumentationGenerator
         ];
     }
 
-    private function renderFile($template, $target, $parameters)
+    private function renderFile($template, $target, $parameters): void
     {
         if (!is_dir(dirname($target))) {
             mkdir(dirname($target), 0777, true);
         }
+
         $content = $this->twig->render($template, $parameters);
-        return file_put_contents($target, $content);
+        file_put_contents($target, $content);
     }
 }

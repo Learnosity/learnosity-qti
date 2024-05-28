@@ -2,15 +2,19 @@
 
 namespace LearnosityQti\Services;
 
+use Exception;
 use LearnosityQti\Utils\FileSystemUtil;
 
 class SchemasService
 {
-    private $questionsSchemas;
-    private $activitySchemas;
-    private $itemSchemas;
-    private $htmlSchemas;
+    private mixed $questionsSchemas;
+    private mixed $activitySchemas;
+    private mixed $itemSchemas;
+    private mixed $htmlSchemas;
 
+    /**
+     * @throws Exception
+     */
     public function __construct()
     {
         $schemasDirectory = FileSystemUtil::getRootPath() . '/Config/resources/schemas';
@@ -52,6 +56,7 @@ class SchemasService
         return $this->itemSchemas['data'];
     }
 
+    /** @noinspection PhpUnused */
     public function getHtmlSchemas()
     {
         return $this->htmlSchemas['data'];

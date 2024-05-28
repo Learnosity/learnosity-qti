@@ -9,7 +9,7 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 class AppContainer
 {
-    private static $appContainer;
+    private static ContainerBuilder $appContainer;
 
     public static function getApplicationContainer()
     {
@@ -22,6 +22,7 @@ class AppContainer
                 var_dump($e->getMessage());die;
             }
         }
+
         return self::$appContainer;
     }
 }

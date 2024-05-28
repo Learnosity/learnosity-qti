@@ -31,11 +31,7 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class Converter
 {
-    const INPUT_FORMAT_QTIV2P1 = 'qtiv2p1';
-    const OUTPUT_FORMAT_LRN_JSON = 'json';
-    const LEARNOSITY_DATA_ITEM = 'item';
     const LEARNOSITY_DATA_QUESTION = 'question';
-    const LEARNOSITY_DATA_QUESTION_DATA = 'questiondata';
     const LEARNOSITY_DATA_FEATURE = 'feature';
 
     public static function convertImscpDirectoryToLearnosityDirectory(
