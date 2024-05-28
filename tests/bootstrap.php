@@ -5,11 +5,11 @@ $vendorDirs = [
     __DIR__ . '/../..',  // embedded in another package
 ];
 
-// locate the autoload
+// Locate the autoload.
 $loader = null;
 
 foreach ($vendorDirs as $vendorDir) {
-    $file = "{$vendorDir}/autoload.php";
+    $file = "$vendorDir/autoload.php";
 
     if (file_exists($file)) {
         $loader = require_once($file);

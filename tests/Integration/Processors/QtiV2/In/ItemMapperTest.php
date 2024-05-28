@@ -2,6 +2,7 @@
 
 namespace LearnosityQti\Tests\Integration\Processors\QtiV2;
 
+use Exception;
 use LearnosityQti\AppContainer;
 use LearnosityQti\Entities\Item\item;
 use LearnosityQti\Entities\QuestionTypes\mcq;
@@ -9,6 +10,9 @@ use LearnosityQti\Tests\AbstractTest;
 
 class ItemMapperTest extends AbstractTest
 {
+    /**
+     * @throws Exception
+     */
     public function testParsingWithAudioObject()
     {
         $xml = $this->getFixtureFileContents('interactions/audio.xml');
@@ -47,6 +51,9 @@ class ItemMapperTest extends AbstractTest
         $this->assertContains('data-type="videoplayer"', $question->get_stimulus());
     }
 
+    /**
+     * @throws Exception
+     */
     public function testParsingWithMathML()
     {
         $xml = $this->getFixtureFileContents('interactions/math.xml');
