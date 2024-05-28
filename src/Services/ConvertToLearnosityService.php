@@ -1158,4 +1158,10 @@ class ConvertToLearnosityService
 
         return $errors;
     }
+
+    private function containsPath(SplFileInfo $file, array $filtering): bool
+    {
+        // This method was referred to in the legacy l8y code but didn't exist.
+        return true;
+    }
 }

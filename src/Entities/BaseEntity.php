@@ -4,7 +4,7 @@ namespace LearnosityQti\Entities;
 
 abstract class BaseEntity
 {
-    public function to_array()
+    public function to_array(): array
     {
         $res = [];
         foreach (get_object_vars($this) as $name => $value) {

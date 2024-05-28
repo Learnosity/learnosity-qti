@@ -26,7 +26,8 @@
         "qtism/qtism": "^19.0",
         "learnosity/learnosity-sdk-php": ">=1",
         "ext-mongodb": "^1.16",
-      "ext-dom": "*"
+      "ext-dom": "*",
+      "ext-zip": "*"
     },
     "bin": [
         "bin/mo"

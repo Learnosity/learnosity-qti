@@ -4,15 +4,18 @@ namespace LearnosityQti\Entities;
 
 class Feature extends BaseEntity
 {
-
     private $reference;
     private $type;
-    private $data;
+    private BaseQuestionType $data;
     private $widget_type;
-    private $content;
+    private mixed $content;
     
-    public function __construct($type, $reference, BaseQuestionType $data, $content = '')
-    {
+    public function __construct(
+        $type,
+        $reference,
+        BaseQuestionType $data,
+        $content = '',
+    ) {
         $this->data = $data;
         $this->reference = $reference;
         $this->type = $type;
@@ -25,7 +28,7 @@ class Feature extends BaseEntity
         return $this->reference;
     }
 
-    public function set_reference($reference)
+    public function set_reference($reference): void
     {
         $this->reference = $reference;
     }
@@ -35,17 +38,17 @@ class Feature extends BaseEntity
         return $this->type;
     }
 
-    public function set_type($type)
+    public function set_type($type): void
     {
         $this->type = $type;
     }
 
-    public function get_data()
+    public function get_data(): BaseQuestionType
     {
         return $this->data;
     }
 
-    public function set_data(BaseQuestionType $data)
+    public function set_data(BaseQuestionType $data): void
     {
         $this->data = $data;
     }
@@ -55,15 +58,15 @@ class Feature extends BaseEntity
         return $this->content;
     }
 
-    public function set_content($content)
+    public function set_content($content): void
     {
         $this->content = $content;
     }
 
     /**
      * @override
-     * */
-    public function to_array()
+     */
+    public function to_array(): array
     {
         $feature = get_object_vars($this);
         $feature['data'] = $this->data->to_array();

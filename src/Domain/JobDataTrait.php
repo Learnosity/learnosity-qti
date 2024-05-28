@@ -10,50 +10,67 @@ use Symfony\Component\Finder\SplFileInfo;
 
 trait JobDataTrait
 {
-    protected function getFileInClassDirectory($filename)
+    /**
+     * @throws Exception
+     */
+    protected function getFileInClassDirectory($filename): SplFileInfo
     {
         $class = new ReflectionClass($this);
-        $file = new SplFileInfo(dirname($class->getFilename()) . '/' . $filename, '', $filename);
+        $file = new SplFileInfo(
+            dirname($class->getFilename()) . '/' . $filename, '', $filename
+        );
+
         if (!$file->isFile()) {
             throw new Exception('Invalid file. Fail to get file ' . $filename);
         }
+
         return $file;
     }
 
-    protected function getFile($path)
+    /**
+     * @throws Exception
+     */
+    protected function getFile($path): SplFileInfo
     {
         $file = new SplFileInfo($this->directory . $path, '', $path);
         if (!$file->isFile()) {
             throw new Exception('Invalid file. Fail to get file ' . $path);
         }
+
         return $file;
     }
 
-    protected function readFile($path)
+    /**
+     * @throws Exception
+     */
+    protected function readFile($path): string
     {
         $file = $this->getFile($path);
-        if (empty($file)) {
-            throw new Exception('Invalid file. Fail to read content on ' . $path);
-        }
+
         return $file->getContents();
     }
 
+    /**
+     * @throws Exception
+     */
     protected function readJsonFile($filename, $assoc = true)
     {
         $content = $this->readFile($filename);
+
         return json_decode($content, $assoc);
     }
 
-    protected function processFiles($directory, callable $callback)
+    protected function processFiles($directory, callable $callback): void
     {
         $finder = new Finder();
+
         /** @var SplFileInfo $file */
         foreach ($finder->files()->in($this->directory . $directory) as $file) {
             call_user_func($callback, $file);
         }
     }
 
-    protected function processJsonChunks($directory, callable $callback)
+    protected function processJsonChunks($directory, callable $callback): void
     {
         $this->processFiles($directory, function ($file) use ($callback) {
             /** @var SplFileInfo $file */
@@ -65,22 +82,29 @@ trait JobDataTrait
         });
     }
 
-    protected function readJsonResponseChunks($directory)
+    protected function readJsonResponseChunks($directory): array
     {
         return $this->readJsonChunks($directory);
     }
 
-    protected function readJsonChunks($directory)
+    protected function readJsonChunks($directory): array
     {
-        $datas = [];
-        $this->processJsonChunks($directory, function ($data) use (&$datas) {
-            $datas[] = $data;
+        $data = [];
+        $this->processJsonChunks($directory, function ($data) use (&$data) {
+            $data[] = $data;
         });
-        return $datas;
+
+        return $data;
     }
 
-    protected function writeJsonToFile(array $array, $filename, $flags = 0)
-    {
+    /**
+     * @throws Exception
+     */
+    protected function writeJsonToFile(
+        array $array,
+        $filename,
+        $flags = 0,
+    ): void {
         if (!empty($array)) {
             if (
                 !file_put_contents(
@@ -95,7 +119,10 @@ trait JobDataTrait
         }
     }
 
-    protected function writeStringToFile($str, $filename, $flags = 0)
+    /**
+     * @throws Exception
+     */
+    protected function writeStringToFile($str, $filename, $flags = 0): void
     {
         if (is_string($str) && strlen($str)) {
             if (
@@ -110,12 +137,12 @@ trait JobDataTrait
         }
     }
 
-    protected function readInputArgumentType($arg)
+    protected function readInputArgumentType($arg): string
     {
         return substr($arg, 0, strpos($arg, ':'));
     }
 
-    protected function readInputArgumentValue($arg)
+    protected function readInputArgumentValue($arg): string
     {
         return substr($arg, strpos($arg, ':') + 1);
     }
@@ -123,10 +150,12 @@ trait JobDataTrait
     /**
      * Converts CLI colon delimited arguments (Eg -a format:v2)
      * to an associative array.
-     * @param  array $arguments [CLI colon delimted arguments]
-     * @return array            [Associative array]
+     *
+     * @param array $arguments CLI colon delimited arguments
+     *
+     * @return array           Associative array
      */
-    protected function setupInputArguments($arguments)
+    protected function setupInputArguments(array $arguments): array
     {
         $config = [];
 

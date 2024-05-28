@@ -6,14 +6,20 @@ class Question extends BaseEntity
 {
     private $reference;
     private $type;
-    private $data;
+    private BaseQuestionType $data;
     private $widget_type;
-    private $item_reference;
-    private $content;
-    private $features;
+    private mixed $item_reference;
+    private mixed $content;
+    private mixed $features;
 
-    function __construct($type, $reference, BaseQuestionType $data, $itemReference = '', $content = '', $features = '')
-    {
+    function __construct(
+        $type,
+        $reference,
+        BaseQuestionType $data,
+        $itemReference = '',
+        $content = '',
+        $features = '',
+    ) {
         $this->data           = $data;
         $this->reference      = $reference;
         $this->type           = $type;
@@ -28,7 +34,7 @@ class Question extends BaseEntity
         return $this->reference;
     }
 
-    public function set_reference($reference)
+    public function set_reference($reference): void
     {
         $this->reference = $reference;
     }
@@ -38,7 +44,7 @@ class Question extends BaseEntity
         return $this->content;
     }
 
-    public function set_content($content)
+    public function set_content($content): void
     {
         $this->content = $content;
     }
@@ -48,22 +54,22 @@ class Question extends BaseEntity
         return $this->type;
     }
 
-    public function set_type($type)
+    public function set_type($type): void
     {
         $this->type = $type;
     }
 
-    public function get_data()
+    public function get_data(): BaseQuestionType
     {
         return $this->data;
     }
 
-    public function set_data(BaseQuestionType $data)
+    public function set_data(BaseQuestionType $data): void
     {
         $this->data = $data;
     }
 
-    public function set_item_reference($itemReference)
+    public function set_item_reference($itemReference): void
     {
         $this->item_reference = $itemReference;
     }
@@ -78,7 +84,7 @@ class Question extends BaseEntity
         return $this->features;
     }
 
-    public function set_features($features)
+    public function set_features($features): void
     {
         $this->features = $features;
     }
@@ -86,7 +92,7 @@ class Question extends BaseEntity
     /**
      * @override
      **/
-    public function to_array()
+    public function to_array(): array
     {
         $question         = get_object_vars($this);
         $question['data'] = $this->data->to_array();
