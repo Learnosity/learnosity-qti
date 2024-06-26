@@ -3,6 +3,7 @@
 namespace LearnosityQti\Processors\QtiV2\Out\QuestionTypes;
 
 use LearnosityQti\Entities\QuestionTypes\mcq_ui_style;
+use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Processors\QtiV2\Out\Validation\McqValidationBuilder;
 use LearnosityQti\Entities\BaseQuestionType;
 use LearnosityQti\Entities\QuestionTypes\mcq;
@@ -21,9 +22,14 @@ use qtism\data\content\interactions\SimpleChoiceCollection;
 
 class McqMapper extends AbstractQuestionTypeMapper
 {
-
-    public function convert(BaseQuestionType $questionType, $interactionIdentifier, $interactionLabel)
-    {
+    /**
+     * @throws MappingException
+     */
+    public function convert(
+        BaseQuestionType $questionType,
+        $interactionIdentifier,
+        $interactionLabel
+    ): array {
         /** @var mcq $question */
         $question = $questionType;
 
@@ -33,13 +39,13 @@ class McqMapper extends AbstractQuestionTypeMapper
         $metadata = $question->get_metadata();
 
         $feedbackOptions = [];
-        if (isset($metadata) && !empty($metadata->get_distractor_rationale_response_level())) {
+        if (!empty($metadata->get_distractor_rationale_response_level())) {
             foreach ($metadata->get_distractor_rationale_response_level() as $feed) {
                 $feedbackOptions[] = $feed;
             }
         }
 
-        if (isset($metadata) && !empty($metadata->get_distractor_rationale())) {
+        if (!empty($metadata->get_distractor_rationale())) {
             $feedbackOptions['general_feedback'] = $metadata->get_distractor_rationale();
         }
 
@@ -82,7 +88,7 @@ class McqMapper extends AbstractQuestionTypeMapper
         $interaction->setPrompt($this->convertStimulusForPrompt($question->get_stimulus()));
 
         // Set shuffle options
-        $interaction->setShuffle($question->get_shuffle_options() ? true : false);
+        $interaction->setShuffle($question->get_shuffle_options());
 
         // Set the layout
         if ($question->get_ui_style() instanceof mcq_ui_style &&
@@ -98,8 +104,17 @@ class McqMapper extends AbstractQuestionTypeMapper
             return [$interaction, null, null];
         }
 
-        $builder = new McqValidationBuilder($question->get_multiple_responses(), $valueIdentifierMap);
-        list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation(), true, $feedbackOptions);
+        $builder = new McqValidationBuilder(
+            $question->get_multiple_responses(),
+            $valueIdentifierMap,
+        );
+
+        [$responseDeclaration, $responseProcessing] = $builder->buildValidation(
+            $interactionIdentifier,
+            $question->get_validation(),
+            true,
+            $feedbackOptions,
+        );
         
         return [$interaction, $responseDeclaration, $responseProcessing];
     }

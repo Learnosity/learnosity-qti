@@ -4,86 +4,82 @@ namespace LearnosityQti\Entities\QuestionTypes;
 
 use LearnosityQti\Entities\BaseQuestionType;
 
-/**
-* This class is auto-generated based on Schemas API and you should not modify its content
-* Metadata: {"responses":"v2.108.0","feedback":"v2.71.0","features":"v2.107.0"}
-*/
 class mcq extends BaseQuestionType {
-    protected $is_math;
-    protected $metadata;
-    protected $stimulus;
-    protected $stimulus_review;
-    protected $instructor_stimulus;
-    protected $type;
-    protected $ui_style;
-    protected $feedback_attempts;
-    protected $instant_feedback;
-    protected $validation;
-    protected $description;
-    protected $options;
-    protected $multiple_responses;
-    protected $shuffle_options;
+    protected bool $is_math;
+    protected mcq_metadata $metadata;
+    protected string $stimulus;
+    protected string $stimulus_review;
+    protected string $instructor_stimulus;
+    protected string $type;
+    protected mcq_ui_style $ui_style;
+    protected int $feedback_attempts;
+    protected bool $instant_feedback;
+    protected mcq_validation $validation;
+    protected string $description;
+    protected array $options;
+    protected bool $multiple_responses;
+    protected bool $shuffle_options;
     
-    public function __construct(
-                    $type,
-                                array $options
-                        )
+    public function __construct($type,array $options)
     {
-                $this->type = $type;
-                $this->options = $options;
-            }
+        $this->type = $type;
+        $this->options = $options;
+    }
 
     /**
     * Get Contains math \
     * Set to <strong>true</strong> to have LaTeX or MathML contents to be rendered with mathjax. \
     * @return boolean $is_math \
     */
-    public function get_is_math() {
+    public function get_is_math(): bool
+    {
         return $this->is_math;
     }
 
     /**
     * Set Contains math \
     * Set to <strong>true</strong> to have LaTeX or MathML contents to be rendered with mathjax. \
+    *
     * @param boolean $is_math \
     */
-    public function set_is_math ($is_math) {
+    public function set_is_math(bool $is_math): void
+    {
         $this->is_math = $is_math;
     }
 
     /**
-    * Get metadata \
-    *  \
-    * @return mcq_metadata $metadata \
+    * Get metadata
     */
-    public function get_metadata() {
+    public function get_metadata(): mcq_metadata
+    {
         return $this->metadata;
     }
 
     /**
-    * Set metadata \
-    *  \
-    * @param mcq_metadata $metadata \
+    * Set metadata
     */
-    public function set_metadata (mcq_metadata $metadata) {
+    public function set_metadata (mcq_metadata $metadata): void
+    {
         $this->metadata = $metadata;
     }
 
     /**
-    * Get Stimulus \
-    * The question stimulus. Can include text, tables, images. \
-    * @return string $stimulus \
+    * Get Stimulus
+     *
+    * The question stimulus. Can include text, tables, images.
     */
-    public function get_stimulus() {
+    public function get_stimulus(): string
+    {
         return $this->stimulus;
     }
 
     /**
-    * Set Stimulus \
-    * The question stimulus. Can include text, tables, images. \
-    * @param string $stimulus \
+    * Set Stimulus
+     *
+    * The question stimulus. Can include text, tables, images.
     */
-    public function set_stimulus ($stimulus) {
+    public function set_stimulus(string $stimulus): void
+    {
         $this->stimulus = $stimulus;
     }
 
@@ -94,156 +90,156 @@ class mcq extends BaseQuestionType {
 	types.php" target="_blank">Feature &lt;span&gt; tags</a>. Will override stimulus in review state. \
     * @return string $stimulus_review \
     */
-    public function get_stimulus_review() {
+    public function get_stimulus_review(): string
+    {
         return $this->stimulus_review;
     }
 
     /**
-    * Set Stimulus (review only) \
-    * <a data-toggle="modal" href="#supportedTags">HTML</a>/Text content displayed <strong>only</strong> in review state rende
-	red <strong>above</strong> the response area. Supports embedded <a href="http://docs.learnosity.com/questionsapi/feature
-	types.php" target="_blank">Feature &lt;span&gt; tags</a>. Will override stimulus in review state. \
-    * @param string $stimulus_review \
-    */
-    public function set_stimulus_review ($stimulus_review) {
+     * Set Stimulus (review only)
+     *
+     * HTML/Text content displayed only in review state rendered above the
+     * response area. Will override stimulus in review state.
+     */
+    public function set_stimulus_review (string $stimulus_review): void
+    {
         $this->stimulus_review = $stimulus_review;
     }
 
     /**
-    * Get Instructor stimulus \
-    * <a data-toggle="modal" href="#supportedTags">HTML</a>/Text content displayed when <code>showInstructorStimulus</code> is
-	 set to <code>true</code> on the activity. Supports embedded <a href="http://docs.learnosity.com/questionsapi/featuretyp
-	es.php" target="_blank">Feature &lt;span&gt; tags</a>. \
-    * @return string $instructor_stimulus \
+     * Get Instructor stimulus
+     *
+     * HTML/Text content displayed when showInstructorStimulus is
+	 * set to true on the activity.
     */
-    public function get_instructor_stimulus() {
+    public function get_instructor_stimulus(): string
+    {
         return $this->instructor_stimulus;
     }
 
     /**
-    * Set Instructor stimulus \
-    * <a data-toggle="modal" href="#supportedTags">HTML</a>/Text content displayed when <code>showInstructorStimulus</code> is
-	 set to <code>true</code> on the activity. Supports embedded <a href="http://docs.learnosity.com/questionsapi/featuretyp
-	es.php" target="_blank">Feature &lt;span&gt; tags</a>. \
-    * @param string $instructor_stimulus \
+    * Set Instructor stimulus
     */
-    public function set_instructor_stimulus ($instructor_stimulus) {
+    public function set_instructor_stimulus (string $instructor_stimulus): void
+    {
         $this->instructor_stimulus = $instructor_stimulus;
     }
 
     /**
-    * Get Question type \
-    *  \
-    * @return string $type \
+    * Get Question type
     */
-    public function get_type() {
+    public function get_type(): string
+    {
         return $this->type;
     }
 
     /**
-    * Set Question type \
-    *  \
-    * @param string $type \
+    * Set Question type
     */
-    public function set_type ($type) {
+    public function set_type(string $type): void
+    {
         $this->type = $type;
     }
 
     /**
-    * Get ui_style \
-    *  \
-    * @return mcq_ui_style $ui_style \
+    * Get ui_style
     */
-    public function get_ui_style() {
+    public function get_ui_style(): mcq_ui_style
+    {
         return $this->ui_style;
     }
 
     /**
-    * Set ui_style \
-    *  \
-    * @param mcq_ui_style $ui_style \
+    * Set ui_style
     */
-    public function set_ui_style (mcq_ui_style $ui_style) {
+    public function set_ui_style (mcq_ui_style $ui_style): void
+    {
         $this->ui_style = $ui_style;
     }
 
     /**
-    * Get Check answer attempts \
-    * If instant_feedback is true, this field determines how many times the user can click on the 'Check Answer' button. 0 mea
-	ns unlimited. \
+     * Get Check answer attempts
+     *
+     * If instant_feedback is true, this field determines how many times the user
+     * can click on the 'Check Answer' button. 0 means unlimited.
     * @return number $feedback_attempts \
     */
-    public function get_feedback_attempts() {
+    public function get_feedback_attempts(): int {
         return $this->feedback_attempts;
     }
 
     /**
-    * Set Check answer attempts \
-    * If instant_feedback is true, this field determines how many times the user can click on the 'Check Answer' button. 0 mea
-	ns unlimited. \
-    * @param number $feedback_attempts \
+    * Set Check answer attempts
+    *
+    * If instant_feedback is true, this field determines how many times the user
+    * can click on the 'Check Answer' button. 0 means unlimited.
     */
-    public function set_feedback_attempts ($feedback_attempts) {
+    public function set_feedback_attempts (int $feedback_attempts): void
+    {
         $this->feedback_attempts = $feedback_attempts;
     }
 
     /**
-    * Get Provide instant feedback \
-    * Flag to determine whether to display a 'Check Answer' button to provide instant feedback to the user. \
-    * @return boolean $instant_feedback \
-    */
-    public function get_instant_feedback() {
+     * Get instant feedback
+     *
+     * Flag to determine whether to display a 'Check Answer' button to provide
+     * instant feedback to the user.
+     */
+    public function get_instant_feedback(): bool
+    {
         return $this->instant_feedback;
     }
 
     /**
     * Set Provide instant feedback \
     * Flag to determine whether to display a 'Check Answer' button to provide instant feedback to the user. \
-    * @param boolean $instant_feedback \
     */
-    public function set_instant_feedback ($instant_feedback) {
+    public function set_instant_feedback(bool $instant_feedback): void
+    {
         $this->instant_feedback = $instant_feedback;
     }
 
     /**
     * Get Set correct answer(s) \
     * In this section, configure the correct answer(s) for the question. \
-    * @return mcq_validation $validation \
     */
-    public function get_validation() {
+    public function get_validation(): mcq_validation
+    {
         return $this->validation;
     }
 
     /**
-    * Set Set correct answer(s) \
-    * In this section, configure the correct answer(s) for the question. \
-    * @param mcq_validation $validation \
+    * Set correct answer(s)
+    *
+    * In this section, configure the correct answer(s) for the question.
     */
-    public function set_validation (mcq_validation $validation) {
+    public function set_validation (mcq_validation $validation): void
+    {
         $this->validation = $validation;
     }
 
     /**
-    * Get Description (deprecated) \
-    * <span class="label label-danger">Deprecated</span> See <em>stimulus_review</em>. <br />
-Description of the question and
-	 its context to be displayed. 
-It <a data-toggle="modal" href="#supportedTags">supports HTML entities</a>. \
-    * @return string $description \
-    */
-    public function get_description() {
+     * Get Description (deprecated)
+     *
+     * Deprecated See stimulus_review. Description of the question and its
+     * context to be displayed. It supports HTML entities.
+     */
+    public function get_description(): string
+    {
         return $this->description;
     }
 
     /**
     * Set Description (deprecated) \
     * <span class="label label-danger">Deprecated</span> See <em>stimulus_review</em>. <br />
-Description of the question and
-	 its context to be displayed. 
-It <a data-toggle="modal" href="#supportedTags">supports HTML entities</a>. \
-    * @param string $description \
+* Description of the question and
+	 * its context to be displayed.
+* It <a data-toggle="modal" href="#supportedTags">supports HTML entities</a>. \
+    *
+     * @param string $description \
     */
-    public function set_description ($description) {
+    public function set_description (string $description): void
+    {
         $this->description = $description;
     }
 
@@ -252,58 +248,64 @@ It <a data-toggle="modal" href="#supportedTags">supports HTML entities</a>. \
     * Options support <a data-toggle='modal' href='#supportedClozeTemplateTags'>HTML</a> for formatting or MathJax syntax. \
     * @return array $options \
     */
-    public function get_options() {
+    public function get_options(): array
+    {
         return $this->options;
     }
 
     /**
-    * Set Multiple choice options \
-    * Options support <a data-toggle='modal' href='#supportedClozeTemplateTags'>HTML</a> for formatting or MathJax syntax. \
-    * @param array $options \
-    */
-    public function set_options (array $options) {
+     * Set Multiple choice options
+     *
+     * Options support HTML for formatting or MathJax syntax.
+     *
+     * @noinspection PhpUnused
+     */
+    public function set_options (array $options): void
+    {
         $this->options = $options;
     }
 
     /**
-    * Get Multiple responses \
-    * If multiple_responses is true the user will be able to select multiple responses using a checkbox for each response. \
-    * @return boolean $multiple_responses \
-    */
-    public function get_multiple_responses() {
+     * Get Multiple responses
+     *
+     * If multiple_responses is true the user will be able to select multiple
+     * responses using a checkbox for each response.
+     */
+    public function get_multiple_responses(): bool
+    {
         return $this->multiple_responses;
     }
 
     /**
-    * Set Multiple responses \
-    * If multiple_responses is true the user will be able to select multiple responses using a checkbox for each response. \
-    * @param boolean $multiple_responses \
-    */
-    public function set_multiple_responses ($multiple_responses) {
+     * Set Multiple responses
+     *
+     * If multiple_responses is true the user will be able to select multiple
+     * responses using a checkbox for each response.
+     */
+    public function set_multiple_responses(bool $multiple_responses): void
+    {
         $this->multiple_responses = $multiple_responses;
     }
 
     /**
-    * Get Shuffle options \
-    *  \
-    * @return boolean $shuffle_options \
+    * Get Shuffle options
     */
-    public function get_shuffle_options() {
+    public function get_shuffle_options(): bool
+    {
         return $this->shuffle_options;
     }
 
     /**
-    * Set Shuffle options \
-    *  \
-    * @param boolean $shuffle_options \
+    * Set Shuffle options
     */
-    public function set_shuffle_options ($shuffle_options) {
+    public function set_shuffle_options(bool $shuffle_options): void
+    {
         $this->shuffle_options = $shuffle_options;
     }
 
-    
-    public function get_widget_type() {
-    return 'response';
+    public function get_widget_type(): string
+    {
+        return 'response';
     }
 }
 
