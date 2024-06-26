@@ -39,6 +39,7 @@ class McqValidationBuilder extends AbstractQuestionValidationBuilder
         $responseDeclaration->setBaseType(BaseType::IDENTIFIER);
 
         $correctResponseBuilder = new QtiCorrectResponseBuilder();
+
         $responseDeclaration->setCorrectResponse(
             $correctResponseBuilder->buildWithBaseTypeIdentifier(
                 $validation,

@@ -6,15 +6,24 @@ use LearnosityQti\Processors\QtiV2\Out\Constants;
 use LearnosityQti\Processors\QtiV2\Out\ResponseProcessing\QtiResponseProcessingBuilder;
 use LearnosityQti\Services\LogService;
 use qtism\data\processing\ResponseProcessing;
+use ReflectionClass;
+use ReflectionException;
 
 abstract class AbstractQuestionValidationBuilder
 {
-    private $supportedScoringType = ['exactMatch'];
+    private array $supportedScoringType = ['exactMatch'];
 
     abstract protected function buildResponseDeclaration($responseIdentifier, $validation);
 
-    public function buildValidation($responseIdentifier, $validation, $isCaseSensitive = true, $feedBackOptions = array())
-    {
+    /**
+     * @throws ReflectionException
+     */
+    public function buildValidation(
+        $responseIdentifier,
+        $validation,
+        $isCaseSensitive = true,
+        $feedBackOptions = array(),
+    ): array {
         $ResponseProcessingBuilder = new QtiResponseProcessingBuilder();
 
         // Some basic validation on the `validation` object
@@ -22,7 +31,13 @@ abstract class AbstractQuestionValidationBuilder
             return [null, null];
         }
 
-        if (empty($validation->get_scoring_type()) || !in_array($validation->get_scoring_type(), $this->supportedScoringType)) {
+        if (
+            empty($validation->get_scoring_type())
+            || !in_array(
+                $validation->get_scoring_type(),
+                $this->supportedScoringType,
+            )
+        ) {
             // TODO: Need to support more validation type :)
             LogService::log('Invalid `scoring_type`, only supported `exactMatch`. Failed to build `responseDeclaration` and `responseProcessingTemplate');
             return [null, null];
@@ -41,7 +56,7 @@ abstract class AbstractQuestionValidationBuilder
 
         $type = [];
         $score = 0;
-        $maxscore = 0;
+        $maxScore = 0;
         $penalty = 0;
 
         if (method_exists($validation, 'get_valid_response')) {
@@ -51,7 +66,7 @@ abstract class AbstractQuestionValidationBuilder
 
         if (method_exists($validation, 'get_max_score') && $validation->get_max_score() != '') {
             $type[] = 'maxscore';
-            $maxscore = $validation->get_max_score();
+            $maxScore = $validation->get_max_score();
         }
         if (method_exists($validation, 'get_penalty') && $validation->get_penalty() != '') {
             $type[] = 'penalty';
@@ -59,11 +74,12 @@ abstract class AbstractQuestionValidationBuilder
         }
 
         if (sizeof($responseIdentifiers) > 1) {
-            $responseProcessing = $ResponseProcessingBuilder->buildResponseProcessingWithMultipleResponse($score, $maxscore, $penalty, $feedBackOptions, $type, $responseIdentifiers);
+            $responseProcessing = $ResponseProcessingBuilder->buildResponseProcessingWithMultipleResponse($score, $maxScore, $penalty, $feedBackOptions, $type, $responseIdentifiers);
         } else {
-            // if found distractor_rationale_response_level generate response processing with setoutcome value FEEDBACK
+            // If found distractor_rationale_response_level generate response
+            // processing with setoutcome value FEEDBACK.
             if (!empty($feedBackOptions) && is_array($feedBackOptions) || in_array('maxscore', $type) || in_array('penalty', $type)) {
-                $responseProcessing = $ResponseProcessingBuilder->build($score, $maxscore, $penalty, $feedBackOptions, $type);
+                $responseProcessing = $ResponseProcessingBuilder->build($score, $maxScore, $penalty, $feedBackOptions, $type);
             } else {
                 $responseProcessing = $this->buildResponseProcessing($validation, $isCaseSensitive);
             }
@@ -72,10 +88,13 @@ abstract class AbstractQuestionValidationBuilder
         return [$responseDeclaration, $responseProcessing];
     }
 
-    protected function buildResponseProcessing($validation, $isCaseSensitive = true)
+    /**
+     * @throws ReflectionException
+     */
+    protected function buildResponseProcessing($validation, $isCaseSensitive = true): ResponseProcessing
     {
         // Guess question type
-        $validationClazz = new \ReflectionClass($validation);
+        $validationClazz = new ReflectionClass($validation);
         $questionType = str_replace('_validation', '', $validationClazz->getShortName());
 
         if (in_array($questionType, Constants::$questionTypesWithMappingSupport)) {
@@ -96,7 +115,7 @@ abstract class AbstractQuestionValidationBuilder
         }
 
         // Warn since we only support match_correct, can't support `$isCaseSensitive`
-        if ($isCaseSensitive == false) {
+        if (! $isCaseSensitive) {
             LogService::log('Only support mapping to `matchCorrect` template, thus case sensitivity is ignored');
         }
 

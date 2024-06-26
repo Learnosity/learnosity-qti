@@ -7,7 +7,7 @@ use LearnosityQti\Entities\BaseQuestionType;
 class mcq extends BaseQuestionType {
     protected bool $is_math;
     protected mcq_metadata $metadata;
-    protected string $stimulus;
+    protected string $stimulus = '';
     protected string $stimulus_review;
     protected string $instructor_stimulus;
     protected string $type;
@@ -52,7 +52,7 @@ class mcq extends BaseQuestionType {
     */
     public function get_metadata(): mcq_metadata
     {
-        return $this->metadata;
+        return $this->metadata ?? new mcq_metadata();
     }
 
     /**
