@@ -9,11 +9,11 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 class AppContainer
 {
-    private static ContainerBuilder $appContainer;
+    private static ?ContainerBuilder $appContainer = null;
 
     public static function getApplicationContainer()
     {
-        if (!self::$appContainer) {
+        if (self::$appContainer === null) {
             try {
                 self::$appContainer = new ContainerBuilder();
                 $loader = new YamlFileLoader(self::$appContainer, new FileLocator(__DIR__ . '/Config'));
