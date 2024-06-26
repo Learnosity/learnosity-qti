@@ -90,8 +90,8 @@ trait JobDataTrait
     protected function readJsonChunks($directory): array
     {
         $data = [];
-        $this->processJsonChunks($directory, function ($data) use (&$data) {
-            $data[] = $data;
+        $this->processJsonChunks($directory, function ($datum) use (&$data) {
+            $data[] = $datum;
         });
 
         return $data;
