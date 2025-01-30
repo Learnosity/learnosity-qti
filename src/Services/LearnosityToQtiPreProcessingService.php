@@ -40,6 +40,10 @@ class LearnosityToQtiPreProcessingService
                 // Ensure {{response}} containers are wrapped in a valid flow element (if they aren't already)
                 $item = preg_replace('/(<td[^>]*>)(\s*{{response}}\s*)(<\/td>)/', '$1<span>$2</span>$3', $item);
             }
+
+            // Replace <center> with <p align="center"> and </center> with </p>
+            $item = preg_replace('/<center>/', '<p align="center">', $item);
+            $item = preg_replace('/<\/center>/', '</p>', $item);
         });
         return $json;
     }
