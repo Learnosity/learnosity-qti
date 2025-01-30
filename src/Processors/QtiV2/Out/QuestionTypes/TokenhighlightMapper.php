@@ -20,6 +20,10 @@ class TokenhighlightMapper extends AbstractQuestionTypeMapper
             $feedbackOptions['general_feedback'] = $metadata->get_distractor_rationale();
         }
 
+        // We can't have `template` without a block element, thus wrap it in a <div>
+        $tempTemplate = $question->get_template();
+        $question->set_template("<div>$tempTemplate</div>");
+
         /** @var tokenhighlight $question */
         // Grab those `template` and convert those highlights to <hottext>
         $html = new SimpleHtmlDom();

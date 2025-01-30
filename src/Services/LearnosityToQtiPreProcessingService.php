@@ -33,7 +33,7 @@ class LearnosityToQtiPreProcessingService
 
             if ($key === 'template') {
                 // Look for `template` attributes and make sure they're wrapped in a block element as QTI expects
-                if (substr($item, 0, 3) !== '<p>' && !preg_match('/<table\b[^>]*>/i', $item)) {
+                if (substr($item, 0, 3) !== '<p>' && substr($item, 0, 5) !== '<span' && !preg_match('/<table\b[^>]*>/i', $item)) {
                     $item = '<span>' . $item . '</span>';
                 }
 
