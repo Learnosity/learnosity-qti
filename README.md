@@ -1,4 +1,5 @@
 # Notice
+
 This library is open source and currently is not actively maintained by Learnosity.
 
 Users should fork this repository to fix any issues found or feature requests required.
@@ -11,9 +12,8 @@ This package converts between QTI 2.1 Assessment Items and Learnosity JSON.
 
 You can choose between 2 main jobs:
 
-* `convert:to:learnosity` - Converts QTI v2.1 to Learnosity JSON
-* `convert:to:qti` - Converts Learnosity JSON to QTI v2.1
-
+-   `convert:to:learnosity` - Converts QTI v2.1 to Learnosity JSON
+-   `convert:to:qti` - Converts Learnosity JSON to QTI v2.1
 
 ## Installation via Composer
 
@@ -41,6 +41,7 @@ composer global require "learnosity/learnosity-qti"
 ```
 
 For bleeding edge:
+
 ```
 {
     "require": {
@@ -91,6 +92,7 @@ By default this will look for content packages inside the `./data/input` directo
 Note that only the `data` folder is present in this repository, you can create the `data/input` folder to add content packages there. The `data/output` path will be created automatically if you don't override via input options.
 
 ### Conversion options
+
 If you want to use different input and/or output paths you can use options:
 
 ```
@@ -99,29 +101,32 @@ mo convert:to:learnosity --input /my/path/to/qti --output /my/path/to/output/fol
 
 All supported input options are as follows:
 
-| Option  | Default | Description |
-|---|---|---|
-| &#x2011;&#x2011;organisation_id  | | [Mandatory] Which Learnosity item bank to use, contact Learnosity for your `organisation_id` value |
-| --input  | `./data/input` | File system path to the source content being converted |
-| --output  | `./data/output` | File system path to where the converted content will be written |
-| &#x2011;&#x2011;item-reference-source  | `item` | Where to retrieve each items unique identifier from the QTI.<br><dl><dt>item</dt><dd> uses the identifier attribute on the `<assessmentItem>` element</dd><dt>metadata</dt><dd>uses the `<identifier>` element from the LOM metadata in the manifest, if available. If no `<identifier>` is found, then this parameter operates in "item" mode</dd><dt>resource</dt><dd>uses the identifier attribute on the `<resource>` element in the manifest</dd><dt>filename</dt><dd>uses the basename of the `<assessmentItem>` XML file</dd></dl> |
-| --passage-only-items  | `No` | Whether HTML passages should be created as separate, passage-only, items. <br><dl><dt>No</dt><dd>No separate items will be created</dd><dt>Yes</dt><dd> Separate items containing only passages will be created</dd> |
-| --single-item  | `No` | To convert a single QTI `<assessmentItem>` instead of a full content package, pass `Yes` and a path to a single XML file to `--input` |
+| Option                                | Default         | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| ------------------------------------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| &#x2011;&#x2011;organisation_id       |                 | [Mandatory] Which Learnosity item bank to use, contact Learnosity for your `organisation_id` value                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| --input                               | `./data/input`  | File system path to the source content being converted                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| --output                              | `./data/output` | File system path to where the converted content will be written                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| &#x2011;&#x2011;item-reference-source | `item`          | Where to retrieve each items unique identifier from the QTI.<br><dl><dt>item</dt><dd> uses the identifier attribute on the `<assessmentItem>` element</dd><dt>metadata</dt><dd>uses the `<identifier>` element from the LOM metadata in the manifest, if available. If no `<identifier>` is found, then this parameter operates in "item" mode</dd><dt>resource</dt><dd>uses the identifier attribute on the `<resource>` element in the manifest</dd><dt>filename</dt><dd>uses the basename of the `<assessmentItem>` XML file</dd></dl> |
+| --passage-only-items                  | `No`            | Whether HTML passages should be created as separate, passage-only, items. <br><dl><dt>No</dt><dd>No separate items will be created</dd><dt>Yes</dt><dd> Separate items containing only passages will be created</dd>                                                                                                                                                                                                                                                                                                                      |
+| --single-item                         | `No`            | To convert a single QTI `<assessmentItem>` instead of a full content package, pass `Yes` and a path to a single XML file to `--input`                                                                                                                                                                                                                                                                                                                                                                                                     |
 
 ## Assets
-The conversion library will update any asset URL inside QTI content to use the fololwing Learnosity CDN address:
+
+The conversion library will update any asset URL inside QTI content to use the following Learnosity CDN address:
 `https://assets.learnosity.com/organisations/[integer]/[filename]`
 
 The `organisation` value is taken from the `--organisation_id` input parameter passed to the command line.
 
 Supported file types include:
-* images
-* audio files (mp3)
-* video files (mp4)
+
+-   images
+-   audio files (mp3)
+-   video files (mp4)
 
 When importing content using the Data API, you can add files using the [Upload Assets](https://reference.learnosity.com/data-api/endpoints/itembank_endpoints#uploadAssets) endpoint.
 
 ## Metadata (LOM)
+
 Metadata will be taken from the content package manifest and converted to [Learnosity tags](https://help.learnosity.com/hc/en-us/articles/360000758597-Understanding-Tag-Formats-for-Content-Creation-and-Filtering). The format is assumed to be:
 
 ```
@@ -156,28 +161,32 @@ This will be converted to the following Learnosity JSON (snippet only):
 Note that `<imsmd:source>` translates to Learnosity tag types, and `<imsmd:taxon>` translates to tag names.
 
 ## Supported Interactions - QTI to Learnosity
+
 The following QTI v2.1 interactions are supported:
 
-| QTI Interaction | Learnosity Question Type | Learnosity Widget Value |
-|---|---|--|
-|ChoiceInteraction|	Multiple Choice Question| mcq |
-|ExtendedTextInteraction|	Essay| longtextV2 |
-|GraphicGapMatchInteraction|	Image Association| imageclozeassociationV2 |
-|GapMatchInteraction|	Cloze Association| clozeassociation |
-|HottextInteraction|	Token Highlight| tokenhighlight |
-|InlineChoiceInteraction|	Cloze Dropdown| clozedropdown |
-|MatchInteraction|	Choice Matrix| choicematrix |
-|OrderInteraction|	Order List| orderlist |
-|TextEntryInteraction|	Cloze Text| clozetext |
-|HotspotInteraction|	Hotspot| hotspot |
+| QTI Interaction            | Learnosity Question Type | Learnosity Widget Value |
+| -------------------------- | ------------------------ | ----------------------- |
+| ChoiceInteraction          | Multiple Choice Question | mcq                     |
+| ExtendedTextInteraction    | Essay                    | longtextV2              |
+| GraphicGapMatchInteraction | Image Association        | imageclozeassociationV2 |
+| GapMatchInteraction        | Cloze Association        | clozeassociation        |
+| HottextInteraction         | Token Highlight          | tokenhighlight          |
+| InlineChoiceInteraction    | Cloze Dropdown           | clozedropdown           |
+| MatchInteraction           | Choice Matrix            | choicematrix            |
+| OrderInteraction           | Order List               | orderlist               |
+| TextEntryInteraction       | Cloze Text               | clozetext               |
+| HotspotInteraction         | Hotspot                  | hotspot                 |
 
 ## Rubrics
+
 `<rubricBlock>` elements are commonplace in QTI documents. Learnosity can treat these as:
-* passages
-* distractor rationale
-* rating question types (for scoring)
+
+-   passages
+-   distractor rationale
+-   rating question types (for scoring)
 
 ## Passages
+
 Learnosity has the concept of a [Passage](https://authorguide.learnosity.com/hc/en-us/articles/360000445597-Shared-Passages), which is a separate HTML fragment that can be added to single items, or shared across multiple items. By default, the conversion library looks for the following QTI to be converted into a passage:
 
 ```
@@ -195,15 +204,19 @@ Note that the `use` attribute must be `context`, and the `view` attribute must i
 The Learnosity JSON generated would contain 2-columns, the passage(s) in the left and the question(s) in the right.
 
 ### Multiple passages
+
 If 2 passages are found in a QTI item, a tabbed interface will appear in the converted JSON (in the left-column).
 
 If 3 (or more) passages are found, they will be stacked vertically in the UI (no tabs).
 
 ### "Shared" Passages
+
 In the converted results, the Learnosity reference (unique identifier) to a passage is generated from a hash of the passage body. So, we automatically "share" a passage if an exact match is found based on the contents of the passage.
 
 ## Distractor rationale
+
 ### Students
+
 If the `use` attribute of a `<rubricBlock>` element is `rationale`, and the `view` attribute contains `candidate`, the conversion library will generate [`distractor_rationale_response_level`](https://authorguide.learnosity.com/hc/en-us/articles/360000448738-Understanding-the-Extras-Section-of-the-Question-Editor) inside the question metadata.
 
 The contents of the `<rubricBlock>` will be broken down by block elements, one for each array element of `distractor_rationale_response_level`. Eg:
@@ -266,6 +279,7 @@ If `<feedbackInline>` elements are found, they will be converted to `distractor_
 The `feedbackInline` contents will be converted to `distractor_rationale_response_level` array elements.
 
 ### Graders
+
 If the `class` attribute of a `<rubricBlock>` element is `DistractorRationale`, and the `view` attribute contains `author`, the conversion library will generate `distractor_rationale_scorer` as a custom metadata field inside the question metadata.
 
 The contents of the `<rubricBlock>` will be used, eg:
@@ -288,15 +302,17 @@ Would generate the following JSON:
 
 It would up to the host page calling the Assessment API to render this content to a grader.
 
-
 ## Unsupported
+
 Learnosity QTI does not support:
-* `<assessmentItem>` with no interactions (passage-only or rubric-only)
-* Custom CSS stylesheets. These must be loaded separately at run time for the host page initialising the Assessment API.
+
+-   `<assessmentItem>` with no interactions (passage-only or rubric-only)
+-   Custom CSS stylesheets. These must be loaded separately at run time for the host page initialising the Assessment API.
 
 Note that only `<assessmentItem>` are supported, no other QTI elements like `<assessmentTest>`.
 
 ### Help
+
 Remember you can ask for `help`:
 
 ```
@@ -332,6 +348,7 @@ Help:
 ```
 
 # Importing into Learnosity
+
 Once you have Learnosity JSON (the `final` folder), you can use the Data API to import into your Learnosity hosted item bank.
 
 Example of the output format is:
@@ -354,10 +371,9 @@ Example of the output format is:
 Loop over all item objects inside `qtiitems`.
 Inside each item object, import the questions (setQuestions) and features (setFeatures) first, then the item (setItems). Setting items will automatically import any tags that were in the manifest.
 
- * [Import questions](https://docs.learnosity.com/analytics/data/endpoints/itembank_endpoints#setQuestions)
- * [Import features](https://docs.learnosity.com/analytics/data/endpoints/itembank_endpoints#setFeatures)
- * [Import items](https://docs.learnosity.com/analytics/data/endpoints/itembank_endpoints#setItems)
-
+-   [Import questions](https://docs.learnosity.com/analytics/data/endpoints/itembank_endpoints#setQuestions)
+-   [Import features](https://docs.learnosity.com/analytics/data/endpoints/itembank_endpoints#setFeatures)
+-   [Import items](https://docs.learnosity.com/analytics/data/endpoints/itembank_endpoints#setItems)
 
 ## Converting Learnosity JSON to QTI
 
@@ -372,6 +388,7 @@ By default this will look for content packages inside the `./data/input` directo
 Note that only the `data` folder is present in this repository, you can create the `data/input` folder to add content packages there. The `data/output` path will be created automatically if you don't override via input options.
 
 ### Conversion options
+
 If you want to use different input and/or output paths you can use options:
 
 ```
@@ -380,13 +397,14 @@ mo convert:to:qti --input /my/path/to/learnosity-json --output /my/path/to/outpu
 
 All supported input options are as follows:
 
-| Option  | Default | Description |
-|---|---|---|
-| --input  | `./data/input` | File system path to the source content being converted |
-| &#x2011;&#x2011;output | `./data/output` | File system path to where the converted content will be written |
-| &#x2011;&#x2011;format | `qti` | A flag to choose how to format the QTI output content package, from a list of supported formats. This option supports the following possible values: (canvas, qti). Pass the canvas option to export. QTI content that is compatible with Canvas LMS. The default is qti, which outputs non LMS-specific QTI. |
+| Option                 | Default         | Description                                                                                                                                                                                                                                                                                                   |
+| ---------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| --input                | `./data/input`  | File system path to the source content being converted                                                                                                                                                                                                                                                        |
+| &#x2011;&#x2011;output | `./data/output` | File system path to where the converted content will be written                                                                                                                                                                                                                                               |
+| &#x2011;&#x2011;format | `qti`           | A flag to choose how to format the QTI output content package, from a list of supported formats. This option supports the following possible values: (canvas, qti). Pass the canvas option to export. QTI content that is compatible with Canvas LMS. The default is qti, which outputs non LMS-specific QTI. |
 
 ### Learnosity JSON format
+
 This conversion tool expects to be given JSON in the format that is returned by the [offline package endpoint of the Data API](https://reference.learnosity.com/data-api/endpoints/itembank_endpoints#getOfflinePackage). The Data API `itembank/offlinepackage` endpoint returns Activities/Items/Questions/Features in a single directory. It also contains any assets, including images, audio or video, that are part of the content.
 
 The directory returned from the itembank/offlinepackage endpoint contains the following files:
@@ -423,33 +441,37 @@ Each JSON file within the items folder is named from a (lower case) MD5 hash of 
 ```
 
 ### Supported Question Types - Learnosity to QTI
+
 The following Learnosity question types are supported:
 
-| Learnosity Question Type | Learnosity Widget Value | QTI Interaction |
-|---|---|---|
-|Choice Matrix| choicematrix |MatchInteraction|
-|Cloze Association| clozeassociation |GapMatchInteraction|
-|Cloze Dropdown| clozedropdown |InlineChoiceInteraction|
-|Cloze Text| clozetext |TextEntryInteraction|
-|Essay| longtext |ExtendedTextInteraction|
-|Essay with rich text| longtextV2 |ExtendedTextInteraction|
-|Hotspot| hotspot |HotspotInteraction|
-|Image Cloze Association| imageclozeassociation |GraphicGapMatchInteraction|
-|Image Cloze Association V2| imageclozeassociationV2 |GraphicGapMatchInteraction|
-|Multiple Choice Question| mcq |ChoiceInteraction|
-|Order List| orderlist |OrderInteraction|
-|Passage| sharedpassage |N/A|
-|Plain Text| plaintext |ExtendedTextInteraction|
-|Short Text| shorttext |TextEntryInteraction|
-|Token Highlight| tokenhighlight |HottextInteraction|
+| Learnosity Question Type   | Learnosity Widget Value | QTI Interaction            |
+| -------------------------- | ----------------------- | -------------------------- |
+| Choice Matrix              | choicematrix            | MatchInteraction           |
+| Cloze Association          | clozeassociation        | GapMatchInteraction        |
+| Cloze Dropdown             | clozedropdown           | InlineChoiceInteraction    |
+| Cloze Text                 | clozetext               | TextEntryInteraction       |
+| Essay                      | longtext                | ExtendedTextInteraction    |
+| Essay with rich text       | longtextV2              | ExtendedTextInteraction    |
+| Hotspot                    | hotspot                 | HotspotInteraction         |
+| Image Cloze Association    | imageclozeassociation   | GraphicGapMatchInteraction |
+| Image Cloze Association V2 | imageclozeassociationV2 | GraphicGapMatchInteraction |
+| Multiple Choice Question   | mcq                     | ChoiceInteraction          |
+| Order List                 | orderlist               | OrderInteraction           |
+| Passage                    | sharedpassage           | N/A                        |
+| Plain Text                 | plaintext               | ExtendedTextInteraction    |
+| Short Text                 | shorttext               | TextEntryInteraction       |
+| Token Highlight            | tokenhighlight          | HottextInteraction         |
 
 #### Known limitations
+
 ##### General
+
 You cannot use `<u>` elements in QTI 2.1. We suggest using a `<span>` with a CSS classname instead.
 
 All `template` fields must be wrapped in a block element.
 
 ##### Cloze Association
+
 Cannot use the group possible responses option.
 
 ### Help
