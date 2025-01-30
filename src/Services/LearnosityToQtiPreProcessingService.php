@@ -44,6 +44,10 @@ class LearnosityToQtiPreProcessingService
             // Replace <center> with <p align="center"> and </center> with </p>
             $item = preg_replace('/<center>/', '<p align="center">', $item);
             $item = preg_replace('/<\/center>/', '</p>', $item);
+
+            // Replace closing </u> with </span>
+            $item = preg_replace('/<u>/', '<span style="text-decoration:underline;">', $item);
+            $item = preg_replace('/<\/u>/', '</span>', $item);
         });
         return $json;
     }
