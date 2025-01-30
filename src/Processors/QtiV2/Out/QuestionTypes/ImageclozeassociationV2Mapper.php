@@ -32,7 +32,7 @@ class ImageclozeassociationV2Mapper extends AbstractQuestionTypeMapper
         //TODO: Need validation a question shall have at least 1 {{response}} and 1 item in `possible_responses`
         /** @var imageclozeassociation $question */
         $question = $questionType;
-        
+
         // Check if distractor_rationale_response_level exists
         $feedbackOptions = [];
         $metadata = $question->get_metadata();
@@ -40,7 +40,7 @@ class ImageclozeassociationV2Mapper extends AbstractQuestionTypeMapper
             if (!empty($metadata->get_distractor_rationale())) {
                 $feedbackOptions['genral_feedback'] = $metadata->get_distractor_rationale();
             }
-        } 
+        }
 
         // Map `possible_responses` to `gapImg`(s)
         $possibleResponses = $question->get_possible_responses();
@@ -50,14 +50,14 @@ class ImageclozeassociationV2Mapper extends AbstractQuestionTypeMapper
         // Build the main background image `object`
         $imageObject = $this->buildMainImageObject($question->get_image());
         $response_containers = $question->get_response_containers();
-        $response_coordinates = array(); 
+        $response_coordinates = array();
         $response_positions = array();
         foreach($response_containers as $res):
             $response_coordinates['x'] = $res->get_x();
             $response_coordinates['y'] = $res->get_y();
             $response_positions[] = $response_coordinates;
         endforeach;
-        
+
         // Build associable hotspots based on `response_positions`
         $associableHotspotCollection = $this->buildAssociableHotspotCollection($response_positions, $imageObject->getWidth(), $imageObject->getHeight());
         // Build dah` interaction
@@ -123,7 +123,7 @@ class ImageclozeassociationV2Mapper extends AbstractQuestionTypeMapper
 
         $learnosityService = ConvertToQtiService::getInstance();
         $inputPath = $learnosityService->getInputPath();
-        $imageRealPath = str_replace("/vendor/learnosity/itembank",$inputPath, $imageSrc); 
+        $imageRealPath = $inputPath . $imageSrc;
         //list($imageWidth, $imageHeight) = CurlUtil::getImageSize(CurlUtil::prepareUrlForCurl($imageSrc));
         list($imageWidth, $imageHeight) = getimagesize(($imageRealPath));
         $imageObject = new ObjectElement($imageSrc, MimeUtil::guessMimeType($imageSrc));
@@ -161,6 +161,6 @@ class ImageclozeassociationV2Mapper extends AbstractQuestionTypeMapper
         $gapImageObject->setWidth($width);
         $gapImageObject->setHeight($height);
         return $gapImageObject;
-        
+
     }
 }

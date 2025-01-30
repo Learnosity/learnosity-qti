@@ -31,6 +31,14 @@ class LearnosityToQtiPreProcessingService
                 $item = $this->processHtml($item);
 
                 $item = html_entity_decode($item, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+                // Replace <center> with <p align="center"> and </center> with </p>
+                $item = preg_replace('/<center>/', '<p align="center">', $item);
+                $item = preg_replace('/<\/center>/', '</p>', $item);
+
+                // Replace closing </u> with </span>
+                $item = preg_replace('/<u>/', '<span style="text-decoration:underline;">', $item);
+                $item = preg_replace('/<\/u>/', '</span>', $item);
             }
 
             if ($key === 'template') {
@@ -42,14 +50,6 @@ class LearnosityToQtiPreProcessingService
                 // Ensure {{response}} containers are wrapped in a valid flow element (if they aren't already)
                 $item = preg_replace('/(<td[^>]*>)(\s*{{response}}\s*)(<\/td>)/', '$1<span>$2</span>$3', $item);
             }
-
-            // Replace <center> with <p align="center"> and </center> with </p>
-            $item = preg_replace('/<center>/', '<p align="center">', $item);
-            $item = preg_replace('/<\/center>/', '</p>', $item);
-
-            // Replace closing </u> with </span>
-            $item = preg_replace('/<u>/', '<span style="text-decoration:underline;">', $item);
-            $item = preg_replace('/<\/u>/', '</span>', $item);
         });
         return $json;
     }
