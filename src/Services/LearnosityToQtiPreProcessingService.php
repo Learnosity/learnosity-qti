@@ -31,11 +31,14 @@ class LearnosityToQtiPreProcessingService
                 $item = $this->processHtml($item);
             }
 
-            // Look for `template` attributes and make sure they're wrapped in a block element as QTI expects
             if ($key === 'template') {
-                if (substr($item, 0, 3) !== '<p>') {
-                    $item = '<div>' . $item . '</div>';
+                // Look for `template` attributes and make sure they're wrapped in a block element as QTI expects
+                if (substr($item, 0, 3) !== '<p>' && !preg_match('/<table\b[^>]*>/i', $item)) {
+                    $item = '<span>' . $item . '</span>';
                 }
+
+                // Ensure {{response}} containers are wrapped in a valid flow element (if they aren't already)
+                $item = preg_replace('/(<td[^>]*>)(\s*{{response}}\s*)(<\/td>)/', '$1<span>$2</span>$3', $item);
             }
         });
         return $json;

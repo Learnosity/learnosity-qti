@@ -34,10 +34,12 @@ class ClozeassociationMapper extends AbstractQuestionTypeMapper
         }, $question->get_template());
         if (
            (substr($template, 0, 3) !== '<p>') &&
+           (substr($template, 0, 6) !== '<table') &&
            (substr($template, 0, 5) !== '<div>')
            ) {
             $template = '<p>' . $template . '</p>';
         }
+
         $content = ContentCollectionBuilder::buildBlockStaticCollectionContent(QtiMarshallerUtil::unmarshallElement($template));
 
         $metadata = $question->get_metadata();
@@ -68,7 +70,7 @@ class ClozeassociationMapper extends AbstractQuestionTypeMapper
         $validationBuilder = new ClozeassociationValidationBuilder($possibleResponses);
         $isCaseSensitive = 1;
         list($responseDeclaration, $responseProcessing) = $validationBuilder->buildValidation($interactionIdentifier, $question->get_validation(), $isCaseSensitive, $feedbackOptions);
-        
+
         return [$interaction, $responseDeclaration, $responseProcessing];
     }
 }
