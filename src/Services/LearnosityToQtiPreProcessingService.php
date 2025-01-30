@@ -29,6 +29,8 @@ class LearnosityToQtiPreProcessingService
                 // Replace nbsp with '&#160;'
                 $item = str_replace('&nbsp;', '&#160;', $item);
                 $item = $this->processHtml($item);
+
+                $item = html_entity_decode($item, ENT_QUOTES | ENT_HTML5, 'UTF-8');
             }
 
             if ($key === 'template') {
