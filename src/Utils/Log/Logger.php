@@ -9,7 +9,7 @@ class Logger
     private static $isOpen = false;
     private static $logFacility = LOG_LOCAL0;
     private static $logLevel = LOG_ERR;
-    private static $logName;
+    private static $logName = 'LearnosityQti';
     private static $LOG_FACILITY = [
         "local0" => LOG_LOCAL0,
         "local1" => LOG_LOCAL1,
