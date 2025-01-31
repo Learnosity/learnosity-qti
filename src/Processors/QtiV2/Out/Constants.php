@@ -20,7 +20,7 @@ class Constants
         'imageclozeassociationV2',
         'hotspot'
     ];
-    
+
     public static $supportedFeatureTypes = [
         'videoplayer',
         'audioplayer'
@@ -36,6 +36,8 @@ class Constants
     public static $questionTypesWithMappingSupport = [
         'shorttext',
         'clozetext',
+        'clozeassociation',
+        'imageclozeassociationV2',
     ];
 
     const RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT = 'http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct';
