@@ -38,7 +38,7 @@ class ImageclozeassociationV2Mapper extends AbstractQuestionTypeMapper
         $metadata = $question->get_metadata();
         if (isset($metadata)) {
             if (!empty($metadata->get_distractor_rationale())) {
-                $feedbackOptions['genral_feedback'] = $metadata->get_distractor_rationale();
+                $feedbackOptions['general_feedback'] = $metadata->get_distractor_rationale();
             }
         }
 
@@ -123,7 +123,7 @@ class ImageclozeassociationV2Mapper extends AbstractQuestionTypeMapper
 
         $learnosityService = ConvertToQtiService::getInstance();
         $inputPath = $learnosityService->getInputPath();
-        $imageRealPath = $inputPath . $imageSrc;
+        $imageRealPath = str_replace("/vendor/learnosity/itembank",$inputPath, $imageSrc);
         //list($imageWidth, $imageHeight) = CurlUtil::getImageSize(CurlUtil::prepareUrlForCurl($imageSrc));
         list($imageWidth, $imageHeight) = getimagesize(($imageRealPath));
         $imageObject = new ObjectElement($imageSrc, MimeUtil::guessMimeType($imageSrc));
