@@ -766,7 +766,7 @@ class ConvertToQtiService
             $taxOn = $imsManifestXml->createElement('imsmd:taxon');
             $imsmdEntry = $imsManifestXml->createElement('imsmd:entry');
             $tagsValues = implode(',', $tagValues);
-            $imsmdEntry->appendChild($imsManifestXml->createElement('msmd:string', $tagsValues));
+            $imsmdEntry->appendChild($imsManifestXml->createElement('imsmd:string', $tagsValues));
             $taxOn->appendChild($imsmdEntry);
             $taxonPath->appendChild($taxOn);
 

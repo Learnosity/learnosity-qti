@@ -27,7 +27,7 @@ class HotspotMapper extends AbstractQuestionTypeMapper
         $metadata = $question->get_metadata();
         if (isset($metadata)) {
             if (!empty($metadata->get_distractor_rationale())) {
-                $feedbackOptions['genral_feedback'] = $metadata->get_distractor_rationale();
+                $feedbackOptions['general_feedback'] = $metadata->get_distractor_rationale();
             }
         }
 
@@ -62,7 +62,7 @@ class HotspotMapper extends AbstractQuestionTypeMapper
 
         // Build the prompt
         $interaction->setPrompt($this->convertStimulusForPrompt($question->get_stimulus()));
-        
+
         if (empty($question->get_validation())) {
             return [$interaction, null, null];
         }

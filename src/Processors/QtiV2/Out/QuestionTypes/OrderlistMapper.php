@@ -33,7 +33,7 @@ class OrderlistMapper extends AbstractQuestionTypeMapper
         $metadata = $question->get_metadata();
         if (isset($metadata)) {
             if (!empty($metadata->get_distractor_rationale())) {
-                $feedbackOptions['genral_feedback'] = $metadata->get_distractor_rationale();
+                $feedbackOptions['general_feedback'] = $metadata->get_distractor_rationale();
             }
         }
 
