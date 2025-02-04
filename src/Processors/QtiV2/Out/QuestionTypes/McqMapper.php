@@ -57,9 +57,9 @@ class McqMapper extends AbstractQuestionTypeMapper
                     $feedback->setContent($content);
                     $choiceContent->attach($feedback);
                 }
-                
+
             }
-            
+
             // Use option['value'] as choice `identifier` if it has the correct format,
             // Otherwise, generate a valid using index such `CHOICE_1`, `CHOICE_2`, etc
             $originalOptionValue = $option->get_value();
@@ -100,7 +100,7 @@ class McqMapper extends AbstractQuestionTypeMapper
 
         $builder = new McqValidationBuilder($question->get_multiple_responses(), $valueIdentifierMap);
         list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation(), true, $feedbackOptions);
-        
+
         return [$interaction, $responseDeclaration, $responseProcessing];
     }
 }

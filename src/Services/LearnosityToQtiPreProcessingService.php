@@ -25,20 +25,24 @@ class LearnosityToQtiPreProcessingService
     public function processJson(array $json)
     {
         array_walk_recursive($json, function (&$item, $key) {
+            $propertiesExtraProcessing = ['stimulus', 'label', 'distractor_rationale'];
             if (is_string($item)) {
                 // Replace nbsp with '&#160;'
                 $item = str_replace('&nbsp;', '&#160;', $item);
                 $item = $this->processHtml($item);
 
-                $item = html_entity_decode($item, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                if (in_array($key, $propertiesExtraProcessing)) {
+                    $item = $this->processHtmlPostProcessing($item);
+                }
 
-                // Replace <center> with <p align="center"> and </center> with </p>
-                $item = preg_replace('/<center>/', '<p align="center">', $item);
-                $item = preg_replace('/<\/center>/', '</p>', $item);
+                // $item = html_entity_decode($item, ENT_QUOTES | ENT_HTML5, 'UTF-8');
 
-                // Replace closing </u> with </span>
-                $item = preg_replace('/<u>/', '<span style="text-decoration:underline;">', $item);
-                $item = preg_replace('/<\/u>/', '</span>', $item);
+                // Replace all &nbsp; entities with &#160; as the former are not allowed in XML
+                $item = str_replace('&nbsp;', '&#160;', $item);
+
+                // Remove <center> </center>
+                $item = preg_replace('/<center>/', '', $item);
+                $item = preg_replace('/<\/center>/', '', $item);
             }
 
             if ($key === 'template') {
@@ -51,6 +55,7 @@ class LearnosityToQtiPreProcessingService
                 $item = preg_replace('/(<td[^>]*>)(\s*{{response}}\s*)(<\/td>)/', '$1<span>$2</span>$3', $item);
             }
         });
+
         return $json;
     }
 
@@ -68,6 +73,16 @@ class LearnosityToQtiPreProcessingService
             }
         }
 
+        // Remove <center> </center>
+        foreach ($html->find('center') as $centerTag) {
+            $centerTag->outertext = $centerTag->innertext; // Replace <center> with its content
+        }
+
+        // Find and replace all <u> elements
+        foreach ($html->find('u') as $uTag) {
+            $uTag->outertext = '<span style="text-decoration:underline;">' . $uTag->innertext . '</span>';
+        }
+
         foreach ($html->find('img') as &$node) {
             $src = $this->getQtiMediaSrcFromLearnositySrc($node->attr['src']);
             $node->outertext = str_replace($node->attr['src'], $src, $node->outertext);
@@ -83,7 +98,151 @@ class LearnosityToQtiPreProcessingService
                 LogService::log($e->getMessage() . '. Ignoring mapping feature ' . $node->outertext . '`');
             }
         }
+
         return $html->save();
+    }
+
+    /**
+     * Due to problems with SimpleHtmlDom, we need to use DOMDocument to process the HTML content
+     * to do things like injecting <tbody> into <table> elements, closing any unclosed tags.
+     * We also try to escape invalid XML characters in text nodes.
+     */
+    private function processHtmlPostProcessing($content)
+    {
+        if (empty($content)) return $content;
+
+        $doc = new \DOMDocument('1.0', 'UTF-8');
+
+        $content = preg_replace_callback(
+            '/<(?!(?:\/?[a-zA-Z0-9]+(?:\s|\/?>)))|>(?!(?:[^<]*<\/[a-zA-Z]+>|[^<]*\/?>))/',
+            function ($matches) {
+                return ($matches[0] === '<') ? '__LT__' : '>'; // Do NOT replace `>`
+            },
+            $content
+        );
+
+        // Wrap the HTML in a minimal valid structure (fixes issues with `loadHTML`)
+        $htmlWrapped = "<!DOCTYPE html><html><body><div>$content</div></body></html>";
+
+        // Suppress warnings for malformed HTML
+        libxml_use_internal_errors(true);
+
+        // Load the wrapped HTML
+        $doc->loadHTML($htmlWrapped, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+        // Clear any parsing errors
+        libxml_clear_errors();
+
+        /***************** Start processing the HTML ****************/
+
+        // Preserve MathML by wrapping it in CDATA
+        foreach ($doc->getElementsByTagName('math') as $mathTag) {
+            $cdata = $doc->createCDATASection($doc->saveHTML($mathTag));
+            $mathTag->parentNode->replaceChild($cdata, $mathTag);
+        }
+
+        // Process tables inside the div
+        foreach ($doc->getElementsByTagName('table') as $table) {
+            // Ensure the table has a <tbody>
+            if (!$table->getElementsByTagName('tbody')->length) {
+                $tbody = $doc->createElement('tbody');
+
+                // Move all <tr> elements into <tbody>
+                $trs = [];
+                foreach ($table->childNodes as $child) {
+                    if ($child->nodeName === 'tr') {
+                        $trs[] = $child;
+                    }
+                }
+
+                foreach ($trs as $tr) {
+                    $tbody->appendChild($tr);
+                }
+
+                $table->appendChild($tbody);
+            }
+        }
+
+        // Replace <b> with <strong>
+        foreach ($doc->getElementsByTagName('b') as $bTag) {
+            $strongTag = $doc->createElement('strong');
+
+            // Copy all child nodes from <b> to <strong> to preserve structure
+            while ($bTag->childNodes->length > 0) {
+                $strongTag->appendChild($bTag->childNodes->item(0));
+            }
+
+            // Replace <b> with <strong>, keeping math content intact
+            $bTag->parentNode->replaceChild($strongTag, $bTag);
+        }
+
+        // Replace <i> with <em>
+        foreach ($doc->getElementsByTagName('i') as $iTag) {
+            $emTag = $doc->createElement('em');
+
+            // Copy all child nodes from <b> to <strong> to preserve structure
+            while ($iTag->childNodes->length > 0) {
+                $emTag->appendChild($iTag->childNodes->item(0));
+            }
+
+            // Replace <b> with <strong>, keeping math content intact
+            $iTag->parentNode->replaceChild($emTag, $iTag);
+        }
+
+        // Replace <u> with <span style="text-decoration: underline;">
+        foreach ($doc->getElementsByTagName('u') as $uTag) {
+            $spanTag = $doc->createElement('span', $uTag->textContent);
+            $spanTag->setAttribute('style', 'text-decoration: underline;');
+            $uTag->parentNode->replaceChild($spanTag, $uTag);
+        }
+
+        // Remove empty paragraphs
+        $paragraphs = $doc->getElementsByTagName('p');
+        // Loop backwards to avoid skipping elements after removal
+        for ($i = $paragraphs->length - 1; $i >= 0; $i--) {
+            $pTag = $paragraphs->item($i);
+
+            // Check if <p> is empty or contains only non-breaking spaces
+            if (trim($pTag->textContent, "\u{00A0} \t\n\r\0\x0B") === '') {
+                $pTag->parentNode->removeChild($pTag);
+            }
+        }
+
+        // Remove <font> tags
+        $fonts = $doc->getElementsByTagName('font');
+        // Loop backwards to avoid skipping elements after removal
+        for ($i = $fonts->length - 1; $i >= 0; $i--) {
+            $fontTag = $fonts->item($i);
+
+            // Move all child nodes of <font> to its parent before removing it
+            while ($fontTag->childNodes->length > 0) {
+                $fontTag->parentNode->insertBefore($fontTag->childNodes->item(0), $fontTag);
+            }
+
+            // Remove the <font> tag itself
+            $fontTag->parentNode->removeChild($fontTag);
+        }
+
+        /***************** End processing the HTML ****************/
+
+        // Find the <div> wrapper
+        $wrapper = $doc->getElementsByTagName('div')->item(0);
+
+        // Extract only the modified content inside the <div>
+        $processedHtml = '';
+        foreach ($wrapper->childNodes as $node) {
+            $processedHtml .= $doc->saveHTML($node);
+        }
+
+        // Ensure all elements are properly closed
+        $processedHtml = tidy_repair_string($processedHtml, [
+            'output-xhtml' => true,
+            'show-body-only' => true,
+            'wrap' => 0
+        ]);
+
+        $processedHtml = str_replace(['__LT__', '__GT__'], ['&lt;', '&gt;'], $processedHtml);
+        return $processedHtml;
     }
 
     private function getFeatureReplacementString($node)
