@@ -303,19 +303,16 @@ class ConvertToQtiService
         $tags = $json['tags'];
         $itemReference = $json['reference'];
 
-        if (!empty($json['questions']) && (sizeof($features)>=1)) {
+        if (!empty($json['questions']) && !empty($features)) {
             $referenceArray = $this->getReferenceArray($json);
             foreach ($json['questions'] as $question) :
                 $question['content'] = $content;
                 $question['itemreference'] = $itemReference;
-                $featureReference = $this->getFeatureReference($question['reference'], $referenceArray);
-                if ($featureReference != "") {
-                    $question['feature'] = $this->getFeature($featureReference, $features);
-                } else {
-                    $question['feature'] = [];
-                }
+                $question['feature'] = $features;
+
                 if (in_array($question['data']['type'], LearnosityExportConstant::$supportedQuestionTypes)) {
                     $result = Converter::convertLearnosityToQtiItem($question);
+
                     if (!$result) {
                         $result = [
                             '',
@@ -379,7 +376,7 @@ class ConvertToQtiService
                 }
             }
         }
-        if (!empty($json['features']) && empty($json['questions'])) {
+        if (empty($json['questions']) && !empty($json['features'])) {
             foreach ($json['features'] as $feature) {
                 $feature['content'] = $content;
                 $feature['itemreference'] = $itemReference;
@@ -399,6 +396,8 @@ class ConvertToQtiService
                 }
             }
         }
+
+        $finalXml = $this->removeTabs($finalXml);
 
         return [
             'qti'  => $finalXml,
@@ -830,7 +829,12 @@ class ConvertToQtiService
                     foreach ($questionArray->questions as $questionKey => $questionValue) {
                         $valueArray = array();
                         foreach ($questionValue as $value) {
-                            $valueArray[] = $value->replacement;
+                            // Sometimes there's an error, and `replacement` doesn't exist.
+                            if (empty($value->replacement)) {
+                                $valueArray[] = $value->url;
+                            } else {
+                                $valueArray[] = ($this->isAbsoluteHttpUri($value->url)) ? $value->url : $value->replacement;
+                            }
                         }
                         $additionalFileInfoArray[$questionKey] = $valueArray;
                     }
@@ -840,7 +844,7 @@ class ConvertToQtiService
                         $valueArray = array();
                         foreach ($featureValue as $value) {
                             if (isset($value->replacement)) {
-                                $valueArray[] = $value->replacement;
+                                $valueArray[] = ($this->isAbsoluteHttpUri($value->url)) ? $value->url : $value->replacement;
                             }
                         }
                         $additionalFileInfoArray[$featureKey] = $valueArray;
@@ -889,6 +893,7 @@ class ConvertToQtiService
         }
         return $referenceArr;
     }
+
     private function getFeatureReference($questionReference, $referenceArray)
     {
         $featureReference = '';
@@ -902,6 +907,7 @@ class ConvertToQtiService
         }
         return $featureReference;
     }
+
     private function getFeature($featureReference, $features)
     {
         $featureArray = [];
@@ -911,5 +917,25 @@ class ConvertToQtiService
             }
         }
         return $featureArray;
+    }
+
+    /**
+     * Remove tabs from the generated XML if present.
+     * We cannot support JavaScript behaviour in the XML.
+     * So we remove the tabs and vertically stack their contents.
+     */
+    private function removeTabs($content)
+    {
+        return $content;
+        var_dump($content);die;
+    }
+
+    /**
+     * Match only URIs that start with "http://" or "https://"
+     * vs those that are relative
+     */
+    function isAbsoluteHttpUri($uri)
+    {
+        return preg_match('/^(https?):\/\//i', $uri);
     }
 }
