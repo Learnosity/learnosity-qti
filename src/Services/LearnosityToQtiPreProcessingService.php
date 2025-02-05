@@ -196,6 +196,33 @@ class LearnosityToQtiPreProcessingService
             $uTag->parentNode->replaceChild($spanTag, $uTag);
         }
 
+        // Remove all <meta> elements
+        $metaTags = $doc->getElementsByTagName('meta');
+        // Loop backwards to safely remove elements
+        for ($i = $metaTags->length - 1; $i >= 0; $i--) {
+            $metaTag = $metaTags->item($i);
+            $metaTag->parentNode->removeChild($metaTag);
+        }
+
+        // Remove all <link> elements
+        $linkTags = $doc->getElementsByTagName('link');
+        // Loop backwards to safely remove elements
+        for ($i = $linkTags->length - 1; $i >= 0; $i--) {
+            $linkTag = $linkTags->item($i);
+            $linkTag->parentNode->removeChild($linkTag);
+        }
+
+        // Find any <img> attributes that have a `px` suffix
+        foreach ($doc->getElementsByTagName('img') as $imgTag) {
+            // Remove "px" from width and height attributes
+            if ($imgTag->hasAttribute('width')) {
+                $imgTag->setAttribute('width', preg_replace('/px$/', '', $imgTag->getAttribute('width')));
+            }
+            if ($imgTag->hasAttribute('height')) {
+                $imgTag->setAttribute('height', preg_replace('/px$/', '', $imgTag->getAttribute('height')));
+            }
+        }
+
         // Remove empty paragraphs
         $paragraphs = $doc->getElementsByTagName('p');
         // Loop backwards to avoid skipping elements after removal
@@ -221,6 +248,20 @@ class LearnosityToQtiPreProcessingService
 
             // Remove the <font> tag itself
             $fontTag->parentNode->removeChild($fontTag);
+        }
+
+        // Look for elements with an `id` starting with a number and
+        // prepend an underscore
+        foreach ($doc->getElementsByTagName('*') as $element) {
+            if ($element->hasAttribute('id')) {
+                $idValue = $element->getAttribute('id');
+
+                // If the ID starts with a number, prepend an underscore (_)
+                if (preg_match('/^\d/', $idValue)) {
+                    $newId = '_' . $idValue;
+                    $element->setAttribute('id', $newId);
+                }
+            }
         }
 
         /***************** End processing the HTML ****************/
