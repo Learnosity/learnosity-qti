@@ -43,7 +43,8 @@ class QuestionWriter
                 if ($feature['data']['type'] == 'sharedpassage') {
                     $featureBuilder = new FeatureItemBuilder();
                     $featureHtml = $featureBuilder->build($feature);
-                    $featureBuilderArray[$question->get_reference()] = array($feature['reference'] => $featureHtml);
+                    if (empty($featureBuilderArray[$question->get_reference()])) $featureBuilderArray[$question->get_reference()] = [];
+                    $featureBuilderArray[$question->get_reference()][$feature['reference']] = $featureHtml;
                 } else {
                     $featureBuilderArray['features'] = $feature['reference'];
                 }

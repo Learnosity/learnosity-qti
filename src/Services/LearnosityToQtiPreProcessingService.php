@@ -45,6 +45,10 @@ class LearnosityToQtiPreProcessingService
                 $item = preg_replace('/<\/center>/', '', $item);
             }
 
+            if ($key === 'content') {
+                $item = $this->processContentPostProcessing($item);
+            }
+
             if ($key === 'template') {
                 // Look for `template` attributes and make sure they're wrapped in a block element as QTI expects
                 if (substr($item, 0, 3) !== '<p>' && substr($item, 0, 5) !== '<span' && !preg_match('/<table\b[^>]*>/i', $item)) {
@@ -64,23 +68,9 @@ class LearnosityToQtiPreProcessingService
         $html = new SimpleHtmlDom();
         $html->load($content);
 
-        // Replace <br> with <br />, <img ....> with <img />, etc
-        /** @var array $selfClosingTags ie. `img, br, input, meta, link, hr, base, embed, spacer` */
-        $selfClosingTags = implode(', ', array_keys($html->getSelfClosingTags()));
-        foreach ($html->find($selfClosingTags) as &$node) {
-            if (!strpos($node->outertext, '/>')) {
-                $node->outertext = rtrim($node->outertext, '>') . '/>';
-            }
-        }
-
         // Remove <center> </center>
         foreach ($html->find('center') as $centerTag) {
             $centerTag->outertext = $centerTag->innertext; // Replace <center> with its content
-        }
-
-        // Find and replace all <u> elements
-        foreach ($html->find('u') as $uTag) {
-            $uTag->outertext = '<span style="text-decoration:underline;">' . $uTag->innertext . '</span>';
         }
 
         foreach ($html->find('img') as &$node) {
@@ -286,6 +276,45 @@ class LearnosityToQtiPreProcessingService
         return $processedHtml;
     }
 
+    /**
+     * Do any necessary process on the API generated `content` string.
+     */
+    private function processContentPostProcessing($content)
+    {
+        if (empty($content)) return $content;
+
+        $doc = new \DOMDocument('1.0', 'UTF-8');
+        $doc->loadHTML($content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+        // Remove API tabs as they are unsupported. We keep any widgets.
+        $tabsParentDiv = null;
+        // Find <div class="tabs"> and keep its parent as the new outer div
+        foreach ($doc->getElementsByTagName('div') as $div) {
+            if ($div->getAttribute('class') === 'tabs') {
+                $tabsParentDiv = $div->parentNode;
+                break; // Stop after finding the first occurrence
+            }
+        }
+        if ($tabsParentDiv) {
+            // Find all <div class="learnosity-feature">
+            $widgets = [];
+            foreach ($tabsParentDiv->getElementsByTagName('div') as $featureDiv) {
+                if ($featureDiv->getAttribute('class') === 'learnosity-feature') {
+                    $widgets[] = $featureDiv;
+                }
+            }
+
+            $tabsParentDiv->removeChild($tabsParentDiv->firstChild);
+
+            // Append only the <div class="learnosity-feature"> elements inside the outer div
+            foreach ($widgets as $widget) {
+                $tabsParentDiv->appendChild($widget);
+            }
+        }
+
+        return $doc->saveHTML();
+    }
+
     private function getFeatureReplacementString($node)
     {
         // Process inline feature
@@ -313,12 +342,12 @@ class LearnosityToQtiPreProcessingService
                 return;
             } elseif ($type === 'sharedpassage') {
                 $flowCollection = new FlowCollection();
-                $div = $this->createDivForSharedPassage();
                 $object = new ObjectElement('sharedpassage/' . $featureReference . '.html', 'text/html');
                 $object->setLabel($featureReference);
-                $flowCollection->attach($object);
-                $div->setContent($flowCollection);
-                return QtiMarshallerUtil::marshallValidQti($div);
+                // $div = $this->createDivForSharedPassage();
+                // $flowCollection->attach($object);
+                // $div->setContent($flowCollection);
+                return QtiMarshallerUtil::marshallValidQti($object);
             } else {
                 throw new MappingException($type . 'feature not supported');
             }

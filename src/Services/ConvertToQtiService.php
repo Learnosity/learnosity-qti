@@ -397,7 +397,7 @@ class ConvertToQtiService
             }
         }
 
-        $finalXml = $this->removeTabs($finalXml);
+        // $finalXml = $this->removeTabs($finalXml);
 
         return [
             'qti'  => $finalXml,
@@ -926,7 +926,6 @@ class ConvertToQtiService
      */
     private function removeTabs($content)
     {
-        return $content;
         var_dump($content);die;
     }
 
