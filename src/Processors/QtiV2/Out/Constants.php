@@ -4,6 +4,8 @@ namespace LearnosityQti\Processors\QtiV2\Out;
 
 class Constants
 {
+    private static $inputPath;
+
     public static $supportedQuestionTypes = [
         'mcq',
         'shorttext',
@@ -40,6 +42,17 @@ class Constants
         'imageclozeassociationV2',
     ];
 
+
+    public static function setInputPath($value)
+    {
+        self::$inputPath = $value;
+    }
+
+    public static function getInputPath()
+    {
+        return self::$inputPath;
+    }
+
     const RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT = 'http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct';
     const RESPONSE_PROCESSING_TEMPLATE_MAP_RESPONSE = 'http://www.imsglobal.org/question/qti_v2p1/rptemplates/map_response';
     const IMSQTI_TOOLNAME = 'Learnosity QTI';
@@ -52,7 +65,7 @@ class Constants
     const SCHEMA_VERSION = '2.1';
     const DIRNAME_VIDEO = 'video';
     const DIRNAME_AUDIO = 'audio';
-    const DIRNAME_IMAGES = 'images';
+    const DIRNAME_IMAGES = 'assets';
     const DIRNAME_ITEMS = 'items';
     const SHARED_PASSAGE_DIV_CLASS = 'col-xs-6';
     const SHARED_PASSAGE_FOLDER_NAME = 'sharedpassage';

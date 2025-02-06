@@ -72,6 +72,8 @@ class ConvertToQtiService
         $this->logPath        = 'log';
         $this->rawPath        = 'raw';
         $this->itemReferences = array();
+
+        LearnosityExportConstant::setInputPath($this->getInputPath() . '/');
     }
 
     // The object is created from within the class itself
@@ -396,8 +398,6 @@ class ConvertToQtiService
                 }
             }
         }
-
-        // $finalXml = $this->removeTabs($finalXml);
 
         return [
             'qti'  => $finalXml,
@@ -917,16 +917,6 @@ class ConvertToQtiService
             }
         }
         return $featureArray;
-    }
-
-    /**
-     * Remove tabs from the generated XML if present.
-     * We cannot support JavaScript behaviour in the XML.
-     * So we remove the tabs and vertically stack their contents.
-     */
-    private function removeTabs($content)
-    {
-        var_dump($content);die;
     }
 
     /**
