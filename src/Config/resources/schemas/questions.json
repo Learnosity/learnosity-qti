@@ -3472,10 +3472,7 @@
                                         },
                                         "count": {
                                             "dependency": "ui_style",
-                                            "product": [
-                                                "column_count",
-                                                "row_count"
-                                            ]
+                                            "product": ["column_count", "row_count"]
                                         },
                                         "description": "A 3 dimensional array that consists of: An array of different valid responses (in most cases there will only be one valid response), each valid response is an array that contains an entry for each cell. each cell is an array of response index's. The response index is based on the index value in the possible_responses attribute.",
                                         "name": "Value",
@@ -3515,10 +3512,7 @@
                                             },
                                             "count": {
                                                 "dependency": "ui_style",
-                                                "product": [
-                                                    "column_count",
-                                                    "row_count"
-                                                ]
+                                                "product": ["column_count", "row_count"]
                                             },
                                             "description": "",
                                             "name": "Value",
@@ -5520,9 +5514,7 @@
                                                                                 {
                                                                                     "attributes": {
                                                                                         "setThousandsSeparator": {
-                                                                                            "default": [
-                                                                                                ","
-                                                                                            ],
+                                                                                            "default": [","],
                                                                                             "name": "Thousands separator",
                                                                                             "description": "Allows author to set allowed thousands separators",
                                                                                             "required": true,
@@ -5619,9 +5611,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -5712,9 +5702,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -5876,9 +5864,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -5938,9 +5924,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -5994,9 +5978,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -6050,9 +6032,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -6115,9 +6095,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -6348,9 +6326,7 @@
                                                                                     {
                                                                                         "attributes": {
                                                                                             "setThousandsSeparator": {
-                                                                                                "default": [
-                                                                                                    ","
-                                                                                                ],
+                                                                                                "default": [","],
                                                                                                 "description": "Allows author to set allowed thousands separators",
                                                                                                 "name": "Thousands separator",
                                                                                                 "required": true,
@@ -6541,9 +6517,7 @@
                                                                                 {
                                                                                     "attributes": {
                                                                                         "setThousandsSeparator": {
-                                                                                            "default": [
-                                                                                                ","
-                                                                                            ],
+                                                                                            "default": [","],
                                                                                             "description": "Allows author to set allowed thousands separators",
                                                                                             "name": "Thousands separator",
                                                                                             "required": true,
@@ -6634,9 +6608,7 @@
                                                                                 {
                                                                                     "attributes": {
                                                                                         "setThousandsSeparator": {
-                                                                                            "default": [
-                                                                                                ","
-                                                                                            ],
+                                                                                            "default": [","],
                                                                                             "description": "Allows author to set allowed thousands separators",
                                                                                             "name": "Thousands separator",
                                                                                             "required": true,
@@ -6704,9 +6676,7 @@
                                                                                 {
                                                                                     "attributes": {
                                                                                         "setThousandsSeparator": {
-                                                                                            "default": [
-                                                                                                ","
-                                                                                            ],
+                                                                                            "default": [","],
                                                                                             "description": "Allows author to set allowed thousands separators",
                                                                                             "name": "Thousands separator",
                                                                                             "required": true,
@@ -6766,9 +6736,7 @@
                                                                                 {
                                                                                     "attributes": {
                                                                                         "setThousandsSeparator": {
-                                                                                            "default": [
-                                                                                                ","
-                                                                                            ],
+                                                                                            "default": [","],
                                                                                             "description": "Allows author to set allowed thousands separators",
                                                                                             "name": "Thousands separator",
                                                                                             "required": true,
@@ -6822,9 +6790,7 @@
                                                                                 {
                                                                                     "attributes": {
                                                                                         "setThousandsSeparator": {
-                                                                                            "default": [
-                                                                                                ","
-                                                                                            ],
+                                                                                            "default": [","],
                                                                                             "description": "Allows author to set allowed thousands separators",
                                                                                             "name": "Thousands separator",
                                                                                             "required": true,
@@ -6878,9 +6844,7 @@
                                                                                 {
                                                                                     "attributes": {
                                                                                         "setThousandsSeparator": {
-                                                                                            "default": [
-                                                                                                ","
-                                                                                            ],
+                                                                                            "default": [","],
                                                                                             "description": "Allows author to set allowed thousands separators",
                                                                                             "name": "Thousands separator",
                                                                                             "required": true,
@@ -6943,9 +6907,7 @@
                                                                                 {
                                                                                     "attributes": {
                                                                                         "setThousandsSeparator": {
-                                                                                            "default": [
-                                                                                                ","
-                                                                                            ],
+                                                                                            "default": [","],
                                                                                             "description": "Allows author to set allowed thousands separators",
                                                                                             "name": "Thousands separator",
                                                                                             "required": true,
@@ -7207,10 +7169,7 @@
                         "group": "advanced"
                     },
                     "symbols": {
-                        "default": [
-                            "basic",
-                            "qwerty"
-                        ],
+                        "default": ["basic", "qwerty"],
                         "description": "An array containing either strings or a nested objects of symbol definitions.",
                         "name": "Symbol group(s)",
                         "required": false,
@@ -8178,10 +8137,7 @@
                         "group": "advanced"
                     },
                     "symbols": {
-                        "default": [
-                            "basic",
-                            "qwerty"
-                        ],
+                        "default": ["basic", "qwerty"],
                         "description": "An array containing either strings or a nested objects of symbol definitions.",
                         "name": "Symbol group(s)",
                         "required": false,
@@ -8584,9 +8540,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -8763,9 +8717,7 @@
                                                                         {
                                                                             "attributes": {
                                                                                 "setThousandsSeparator": {
-                                                                                    "default": [
-                                                                                        ","
-                                                                                    ],
+                                                                                    "default": [","],
                                                                                     "description": "Allows author to set allowed thousands separators",
                                                                                     "name": "Thousands separator",
                                                                                     "required": true,
@@ -8849,9 +8801,7 @@
                                                                         {
                                                                             "attributes": {
                                                                                 "setThousandsSeparator": {
-                                                                                    "default": [
-                                                                                        ","
-                                                                                    ],
+                                                                                    "default": [","],
                                                                                     "description": "Allows author to set allowed thousands separators",
                                                                                     "name": "Thousands separator",
                                                                                     "required": true,
@@ -8912,9 +8862,7 @@
                                                                         {
                                                                             "attributes": {
                                                                                 "setThousandsSeparator": {
-                                                                                    "default": [
-                                                                                        ","
-                                                                                    ],
+                                                                                    "default": [","],
                                                                                     "description": "Allows author to set allowed thousands separators",
                                                                                     "name": "Thousands separator",
                                                                                     "required": true,
@@ -8974,9 +8922,7 @@
                                                                         {
                                                                             "attributes": {
                                                                                 "setThousandsSeparator": {
-                                                                                    "default": [
-                                                                                        ","
-                                                                                    ],
+                                                                                    "default": [","],
                                                                                     "description": "Allows author to set allowed thousands separators",
                                                                                     "name": "Thousands separator",
                                                                                     "required": true,
@@ -9030,9 +8976,7 @@
                                                                         {
                                                                             "attributes": {
                                                                                 "setThousandsSeparator": {
-                                                                                    "default": [
-                                                                                        ","
-                                                                                    ],
+                                                                                    "default": [","],
                                                                                     "description": "Allows author to set allowed thousands separators",
                                                                                     "name": "Thousands separator",
                                                                                     "required": true,
@@ -9086,9 +9030,7 @@
                                                                         {
                                                                             "attributes": {
                                                                                 "setThousandsSeparator": {
-                                                                                    "default": [
-                                                                                        ","
-                                                                                    ],
+                                                                                    "default": [","],
                                                                                     "description": "Allows author to set allowed thousands separators",
                                                                                     "name": "Thousands separator",
                                                                                     "required": true,
@@ -9151,9 +9093,7 @@
                                                                         {
                                                                             "attributes": {
                                                                                 "setThousandsSeparator": {
-                                                                                    "default": [
-                                                                                        ","
-                                                                                    ],
+                                                                                    "default": [","],
                                                                                     "description": "Allows author to set allowed thousands separators",
                                                                                     "name": "Thousands separator",
                                                                                     "required": true,
@@ -9363,9 +9303,7 @@
                                                                                 {
                                                                                     "attributes": {
                                                                                         "setThousandsSeparator": {
-                                                                                            "default": [
-                                                                                                ","
-                                                                                            ],
+                                                                                            "default": [","],
                                                                                             "description": "Allows author to set allowed thousands separators",
                                                                                             "name": "Thousands separator",
                                                                                             "required": true,
@@ -9542,9 +9480,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -9628,9 +9564,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -9691,9 +9625,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -9753,9 +9685,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -9809,9 +9739,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -9865,9 +9793,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -9930,9 +9856,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -10548,9 +10472,7 @@
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
                                                                                         "name": "Thousands separator",
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "required": true,
                                                                                         "type": "array",
@@ -10740,9 +10662,7 @@
                                                                         {
                                                                             "attributes": {
                                                                                 "setThousandsSeparator": {
-                                                                                    "default": [
-                                                                                        ","
-                                                                                    ],
+                                                                                    "default": [","],
                                                                                     "description": "Allows author to set allowed thousands separators",
                                                                                     "name": "Thousands separator",
                                                                                     "required": true,
@@ -10833,9 +10753,7 @@
                                                                         {
                                                                             "attributes": {
                                                                                 "setThousandsSeparator": {
-                                                                                    "default": [
-                                                                                        ","
-                                                                                    ],
+                                                                                    "default": [","],
                                                                                     "description": "Allows author to set allowed thousands separators",
                                                                                     "name": "Thousands separator",
                                                                                     "required": true,
@@ -10903,9 +10821,7 @@
                                                                         {
                                                                             "attributes": {
                                                                                 "setThousandsSeparator": {
-                                                                                    "default": [
-                                                                                        ","
-                                                                                    ],
+                                                                                    "default": [","],
                                                                                     "description": "Allows author to set allowed thousands separators",
                                                                                     "name": "Thousands separator",
                                                                                     "required": true,
@@ -10965,9 +10881,7 @@
                                                                         {
                                                                             "attributes": {
                                                                                 "setThousandsSeparator": {
-                                                                                    "default": [
-                                                                                        ","
-                                                                                    ],
+                                                                                    "default": [","],
                                                                                     "description": "Allows author to set allowed thousands separators",
                                                                                     "name": "Thousands separator",
                                                                                     "required": true,
@@ -11021,9 +10935,7 @@
                                                                         {
                                                                             "attributes": {
                                                                                 "setThousandsSeparator": {
-                                                                                    "default": [
-                                                                                        ","
-                                                                                    ],
+                                                                                    "default": [","],
                                                                                     "description": "Allows author to set allowed thousands separators",
                                                                                     "name": "Thousands separator",
                                                                                     "required": true,
@@ -11077,9 +10989,7 @@
                                                                         {
                                                                             "attributes": {
                                                                                 "setThousandsSeparator": {
-                                                                                    "default": [
-                                                                                        ","
-                                                                                    ],
+                                                                                    "default": [","],
                                                                                     "description": "Allows author to set allowed thousands separators",
                                                                                     "name": "Thousands separator",
                                                                                     "required": true,
@@ -11142,9 +11052,7 @@
                                                                         {
                                                                             "attributes": {
                                                                                 "setThousandsSeparator": {
-                                                                                    "default": [
-                                                                                        ","
-                                                                                    ],
+                                                                                    "default": [","],
                                                                                     "description": "Allows author to set allowed thousands separators",
                                                                                     "name": "Thousands separator",
                                                                                     "required": true,
@@ -11369,9 +11277,7 @@
                                                                                 {
                                                                                     "attributes": {
                                                                                         "setThousandsSeparator": {
-                                                                                            "default": [
-                                                                                                ","
-                                                                                            ],
+                                                                                            "default": [","],
                                                                                             "description": "Allows author to set allowed thousands separators",
                                                                                             "name": "Thousands separator",
                                                                                             "required": true,
@@ -11562,9 +11468,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -11655,9 +11559,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -11725,9 +11627,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -11787,9 +11687,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -11843,9 +11741,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -11899,9 +11795,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -11964,9 +11858,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -12169,10 +12061,7 @@
                         "group": "advanced"
                     },
                     "symbols": {
-                        "default": [
-                            "basic",
-                            "qwerty"
-                        ],
+                        "default": ["basic", "qwerty"],
                         "description": "An array containing either strings or a nested objects of symbol definitions.",
                         "name": "Symbol group(s)",
                         "required": false,
@@ -12647,9 +12536,7 @@
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
                                                                                         "name": "Thousands separator",
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "required": true,
                                                                                         "type": "array",
@@ -12839,9 +12726,7 @@
                                                                         {
                                                                             "attributes": {
                                                                                 "setThousandsSeparator": {
-                                                                                    "default": [
-                                                                                        ","
-                                                                                    ],
+                                                                                    "default": [","],
                                                                                     "description": "Allows author to set allowed thousands separators",
                                                                                     "name": "Thousands separator",
                                                                                     "required": true,
@@ -12932,9 +12817,7 @@
                                                                         {
                                                                             "attributes": {
                                                                                 "setThousandsSeparator": {
-                                                                                    "default": [
-                                                                                        ","
-                                                                                    ],
+                                                                                    "default": [","],
                                                                                     "description": "Allows author to set allowed thousands separators",
                                                                                     "name": "Thousands separator",
                                                                                     "required": true,
@@ -13002,9 +12885,7 @@
                                                                         {
                                                                             "attributes": {
                                                                                 "setThousandsSeparator": {
-                                                                                    "default": [
-                                                                                        ","
-                                                                                    ],
+                                                                                    "default": [","],
                                                                                     "description": "Allows author to set allowed thousands separators",
                                                                                     "name": "Thousands separator",
                                                                                     "required": true,
@@ -13064,9 +12945,7 @@
                                                                         {
                                                                             "attributes": {
                                                                                 "setThousandsSeparator": {
-                                                                                    "default": [
-                                                                                        ","
-                                                                                    ],
+                                                                                    "default": [","],
                                                                                     "description": "Allows author to set allowed thousands separators",
                                                                                     "name": "Thousands separator",
                                                                                     "required": true,
@@ -13120,9 +12999,7 @@
                                                                         {
                                                                             "attributes": {
                                                                                 "setThousandsSeparator": {
-                                                                                    "default": [
-                                                                                        ","
-                                                                                    ],
+                                                                                    "default": [","],
                                                                                     "description": "Allows author to set allowed thousands separators",
                                                                                     "name": "Thousands separator",
                                                                                     "required": true,
@@ -13176,9 +13053,7 @@
                                                                         {
                                                                             "attributes": {
                                                                                 "setThousandsSeparator": {
-                                                                                    "default": [
-                                                                                        ","
-                                                                                    ],
+                                                                                    "default": [","],
                                                                                     "description": "Allows author to set allowed thousands separators",
                                                                                     "name": "Thousands separator",
                                                                                     "required": true,
@@ -13241,9 +13116,7 @@
                                                                         {
                                                                             "attributes": {
                                                                                 "setThousandsSeparator": {
-                                                                                    "default": [
-                                                                                        ","
-                                                                                    ],
+                                                                                    "default": [","],
                                                                                     "description": "Allows author to set allowed thousands separators",
                                                                                     "name": "Thousands separator",
                                                                                     "required": true,
@@ -13468,9 +13341,7 @@
                                                                                 {
                                                                                     "attributes": {
                                                                                         "setThousandsSeparator": {
-                                                                                            "default": [
-                                                                                                ","
-                                                                                            ],
+                                                                                            "default": [","],
                                                                                             "description": "Allows author to set allowed thousands separators",
                                                                                             "name": "Thousands separator",
                                                                                             "required": true,
@@ -13661,9 +13532,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -13754,9 +13623,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -13824,9 +13691,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -13886,9 +13751,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -13942,9 +13805,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -13998,9 +13859,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -14063,9 +13922,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -14268,10 +14125,7 @@
                         "group": "advanced"
                     },
                     "symbols": {
-                        "default": [
-                            "basic",
-                            "qwerty"
-                        ],
+                        "default": ["basic", "qwerty"],
                         "description": "An array containing either strings or a nested objects of symbol definitions.",
                         "name": "Symbol group(s)",
                         "required": false,
@@ -15170,11 +15024,7 @@
                         }
                     },
                     "symbols": {
-                        "default": [
-                            "chemistry",
-                            "basic",
-                            "qwerty"
-                        ],
+                        "default": ["chemistry", "basic", "qwerty"],
                         "description": "An array containing either strings or a nested objects of symbol definitions.",
                         "name": "Symbol group(s)",
                         "required": false,
@@ -15449,12 +15299,7 @@
                             },
                             "text_formatting_options": {
                                 "type": "array",
-                                "default": [
-                                    "bold",
-                                    "italic",
-                                    "underline",
-                                    "unorderedList"
-                                ],
+                                "default": ["bold", "italic", "underline", "unorderedList"],
                                 "description": "An array containing strings of text formatting options to make available.",
                                 "name": "Text formatting options",
                                 "items": {
@@ -15601,10 +15446,7 @@
                         "group": "advanced"
                     },
                     "symbols": {
-                        "default": [
-                            "basic",
-                            "qwerty"
-                        ],
+                        "default": ["basic", "qwerty"],
                         "description": "An array containing either strings or a nested objects of symbol definitions.",
                         "name": "Symbol group(s)",
                         "required": false,
@@ -15827,12 +15669,7 @@
                             },
                             "text_formatting_options": {
                                 "type": "array",
-                                "default": [
-                                    "bold",
-                                    "italic",
-                                    "underline",
-                                    "unorderedList"
-                                ],
+                                "default": ["bold", "italic", "underline", "unorderedList"],
                                 "description": "An array containing strings of text formatting options to make available.",
                                 "name": "Text formatting options",
                                 "items": {
@@ -15979,10 +15816,7 @@
                         "group": "advanced"
                     },
                     "symbols": {
-                        "default": [
-                            "basic",
-                            "qwerty"
-                        ],
+                        "default": ["basic", "qwerty"],
                         "description": "An array containing either strings or a nested objects of symbol definitions.",
                         "name": "Symbol group(s)",
                         "required": false,
@@ -16705,11 +16539,7 @@
                         "type": "object",
                         "attributes": {
                             "tools": {
-                                "default": [
-                                    "move",
-                                    "point",
-                                    "line"
-                                ],
+                                "default": ["move", "point", "line"],
                                 "description": "An array containing either strings or a nested array of strings, defining the buttons or dropdown groups of tools that are available in the toolbar for this question.",
                                 "name": "Tools",
                                 "required": true,
@@ -16741,11 +16571,7 @@
                                 "count": {
                                     "maximum": 4
                                 },
-                                "default": [
-                                    "undo",
-                                    "redo",
-                                    "reset"
-                                ],
+                                "default": ["undo", "redo", "reset"],
                                 "description": "Determines options a user has for controlling graph elements.",
                                 "name": "Controls",
                                 "items": {
@@ -16844,15 +16670,7 @@
                         "element": "questionGraphplotting",
                         "name": "Background shapes",
                         "required": false,
-                        "white_list": [
-                            "annotation",
-                            "axis_x",
-                            "axis_y",
-                            "canvas",
-                            "draw_zero",
-                            "grid",
-                            "ui_style"
-                        ],
+                        "white_list": ["annotation", "axis_x", "axis_y", "canvas", "draw_zero", "grid", "ui_style"],
                         "group": "advanced"
                     }
                 },
@@ -20121,9 +19939,7 @@
                                                                                 {
                                                                                     "attributes": {
                                                                                         "setThousandsSeparator": {
-                                                                                            "default": [
-                                                                                                ","
-                                                                                            ],
+                                                                                            "default": [","],
                                                                                             "name": "Thousands separator",
                                                                                             "description": "Allows author to set allowed thousands separators",
                                                                                             "required": true,
@@ -20220,9 +20036,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -20313,9 +20127,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -20477,9 +20289,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -20539,9 +20349,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -20595,9 +20403,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -20651,9 +20457,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -20716,9 +20520,7 @@
                                                                             {
                                                                                 "attributes": {
                                                                                     "setThousandsSeparator": {
-                                                                                        "default": [
-                                                                                            ","
-                                                                                        ],
+                                                                                        "default": [","],
                                                                                         "description": "Allows author to set allowed thousands separators",
                                                                                         "name": "Thousands separator",
                                                                                         "required": true,
@@ -20949,9 +20751,7 @@
                                                                                     {
                                                                                         "attributes": {
                                                                                             "setThousandsSeparator": {
-                                                                                                "default": [
-                                                                                                    ","
-                                                                                                ],
+                                                                                                "default": [","],
                                                                                                 "description": "Allows author to set allowed thousands separators",
                                                                                                 "name": "Thousands separator",
                                                                                                 "required": true,
@@ -21142,9 +20942,7 @@
                                                                                 {
                                                                                     "attributes": {
                                                                                         "setThousandsSeparator": {
-                                                                                            "default": [
-                                                                                                ","
-                                                                                            ],
+                                                                                            "default": [","],
                                                                                             "description": "Allows author to set allowed thousands separators",
                                                                                             "name": "Thousands separator",
                                                                                             "required": true,
@@ -21235,9 +21033,7 @@
                                                                                 {
                                                                                     "attributes": {
                                                                                         "setThousandsSeparator": {
-                                                                                            "default": [
-                                                                                                ","
-                                                                                            ],
+                                                                                            "default": [","],
                                                                                             "description": "Allows author to set allowed thousands separators",
                                                                                             "name": "Thousands separator",
                                                                                             "required": true,
@@ -21305,9 +21101,7 @@
                                                                                 {
                                                                                     "attributes": {
                                                                                         "setThousandsSeparator": {
-                                                                                            "default": [
-                                                                                                ","
-                                                                                            ],
+                                                                                            "default": [","],
                                                                                             "description": "Allows author to set allowed thousands separators",
                                                                                             "name": "Thousands separator",
                                                                                             "required": true,
@@ -21367,9 +21161,7 @@
                                                                                 {
                                                                                     "attributes": {
                                                                                         "setThousandsSeparator": {
-                                                                                            "default": [
-                                                                                                ","
-                                                                                            ],
+                                                                                            "default": [","],
                                                                                             "description": "Allows author to set allowed thousands separators",
                                                                                             "name": "Thousands separator",
                                                                                             "required": true,
@@ -21423,9 +21215,7 @@
                                                                                 {
                                                                                     "attributes": {
                                                                                         "setThousandsSeparator": {
-                                                                                            "default": [
-                                                                                                ","
-                                                                                            ],
+                                                                                            "default": [","],
                                                                                             "description": "Allows author to set allowed thousands separators",
                                                                                             "name": "Thousands separator",
                                                                                             "required": true,
@@ -21479,9 +21269,7 @@
                                                                                 {
                                                                                     "attributes": {
                                                                                         "setThousandsSeparator": {
-                                                                                            "default": [
-                                                                                                ","
-                                                                                            ],
+                                                                                            "default": [","],
                                                                                             "description": "Allows author to set allowed thousands separators",
                                                                                             "name": "Thousands separator",
                                                                                             "required": true,
@@ -21544,9 +21332,7 @@
                                                                                 {
                                                                                     "attributes": {
                                                                                         "setThousandsSeparator": {
-                                                                                            "default": [
-                                                                                                ","
-                                                                                            ],
+                                                                                            "default": [","],
                                                                                             "description": "Allows author to set allowed thousands separators",
                                                                                             "name": "Thousands separator",
                                                                                             "required": true,
@@ -21808,10 +21594,7 @@
                         "group": "advanced"
                     },
                     "symbols": {
-                        "default": [
-                            "basic",
-                            "qwerty"
-                        ],
+                        "default": ["basic", "qwerty"],
                         "description": "An array containing either strings or a nested objects of symbol definitions.",
                         "name": "Symbol group(s)",
                         "required": false,
@@ -22816,10 +22599,7 @@
                         "group": "advanced"
                     },
                     "symbols": {
-                        "default": [
-                            "basic",
-                            "qwerty"
-                        ],
+                        "default": ["basic", "qwerty"],
                         "description": "An array containing either strings or a nested objects of symbol definitions.",
                         "name": "Symbol group(s)",
                         "required": false,
@@ -24018,14 +23798,7 @@
                     },
                     "formatting_options": {
                         "type": "array",
-                        "default": [
-                            "bold",
-                            "italic",
-                            "underline",
-                            "|",
-                            "unorderedList",
-                            "orderedList"
-                        ],
+                        "default": ["bold", "italic", "underline", "|", "unorderedList", "orderedList"],
                         "description": "An array containing strings of text formatting options to make available.",
                         "name": "Text formatting options",
                         "group": "formatting",
@@ -24405,12 +24178,7 @@
                     },
                     "formatting_options": {
                         "type": "array",
-                        "default": [
-                            "bold",
-                            "italic",
-                            "underline",
-                            "unorderedList"
-                        ],
+                        "default": ["bold", "italic", "underline", "unorderedList"],
                         "description": "An array containing strings of text formatting options to make available.",
                         "name": "Text formatting options",
                         "group": "formatting",
@@ -25981,12 +25749,7 @@
                                         "name": "Value",
                                         "required": true,
                                         "type": "questionOrderlist",
-                                        "white_list": [
-                                            "list",
-                                            "ui_style",
-                                            "is_math",
-                                            "math_renderer"
-                                        ]
+                                        "white_list": ["list", "ui_style", "is_math", "math_renderer"]
                                     }
                                 },
                                 "description": "An object containing the valid response score and value.",
@@ -26011,12 +25774,7 @@
                                             "name": "Value",
                                             "required": true,
                                             "type": "questionOrderlist",
-                                            "white_list": [
-                                                "list",
-                                                "ui_style",
-                                                "is_math",
-                                                "math_renderer"
-                                            ]
+                                            "white_list": ["list", "ui_style", "is_math", "math_renderer"]
                                         }
                                     },
                                     "required": false,
@@ -26972,9 +26730,7 @@
                                         "required": true,
                                         "type": "questionOrderlist",
                                         "question_type": "orderlist",
-                                        "white_list": [
-                                            "list"
-                                        ]
+                                        "white_list": ["list"]
                                     }
                                 },
                                 "description": "An object containing the valid response score and value.",
@@ -27000,9 +26756,7 @@
                                             "required": true,
                                             "type": "questionOrderlist",
                                             "question_type": "orderlist",
-                                            "white_list": [
-                                                "list"
-                                            ]
+                                            "white_list": ["list"]
                                         }
                                     },
                                     "required": false,
@@ -27540,9 +27294,7 @@
                                         "type": "number"
                                     },
                                     "value": {
-                                        "alert": [
-                                            "tokenization"
-                                        ],
+                                        "alert": ["tokenization"],
                                         "description": "An array contains the index of valid token",
                                         "name": "Value",
                                         "required": true,
@@ -27567,9 +27319,7 @@
                                             "type": "number"
                                         },
                                         "value": {
-                                            "alert": [
-                                                "tokenization"
-                                            ],
+                                            "alert": ["tokenization"],
                                             "description": "An array contains the index of valid token",
                                             "name": "Value",
                                             "required": true,
@@ -28726,12 +28476,7 @@
                     "attribute_key": "player",
                     "conditions": [
                         {
-                            "value": [
-                                "block",
-                                "button",
-                                "minimal",
-                                "bar"
-                            ],
+                            "value": ["block", "button", "minimal", "bar"],
                             "attributes": {
                                 "ui_style": {
                                     "type": "object",
@@ -28848,10 +28593,7 @@
                             }
                         },
                         {
-                            "value": [
-                                "text",
-                                "image"
-                            ],
+                            "value": ["text", "image"],
                             "attributes": {
                                 "title": {
                                     "type": "string",
@@ -29567,10 +29309,7 @@
                             }
                         },
                         {
-                            "value": [
-                                "youtube",
-                                "vimeo"
-                            ],
+                            "value": ["youtube", "vimeo"],
                             "attributes": {
                                 "src": {
                                     "type": "string",

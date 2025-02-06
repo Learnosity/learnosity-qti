@@ -32,19 +32,19 @@ class {{ className }} {% if baseClass %}extends {{ baseClass }} {% endif %}
 
     {% for fieldName, field in fields %}
 /**
-    * Get {% if field.name %}{{ field.name }}{% else %}{{ fieldName }}{% endif %} \
-    * {% if field.description %}{{ field.description|wordwrap(120, "\n\t") }}{% endif %} \
-    * @return {% if field.fieldType %}{{ field.fieldType }} {% else %}{{ field.type }} {% endif %}${{ fieldName }}{% if field.options %} ie. {{ self.printFieldOptions(field.options) }} {% endif %} \
-    */
+     * Get {% if field.name %}{{ field.name }}{% else %}{{ fieldName }}{% endif %} \
+     * {% if field.description %}{{ field.description|wordwrap(120, "\n\t * ") }}{% endif %} \
+     * @return {% if field.fieldType %}{{ field.fieldType }} {% else %}{{ field.type }} {% endif %}${{ fieldName }}{% if field.options %} ie. {{ self.printFieldOptions(field.options) }} {% endif %} \
+     */
     public function get_{{ fieldName }}() {
         return $this->{{ fieldName }};
     }
 
     /**
-    * Set {% if field.name %}{{ field.name }}{% else %}{{ fieldName }}{% endif %} \
-    * {% if field.description %}{{ field.description|wordwrap(120, "\n\t")  }}{% endif %} \
-    * @param {% if field.fieldType %}{{ field.fieldType }} {% else %}{{ field.type }} {% endif %}${{ fieldName }}{% if field.options %} ie. {{ self.printFieldOptions(field.options) }} {% endif %} \
-    */
+     * Set {% if field.name %}{{ field.name }}{% else %}{{ fieldName }}{% endif %} \
+     * {% if field.description %}{{ field.description|wordwrap(120, "\n\t * ")  }}{% endif %} \
+     * @param {% if field.fieldType %}{{ field.fieldType }} {% else %}{{ field.type }} {% endif %}${{ fieldName }}{% if field.options %} ie. {{ self.printFieldOptions(field.options) }} {% endif %} \
+     */
     public function set_{{ fieldName }} ({% if field.fieldType %}{{ field.fieldType }} {% endif %}${{ fieldName }}) {
         $this->{{ fieldName }} = ${{ fieldName}};
     }
