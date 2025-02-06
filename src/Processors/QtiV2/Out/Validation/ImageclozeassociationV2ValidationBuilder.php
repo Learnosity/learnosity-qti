@@ -37,7 +37,7 @@ class ImageclozeassociationV2ValidationBuilder extends AbstractQuestionValidatio
         $validation_values = $validation->get_valid_response()->get_value();
         $validationValues = [];
         foreach ($validation_values as $validvalue):
-            $validationValues[] = $validvalue[0];
+            $validationValues[] = $validvalue[0] ?? '';
         endforeach;
         $validationScore = floatval($validation->get_valid_response()->get_score());
         $scoringType = $validation->get_scoring_type();
@@ -56,6 +56,7 @@ class ImageclozeassociationV2ValidationBuilder extends AbstractQuestionValidatio
                     $first = ImageclozeassociationV2Mapper::GAPIMG_IDENTIFIER_PREFIX . $this->possibleResponsesMap[$r];
                     $second = ImageclozeassociationV2Mapper::ASSOCIABLEHOTSPOT_IDENTIFIER_PREFIX . $index;
                     $values->attach(new Value(new QtiDirectedPair($first, $second)));
+                    $score = $validationScore;
                     if ($scoringType === 'partialMatchV2') {
                         $score = $validationScore / count($validationValues);
                     }
