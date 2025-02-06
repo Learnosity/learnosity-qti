@@ -6,6 +6,7 @@ use LearnosityQti\Entities\BaseQuestionType;
 use LearnosityQti\Entities\QuestionTypes\imageclozeassociationV2;
 use LearnosityQti\Entities\QuestionTypes\imageclozeassociationV2_image;
 use LearnosityQti\Exceptions\MappingException;
+use LearnosityQti\Processors\QtiV2\Out\Constants as LearnosityExportConstant;
 use LearnosityQti\Processors\QtiV2\Out\Validation\ImageclozeassociationV2ValidationBuilder;
 use LearnosityQti\Services\ConvertToQtiService;
 use LearnosityQti\Utils\CurlUtil;
@@ -102,10 +103,21 @@ class ImageclozeassociationV2Mapper extends AbstractQuestionTypeMapper
             if (count($img) === 1) {
                 // TODO: Validation these attributes exists
                 $src = $img[0]->src;
-                $imagesize = getimagesize(CurlUtil::prepareUrlForCurl($src));
-                $gapImageObject = new ObjectElement($src, $imagesize['mime']);
-                $gapImageObject->setWidth($imagesize[0]);
-                $gapImageObject->setHeight($imagesize[1]);
+                $extension = pathinfo($src, PATHINFO_EXTENSION);
+
+                if ($extension === 'svg') {
+                    $width = $img[0]->width;
+                    $height = $img[0]->height;
+                    $gapImageObject = new ObjectElement($src, 'image/svg+xml');
+                    $gapImageObject->setWidth($width);
+                    $gapImageObject->setHeight($height);
+                } else {
+                    $imagesize = getimagesize(urldecode(CurlUtil::prepareUrlForCurl(LearnosityExportConstant::getInputPath() . $src)));
+                    $gapImageObject = new ObjectElement($src, $imagesize['mime']);
+                    $gapImageObject->setWidth($imagesize[0]);
+                    $gapImageObject->setHeight($imagesize[1]);
+                }
+
                 // No `img` assuming its all text
             } elseif (count($img) === 0) {
                 $gapImageObject = $this->convertTextToObjectWithBase64ImageString($possibleResponse);
@@ -139,7 +151,9 @@ class ImageclozeassociationV2Mapper extends AbstractQuestionTypeMapper
 
     private function convertTextToObjectWithBase64ImageString($text)
     {
-        $string = $text;
+        // Not idea, but if we have an empty string this will fail. Instead,
+        // we generate an empty image.
+        $string = $text || ' ';
         $font = 3;
         $width  = ImageFontWidth($font) * strlen($string);
         $height = ImageFontHeight($font);

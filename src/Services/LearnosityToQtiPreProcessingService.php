@@ -16,16 +16,21 @@ use LearnosityQti\Processors\QtiV2\Out\Constants as LearnosityExportConstant;
 class LearnosityToQtiPreProcessingService
 {
     private $widgets = [];
+    private $inputPath = '';
 
     public function __construct(array $widgets = [])
     {
         $this->widgets = array_column($widgets, null, 'reference');
     }
 
-    public function processJson(array $json)
+    public function processJson(array $json, $inputPath = '')
     {
+        if (!empty($inputPath)) {
+            $this->inputPath = $inputPath;
+        }
+
         array_walk_recursive($json, function (&$item, $key) {
-            $propertiesExtraProcessing = ['stimulus', 'label', 'distractor_rationale'];
+            $propertiesExtraProcessing = ['stimulus', 'label', 'distractor_rationale', 'template'];
             if (is_string($item)) {
                 // Replace nbsp with '&#160;'
                 $item = str_replace('&nbsp;', '&#160;', $item);
@@ -103,6 +108,7 @@ class LearnosityToQtiPreProcessingService
 
         $doc = new \DOMDocument('1.0', 'UTF-8');
 
+        // Replace `<` and `>` characters that are not part of tags
         $content = preg_replace_callback(
             '/<(?!(?:\/?[a-zA-Z0-9]+(?:\s|\/?>)))|>(?!(?:[^<]*<\/[a-zA-Z]+>|[^<]*\/?>))/',
             function ($matches) {
@@ -392,11 +398,11 @@ class LearnosityToQtiPreProcessingService
         if (is_array($mediaFormatArray) && !empty($mediaFormatArray[0])) {
             $mediaFormat = $mediaFormatArray[0];
             if ($mediaFormat == 'video') {
-                $href = '../' . LearnosityExportConstant::DIRNAME_VIDEO . '/' . $fileName;
+                $href = LearnosityExportConstant::DIRNAME_VIDEO . '/' . $fileName;
             } elseif ($mediaFormat == 'audio') {
-                $href = '../' . LearnosityExportConstant::DIRNAME_AUDIO . '/' . $fileName;
+                $href = LearnosityExportConstant::DIRNAME_AUDIO . '/' . $fileName;
             } elseif ($mediaFormat == 'image') {
-                $href = '../' . LearnosityExportConstant::DIRNAME_IMAGES . '/' . $fileName;
+                $href = LearnosityExportConstant::DIRNAME_IMAGES . '/' . $fileName;
             }
         }
         return $href;
