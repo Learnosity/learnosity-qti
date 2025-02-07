@@ -112,7 +112,7 @@ class ImageclozeassociationV2Mapper extends AbstractQuestionTypeMapper
                     $gapImageObject->setWidth($width);
                     $gapImageObject->setHeight($height);
                 } else {
-                    $imagesize = getimagesize(urldecode(CurlUtil::prepareUrlForCurl(LearnosityExportConstant::getInputPath() . $src)));
+                    $imagesize = getimagesize(urldecode(CurlUtil::prepareUrlForCurl(LearnosityExportConstant::getInputPath() . LearnosityExportConstant::DIRNAME_ITEMS . '/' . $src)));
                     $gapImageObject = new ObjectElement($src, $imagesize['mime']);
                     $gapImageObject->setWidth($imagesize[0]);
                     $gapImageObject->setHeight($imagesize[1]);
