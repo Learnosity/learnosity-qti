@@ -787,6 +787,7 @@ class ConvertToQtiService
         $files = array();
         foreach ($filesInfo as $info) {
             $file = new File();
+            // If $info is ever a url, this breaks see ConvertToQtiService::getAdditionalFileInfoForManifestResource
             $fileName = substr($info, strlen(LearnosityExportConstant::DIRPATH_ASSETS));
             $mimeType = MimeUtil::guessMimeType($fileName);
             $href = $this->getAssetHref($fileName, $mimeType);
@@ -831,11 +832,7 @@ class ConvertToQtiService
                         $valueArray = array();
                         foreach ($questionValue as $value) {
                             // Sometimes there's an error, and `replacement` doesn't exist.
-                            if (empty($value->replacement)) {
-                                $valueArray[] = $value->url;
-                            } else {
-                                $valueArray[] = ($this->isAbsoluteHttpUri($value->url)) ? $value->url : $value->replacement;
-                            }
+                            $valueArray[] = !empty($value->replacement) ? $value->replacement : $value->url;
                         }
                         $additionalFileInfoArray[$questionKey] = $valueArray;
                     }
@@ -844,9 +841,7 @@ class ConvertToQtiService
                     foreach ($questionArray->features as $featureKey => $featureValue) {
                         $valueArray = array();
                         foreach ($featureValue as $value) {
-                            if (isset($value->replacement)) {
-                                $valueArray[] = ($this->isAbsoluteHttpUri($value->url)) ? $value->url : $value->replacement;
-                            }
+                            $valueArray[] = !empty($value->replacement) ? $value->replacement : $value->url;
                         }
                         $additionalFileInfoArray[$featureKey] = $valueArray;
                     }
