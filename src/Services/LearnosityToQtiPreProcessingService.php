@@ -17,6 +17,7 @@ class LearnosityToQtiPreProcessingService
 {
     private $widgets = [];
     private $inputPath = '';
+    private $widgetType = '';
 
     public function __construct(array $widgets = [])
     {
@@ -25,33 +26,34 @@ class LearnosityToQtiPreProcessingService
 
     public function processJson(array $json, $inputPath = '')
     {
+        $this->widgetType = $json['data']['type'];
+
+        // The source input path to the files we are converting
         if (!empty($inputPath)) {
             $this->inputPath = $inputPath;
         }
 
-        array_walk_recursive($json, function (&$item, $key) {
+        $this->recursiveArrayWalk($json, function (&$key, &$item, $parentKey) {
             $propertiesExtraProcessing = ['stimulus', 'label', 'distractor_rationale', 'template'];
             if (is_string($item)) {
-                // Replace nbsp with '&#160;'
-                $item = str_replace('&nbsp;', '&#160;', $item);
                 $item = $this->processHtml($item);
 
                 if (in_array($key, $propertiesExtraProcessing)) {
-                    $item = $this->processHtmlPostProcessing($item);
+                    $item = $this->processHtmlPostProcessing($item, $key, $this->widgetType);
                 }
-
-                // $item = html_entity_decode($item, ENT_QUOTES | ENT_HTML5, 'UTF-8');
 
                 // Replace all &nbsp; entities with &#160; as the former are not allowed in XML
                 $item = str_replace('&nbsp;', '&#160;', $item);
-
-                // Remove <center> </center>
-                $item = preg_replace('/<center>/', '', $item);
-                $item = preg_replace('/<\/center>/', '', $item);
             }
 
             if ($key === 'content') {
                 $item = $this->processContentPostProcessing($item);
+            }
+
+            if ($key === 'list') {
+                foreach ($item as $i => $listItem) {
+                    $item[$i] = $this->processHtmlPostProcessing($listItem, 'list', $this->widgetType);
+                }
             }
 
             if ($key === 'template') {
@@ -70,6 +72,9 @@ class LearnosityToQtiPreProcessingService
 
     private function processHtml($content)
     {
+        // Fix for <img src=...> tags that are missing quotes around the src attribute
+        $content = preg_replace('/<img\s+src=([^"\'\s>]+)(\s|>)/i', '<img src="$1"$2', $content);
+
         $html = new SimpleHtmlDom();
         $html->load($content);
 
@@ -102,7 +107,7 @@ class LearnosityToQtiPreProcessingService
      * to do things like injecting <tbody> into <table> elements, closing any unclosed tags.
      * We also try to escape invalid XML characters in text nodes.
      */
-    private function processHtmlPostProcessing($content)
+    private function processHtmlPostProcessing($content, $property, $type)
     {
         if (empty($content)) return $content;
 
@@ -186,7 +191,8 @@ class LearnosityToQtiPreProcessingService
         }
 
         // Replace <u> with <span style="text-decoration: underline;">
-        foreach ($doc->getElementsByTagName('u') as $uTag) {
+        $uTags = iterator_to_array($doc->getElementsByTagName('u'));
+        foreach ($uTags as $uTag) {
             $spanTag = $doc->createElement('span', $uTag->textContent);
             $spanTag->setAttribute('style', 'text-decoration: underline;');
             $uTag->parentNode->replaceChild($spanTag, $uTag);
@@ -258,6 +264,32 @@ class LearnosityToQtiPreProcessingService
                     $element->setAttribute('id', $newId);
                 }
             }
+        }
+
+        // Find any orphaned <li> elements and wrap them in a <ul>
+        $xpath = new \DOMXPath($doc);
+        $orphanedLis = $xpath->query('//li[not(parent::ul) and not(parent::ol)]');
+        if ($orphanedLis->length > 0) {
+            $ul = $doc->createElement('ul');
+            foreach ($orphanedLis as $li) {
+                if (!$ul->parentNode) {
+                    $li->parentNode->insertBefore($ul, $li);
+                }
+                $ul->appendChild($li);
+            }
+        }
+
+        // Find any <blockquote> elements and replace with a <div> as the lib doesn't support it
+        // We put the <blockquote> back after XML is generated.
+        $blockquoteNodes = $doc->getElementsByTagName('blockquote');
+        $blockquotes = iterator_to_array($blockquoteNodes);
+        foreach ($blockquotes as $blockquote) {
+            $div = $doc->createElement('div');
+            while ($blockquote->hasChildNodes()) {
+                $div->appendChild($blockquote->firstChild);
+            }
+            $div->setAttribute('class', 'lrn-replace-blockquote');
+            $blockquote->parentNode->replaceChild($div, $blockquote);
         }
 
         /***************** End processing the HTML ****************/
@@ -403,8 +435,22 @@ class LearnosityToQtiPreProcessingService
                 $href = LearnosityExportConstant::DIRNAME_AUDIO . '/' . $fileName;
             } elseif ($mediaFormat == 'image') {
                 $href = LearnosityExportConstant::DIRNAME_IMAGES . '/' . $fileName;
+            } else {
+                $href = $src;
             }
         }
         return $href;
+    }
+
+    private function recursiveArrayWalk(array &$array, callable $callback, $parentKey = null) {
+        foreach ($array as $key => &$value) {
+            // Call the callback function with key, value, and parent key
+            $callback($key, $value, $parentKey);
+
+            // If the value is an array, recurse deeper
+            if (is_array($value)) {
+                $this->recursiveArrayWalk($value, $callback, $key);
+            }
+        }
     }
 }
