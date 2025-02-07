@@ -131,20 +131,19 @@ class ConvertToQtiService
     }
 
     /**
-     * Creates various multimedia directory for stroing image,audio,video and qti xml
-     * files
+     * Creates various multimedia directory for storing image, audio, video and qti xml
+     * files. Directories are stores relative to the primary `items` folder.
      *
      * @param type $basePath basepath for creating directory
      */
     public function createAdditionalFolder($basePath)
     {
-
-        FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::DIRNAME_AUDIO);
-        FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::DIRNAME_VIDEO);
-        FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::DIRNAME_IMAGES);
         FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS);
-        FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::SHARED_PASSAGE_FOLDER_NAME);
-        $this->copyAllAssetFiles($this->inputPath . '/' . 'assets', $basePath);
+        FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS . '/' . LearnosityExportConstant::DIRNAME_AUDIO);
+        FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS . '/' . LearnosityExportConstant::DIRNAME_VIDEO);
+        FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS . '/' . LearnosityExportConstant::DIRNAME_IMAGES);
+        FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS . '/' . LearnosityExportConstant::SHARED_PASSAGE_FOLDER_NAME);
+        $this->copyOriginalAssetFiles($this->inputPath . '/assets', $basePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS);
     }
 
     /**
@@ -153,7 +152,7 @@ class ConvertToQtiService
      * @param type $sourcePath source path of the directory
      * @param type $destinationPath destination directory for copy files
      */
-    public function copyAllAssetFiles($sourcePath, $destinationPath)
+    public function copyOriginalAssetFiles($sourcePath, $destinationPath)
     {
         $dir = opendir($sourcePath);
         while (($file = readdir($dir)) !== false) {
@@ -182,8 +181,10 @@ class ConvertToQtiService
             FileSystemHelper::copyFiles($sourcePath . '/' . $file, $destinationPath . '/' . LearnosityExportConstant::DIRNAME_VIDEO . '/' . $file);
         } elseif ($mediaType == 'image') {
             FileSystemHelper::copyFiles($sourcePath . '/' . $file, $destinationPath . '/' . LearnosityExportConstant::DIRNAME_IMAGES . '/' . $file);
+        } elseif ($mediaType == 'application') {
+            // Do nothing
         } else {
-            $this->output->writeln("<error>Media Type not supported only audio, video and image are supported</error>");
+            $this->output->writeln("<error>Media Type ($mediaType) not supported only audio, video and image are supported</error>");
         }
     }
 
@@ -568,7 +569,7 @@ class ConvertToQtiService
                 $filesData = $resourceContent->getFiles();
                 foreach ($filesData as $fileContent) {
                     $file = $imsManifestXml->createElement("file");
-                    $file->setAttribute("href", $fileContent->getHref());
+                    $file->setAttribute("href", str_replace('../', '', $fileContent->getHref()));
                     $resource->appendChild($file);
                 }
                 $resources->appendChild($resource);
@@ -732,7 +733,7 @@ class ConvertToQtiService
     private function addFeatureHtmlFilesInfo($featureHtmlArray, array $files)
     {
         foreach ($featureHtmlArray as $featureId => $featureHtml) {
-            if (file_put_contents($this->outputPath . '/' . $this->rawPath . '/' . LearnosityExportConstant::SHARED_PASSAGE_FOLDER_NAME . '/' . $featureId . '.html', $featureHtml)) {
+            if (file_put_contents($this->outputPath . '/' . $this->rawPath . '/' . LearnosityExportConstant::DIRNAME_ITEMS . '/' . LearnosityExportConstant::SHARED_PASSAGE_FOLDER_NAME . '/' . $featureId . '.html', $featureHtml)) {
                 $file = new File();
                 $file->setHref(LearnosityExportConstant::SHARED_PASSAGE_FOLDER_NAME . '/' . $featureId . '.html');
                 $files[] = $file;
