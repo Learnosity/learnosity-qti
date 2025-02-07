@@ -79,7 +79,11 @@ abstract class AbstractQuestionValidationBuilder
         // Guess question type
         $validationClazz = new \ReflectionClass($validation);
         $questionType = str_replace('_validation', '', $validationClazz->getShortName());
-        $scoringType = $validation->get_scoring_type();
+        if (method_exists($validation, 'get_scoring_type')) {
+            $scoringType = $validation->get_scoring_type();
+        } else {
+            $scoringType = null;
+        }
 
         if (in_array($questionType, Constants::$questionTypesWithMappingSupport)) {
             $responseProcessing = new ResponseProcessing();
