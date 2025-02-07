@@ -787,8 +787,11 @@ class ConvertToQtiService
         $files = array();
         foreach ($filesInfo as $info) {
             $file = new File();
-            // If $info is ever a url, this breaks see ConvertToQtiService::getAdditionalFileInfoForManifestResource
-            $fileName = substr($info, strlen(LearnosityExportConstant::DIRPATH_ASSETS));
+            if ($this->isAbsoluteHttpUri($info)){
+                $fileName = $info;
+            } else {
+                $fileName = substr($info, strlen(LearnosityExportConstant::DIRPATH_ASSETS));
+            }
             $mimeType = MimeUtil::guessMimeType($fileName);
             $href = $this->getAssetHref($fileName, $mimeType);
             $file->setHref($href);
