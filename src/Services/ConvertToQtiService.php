@@ -74,6 +74,7 @@ class ConvertToQtiService
         $this->itemReferences = array();
 
         LearnosityExportConstant::setInputPath($this->getInputPath() . '/');
+        LearnosityExportConstant::setOutputPath($this->outputPath . '/' . $this->rawPath . '/');
     }
 
     // The object is created from within the class itself
@@ -326,7 +327,7 @@ class ConvertToQtiService
                         $this->output->writeln("<error>Unkown error with `{$question['data']['type']}`, ignoring</error>");
                         continue;
                     }
-                    $result[0] = str_replace('/vendor/learnosity/itembank/', '../', $result[0]);
+                    $result[0] = str_replace(LearnosityExportConstant::DIRPATH_ASSETS, LearnosityExportConstant::DIRNAME_IMAGES . '/', $result[0]);
                     $result[0] = str_replace('xmlns:default="http://www.w3.org/1998/Math/MathML"', '', $result[0]);
                     //TODO: Change this to only select MathML elements?
                     $result[0] = str_replace('<default:', '<', $result[0]);
@@ -361,7 +362,7 @@ class ConvertToQtiService
                         $this->output->writeln("<error>Unkown error with `{$question['data']['type']}`, ignoring</error>");
                         continue;
                     }
-                    $result[0] = str_replace('/vendor/learnosity/itembank/', '../', $result[0]);
+                    $result[0] = str_replace(LearnosityExportConstant::DIRPATH_ASSETS, LearnosityExportConstant::DIRNAME_IMAGES . '/', $result[0]);
                     $result[0] = str_replace('xmlns:default="http://www.w3.org/1998/Math/MathML"', '', $result[0]);
                     //TODO: Change this to only select MathML elements?
                     $result[0] = str_replace('<default:', '<', $result[0]);
@@ -385,7 +386,7 @@ class ConvertToQtiService
                 $feature['itemreference'] = $itemReference;
                 if (in_array($feature['data']['type'], LearnosityExportConstant::$supportedFeatureTypes)) {
                     $result = Converter::convertLearnosityToQtiItem($feature);
-                    $result[0] = str_replace('/vendor/learnosity/itembank/', '../', $result[0]);
+                    $result[0] = str_replace(LearnosityExportConstant::DIRPATH_ASSETS, LearnosityExportConstant::DIRNAME_IMAGES . '/', $result[0]);
                     $finalXml['features'][] = $result;
                     $tagsArray[$feature['reference']] = $tags;
                 } else {

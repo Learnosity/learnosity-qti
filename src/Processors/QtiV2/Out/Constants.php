@@ -5,6 +5,7 @@ namespace LearnosityQti\Processors\QtiV2\Out;
 class Constants
 {
     private static $inputPath;
+    private static $outputPath;
 
     public static $supportedQuestionTypes = [
         'mcq',
@@ -42,7 +43,6 @@ class Constants
         'imageclozeassociationV2',
     ];
 
-
     public static function setInputPath($value)
     {
         self::$inputPath = $value;
@@ -51,6 +51,16 @@ class Constants
     public static function getInputPath()
     {
         return self::$inputPath;
+    }
+
+    public static function setOutputPath($value)
+    {
+        self::$outputPath = $value;
+    }
+
+    public static function getOutputPath()
+    {
+        return self::$outputPath;
     }
 
     const RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT = 'http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct';
