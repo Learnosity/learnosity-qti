@@ -18,6 +18,7 @@ use LearnosityQti\Processors\QtiV2\In\TestMapper;
 use LearnosityQti\Processors\QtiV2\Out\ItemWriter;
 use LearnosityQti\Processors\QtiV2\Out\FeatureWriter;
 use LearnosityQti\Processors\QtiV2\Out\QuestionWriter;
+use LearnosityQti\Services\LearnosityToQtiPostProcessingService;
 use LearnosityQti\Services\LearnosityToQtiPreProcessingService;
 use LearnosityQti\Services\LogService;
 use LearnosityQti\Utils\FileSystemUtil;
@@ -314,6 +315,9 @@ class Converter
             } else {
                 list($xmlString, $messages, $questionReference, $featureHtml) = self::convertLearnosityQuestion($data);
             }
+
+            $postprocessingService = new LearnosityToQtiPostProcessingService($xmlString);
+            $xmlString = $postprocessingService->processXml($xmlString);
         } catch (\Exception $ex) {
             echo('Unknown JSON format: ' . $ex->getMessage() . PHP_EOL);
             return false;
