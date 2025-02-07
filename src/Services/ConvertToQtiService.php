@@ -231,8 +231,7 @@ class ConvertToQtiService
             $finalManifest->setResources($resourceInfo);
             $this->persistResultsFile($results, realpath($this->outputPath) . '/' . $this->rawPath . '/');
             $this->flushJobManifest($finalManifest, $results);
-            // Zipping takes too long, so we'll skip it for now
-            // $this->createIMSContentPackage(realpath($this->outputPath) . '/' . $this->rawPath . '/');
+            $this->createIMSContentPackage(realpath($this->outputPath) . '/' . $this->rawPath . '/');
         } catch (Exception $e) {
             $result['status'] = false;
             $result['message'] = $e->getMessage();
