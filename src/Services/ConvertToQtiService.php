@@ -231,8 +231,7 @@ class ConvertToQtiService
             $finalManifest->setResources($resourceInfo);
             $this->persistResultsFile($results, realpath($this->outputPath) . '/' . $this->rawPath . '/');
             $this->flushJobManifest($finalManifest, $results);
-            // Zipping takes too long, so we'll skip it for now
-            // $this->createIMSContentPackage(realpath($this->outputPath) . '/' . $this->rawPath . '/');
+            $this->createIMSContentPackage(realpath($this->outputPath) . '/' . $this->rawPath . '/');
         } catch (Exception $e) {
             $result['status'] = false;
             $result['message'] = $e->getMessage();
@@ -788,7 +787,11 @@ class ConvertToQtiService
         $files = array();
         foreach ($filesInfo as $info) {
             $file = new File();
-            $fileName = substr($info, strlen(LearnosityExportConstant::DIRPATH_ASSETS));
+            if ($this->isAbsoluteHttpUri($info)){
+                $fileName = $info;
+            } else {
+                $fileName = substr($info, strlen(LearnosityExportConstant::DIRPATH_ASSETS));
+            }
             $mimeType = MimeUtil::guessMimeType($fileName);
             $href = $this->getAssetHref($fileName, $mimeType);
             $file->setHref($href);
@@ -832,11 +835,7 @@ class ConvertToQtiService
                         $valueArray = array();
                         foreach ($questionValue as $value) {
                             // Sometimes there's an error, and `replacement` doesn't exist.
-                            if (empty($value->replacement)) {
-                                $valueArray[] = $value->url;
-                            } else {
-                                $valueArray[] = ($this->isAbsoluteHttpUri($value->url)) ? $value->url : $value->replacement;
-                            }
+                            $valueArray[] = !empty($value->replacement) ? $value->replacement : $value->url;
                         }
                         $additionalFileInfoArray[$questionKey] = $valueArray;
                     }
@@ -845,9 +844,7 @@ class ConvertToQtiService
                     foreach ($questionArray->features as $featureKey => $featureValue) {
                         $valueArray = array();
                         foreach ($featureValue as $value) {
-                            if (isset($value->replacement)) {
-                                $valueArray[] = ($this->isAbsoluteHttpUri($value->url)) ? $value->url : $value->replacement;
-                            }
+                            $valueArray[] = !empty($value->replacement) ? $value->replacement : $value->url;
                         }
                         $additionalFileInfoArray[$featureKey] = $valueArray;
                     }
