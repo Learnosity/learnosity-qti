@@ -555,7 +555,7 @@ class ConvertToQtiService
                 if (
                     isset($results[$index]) &&
                     !empty($results[$index]) &&
-                    (in_array('tags', $results[$index]) && !empty($results[$index]['tags'][$results[$index]['json']['questions'][$indexResource]['reference']]))
+                    (array_key_exists('tags', $results[$index]) && !empty($results[$index]['tags'][$results[$index]['json']['questions'][$indexResource]['reference']]))
                 ) {
                     $metadata = $imsManifestXml->createElement("metadata");
                     $tagsArray = $results[$index]['tags'][$results[$index]['json']['questions'][$indexResource]['reference']];
