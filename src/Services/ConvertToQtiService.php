@@ -45,6 +45,7 @@ class ConvertToQtiService
     protected $logPath;
     protected $rawPath;
     protected $organisationId;
+    protected $zip;
     protected $itemReferences;
 
     /* Runtime options */
@@ -61,13 +62,14 @@ class ConvertToQtiService
     protected $useResourceIdentifier   = false;
     private static $instance = null;
 
-    private function __construct($inputPath, $outputPath, OutputInterface $output, $format, $organisationId = null)
+    private function __construct($inputPath, $outputPath, OutputInterface $output, $format, $organisationId = null, $zip = true)
     {
         $this->inputPath      = $inputPath;
         $this->outputPath     = $outputPath;
         $this->output         = $output;
         $this->format         = $format;
         $this->organisationId = $organisationId;
+        $this->zip            = $zip;
         $this->finalPath      = 'final';
         $this->logPath        = 'log';
         $this->rawPath        = 'raw';
@@ -79,10 +81,10 @@ class ConvertToQtiService
 
     // The object is created from within the class itself
     // only if the class has no instance.
-    public static function initClass($inputPath, $outputPath, OutputInterface $output, $organisationId = null)
+    public static function initClass($inputPath, $outputPath, OutputInterface $output, $format = null, $organisationId = null, $zip = true)
     {
         if (!self::$instance) {
-            self::$instance = new ConvertToQtiService($inputPath, $outputPath, $output, $organisationId);
+            self::$instance = new ConvertToQtiService($inputPath, $outputPath, $output, $format, $organisationId, $zip);
         }
         return self::$instance;
     }
@@ -231,7 +233,9 @@ class ConvertToQtiService
             $finalManifest->setResources($resourceInfo);
             $this->persistResultsFile($results, realpath($this->outputPath) . '/' . $this->rawPath . '/');
             $this->flushJobManifest($finalManifest, $results);
-            $this->createIMSContentPackage(realpath($this->outputPath) . '/' . $this->rawPath . '/');
+            if ($this->zip) {
+                $this->createIMSContentPackage(realpath($this->outputPath) . '/' . $this->rawPath . '/');
+            }
         } catch (Exception $e) {
             $result['status'] = false;
             $result['message'] = $e->getMessage();
@@ -446,6 +450,8 @@ class ConvertToQtiService
         if (!class_exists('ZipArchive')) {
             return;
         }
+
+        $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Zipping manifest to " . $contentDirPath . "</info>\n");
 
         // Get real path for our folder
         $rootPath = $contentDirPath;
