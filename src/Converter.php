@@ -297,6 +297,7 @@ class Converter
         $jsonType = self::LEARNOSITY_DATA_QUESTION;
         if (isset($data['data'])) {
             if (!isset($data['reference'])) {
+                LogService::log('Invalid `item` JSON. Key `reference` shall not be empty');
                 throw new MappingException('Invalid `item` JSON. Key `reference` shall not be empty');
             }
         }
@@ -304,6 +305,7 @@ class Converter
         // Guess this JSON is a 'feature'
         if (isset($data['data']['type']) && in_array($data['data']['type'], ['audioplayer','videoplayer'])) {
             if (!isset($data['reference'])) {
+                LogService::log('Invalid `item` JSON. Key `reference` shall not be empty');
                 throw new MappingException('Invalid `item` JSON. Key `reference` shall not be empty');
             }
             $jsonType =  self::LEARNOSITY_DATA_FEATURE;
@@ -319,15 +321,19 @@ class Converter
             $postprocessingService = new LearnosityToQtiPostProcessingService($xmlString);
             $xmlString = $postprocessingService->processXml($xmlString);
         } catch (\Exception $ex) {
+            LogService::log('Unknown JSON format: ' . $ex->getMessage());
             echo('Unknown JSON format: ' . $ex->getMessage() . PHP_EOL);
-            return false;
+            $messages = LogService::flush();
+            return ['', $messages, null, null];
         }
         // Validate them before proceeding by feeding it back
         try {
             $document = new XmlDocument();
             $document->loadFromString($xmlString);
         } catch (\Exception $e) {
-            LogService::log('Unknown error occurred. The QTI XML produced may not be valid', $e->getMessage());
+            LogService::log('Unknown error occurred. The QTI XML produced may not be valid');
+            LogService::log($e->getMessage());
+            echo($e->getMessage() . PHP_EOL);
         }
 
         $messages = LogService::flush();

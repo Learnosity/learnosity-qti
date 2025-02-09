@@ -47,12 +47,23 @@ class ConvertToQtiService
     protected $organisationId;
     protected $zip;
     protected $itemReferences;
+    protected $log = [
+        'directory_processed' => null,
+        'total_files_found'=> 0,
+        'total_files_processed' => 0,
+        'total_files_converted' => 0,
+        'total_files_failed' => 0,
+        'converted_items' => [],
+        'ignored_items' => [],
+        'issues' => [],
+    ];
 
     /* Runtime options */
     protected $dryRun                     = false;
     protected $shouldAppendLogs           = false;
     protected $shouldGuessItemScoringType = true;
     protected $shouldUseManifest          = true;
+
     /* Job-specific configurations */
     // Overrides identifiers to be the same as the filename
     protected $useFileNameAsIdentifier = false;
@@ -221,18 +232,52 @@ class ConvertToQtiService
             $results = [];
             $jsonFiles = $this->parseInputFolders();
             $finalManifest = $this->getJobManifestTemplate();
-            $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Processing JSON directory: {$this->inputPath} </info>\n");
+            $this->log['directory_processed'] = $this->inputPath;
+            $this->log['total_files_found'] = count($jsonFiles);
+            $totalFiles = 0;
+            $totalSuccessful = 0;
+            $totalFailed = 0;
+
+            $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Analyzing JSON directory: {$this->inputPath} </info>");
+            $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Converting JSON to QTI:</info>\n");
+
             foreach ($jsonFiles as $file) {
+                $conversion = [];
                 if (file_exists($file)) {
-                    $results[] = $this->convertLearnosityInDirectory($file);
+                    $conversion = $this->convertLearnosityInDirectory($file);
+                    if (!empty($conversion['qti'])) {
+                        $totalSuccessful++;
+                        $this->log['converted_items'][] = basename($file);
+                        $results[] = $conversion;
+                    } else {
+                        $totalFailed++;
+                        $this->log['ignored_items'][] = basename($file);
+                    }
+                    $totalFiles++;
                 } else {
+                    $conversion['issues'][basename($file)] = [
+                        'detail' => 'File not found'
+                    ];
+                    $totalFailed++;
+                    $this->log['ignored_items'][] = basename($file);
                     $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Learnosity JSON file " . basename($file) . " Not found in: {$this->inputPath}/items </info>");
+                    continue;
+                }
+                if (!empty($conversion['issues'])) {
+                    $this->log['issues'][basename($file)] = [
+                        'detail' => $conversion['issues']
+                    ];
                 }
             }
+            $this->log['total_files_processed'] = $totalFiles;
+            $this->log['total_files_converted'] = $totalSuccessful;
+            $this->log['total_files_failed'] = $totalFailed;
             $resourceInfo = $this->updateJobManifest($finalManifest, $results);
             $finalManifest->setResources($resourceInfo);
             $this->persistResultsFile($results, realpath($this->outputPath) . '/' . $this->rawPath . '/');
             $this->flushJobManifest($finalManifest, $results);
+            $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Writing log results to: " . $this->outputPath . DIRECTORY_SEPARATOR . $this->logPath . DIRECTORY_SEPARATOR . static::CONVERT_LOG_FILENAME . ".json</info>\n");
+            $this->writeJsonToFile($this->log, $this->outputPath . DIRECTORY_SEPARATOR . $this->logPath . DIRECTORY_SEPARATOR . static::CONVERT_LOG_FILENAME . '.json');
             if ($this->zip) {
                 $this->createIMSContentPackage(realpath($this->outputPath) . '/' . $this->rawPath . '/');
             }
@@ -254,9 +299,9 @@ class ConvertToQtiService
      */
     private function convertLearnosityInDirectory($file)
     {
-        $this->output->writeln("<comment>Converting Learnosity JSON {$file}</comment>");
+        $this->output->writeln("<comment>Converting " . basename($file) . "</comment>");
         $itemContent = file_get_contents($file);
-        return $this->convertAssessmentItem(json_decode($itemContent, true));
+        return $this->convertAssessmentItem(json_decode($itemContent, true), basename($file));
     }
 
     // Traverse the -i option and find all paths with files
@@ -301,7 +346,7 @@ class ConvertToQtiService
      *
      * @throws Exception - if the conversion fails
      */
-    private function convertAssessmentItem($json)
+    private function convertAssessmentItem($json, $filename)
     {
         $result = [];
         $finalXml = [];
@@ -310,7 +355,7 @@ class ConvertToQtiService
         $features = $json['features'];
         $tags = $json['tags'];
         $itemReference = $json['reference'];
-
+        if (count($json['questions']) >= 2) var_dump('sdfs');
         if (!empty($json['questions']) && !empty($features)) {
             $referenceArray = $this->getReferenceArray($json);
             foreach ($json['questions'] as $question) :
@@ -320,13 +365,18 @@ class ConvertToQtiService
 
                 if (in_array($question['data']['type'], LearnosityExportConstant::$supportedQuestionTypes)) {
                     $result = Converter::convertLearnosityToQtiItem($question);
-                    if (!$result) {
+                    if (!$result || empty($result[0])) {
+                        $issues = [];
+                        if (count($result[1])) {
+                            $issues = $result[1];
+                        }
                         $result = [
                             '',
-                            [
-                                'Unknown error with ' . $question['data']['type']
-                            ]
+                            ['Unknown error with ' . $question['data']['type']]
                         ];
+                        if (count($issues)) {
+                            $result[1] = array_merge($result[1], $issues);
+                        }
                         $this->output->writeln("<error>Unkown error with `{$question['data']['type']}`, ignoring</error>");
                         continue;
                     }
@@ -340,9 +390,7 @@ class ConvertToQtiService
                 } else {
                     $result = [
                         '',
-                        [
-                            'Ignoring' . $question['data']['type'] . ' , currently unsupported'
-                        ]
+                        ['Ignoring ' . $question['data']['type'] . ', currently unsupported']
                     ];
                     $this->output->writeln("<error>Question type `{$question['data']['type']}` not yet supported, ignoring</error>");
                 }
@@ -355,13 +403,18 @@ class ConvertToQtiService
                 $question['feature'] = [];
                 if (in_array($question['data']['type'], LearnosityExportConstant::$supportedQuestionTypes)) {
                     $result = Converter::convertLearnosityToQtiItem($question);
-                    if (!$result) {
+                    if (!$result || empty($result[0])) {
+                        $issues = [];
+                        if (count($result[1])) {
+                            $issues = $result[1];
+                        }
                         $result = [
                             '',
-                            [
-                                'Unknown error with ' . $question['data']['type']
-                            ]
+                            ['Unknown error with ' . $question['data']['type']]
                         ];
+                        if (count($issues)) {
+                            $result[1] = array_merge($result[1], $issues);
+                        }
                         $this->output->writeln("<error>Unkown error with `{$question['data']['type']}`, ignoring</error>");
                         continue;
                     }
@@ -375,9 +428,7 @@ class ConvertToQtiService
                 } else {
                     $result = [
                         '',
-                        [
-                            'Ignoring' . $question['data']['type'] . ' , currently unsupported'
-                        ]
+                       ['Ignoring ' . $question['data']['type'] . ', currently unsupported']
                     ];
                     $this->output->writeln("<error>Question type `{$question['data']['type']}` not yet supported, ignoring</error>");
                 }
@@ -395,9 +446,7 @@ class ConvertToQtiService
                 } else {
                     $result = [
                         '',
-                        [
-                            'Ignoring' . $feature['data']['type'] . ' , currently unsupported'
-                        ]
+                        ['Ignoring' . $feature['data']['type'] . ' , currently unsupported']
                     ];
                     $this->output->writeln("<error>Feature type `{$feature['data']['type']}` not yet supported, ignoring</error>");
                 }
@@ -405,9 +454,10 @@ class ConvertToQtiService
         }
 
         return [
-            'qti'  => $finalXml,
-            'json' => $json,
-            'tags' => $tagsArray
+            'qti'       => $finalXml,
+            'json'      => $json,
+            'tags'      => $tagsArray,
+            'issues'    => $result[1]
         ];
     }
 
@@ -622,7 +672,7 @@ class ConvertToQtiService
         if ($this->dryRun) {
             return;
         }
-        $this->output->writeln("\n<info>" . static::INFO_OUTPUT_PREFIX . "Writing conversion results: " . $outputFilePath . "</info>\n");
+        $this->output->writeln("\n<info>" . static::INFO_OUTPUT_PREFIX . "Writing conversion results to: " . $outputFilePath . "</info>");
         foreach ($results as $result) {
             if (!empty($result['qti'])) {
                 if (!empty($result['json']['questions'])) {
