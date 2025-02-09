@@ -17,6 +17,7 @@ class EntityBuilder
             if (isset($json[$parameterName])) {
                 $parameters[$parameterName] = self::buildField($parameter, $json[$parameterName]);
             } else {
+                LogService::log('Invalid JSON. Required key ' . $parameterName . ' does not exists');
                 throw new MappingException('Invalid JSON. Required key ' . $parameterName . ' does not exists');
             }
         }
@@ -42,6 +43,7 @@ class EntityBuilder
                 if (in_array(null, $data, true)) {
                     // Remove `NULL` array elements if they somehow exist
                     // This avoids a fatal error, but it's likely the validation will fail.
+                    LogService::log("Invalid JSON, `NULL` array elements found. They have been removed but validation may fail.");
                     Logger::error("Invalid JSON, `NULL` array elements found. They have been removed but validation may fail.");
                     $data = array_filter($data, function ($value) {
                         return !is_null($value);

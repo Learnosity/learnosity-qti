@@ -4,6 +4,7 @@ namespace LearnosityQti\Services;
 
 use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Processors\QtiV2\Out\ContentCollectionBuilder;
+use LearnosityQti\Services\LogService;
 use LearnosityQti\Utils\MimeUtil;
 use LearnosityQti\Utils\QtiMarshallerUtil;
 use LearnosityQti\Utils\SimpleHtmlDom\SimpleHtmlDom;
@@ -387,9 +388,11 @@ class LearnosityToQtiPreProcessingService
                 // $div->setContent($flowCollection);
                 return QtiMarshallerUtil::marshallValidQti($object);
             } else {
+                LogService::log($type . 'feature not supported');
                 throw new MappingException($type . 'feature not supported');
             }
         }
+        LogService::log($type . ' not supported');
         throw new MappingException($type . ' not supported');
     }
 
