@@ -12,9 +12,6 @@ class ItemWriter
 {
     public function convert(item $item, array $questions)
     {
-        // Make sure we clean up the log
-        LogService::flush();
-
         // Try to build the identifier using item `reference`
         // Otherwise, generate an alternative identifier and store the original reference as `label`
         $itemReference = $item->get_reference();
@@ -32,8 +29,7 @@ class ItemWriter
         $xml = new XmlDocument();
         $xml->setDocumentComponent($assessmentItem);
 
-        // Flush out all the error messages stored in this static class, also ensure they are unique
-        $messages = array_values(array_unique(LogService::flush()));
+        $messages = array_values(array_unique(LogService::read()));
         $featureHtml = array();
         return [$xml->saveToString(true), $messages, $itemReference, $featureHtml];
     }

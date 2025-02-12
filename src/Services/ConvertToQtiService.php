@@ -45,13 +45,25 @@ class ConvertToQtiService
     protected $logPath;
     protected $rawPath;
     protected $organisationId;
+    protected $zip;
     protected $itemReferences;
+    protected $log = [
+        'directory_processed' => null,
+        'total_files_found'=> 0,
+        'total_files_processed' => 0,
+        'total_files_converted' => 0,
+        'total_files_failed' => 0,
+        'converted_items' => [],
+        'ignored_items' => [],
+        'issues' => [],
+    ];
 
     /* Runtime options */
     protected $dryRun                     = false;
     protected $shouldAppendLogs           = false;
     protected $shouldGuessItemScoringType = true;
     protected $shouldUseManifest          = true;
+
     /* Job-specific configurations */
     // Overrides identifiers to be the same as the filename
     protected $useFileNameAsIdentifier = false;
@@ -61,25 +73,29 @@ class ConvertToQtiService
     protected $useResourceIdentifier   = false;
     private static $instance = null;
 
-    private function __construct($inputPath, $outputPath, OutputInterface $output, $format, $organisationId = null)
+    private function __construct($inputPath, $outputPath, OutputInterface $output, $format, $organisationId = null, $zip = true)
     {
         $this->inputPath      = $inputPath;
         $this->outputPath     = $outputPath;
         $this->output         = $output;
         $this->format         = $format;
         $this->organisationId = $organisationId;
+        $this->zip            = $zip;
         $this->finalPath      = 'final';
         $this->logPath        = 'log';
         $this->rawPath        = 'raw';
         $this->itemReferences = array();
+
+        LearnosityExportConstant::setInputPath($this->getInputPath() . '/');
+        LearnosityExportConstant::setOutputPath($this->outputPath . '/' . $this->rawPath . '/');
     }
 
     // The object is created from within the class itself
     // only if the class has no instance.
-    public static function initClass($inputPath, $outputPath, OutputInterface $output, $organisationId = null)
+    public static function initClass($inputPath, $outputPath, OutputInterface $output, $format = null, $organisationId = null, $zip = true)
     {
         if (!self::$instance) {
-            self::$instance = new ConvertToQtiService($inputPath, $outputPath, $output, $organisationId);
+            self::$instance = new ConvertToQtiService($inputPath, $outputPath, $output, $format, $organisationId, $zip);
         }
         return self::$instance;
     }
@@ -129,20 +145,19 @@ class ConvertToQtiService
     }
 
     /**
-     * Creates various multimedia directory for stroing image,audio,video and qti xml
-     * files
+     * Creates various multimedia directory for storing image, audio, video and qti xml
+     * files. Directories are stores relative to the primary `items` folder.
      *
      * @param type $basePath basepath for creating directory
      */
     public function createAdditionalFolder($basePath)
     {
-
-        FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::DIRNAME_AUDIO);
-        FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::DIRNAME_VIDEO);
-        FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::DIRNAME_IMAGES);
         FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS);
-        FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::SHARED_PASSAGE_FOLDER_NAME);
-        $this->copyAllAssetFiles($this->inputPath . '/' . 'assets', $basePath);
+        FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS . '/' . LearnosityExportConstant::DIRNAME_AUDIO);
+        FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS . '/' . LearnosityExportConstant::DIRNAME_VIDEO);
+        FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS . '/' . LearnosityExportConstant::DIRNAME_IMAGES);
+        FileSystemHelper::createDirIfNotExists($basePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS . '/' . LearnosityExportConstant::SHARED_PASSAGE_FOLDER_NAME);
+        $this->copyOriginalAssetFiles($this->inputPath . '/assets', $basePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS);
     }
 
     /**
@@ -151,7 +166,7 @@ class ConvertToQtiService
      * @param type $sourcePath source path of the directory
      * @param type $destinationPath destination directory for copy files
      */
-    public function copyAllAssetFiles($sourcePath, $destinationPath)
+    public function copyOriginalAssetFiles($sourcePath, $destinationPath)
     {
         $dir = opendir($sourcePath);
         while (($file = readdir($dir)) !== false) {
@@ -180,8 +195,10 @@ class ConvertToQtiService
             FileSystemHelper::copyFiles($sourcePath . '/' . $file, $destinationPath . '/' . LearnosityExportConstant::DIRNAME_VIDEO . '/' . $file);
         } elseif ($mediaType == 'image') {
             FileSystemHelper::copyFiles($sourcePath . '/' . $file, $destinationPath . '/' . LearnosityExportConstant::DIRNAME_IMAGES . '/' . $file);
+        } elseif ($mediaType == 'application') {
+            // Do nothing
         } else {
-            $this->output->writeln("<error>Media Type not supported only audio, video and image are supported</error>");
+            $this->output->writeln("<error>Media Type ($mediaType) not supported only audio, video and image are supported</error>");
         }
     }
 
@@ -215,19 +232,55 @@ class ConvertToQtiService
             $results = [];
             $jsonFiles = $this->parseInputFolders();
             $finalManifest = $this->getJobManifestTemplate();
-            $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Processing JSON directory: {$this->inputPath} </info>\n");
+            $this->log['directory_processed'] = $this->inputPath;
+            $this->log['total_files_found'] = count($jsonFiles);
+            $totalFiles = 0;
+            $totalSuccessful = 0;
+            $totalFailed = 0;
+
+            $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Analyzing JSON directory: {$this->inputPath} </info>");
+            $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Converting JSON to QTI:</info>\n");
+
             foreach ($jsonFiles as $file) {
+                $conversion = [];
                 if (file_exists($file)) {
-                    $results[] = $this->convertLearnosityInDirectory($file);
+                    $conversion = $this->convertLearnosityInDirectory($file);
+                    if (!empty($conversion['qti'])) {
+                        $totalSuccessful++;
+                        $this->log['converted_items'][] = basename($file);
+                        $results[] = $conversion;
+                    } else {
+                        $totalFailed++;
+                        $this->log['ignored_items'][] = basename($file);
+                    }
+                    $totalFiles++;
                 } else {
+                    $conversion['issues'][basename($file)] = [
+                        'detail' => 'File not found'
+                    ];
+                    $totalFailed++;
+                    $this->log['ignored_items'][] = basename($file);
                     $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Learnosity JSON file " . basename($file) . " Not found in: {$this->inputPath}/items </info>");
+                    continue;
+                }
+                if (!empty($conversion['issues'])) {
+                    $this->log['issues'][basename($file)] = [
+                        'detail' => $conversion['issues']
+                    ];
                 }
             }
+            $this->log['total_files_processed'] = $totalFiles;
+            $this->log['total_files_converted'] = $totalSuccessful;
+            $this->log['total_files_failed'] = $totalFailed;
             $resourceInfo = $this->updateJobManifest($finalManifest, $results);
             $finalManifest->setResources($resourceInfo);
             $this->persistResultsFile($results, realpath($this->outputPath) . '/' . $this->rawPath . '/');
             $this->flushJobManifest($finalManifest, $results);
-            $this->createIMSContentPackage(realpath($this->outputPath) . '/' . $this->rawPath . '/');
+            $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Writing log results to: " . $this->outputPath . DIRECTORY_SEPARATOR . $this->logPath . DIRECTORY_SEPARATOR . static::CONVERT_LOG_FILENAME . ".json</info>\n");
+            $this->writeJsonToFile($this->log, $this->outputPath . DIRECTORY_SEPARATOR . $this->logPath . DIRECTORY_SEPARATOR . static::CONVERT_LOG_FILENAME . '.json');
+            if ($this->zip) {
+                $this->createIMSContentPackage(realpath($this->outputPath) . '/' . $this->rawPath . '/');
+            }
         } catch (Exception $e) {
             $result['status'] = false;
             $result['message'] = $e->getMessage();
@@ -246,9 +299,9 @@ class ConvertToQtiService
      */
     private function convertLearnosityInDirectory($file)
     {
-        $this->output->writeln("<comment>Converting Learnosity JSON {$file}</comment>");
+        $this->output->writeln("<comment>Converting " . basename($file) . "</comment>");
         $itemContent = file_get_contents($file);
-        return $this->convertAssessmentItem(json_decode($itemContent, true));
+        return $this->convertAssessmentItem(json_decode($itemContent, true), basename($file));
     }
 
     // Traverse the -i option and find all paths with files
@@ -293,7 +346,7 @@ class ConvertToQtiService
      *
      * @throws Exception - if the conversion fails
      */
-    private function convertAssessmentItem($json)
+    private function convertAssessmentItem($json, $filename)
     {
         $result = [];
         $finalXml = [];
@@ -302,31 +355,32 @@ class ConvertToQtiService
         $features = $json['features'];
         $tags = $json['tags'];
         $itemReference = $json['reference'];
-
-        if (!empty($json['questions']) && (sizeof($features)>=1)) {
+        if (count($json['questions']) >= 2) var_dump('sdfs');
+        if (!empty($json['questions']) && !empty($features)) {
             $referenceArray = $this->getReferenceArray($json);
             foreach ($json['questions'] as $question) :
                 $question['content'] = $content;
                 $question['itemreference'] = $itemReference;
-                $featureReference = $this->getFeatureReference($question['reference'], $referenceArray);
-                if ($featureReference != "") {
-                    $question['feature'] = $this->getFeature($featureReference, $features);
-                } else {
-                    $question['feature'] = [];
-                }
+                $question['feature'] = $features;
+
                 if (in_array($question['data']['type'], LearnosityExportConstant::$supportedQuestionTypes)) {
                     $result = Converter::convertLearnosityToQtiItem($question);
-                    if (!$result) {
+                    if (!$result || empty($result[0])) {
+                        $issues = [];
+                        if (count($result[1])) {
+                            $issues = $result[1];
+                        }
                         $result = [
                             '',
-                            [
-                                'Unknown error with ' . $question['data']['type']
-                            ]
+                            ['Unknown error with ' . $question['data']['type']]
                         ];
+                        if (count($issues)) {
+                            $result[1] = array_merge($result[1], $issues);
+                        }
                         $this->output->writeln("<error>Unkown error with `{$question['data']['type']}`, ignoring</error>");
                         continue;
                     }
-                    $result[0] = str_replace('/vendor/learnosity/itembank/', '', $result[0]);
+                    $result[0] = str_replace(LearnosityExportConstant::DIRPATH_ASSETS, LearnosityExportConstant::DIRNAME_IMAGES . '/', $result[0]);
                     $result[0] = str_replace('xmlns:default="http://www.w3.org/1998/Math/MathML"', '', $result[0]);
                     //TODO: Change this to only select MathML elements?
                     $result[0] = str_replace('<default:', '<', $result[0]);
@@ -336,9 +390,7 @@ class ConvertToQtiService
                 } else {
                     $result = [
                         '',
-                        [
-                            'Ignoring' . $question['data']['type'] . ' , currently unsupported'
-                        ]
+                        ['Ignoring ' . $question['data']['type'] . ', currently unsupported']
                     ];
                     $this->output->writeln("<error>Question type `{$question['data']['type']}` not yet supported, ignoring</error>");
                 }
@@ -351,17 +403,22 @@ class ConvertToQtiService
                 $question['feature'] = [];
                 if (in_array($question['data']['type'], LearnosityExportConstant::$supportedQuestionTypes)) {
                     $result = Converter::convertLearnosityToQtiItem($question);
-                    if (!$result) {
+                    if (!$result || empty($result[0])) {
+                        $issues = [];
+                        if (count($result[1])) {
+                            $issues = $result[1];
+                        }
                         $result = [
                             '',
-                            [
-                                'Unknown error with ' . $question['data']['type']
-                            ]
+                            ['Unknown error with ' . $question['data']['type']]
                         ];
+                        if (count($issues)) {
+                            $result[1] = array_merge($result[1], $issues);
+                        }
                         $this->output->writeln("<error>Unkown error with `{$question['data']['type']}`, ignoring</error>");
                         continue;
                     }
-                    $result[0] = str_replace('/vendor/learnosity/itembank/', '', $result[0]);
+                    $result[0] = str_replace(LearnosityExportConstant::DIRPATH_ASSETS, LearnosityExportConstant::DIRNAME_IMAGES . '/', $result[0]);
                     $result[0] = str_replace('xmlns:default="http://www.w3.org/1998/Math/MathML"', '', $result[0]);
                     //TODO: Change this to only select MathML elements?
                     $result[0] = str_replace('<default:', '<', $result[0]);
@@ -371,29 +428,25 @@ class ConvertToQtiService
                 } else {
                     $result = [
                         '',
-                        [
-                            'Ignoring' . $question['data']['type'] . ' , currently unsupported'
-                        ]
+                       ['Ignoring ' . $question['data']['type'] . ', currently unsupported']
                     ];
                     $this->output->writeln("<error>Question type `{$question['data']['type']}` not yet supported, ignoring</error>");
                 }
             }
         }
-        if (!empty($json['features']) && empty($json['questions'])) {
+        if (empty($json['questions']) && !empty($json['features'])) {
             foreach ($json['features'] as $feature) {
                 $feature['content'] = $content;
                 $feature['itemreference'] = $itemReference;
                 if (in_array($feature['data']['type'], LearnosityExportConstant::$supportedFeatureTypes)) {
                     $result = Converter::convertLearnosityToQtiItem($feature);
-                    $result[0] = str_replace('/vendor/learnosity/itembank/', '', $result[0]);
+                    $result[0] = str_replace(LearnosityExportConstant::DIRPATH_ASSETS, LearnosityExportConstant::DIRNAME_IMAGES . '/', $result[0]);
                     $finalXml['features'][] = $result;
                     $tagsArray[$feature['reference']] = $tags;
                 } else {
                     $result = [
                         '',
-                        [
-                            'Ignoring' . $feature['data']['type'] . ' , currently unsupported'
-                        ]
+                        ['Ignoring' . $feature['data']['type'] . ' , currently unsupported']
                     ];
                     $this->output->writeln("<error>Feature type `{$feature['data']['type']}` not yet supported, ignoring</error>");
                 }
@@ -401,9 +454,10 @@ class ConvertToQtiService
         }
 
         return [
-            'qti'  => $finalXml,
-            'json' => $json,
-            'tags' => $tagsArray
+            'qti'       => $finalXml,
+            'json'      => $json,
+            'tags'      => $tagsArray,
+            'issues'    => $result[1]
         ];
     }
 
@@ -446,6 +500,8 @@ class ConvertToQtiService
         if (!class_exists('ZipArchive')) {
             return;
         }
+
+        $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Zipping manifest to " . $contentDirPath . "</info>\n");
 
         // Get real path for our folder
         $rootPath = $contentDirPath;
@@ -555,7 +611,7 @@ class ConvertToQtiService
                 if (
                     isset($results[$index]) &&
                     !empty($results[$index]) &&
-                    (in_array('tags', $results[$index]) && !empty($results[$index]['tags'][$results[$index]['json']['questions'][$indexResource]['reference']]))
+                    (array_key_exists('tags', $results[$index]) && !empty($results[$index]['tags'][$results[$index]['json']['questions'][$indexResource]['reference']]))
                 ) {
                     $metadata = $imsManifestXml->createElement("metadata");
                     $tagsArray = $results[$index]['tags'][$results[$index]['json']['questions'][$indexResource]['reference']];
@@ -569,7 +625,7 @@ class ConvertToQtiService
                 $filesData = $resourceContent->getFiles();
                 foreach ($filesData as $fileContent) {
                     $file = $imsManifestXml->createElement("file");
-                    $file->setAttribute("href", $fileContent->getHref());
+                    $file->setAttribute("href", str_replace('../', '', $fileContent->getHref()));
                     $resource->appendChild($file);
                 }
                 $resources->appendChild($resource);
@@ -616,7 +672,7 @@ class ConvertToQtiService
         if ($this->dryRun) {
             return;
         }
-        $this->output->writeln("\n<info>" . static::INFO_OUTPUT_PREFIX . "Writing conversion results: " . $outputFilePath . "</info>\n");
+        $this->output->writeln("\n<info>" . static::INFO_OUTPUT_PREFIX . "Writing conversion results to: " . $outputFilePath . "</info>");
         foreach ($results as $result) {
             if (!empty($result['qti'])) {
                 if (!empty($result['json']['questions'])) {
@@ -733,7 +789,7 @@ class ConvertToQtiService
     private function addFeatureHtmlFilesInfo($featureHtmlArray, array $files)
     {
         foreach ($featureHtmlArray as $featureId => $featureHtml) {
-            if (file_put_contents($this->outputPath . '/' . $this->rawPath . '/' . LearnosityExportConstant::SHARED_PASSAGE_FOLDER_NAME . '/' . $featureId . '.html', $featureHtml)) {
+            if (file_put_contents($this->outputPath . '/' . $this->rawPath . '/' . LearnosityExportConstant::DIRNAME_ITEMS . '/' . LearnosityExportConstant::SHARED_PASSAGE_FOLDER_NAME . '/' . $featureId . '.html', $featureHtml)) {
                 $file = new File();
                 $file->setHref(LearnosityExportConstant::SHARED_PASSAGE_FOLDER_NAME . '/' . $featureId . '.html');
                 $files[] = $file;
@@ -787,7 +843,11 @@ class ConvertToQtiService
         $files = array();
         foreach ($filesInfo as $info) {
             $file = new File();
-            $fileName = substr($info, strlen(LearnosityExportConstant::DIRPATH_ASSETS));
+            if ($this->isAbsoluteHttpUri($info)){
+                $fileName = $info;
+            } else {
+                $fileName = substr($info, strlen(LearnosityExportConstant::DIRPATH_ASSETS));
+            }
             $mimeType = MimeUtil::guessMimeType($fileName);
             $href = $this->getAssetHref($fileName, $mimeType);
             $file->setHref($href);
@@ -830,7 +890,8 @@ class ConvertToQtiService
                     foreach ($questionArray->questions as $questionKey => $questionValue) {
                         $valueArray = array();
                         foreach ($questionValue as $value) {
-                            $valueArray[] = $value->replacement;
+                            // Sometimes there's an error, and `replacement` doesn't exist.
+                            $valueArray[] = !empty($value->replacement) ? $value->replacement : $value->url;
                         }
                         $additionalFileInfoArray[$questionKey] = $valueArray;
                     }
@@ -839,9 +900,7 @@ class ConvertToQtiService
                     foreach ($questionArray->features as $featureKey => $featureValue) {
                         $valueArray = array();
                         foreach ($featureValue as $value) {
-                            if (isset($value->replacement)) {
-                                $valueArray[] = $value->replacement;
-                            }
+                            $valueArray[] = !empty($value->replacement) ? $value->replacement : $value->url;
                         }
                         $additionalFileInfoArray[$featureKey] = $valueArray;
                     }
@@ -889,6 +948,7 @@ class ConvertToQtiService
         }
         return $referenceArr;
     }
+
     private function getFeatureReference($questionReference, $referenceArray)
     {
         $featureReference = '';
@@ -902,6 +962,7 @@ class ConvertToQtiService
         }
         return $featureReference;
     }
+
     private function getFeature($featureReference, $features)
     {
         $featureArray = [];
@@ -911,5 +972,14 @@ class ConvertToQtiService
             }
         }
         return $featureArray;
+    }
+
+    /**
+     * Match only URIs that start with "http://" or "https://"
+     * vs those that are relative
+     */
+    function isAbsoluteHttpUri($uri)
+    {
+        return preg_match('/^(https?):\/\//i', $uri);
     }
 }

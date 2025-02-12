@@ -4,6 +4,7 @@ namespace LearnosityQti\Processors\Learnosity\In;
 
 use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Services\LogService;
+use LearnosityQti\Utils\Log\Logger;
 
 class EntityBuilder
 {
@@ -16,6 +17,7 @@ class EntityBuilder
             if (isset($json[$parameterName])) {
                 $parameters[$parameterName] = self::buildField($parameter, $json[$parameterName]);
             } else {
+                LogService::log('Invalid JSON. Required key ' . $parameterName . ' does not exists');
                 throw new MappingException('Invalid JSON. Required key ' . $parameterName . ' does not exists');
             }
         }
@@ -38,6 +40,15 @@ class EntityBuilder
         if ($parameter->getType() && $parameter->getType()->getName() === 'array') {
             $possibleObjectClassName = $parameter->getDeclaringClass()->getName() . '_' . $parameter->getName() . '_item';
             if (class_exists($possibleObjectClassName)) {
+                if (in_array(null, $data, true)) {
+                    // Remove `NULL` array elements if they somehow exist
+                    // This avoids a fatal error, but it's likely the validation will fail.
+                    LogService::log("Invalid JSON, `NULL` array elements found. They have been removed but validation may fail.");
+                    Logger::error("Invalid JSON, `NULL` array elements found. They have been removed but validation may fail.");
+                    $data = array_filter($data, function ($value) {
+                        return !is_null($value);
+                    });
+                }
                 return array_map(function ($values) use ($possibleObjectClassName) {
                     return self::build($possibleObjectClassName, $values);
                 }, $data);

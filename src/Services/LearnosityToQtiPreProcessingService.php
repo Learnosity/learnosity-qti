@@ -4,6 +4,7 @@ namespace LearnosityQti\Services;
 
 use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Processors\QtiV2\Out\ContentCollectionBuilder;
+use LearnosityQti\Services\LogService;
 use LearnosityQti\Utils\MimeUtil;
 use LearnosityQti\Utils\QtiMarshallerUtil;
 use LearnosityQti\Utils\SimpleHtmlDom\SimpleHtmlDom;
@@ -16,29 +17,44 @@ use LearnosityQti\Processors\QtiV2\Out\Constants as LearnosityExportConstant;
 class LearnosityToQtiPreProcessingService
 {
     private $widgets = [];
+    private $inputPath = '';
+    private $widgetType = '';
 
     public function __construct(array $widgets = [])
     {
         $this->widgets = array_column($widgets, null, 'reference');
     }
 
-    public function processJson(array $json)
+    public function processJson(array $json, $inputPath = '')
     {
-        array_walk_recursive($json, function (&$item, $key) {
+        $this->widgetType = $json['data']['type'];
+
+        // The source input path to the files we are converting
+        if (!empty($inputPath)) {
+            $this->inputPath = $inputPath;
+        }
+
+        $this->recursiveArrayWalk($json, function (&$key, &$item, $parentKey) {
+            $propertiesExtraProcessing = ['stimulus', 'label', 'distractor_rationale', 'template'];
             if (is_string($item)) {
-                // Replace nbsp with '&#160;'
-                $item = str_replace('&nbsp;', '&#160;', $item);
                 $item = $this->processHtml($item);
 
-                $item = html_entity_decode($item, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                if (in_array($key, $propertiesExtraProcessing)) {
+                    $item = $this->processHtmlPostProcessing($item, $key, $this->widgetType);
+                }
 
-                // Replace <center> with <p align="center"> and </center> with </p>
-                $item = preg_replace('/<center>/', '<p align="center">', $item);
-                $item = preg_replace('/<\/center>/', '</p>', $item);
+                // Replace all &nbsp; entities with &#160; as the former are not allowed in XML
+                $item = str_replace('&nbsp;', '&#160;', $item);
+            }
 
-                // Replace closing </u> with </span>
-                $item = preg_replace('/<u>/', '<span style="text-decoration:underline;">', $item);
-                $item = preg_replace('/<\/u>/', '</span>', $item);
+            if ($key === 'content') {
+                $item = $this->processContentPostProcessing($item);
+            }
+
+            if ($key === 'list') {
+                foreach ($item as $i => $listItem) {
+                    $item[$i] = $this->processHtmlPostProcessing($listItem, 'list', $this->widgetType);
+                }
             }
 
             if ($key === 'template') {
@@ -51,21 +67,21 @@ class LearnosityToQtiPreProcessingService
                 $item = preg_replace('/(<td[^>]*>)(\s*{{response}}\s*)(<\/td>)/', '$1<span>$2</span>$3', $item);
             }
         });
+
         return $json;
     }
 
     private function processHtml($content)
     {
+        // Fix for <img src=...> tags that are missing quotes around the src attribute
+        $content = preg_replace('/<img\s+src=([^"\'\s>]+)(\s|>)/i', '<img src="$1"$2', $content);
+
         $html = new SimpleHtmlDom();
         $html->load($content);
 
-        // Replace <br> with <br />, <img ....> with <img />, etc
-        /** @var array $selfClosingTags ie. `img, br, input, meta, link, hr, base, embed, spacer` */
-        $selfClosingTags = implode(', ', array_keys($html->getSelfClosingTags()));
-        foreach ($html->find($selfClosingTags) as &$node) {
-            if (!strpos($node->outertext, '/>')) {
-                $node->outertext = rtrim($node->outertext, '>') . '/>';
-            }
+        // Remove <center> </center>
+        foreach ($html->find('center') as $centerTag) {
+            $centerTag->outertext = $centerTag->innertext; // Replace <center> with its content
         }
 
         foreach ($html->find('img') as &$node) {
@@ -83,7 +99,259 @@ class LearnosityToQtiPreProcessingService
                 LogService::log($e->getMessage() . '. Ignoring mapping feature ' . $node->outertext . '`');
             }
         }
+
         return $html->save();
+    }
+
+    /**
+     * Due to problems with SimpleHtmlDom, we need to use DOMDocument to process the HTML content
+     * to do things like injecting <tbody> into <table> elements, closing any unclosed tags.
+     * We also try to escape invalid XML characters in text nodes.
+     */
+    private function processHtmlPostProcessing($content, $property, $type)
+    {
+        if (empty($content)) return $content;
+
+        $doc = new \DOMDocument('1.0', 'UTF-8');
+
+        // Replace `<` and `>` characters that are not part of tags
+        $content = preg_replace_callback(
+            '/<(?!(?:\/?[a-zA-Z0-9]+(?:\s|\/?>)))|>(?!(?:[^<]*<\/[a-zA-Z]+>|[^<]*\/?>))/',
+            function ($matches) {
+                return ($matches[0] === '<') ? '__LT__' : '>'; // Do NOT replace `>`
+            },
+            $content
+        );
+
+        // Wrap the HTML in a minimal valid structure (fixes issues with `loadHTML`)
+        $htmlWrapped = "<!DOCTYPE html><html><body><div>$content</div></body></html>";
+
+        // Suppress warnings for malformed HTML
+        libxml_use_internal_errors(true);
+
+        // Load the wrapped HTML
+        $doc->loadHTML($htmlWrapped, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+        // Clear any parsing errors
+        libxml_clear_errors();
+
+        /***************** Start processing the HTML ****************/
+
+        // Preserve MathML by wrapping it in CDATA
+        foreach ($doc->getElementsByTagName('math') as $mathTag) {
+            $cdata = $doc->createCDATASection($doc->saveHTML($mathTag));
+            $mathTag->parentNode->replaceChild($cdata, $mathTag);
+        }
+
+        // Process tables inside the div
+        foreach ($doc->getElementsByTagName('table') as $table) {
+            // Ensure the table has a <tbody>
+            if (!$table->getElementsByTagName('tbody')->length) {
+                $tbody = $doc->createElement('tbody');
+
+                // Move all <tr> elements into <tbody>
+                $trs = [];
+                foreach ($table->childNodes as $child) {
+                    if ($child->nodeName === 'tr') {
+                        $trs[] = $child;
+                    }
+                }
+
+                foreach ($trs as $tr) {
+                    $tbody->appendChild($tr);
+                }
+
+                $table->appendChild($tbody);
+            }
+        }
+
+        // Replace <b> with <strong>
+        foreach ($doc->getElementsByTagName('b') as $bTag) {
+            $strongTag = $doc->createElement('strong');
+
+            // Copy all child nodes from <b> to <strong> to preserve structure
+            while ($bTag->childNodes->length > 0) {
+                $strongTag->appendChild($bTag->childNodes->item(0));
+            }
+
+            // Replace <b> with <strong>, keeping math content intact
+            $bTag->parentNode->replaceChild($strongTag, $bTag);
+        }
+
+        // Replace <i> with <em>
+        foreach ($doc->getElementsByTagName('i') as $iTag) {
+            $emTag = $doc->createElement('em');
+
+            // Copy all child nodes from <b> to <strong> to preserve structure
+            while ($iTag->childNodes->length > 0) {
+                $emTag->appendChild($iTag->childNodes->item(0));
+            }
+
+            // Replace <b> with <strong>, keeping math content intact
+            $iTag->parentNode->replaceChild($emTag, $iTag);
+        }
+
+        // Replace <u> with <span style="text-decoration: underline;">
+        $uTags = iterator_to_array($doc->getElementsByTagName('u'));
+        foreach ($uTags as $uTag) {
+            $spanTag = $doc->createElement('span', $uTag->textContent);
+            $spanTag->setAttribute('style', 'text-decoration: underline;');
+            $uTag->parentNode->replaceChild($spanTag, $uTag);
+        }
+
+        // Remove all <meta> elements
+        $metaTags = $doc->getElementsByTagName('meta');
+        // Loop backwards to safely remove elements
+        for ($i = $metaTags->length - 1; $i >= 0; $i--) {
+            $metaTag = $metaTags->item($i);
+            $metaTag->parentNode->removeChild($metaTag);
+        }
+
+        // Remove all <link> elements
+        $linkTags = $doc->getElementsByTagName('link');
+        // Loop backwards to safely remove elements
+        for ($i = $linkTags->length - 1; $i >= 0; $i--) {
+            $linkTag = $linkTags->item($i);
+            $linkTag->parentNode->removeChild($linkTag);
+        }
+
+        // Find any <img> attributes that have a `px` suffix
+        foreach ($doc->getElementsByTagName('img') as $imgTag) {
+            // Remove "px" from width and height attributes
+            if ($imgTag->hasAttribute('width')) {
+                $imgTag->setAttribute('width', preg_replace('/px$/', '', $imgTag->getAttribute('width')));
+            }
+            if ($imgTag->hasAttribute('height')) {
+                $imgTag->setAttribute('height', preg_replace('/px$/', '', $imgTag->getAttribute('height')));
+            }
+        }
+
+        // Remove empty paragraphs
+        $paragraphs = $doc->getElementsByTagName('p');
+        // Loop backwards to avoid skipping elements after removal
+        for ($i = $paragraphs->length - 1; $i >= 0; $i--) {
+            $pTag = $paragraphs->item($i);
+
+            // Check if <p> is empty or contains only non-breaking spaces
+            if (trim($pTag->textContent, "\u{00A0} \t\n\r\0\x0B") === '') {
+                $pTag->parentNode->removeChild($pTag);
+            }
+        }
+
+        // Remove <font> tags
+        $fonts = $doc->getElementsByTagName('font');
+        // Loop backwards to avoid skipping elements after removal
+        for ($i = $fonts->length - 1; $i >= 0; $i--) {
+            $fontTag = $fonts->item($i);
+
+            // Move all child nodes of <font> to its parent before removing it
+            while ($fontTag->childNodes->length > 0) {
+                $fontTag->parentNode->insertBefore($fontTag->childNodes->item(0), $fontTag);
+            }
+
+            // Remove the <font> tag itself
+            $fontTag->parentNode->removeChild($fontTag);
+        }
+
+        // Look for elements with an `id` starting with a number and
+        // prepend an underscore
+        foreach ($doc->getElementsByTagName('*') as $element) {
+            if ($element->hasAttribute('id')) {
+                $idValue = $element->getAttribute('id');
+
+                // If the ID starts with a number, prepend an underscore (_)
+                if (preg_match('/^\d/', $idValue)) {
+                    $newId = '_' . $idValue;
+                    $element->setAttribute('id', $newId);
+                }
+            }
+        }
+
+        // Find any orphaned <li> elements and wrap them in a <ul>
+        $xpath = new \DOMXPath($doc);
+        $orphanedLis = $xpath->query('//li[not(parent::ul) and not(parent::ol)]');
+        if ($orphanedLis->length > 0) {
+            $ul = $doc->createElement('ul');
+            foreach ($orphanedLis as $li) {
+                if (!$ul->parentNode) {
+                    $li->parentNode->insertBefore($ul, $li);
+                }
+                $ul->appendChild($li);
+            }
+        }
+
+        // Find any <blockquote> elements and replace with a <div> as the lib doesn't support it
+        // We put the <blockquote> back after XML is generated.
+        $blockquoteNodes = $doc->getElementsByTagName('blockquote');
+        $blockquotes = iterator_to_array($blockquoteNodes);
+        foreach ($blockquotes as $blockquote) {
+            $div = $doc->createElement('div');
+            while ($blockquote->hasChildNodes()) {
+                $div->appendChild($blockquote->firstChild);
+            }
+            $div->setAttribute('class', 'lrn-replace-blockquote');
+            $blockquote->parentNode->replaceChild($div, $blockquote);
+        }
+
+        /***************** End processing the HTML ****************/
+
+        // Find the <div> wrapper
+        $wrapper = $doc->getElementsByTagName('div')->item(0);
+
+        // Extract only the modified content inside the <div>
+        $processedHtml = '';
+        foreach ($wrapper->childNodes as $node) {
+            $processedHtml .= $doc->saveHTML($node);
+        }
+
+        // Ensure all elements are properly closed
+        $processedHtml = tidy_repair_string($processedHtml, [
+            'output-xhtml' => true,
+            'show-body-only' => true,
+            'wrap' => 0
+        ]);
+
+        $processedHtml = str_replace(['__LT__', '__GT__'], ['&lt;', '&gt;'], $processedHtml);
+        return $processedHtml;
+    }
+
+    /**
+     * Do any necessary process on the API generated `content` string.
+     */
+    private function processContentPostProcessing($content)
+    {
+        if (empty($content)) return $content;
+
+        $doc = new \DOMDocument('1.0', 'UTF-8');
+        $doc->loadHTML($content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+        // Remove API tabs as they are unsupported. We keep any widgets.
+        $tabsParentDiv = null;
+        // Find <div class="tabs"> and keep its parent as the new outer div
+        foreach ($doc->getElementsByTagName('div') as $div) {
+            if ($div->getAttribute('class') === 'tabs') {
+                $tabsParentDiv = $div->parentNode;
+                break; // Stop after finding the first occurrence
+            }
+        }
+        if ($tabsParentDiv) {
+            // Find all <div class="learnosity-feature">
+            $widgets = [];
+            foreach ($tabsParentDiv->getElementsByTagName('div') as $featureDiv) {
+                if ($featureDiv->getAttribute('class') === 'learnosity-feature') {
+                    $widgets[] = $featureDiv;
+                }
+            }
+
+            $tabsParentDiv->removeChild($tabsParentDiv->firstChild);
+
+            // Append only the <div class="learnosity-feature"> elements inside the outer div
+            foreach ($widgets as $widget) {
+                $tabsParentDiv->appendChild($widget);
+            }
+        }
+
+        return $doc->saveHTML();
     }
 
     private function getFeatureReplacementString($node)
@@ -113,16 +381,18 @@ class LearnosityToQtiPreProcessingService
                 return;
             } elseif ($type === 'sharedpassage') {
                 $flowCollection = new FlowCollection();
-                $div = $this->createDivForSharedPassage();
-                $object = new ObjectElement('sharedpassage/' . $featureReference . '.html', 'text/html');
+                $object = new ObjectElement(LearnosityExportConstant::SHARED_PASSAGE_FOLDER_NAME . '/' . $featureReference . '.html', 'text/html');
                 $object->setLabel($featureReference);
-                $flowCollection->attach($object);
-                $div->setContent($flowCollection);
-                return QtiMarshallerUtil::marshallValidQti($div);
+                // $div = $this->createDivForSharedPassage();
+                // $flowCollection->attach($object);
+                // $div->setContent($flowCollection);
+                return QtiMarshallerUtil::marshallValidQti($object);
             } else {
+                LogService::log($type . 'feature not supported');
                 throw new MappingException($type . 'feature not supported');
             }
         }
+        LogService::log($type . ' not supported');
         throw new MappingException($type . ' not supported');
     }
 
@@ -163,13 +433,27 @@ class LearnosityToQtiPreProcessingService
         if (is_array($mediaFormatArray) && !empty($mediaFormatArray[0])) {
             $mediaFormat = $mediaFormatArray[0];
             if ($mediaFormat == 'video') {
-                $href = '../' . LearnosityExportConstant::DIRNAME_VIDEO . '/' . $fileName;
+                $href = LearnosityExportConstant::DIRNAME_VIDEO . '/' . $fileName;
             } elseif ($mediaFormat == 'audio') {
-                $href = '../' . LearnosityExportConstant::DIRNAME_AUDIO . '/' . $fileName;
+                $href = LearnosityExportConstant::DIRNAME_AUDIO . '/' . $fileName;
             } elseif ($mediaFormat == 'image') {
-                $href = '../' . LearnosityExportConstant::DIRNAME_IMAGES . '/' . $fileName;
+                $href = LearnosityExportConstant::DIRNAME_IMAGES . '/' . $fileName;
+            } else {
+                $href = $src;
             }
         }
         return $href;
+    }
+
+    private function recursiveArrayWalk(array &$array, callable $callback, $parentKey = null) {
+        foreach ($array as $key => &$value) {
+            // Call the callback function with key, value, and parent key
+            $callback($key, $value, $parentKey);
+
+            // If the value is an array, recurse deeper
+            if (is_array($value)) {
+                $this->recursiveArrayWalk($value, $callback, $key);
+            }
+        }
     }
 }

@@ -38,6 +38,13 @@ class ConvertToQtiCommand extends Command
                 This option supports the following possible values: (canvas, qti). Pass the canvas option to export
                 QTI content that is compatible with Canvas LMS. The default is qti, which outputs non LMS-specific QTI.'
             )
+            ->addOption(
+                'zip',
+                'z',
+                InputOption::VALUE_OPTIONAL,
+                'Whether you want to zip the output folder. Default is true',
+                null
+            )
         ;
     }
 
@@ -47,6 +54,15 @@ class ConvertToQtiCommand extends Command
         $inputPath = $input->getOption('input');
         $outputPath = $input->getOption('output');
         $format = ($input->getOption('format')) ? strtolower($input->getOption('format')) : null;
+        $zip = $input->getOption('zip');
+        if ($zip === null) {
+            $zip = true;
+        } else {
+            $zip = filter_var($zip, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+            if ($zip === null) {
+                throw new \InvalidArgumentException("Invalid value for --zip. Use 'true' or 'false'.");
+            }
+        }
 
         // Validate the required options
         if (empty($inputPath) || empty($outputPath)) {
@@ -90,7 +106,7 @@ class ConvertToQtiCommand extends Command
                 "  <info>mo convert:to:qti -i /path/to/qti -o /path/to/save/folder -f qti|canvas</info>"
             ]);
         } else {
-            $Convert = ConvertToQtiService::initClass($inputPath, $outputPath, $output, $format);
+            $Convert = ConvertToQtiService::initClass($inputPath, $outputPath, $output, $format, null, $zip);
             $result = $Convert->process();
             if (empty($result)) {
                 $output->writeln('<info>Empty results array, check output directory</info>');

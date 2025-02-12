@@ -22,7 +22,6 @@ class QtiResponseProcessingBuilder
 
     public function build($score, $maxscore, $penalty, $feedBackOptions = array(), $type = array())
     {
-
         $responseRuleCollection = new ResponseRuleCollection();
 
         // creating feedbackInline outcome for questions which supports feedbackInline

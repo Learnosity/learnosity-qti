@@ -128,6 +128,7 @@ class MimeUtil
             "jpg"     => "image/jpeg",
             "jpe"     => "image/jpeg",
             "png"     => "image/png",
+            "svg"     => "image/svg+xml",
             "tiff"    => "image/tiff",
             "tif"     => "image/tif",
             "djvu"    => "image/vnd.djvu",

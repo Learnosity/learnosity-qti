@@ -5,11 +5,12 @@ namespace LearnosityQti\Processors\QtiV2\Out\Validation;
 use LearnosityQti\Processors\QtiV2\Out\Constants;
 use LearnosityQti\Processors\QtiV2\Out\ResponseProcessing\QtiResponseProcessingBuilder;
 use LearnosityQti\Services\LogService;
+use LearnosityQti\Utils\Log\Logger;
 use qtism\data\processing\ResponseProcessing;
 
 abstract class AbstractQuestionValidationBuilder
 {
-    private $supportedScoringType = ['exactMatch'];
+    private $supportedScoringType = ['exactMatch', 'partialMatch', 'partialMatchV2'];
 
     abstract protected function buildResponseDeclaration($responseIdentifier, $validation);
 
@@ -24,12 +25,13 @@ abstract class AbstractQuestionValidationBuilder
 
         if (empty($validation->get_scoring_type()) || !in_array($validation->get_scoring_type(), $this->supportedScoringType)) {
             // TODO: Need to support more validation type :)
-            LogService::log('Invalid `scoring_type`, only supported `exactMatch`. Failed to build `responseDeclaration` and `responseProcessingTemplate');
+            $types = implode(', ', $this->supportedScoringType);
+            Logger::error("Invalid `scoring_type`, only $types are supported. Failed to build `responseDeclaration` and `responseProcessingTemplate`");
             return [null, null];
         }
 
         if (empty($validation->get_valid_response()) || empty($validation->get_valid_response()->get_value()) || empty($validation->get_valid_response()->get_score())) {
-            LogService::log('Invalid `valid_response` object, fail to build `responseDeclaration` and `responseProcessingTemplate');
+            Logger::error('Invalid `valid_response` object, fail to build `responseDeclaration` and `responseProcessingTemplate');
             return [null, null];
         }
 
@@ -48,7 +50,6 @@ abstract class AbstractQuestionValidationBuilder
             $type[] = 'score';
             $score = $validation->get_valid_response()->get_score();
         }
-
         if (method_exists($validation, 'get_max_score') && $validation->get_max_score() != '') {
             $type[] = 'maxscore';
             $maxscore = $validation->get_max_score();
@@ -62,7 +63,8 @@ abstract class AbstractQuestionValidationBuilder
             $responseProcessing = $ResponseProcessingBuilder->buildResponseProcessingWithMultipleResponse($score, $maxscore, $penalty, $feedBackOptions, $type, $responseIdentifiers);
         } else {
             // if found distractor_rationale_response_level generate response processing with setoutcome value FEEDBACK
-            if (!empty($feedBackOptions) && is_array($feedBackOptions) || in_array('maxscore', $type) || in_array('penalty', $type)) {
+            // if (!empty($feedBackOptions) && is_array($feedBackOptions) || in_array('maxscore', $type) || in_array('penalty', $type)) {
+            if (!empty($feedBackOptions) && is_array($feedBackOptions) && (!count($feedBackOptions) === 1 && in_array('general_feedback', $feedBackOptions))) {
                 $responseProcessing = $ResponseProcessingBuilder->build($score, $maxscore, $penalty, $feedBackOptions, $type);
             } else {
                 $responseProcessing = $this->buildResponseProcessing($validation, $isCaseSensitive);
@@ -77,10 +79,16 @@ abstract class AbstractQuestionValidationBuilder
         // Guess question type
         $validationClazz = new \ReflectionClass($validation);
         $questionType = str_replace('_validation', '', $validationClazz->getShortName());
+        if (method_exists($validation, 'get_scoring_type')) {
+            $scoringType = $validation->get_scoring_type();
+        } else {
+            $scoringType = null;
+        }
 
         if (in_array($questionType, Constants::$questionTypesWithMappingSupport)) {
             $responseProcessing = new ResponseProcessing();
-            $responseProcessing->setTemplate(Constants::RESPONSE_PROCESSING_TEMPLATE_MAP_RESPONSE);
+            $template = ($scoringType === 'exactMatch') ? Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT : Constants::RESPONSE_PROCESSING_TEMPLATE_MAP_RESPONSE;
+            $responseProcessing->setTemplate($template);
             return $responseProcessing;
         }
 

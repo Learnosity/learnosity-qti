@@ -115,7 +115,10 @@ class DocumentationGenerator
         $interactionDocumentation = [];
         foreach (QtiImportConstant::$supportedInteractions as $className) {
             /** @var InteractionDocumentationInterface $mapperClass */
-            $mapperClass = 'LearnosityQti\Processors\QtiV2\In\Documentation\Interactions\\' . ucfirst($className) . 'Documentation';
+            $unsupportedInteractions = ['mediaInteraction'];
+            if (!in_array($className, $unsupportedInteractions)) {
+                $mapperClass = 'LearnosityQti\Processors\QtiV2\In\Documentation\Interactions\\' . ucfirst($className) . 'Documentation';
+            }
             $interactionDocumentation[ucfirst($className)] = [
                 'interactionMapping' => $mapperClass::getInteractionDocumentation()
             ];

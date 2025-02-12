@@ -13,9 +13,6 @@ class QuestionWriter
 {
     public function convert(Question $question)
     {
-        // Make sure we clean up the log
-        LogService::flush();
-
         // Try to build the identifier using question `reference`
         // Otherwise, generate an alternative identifier and store the original reference as `label`
         $questionReference = $question->get_reference();
@@ -43,15 +40,15 @@ class QuestionWriter
                 if ($feature['data']['type'] == 'sharedpassage') {
                     $featureBuilder = new FeatureItemBuilder();
                     $featureHtml = $featureBuilder->build($feature);
-                    $featureBuilderArray[$question->get_reference()] = array($feature['reference'] => $featureHtml);
+                    if (empty($featureBuilderArray[$question->get_reference()])) $featureBuilderArray[$question->get_reference()] = [];
+                    $featureBuilderArray[$question->get_reference()][$feature['reference']] = $featureHtml;
                 } else {
                     $featureBuilderArray['features'] = $feature['reference'];
                 }
             }
         }
 
-        // Flush out all the error messages stored in this static class, also ensure they are unique
-        $messages = array_values(array_unique(LogService::flush()));
+        $messages = array_values(array_unique(LogService::read()));
         return [$xml->saveToString(true), $messages, $questionReference, $featureBuilderArray];
     }
 }

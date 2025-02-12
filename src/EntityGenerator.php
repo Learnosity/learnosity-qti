@@ -12,6 +12,9 @@ class EntityGenerator
     private $schemasService;
     private $templateDirectory;
     private $currentNamespace;
+    private $questionOutputDir;
+    private $itemOutputDir;
+    private $activityOutputDir;
 
     public function __construct(SchemasService $schemasService)
     {
