@@ -33,5 +33,7 @@ class ListCommand extends Command
             "  <info>list</info>\t\t\t\tLists all commands available",
             '',
         ]);
+
+        return Command::SUCCESS;
     }
 }

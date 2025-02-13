@@ -29,5 +29,7 @@ class DefaultCommand extends Command
             '<comment>Commands:</comment>',
             "  <info>mo list</info>\tRun this to see the available commands",
         ]);
+
+        return Command::SUCCESS;
     }
 }
