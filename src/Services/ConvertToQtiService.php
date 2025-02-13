@@ -355,7 +355,7 @@ class ConvertToQtiService
         $features = $json['features'];
         $tags = $json['tags'];
         $itemReference = $json['reference'];
-        if (count($json['questions']) >= 2) var_dump('sdfs');
+
         if (!empty($json['questions']) && !empty($features)) {
             $referenceArray = $this->getReferenceArray($json);
             foreach ($json['questions'] as $question) :
