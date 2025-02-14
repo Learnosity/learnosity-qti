@@ -9,13 +9,18 @@ class LearnosityToQtiPostProcessingService
 
     public function processXml($content)
     {
+        $map = [0x80, 0x10FFFF, 0, 0xFFFF]; // UTF-8 character range
+        $content = mb_encode_numericentity($content, $map, 'UTF-8');
+
         $doc = new \DOMDocument('1.0', 'UTF-8');
 
         // Suppress warnings for malformed HTML
         libxml_use_internal_errors(true);
 
         // Load the wrapped HTML
-        $doc->loadHTML($content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        $doc->loadXML($content, LIBXML_NOENT | LIBXML_NOCDATA | LIBXML_NOBLANKS);
+        $doc->preserveWhiteSpace = true;
+        $doc->formatOutput = true;
 
         // Clear any parsing errors
         libxml_clear_errors();
@@ -37,6 +42,6 @@ class LearnosityToQtiPostProcessingService
 
         /***************** End processing the HTML ****************/
 
-        return $content;
+        return $doc->saveXML();
     }
 }

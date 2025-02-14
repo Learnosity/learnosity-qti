@@ -37,7 +37,7 @@ class LearnosityToQtiPreProcessingService
         $this->recursiveArrayWalk($json, function (&$key, &$item, $parentKey) {
             $propertiesExtraProcessing = ['stimulus', 'label', 'distractor_rationale', 'template'];
             if (is_string($item)) {
-                $item = $this->processHtml($item);
+                $item = $this->processHtml($item, $key);
 
                 if (in_array($key, $propertiesExtraProcessing)) {
                     $item = $this->processHtmlPostProcessing($item, $key, $this->widgetType);
@@ -49,6 +49,8 @@ class LearnosityToQtiPreProcessingService
 
             if ($key === 'content') {
                 $item = $this->processContentPostProcessing($item);
+                // Replace all &nbsp; entities with &#160; as the former are not allowed in XML
+                $item = str_replace('&nbsp;', '&#160;', $item);
             }
 
             if ($key === 'list') {
@@ -56,23 +58,23 @@ class LearnosityToQtiPreProcessingService
                     $item[$i] = $this->processHtmlPostProcessing($listItem, 'list', $this->widgetType);
                 }
             }
-
-            if ($key === 'template') {
-                // Look for `template` attributes and make sure they're wrapped in a block element as QTI expects
-                if (substr($item, 0, 3) !== '<p>' && substr($item, 0, 5) !== '<span' && !preg_match('/<table\b[^>]*>/i', $item)) {
-                    $item = '<span>' . $item . '</span>';
-                }
-
-                // Ensure {{response}} containers are wrapped in a valid flow element (if they aren't already)
-                $item = preg_replace('/(<td[^>]*>)(\s*{{response}}\s*)(<\/td>)/', '$1<span>$2</span>$3', $item);
-            }
         });
 
         return $json;
     }
 
-    private function processHtml($content)
+    private function processHtml($content, $key)
     {
+        if ($key === 'template') {
+            // Look for `template` attributes and make sure they're wrapped in a block element as QTI expects
+            if (substr($content, 0, 3) !== '<p>' && substr($content, 0, 5) !== '<span' && !preg_match('/<table\b[^>]*>/i', $content)) {
+                $content = '<span>' . $content . '</span>';
+            }
+
+            // Ensure {{response}} containers are wrapped in a valid flow element (if they aren't already)
+            $content = preg_replace('/(<td[^>]*>)(\s*{{response}}\s*)(<\/td>)/', '$1<span>$2</span>$3', $content);
+        }
+
         // Fix for <img src=...> tags that are missing quotes around the src attribute
         $content = preg_replace('/<img\s+src=([^"\'\s>]+)(\s|>)/i', '<img src="$1"$2', $content);
 
@@ -108,9 +110,12 @@ class LearnosityToQtiPreProcessingService
      * to do things like injecting <tbody> into <table> elements, closing any unclosed tags.
      * We also try to escape invalid XML characters in text nodes.
      */
-    private function processHtmlPostProcessing($content, $property, $type)
+    private function processHtmlPostProcessing($content, $key, $type)
     {
         if (empty($content)) return $content;
+
+        $map = [0x80, 0x10FFFF, 0, 0xFFFF]; // UTF-8 character range
+        $content = mb_encode_numericentity($content, $map, 'UTF-8');
 
         $doc = new \DOMDocument('1.0', 'UTF-8');
 
@@ -322,8 +327,12 @@ class LearnosityToQtiPreProcessingService
     {
         if (empty($content)) return $content;
 
+        $map = [0x80, 0x10FFFF, 0, 0xFFFF]; // UTF-8 character range
+        $content = mb_encode_numericentity($content, $map, 'UTF-8');
+
         $doc = new \DOMDocument('1.0', 'UTF-8');
-        $doc->loadHTML($content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        $htmlWrapped = "<!DOCTYPE html><html><body><div>$content</div></body></html>";
+        $doc->loadHTML($htmlWrapped, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
 
         // Remove API tabs as they are unsupported. We keep any widgets.
         $tabsParentDiv = null;
@@ -351,7 +360,25 @@ class LearnosityToQtiPreProcessingService
             }
         }
 
-        return $doc->saveHTML();
+        // Find the <div> wrapper
+        $wrapper = $doc->getElementsByTagName('div')->item(0);
+
+        // Extract only the modified content inside the <div>
+        $processedHtml = '';
+        foreach ($wrapper->childNodes as $node) {
+            $processedHtml .= $doc->saveHTML($node);
+        }
+
+        // Ensure all elements are properly closed
+        $processedHtml = tidy_repair_string($processedHtml, [
+            'indent'                => true,
+            'output-xhtml'          => true,
+            'drop-empty-elements'   => false, // Prevents removing empty <span> (aka Learnosity widgets)
+            'show-body-only'        => true,
+            'wrap'                  => 0
+        ]);
+
+        return $processedHtml;
     }
 
     private function getFeatureReplacementString($node)
