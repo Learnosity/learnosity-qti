@@ -5,7 +5,6 @@ namespace LearnosityQti\Processors\QtiV2\Out\Validation;
 use LearnosityQti\Processors\QtiV2\Out\Constants;
 use LearnosityQti\Processors\QtiV2\Out\ResponseProcessing\QtiResponseProcessingBuilder;
 use LearnosityQti\Services\LogService;
-use LearnosityQti\Utils\Log\Logger;
 use qtism\data\processing\ResponseProcessing;
 
 abstract class AbstractQuestionValidationBuilder
@@ -26,12 +25,12 @@ abstract class AbstractQuestionValidationBuilder
         if (empty($validation->get_scoring_type()) || !in_array($validation->get_scoring_type(), $this->supportedScoringType)) {
             // TODO: Need to support more validation type :)
             $types = implode(', ', $this->supportedScoringType);
-            Logger::error("Invalid `scoring_type`, only $types are supported. Failed to build `responseDeclaration` and `responseProcessingTemplate`");
+            LogService::log("Invalid `scoring_type`, only $types are supported. Failed to build `responseDeclaration` and `responseProcessingTemplate`");
             return [null, null];
         }
 
         if (empty($validation->get_valid_response()) || empty($validation->get_valid_response()->get_value()) || empty($validation->get_valid_response()->get_score())) {
-            Logger::error('Invalid `valid_response` object, fail to build `responseDeclaration` and `responseProcessingTemplate');
+            LogService::log('Invalid `valid_response` object, failed to build `responseDeclaration` and `responseProcessingTemplate');
             return [null, null];
         }
 
