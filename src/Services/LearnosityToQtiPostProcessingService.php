@@ -2,6 +2,8 @@
 
 namespace LearnosityQti\Services;
 
+use LearnosityQti\Processors\QtiV2\Out\Constants as LearnosityExportConstant;
+
 class LearnosityToQtiPostProcessingService
 {
     public function __construct()
@@ -40,8 +42,16 @@ class LearnosityToQtiPostProcessingService
             $div->parentNode->replaceChild($blockquote, $div);
         }
 
+        $qti = $doc->saveXML();
+
+        $qti = str_replace(LearnosityExportConstant::DIRPATH_ASSETS, LearnosityExportConstant::DIRNAME_IMAGES . '/', $qti);
+        $qti = str_replace('xmlns:default="http://www.w3.org/1998/Math/MathML"', '', $qti);
+        //TODO: Change this to only select MathML elements?
+        $qti = str_replace('<default:', '<', $qti);
+        $qti = str_replace('</default:', '</', $qti);
+
         /***************** End processing the HTML ****************/
 
-        return $doc->saveXML();
+        return $qti;
     }
 }

@@ -44,6 +44,7 @@ class FeatureItemBuilder
             return ($match[0] === '&#160;') ? '&#160;' : html_entity_decode($match[0], ENT_QUOTES | ENT_HTML5, 'UTF-8');
         }, $content);
 
+        $map = [0x80, 0x10FFFF, 0, 0xFFFF]; // UTF-8 character range
         $heading = isset($feature['data']['heading']) ? mb_encode_numericentity($feature['data']['heading'], $map, 'UTF-8') : '';
         if (!empty($heading)) {
             $h3 = $this->doc->createElement('h3');
