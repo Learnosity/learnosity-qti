@@ -91,7 +91,7 @@ class McqMapper extends AbstractQuestionTypeMapper
             $interaction->setOrientation(Orientation::HORIZONTAL);
         } else {
             $interaction->setOrientation(Orientation::VERTICAL);
-            LogService::log('ui_style` is ignored and `choiceInteraction` is assumed and set as `vertical`');
+            LogService::log('ui_style` is ignored and `choiceInteraction` is assumed and set as `vertical`', 'verbose');
         }
 
         if (empty($question->get_validation())) {

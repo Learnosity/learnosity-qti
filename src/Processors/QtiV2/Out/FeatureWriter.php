@@ -22,7 +22,8 @@ class FeatureWriter
         if ($featureReference !== $featureIdentifier) {
             LogService::log(
                 "The feature `reference` ($featureReference) is not a valid identifier, thus can not be used for `assessmentItem` identifier. " .
-                "Replaced it with randomly generated `$featureIdentifier`"
+                "Replaced it with randomly generated `$featureIdentifier`",
+                'verbose'
             );
         }
         $content = $feature->get_content();

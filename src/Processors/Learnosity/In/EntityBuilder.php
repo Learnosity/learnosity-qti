@@ -62,11 +62,11 @@ class EntityBuilder
         // And, set values magically using setter methods
         foreach ($values as $key => $value) {
             if (!method_exists($class, "set_$key")) {
-                LogService::log("Ignoring attribute '$key'. Invalid key");
+                LogService::log("Ignoring attribute '$key'. Invalid key", 'verbose');
                 continue;
             }
             if ($value === null) {
-                LogService::log("Ignoring attribute '$key'. Invalid key");
+                LogService::log("Ignoring attribute '$key'. Invalid key", 'verbose');
                 continue;
             }
             $setter = new \ReflectionMethod($class, "set_$key");
