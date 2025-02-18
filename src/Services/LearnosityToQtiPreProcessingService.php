@@ -334,29 +334,23 @@ class LearnosityToQtiPreProcessingService
         $htmlWrapped = "<!DOCTYPE html><html><body><div>$content</div></body></html>";
         $doc->loadHTML($htmlWrapped, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
 
-        // Remove API tabs as they are unsupported. We keep any widgets.
-        $tabsParentDiv = null;
-        // Find <div class="tabs"> and keep its parent as the new outer div
-        foreach ($doc->getElementsByTagName('div') as $div) {
-            if ($div->getAttribute('class') === 'tabs') {
-                $tabsParentDiv = $div->parentNode;
-                break; // Stop after finding the first occurrence
-            }
-        }
-        if ($tabsParentDiv) {
-            // Find all <div class="learnosity-feature">
+        // Find the first <div class="tabs">
+        $xpath = new \DOMXPath($doc);
+        $tabsNode = $xpath->query('//div[contains(@class, "tabs")]')->item(0);
+        if ($tabsNode) {
             $widgets = [];
-            foreach ($tabsParentDiv->getElementsByTagName('div') as $featureDiv) {
-                if ($featureDiv->getAttribute('class') === 'learnosity-feature') {
-                    $widgets[] = $featureDiv;
-                }
+            $featureNodes = $xpath->query('.//div[@class="learnosity-feature"] | .//span[@class="learnosity-feature"] | .//object', $tabsNode);
+
+            foreach ($featureNodes as $featureElement) {
+                $widgets[] = $featureElement;
             }
 
-            $tabsParentDiv->removeChild($tabsParentDiv->firstChild);
+            $parent = $tabsNode->parentNode;
+            $parent->removeChild($tabsNode);
 
-            // Append only the <div class="learnosity-feature"> elements inside the outer div
+            // Append passage elements inside the outer div
             foreach ($widgets as $widget) {
-                $tabsParentDiv->appendChild($widget);
+                $parent->appendChild($widget);
             }
         }
 
