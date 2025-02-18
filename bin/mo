@@ -28,6 +28,7 @@ use LearnosityQti\Commands\ConvertToLearnosityCommand;
 use LearnosityQti\Commands\ConvertToQtiCommand;
 use LearnosityQti\Commands\DefaultCommand;
 use LearnosityQti\Commands\ListCommand;
+use LearnosityQti\Commands\AnalyzeJsonCommand;
 use Symfony\Component\Console\Application;
 
 if (!ini_get('date.timezone')) {
@@ -47,7 +48,8 @@ $application = new Application();
 $availableCommands = [
     'list',
     'convert:to:learnosity',
-    'convert:to:qti'
+    'convert:to:qti',
+    'analyze:json'
 ];
 
 // Default to `DefaultCommand`
@@ -71,6 +73,9 @@ switch ($commandToRun) {
         break;
     case 'convert:to:qti':
         $application->add(new ConvertToQtiCommand());
+        break;
+    case 'analyze:json':
+        $application->add(new AnalyzeJsonCommand());
         break;
     default:
         $application->add(new DefaultCommand());
