@@ -137,7 +137,6 @@ class AssessmentItemBuilder
         }
 
         // Map <responseProcessing> - combine response processing from questions
-        // TODO: Tidy up this stuff
         if (!empty($responseProcessingTemplates)) {
             if (!empty($responseProcessingTemplates[0])) {
                 $templates = array_unique($responseProcessingTemplates);

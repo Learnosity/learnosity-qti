@@ -81,9 +81,10 @@ class LearnosityToQtiPreProcessingService
         $html = new SimpleHtmlDom();
         $html->load($content);
 
-        // Remove <center> </center>
-        foreach ($html->find('center') as $centerTag) {
-            $centerTag->outertext = $centerTag->innertext; // Replace <center> with its content
+        // Find all <center> elements and remove them from the deepest first
+        $centerTags = $html->find('center');
+        for ($i = count($centerTags) - 1; $i >= 0; $i--) {
+            $centerTags[$i]->outertext = $centerTags[$i]->innertext; // Replace <center> with its content
         }
 
         foreach ($html->find('img') as &$node) {
@@ -237,8 +238,11 @@ class LearnosityToQtiPreProcessingService
         for ($i = $paragraphs->length - 1; $i >= 0; $i--) {
             $pTag = $paragraphs->item($i);
 
-            // Check if <p> is empty or contains only non-breaking spaces
-            if (trim($pTag->textContent, "\u{00A0} \t\n\r\0\x0B") === '') {
+            // Remove empty <p> tags but keep those with inline elements
+            if (
+                trim($pTag->textContent, "\u{00A0} \t\n\r\0\x0B") === '' && // No visible text
+                !$pTag->getElementsByTagName('*')->length // No child elements (like <span>, <img>, <br>)
+            ) {
                 $pTag->parentNode->removeChild($pTag);
             }
         }

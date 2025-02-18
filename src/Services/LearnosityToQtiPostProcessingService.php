@@ -62,8 +62,13 @@ class LearnosityToQtiPostProcessingService
         return $qti;
     }
 
+    /**
+     * For some reason, the modalFeedback elements are encoded as textRuns.
+     * This function will decode the HTML tags that are contained within the modalFeedback elements.
+     */
     function decodeModalFeedbackElements($xmlString) {
-        if (strpos($xmlString, '<modalFeedback') === false) {
+        // We found a case of a very large XML string (1.5m characters) that was causing the server to hang.
+        if (strpos($xmlString, '<modalFeedback') === false || strlen($xmlString) > 100000) {
             return $xmlString;
         }
 
