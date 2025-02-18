@@ -50,7 +50,8 @@ class QuestionWriter
         }
 
         $messages = array_values(array_unique(LogService::read()));
+        $xmlString = $xml->saveToString(true);
 
-        return [$xml->saveToString(true), $messages, $questionReference, $featureBuilderArray];
+        return [$xmlString, $messages, $questionReference, $featureBuilderArray];
     }
 }

@@ -271,11 +271,9 @@ class ConvertToQtiService
 
                 if (!empty($conversion['issues'])) {
                     $this->log['issues'][basename($file)] = [
-                        'detail' => $conversion['issues']
+                        'detail' => $conversion['issues'],
+                        'qti' => (!empty($conversion['qti'])) ? $conversion['json']['reference'] . '.xml' : null
                     ];
-                    if (!empty($conversion['qti'])) {
-                        $this->log['issues'][basename($file)]['qti'] = $conversion['json']['source']['id'] . '.xml';
-                    }
                 }
             }
 
@@ -395,34 +393,33 @@ class ConvertToQtiService
                         'issues'    => $result[1]
                     ];
                 }
-
-                if (empty($result)) {
-                    $result = Converter::convertLearnosityToQtiItem($qs);
-                    if (!$result || empty($result[0])) {
-                        $issues = [];
-                        if (count($result[1])) {
-                            $issues = $result[1];
-                        }
-                        $result = [
-                            '',
-                            ['Unknown error with ' . $question['data']['type']]
-                        ];
-                        if (count($issues)) {
-                            $result[1] = array_merge($result[1], $issues);
-                        }
-                        $this->output->writeln("<error>Unkown error with `{$question['data']['type']}`, ignoring</error>");
-
-                        // Skip this file as we had a fatal error
-                        return [
-                            'qti'       => '',
-                            'json'      => $json,
-                            'tags'      => $tagsArray,
-                            'issues'    => $result[1]
-                        ];
-                    }
-                }
-                $finalXml['questions'][] = $result;
             }
+            if (empty($result)) {
+                $result = Converter::convertLearnosityToQtiItem($qs);
+                if (!$result || empty($result[0]) || strlen($result[0]) < 100) {
+                    $issues = [];
+                    if (count($result[1])) {
+                        $issues = $result[1];
+                    }
+                    $result = [
+                        '',
+                        ['Unknown error with ' . $question['data']['type']]
+                    ];
+                    if (count($issues)) {
+                        $result[1] = array_merge($result[1], $issues);
+                    }
+                    $this->output->writeln("<error>Unkown error with `{$question['data']['type']}`, ignoring</error>");
+
+                    // Skip this file as we had a fatal error
+                    return [
+                        'qti'       => '',
+                        'json'      => $json,
+                        'tags'      => $tagsArray,
+                        'issues'    => $result[1]
+                    ];
+                }
+            }
+            $finalXml['questions'][] = $result;
         }
 
         if (empty($json['questions']) && !empty($json['features'])) {
@@ -678,14 +675,15 @@ class ConvertToQtiService
         foreach ($results as $result) {
             if (!empty($result['qti'])) {
                 if (!empty($result['json']['questions'])) {
+                    $reference = $result['json']['reference'];
                     foreach ($result['qti']['questions'] as $key => $value) {
-                        file_put_contents($outputFilePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS . '/' . $result['json']['id'] . '.xml', $value[0]);
+                        file_put_contents($outputFilePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS . '/' . $reference . '.xml', $value[0]);
                     }
                 }
 
                 if (!empty($result['json']['features']) && empty($result['json']['questions'])) {
                     foreach ($result['qti']['features'] as $key => $value) {
-                        file_put_contents($outputFilePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS . '/' . $result['json']['id'] . '.xml', $value[0]);
+                        file_put_contents($outputFilePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS . '/' . $reference . '.xml', $value[0]);
                     }
                 }
             }
@@ -719,14 +717,15 @@ class ConvertToQtiService
     private function addQuestionReference($questions, $result, $additionalFileReferenceInfo)
     {
         $resources = array();
+        $itemReference = $result['json']['reference'];
         if (!empty($result['qti']['questions'])) {
             foreach ($result['qti']['questions'] as $question) {
-                $questionReference = (isset($question['2'])) ? $question['2'] : $result['json']['reference'];
+                $questionReference = (isset($question['2'])) ? $question['2'] : $itemReference;
                 $files = array();
                 $resource = new Resource();
                 $resource->setIdentifier('i'.$questionReference);
                 $resource->setType(Resource::TYPE_PREFIX_ITEM."xmlv2p1");
-                $resource->setHref(LearnosityExportConstant::DIRNAME_ITEMS . '/' . $questionReference.".xml");
+                $resource->setHref(LearnosityExportConstant::DIRNAME_ITEMS . '/' . $itemReference.".xml");
                 if (array_key_exists($questionReference, $additionalFileReferenceInfo)) {
                     $files = $this->addAdditionalFileInfo($additionalFileReferenceInfo[$questionReference], $files);
                 }
@@ -737,7 +736,7 @@ class ConvertToQtiService
                     $files = $this->addAdditionalFileInfo($additionalFileReferenceInfo[$question['3']['features']], $files);
                 }
                 $file = new File();
-                $file->setHref(LearnosityExportConstant::DIRNAME_ITEMS . '/' . $questionReference.".xml");
+                $file->setHref(LearnosityExportConstant::DIRNAME_ITEMS . '/' . $itemReference.".xml");
                 $files[] = $file;
                 $resource->setFiles($files);
                 $resources[] = $resource;
