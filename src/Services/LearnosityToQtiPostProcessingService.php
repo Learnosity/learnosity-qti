@@ -3,6 +3,7 @@
 namespace LearnosityQti\Services;
 
 use LearnosityQti\Processors\QtiV2\Out\Constants as LearnosityExportConstant;
+use LearnosityQti\Services\LogService;
 
 class LearnosityToQtiPostProcessingService
 {
@@ -67,8 +68,13 @@ class LearnosityToQtiPostProcessingService
      * This function will decode the HTML tags that are contained within the modalFeedback elements.
      */
     function decodeModalFeedbackElements($xmlString) {
+        if (strpos($xmlString, '<modalFeedback') === false) {
+            return $xmlString;
+        }
+
         // We found a case of a very large XML string (1.5m characters) that was causing the server to hang.
-        if (strpos($xmlString, '<modalFeedback') === false || strlen($xmlString) > 100000) {
+        if (strlen($xmlString) > 100000) {
+            LogService::log('<modalFeedback> XML string is too large to process. Returning XML encoded string.');
             return $xmlString;
         }
 
