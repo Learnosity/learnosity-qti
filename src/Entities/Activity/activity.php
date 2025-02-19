@@ -5,9 +5,9 @@ namespace LearnosityQti\Entities\Activity;
 use LearnosityQti\Entities\BaseEntity;
 
 /**
-* This class is auto-generated based on Schemas API and you should not modify its content
-* Metadata: {"responses":"v2.108.0","feedback":"v2.71.0","features":"v2.107.0"}
-*/
+ * This class is auto-generated based on Schemas API and you should not modify its content
+ * Metadata: {"responses":"v2.228.0","feedback":"v2.71.0","features":"v2.208.0"}
+ */
 class activity extends BaseEntity {
     protected $reference;
     protected $description;
@@ -23,55 +23,55 @@ class activity extends BaseEntity {
             }
 
     /**
-    * Get reference \
-    *  \
-    * @return string $reference \
-    */
+     * Get reference \
+     *  \
+     * @return string $reference \
+     */
     public function get_reference() {
         return $this->reference;
     }
 
     /**
-    * Set reference \
-    *  \
-    * @param string $reference \
-    */
+     * Set reference \
+     *  \
+     * @param string $reference \
+     */
     public function set_reference ($reference) {
         $this->reference = $reference;
     }
 
     /**
-    * Get description \
-    *  \
-    * @return string $description \
-    */
+     * Get description \
+     *  \
+     * @return string $description \
+     */
     public function get_description() {
         return $this->description;
     }
 
     /**
-    * Set description \
-    *  \
-    * @param string $description \
-    */
+     * Set description \
+     *  \
+     * @param string $description \
+     */
     public function set_description ($description) {
         $this->description = $description;
     }
 
     /**
-    * Get data \
-    *  \
-    * @return activity_data $data \
-    */
+     * Get data \
+     *  \
+     * @return activity_data $data \
+     */
     public function get_data() {
         return $this->data;
     }
 
     /**
-    * Set data \
-    *  \
-    * @param activity_data $data \
-    */
+     * Set data \
+     *  \
+     * @param activity_data $data \
+     */
     public function set_data (activity_data $data) {
         $this->data = $data;
     }

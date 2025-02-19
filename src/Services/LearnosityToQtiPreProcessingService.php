@@ -60,6 +60,8 @@ class LearnosityToQtiPreProcessingService
             }
         });
 
+        $json = $this->processWidget($this->widgetType, $json);
+
         return $json;
     }
 
@@ -377,6 +379,28 @@ class LearnosityToQtiPreProcessingService
         ]);
 
         return $processedHtml;
+    }
+
+    private function processWidget($type, $json)
+    {
+        switch ($type) {
+            case 'clozeassociation':
+            case 'imageclozeassociationV2':
+                if (array_key_exists('possible_response_groups', $json['data'])) {
+                    $possibleResponses = [];
+                    foreach ($json['data']['possible_response_groups'] as $group) {
+                        $possibleResponses = array_merge($possibleResponses, $group['responses']);
+                    }
+                    $json['data']['possible_responses'] = $possibleResponses;
+                    unset($json['data']['possible_response_groups']);
+                }
+                break;
+
+            default:
+                break;
+        }
+
+        return $json;
     }
 
     private function getFeatureReplacementString($node)

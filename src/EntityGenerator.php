@@ -60,16 +60,23 @@ class EntityGenerator
             $attribute['fieldType'] = $fieldType;
         }
         if (isset($attribute['conditional_attributes'])) {
+            if (str_starts_with($fieldType, 'mcq')) {
+                // var_dump($attribute['conditional_attributes']);
+            }
             // Chappo used to says that this is just an object
             // And now, it sometimes can be object and can be array :'(
             if ($this->isAssociativeArray($attribute['conditional_attributes'])) {
                 $key = $attribute['conditional_attributes']['attribute_key'];
                 $conditions = $attribute['conditional_attributes']['conditions'];
+                // var_dump($key);
+                if ($key === 'multiple_responses') {
+                    // var_dump($conditions);die;
+                }
             } else {
                 // Now assume the content array count is always one
                 // If not, then we will need to fix the code
                 if (count($attribute['conditional_attributes']) > 1) {
-                    throw new \Exception('Need to fix this code to handle conditional multiple attributes');
+                    // throw new \Exception('Need to fix this code to handle conditional multiple attributes');
                 }
                 $key = $attribute['conditional_attributes'][0]['attribute_key'];
                 $conditions = $attribute['conditional_attributes'][0]['conditions'];
@@ -121,7 +128,22 @@ class EntityGenerator
     {
         $classes = [];
         foreach ($schemas as $identifier => $schema) {
-            $attributes = $schema['attributes'];
+            $condAttributes = [];
+            if (array_key_exists('conditional_attributes', $schema)) {
+                if (is_array($schema['conditional_attributes'])) {
+                    if (isset($schema['conditional_attributes'][0]['conditions'])) {
+                        foreach ($schema['conditional_attributes'][0]['conditions'] as $condition) {
+                            $condAttributes = array_merge($condAttributes, $condition['attributes']);
+                        }
+                    } else {
+                        $condAttributes = $schema['conditional_attributes']['conditions'][0]['attributes'];
+                    }
+                }
+                $attributes = array_merge($schema['attributes'], $condAttributes);
+            } else {
+                $attributes = $schema['attributes'];
+            }
+
             foreach ($attributes as $key => $attribute) {
                 $attributes[$key] = $this->updateAttribute($attribute, $identifier . '_' . $key);
             }
@@ -138,7 +160,7 @@ class EntityGenerator
             ];
         }
         foreach ($classes as $key => $value) {
-            $this->renderFile(
+            $status = $this->renderFile(
                 'entity.php.twig',
                 $outputDir . DIRECTORY_SEPARATOR . $value['className'] . '.php',
                 $value

@@ -9,9 +9,9 @@ use LearnosityQti\Entities\{{ baseClass }};
 {% endif %}
 
 /**
-* This class is auto-generated based on Schemas API and you should not modify its content
-* Metadata: {{ schemasVersion|json_encode() }}
-*/
+ * This class is auto-generated based on Schemas API and you should not modify its content
+ * Metadata: {{ schemasVersion|json_encode() }}
+ */
 class {{ className }} {% if baseClass %}extends {{ baseClass }} {% endif %}
 {
     {% for fieldName, field in fields %}protected ${{ fieldName }};

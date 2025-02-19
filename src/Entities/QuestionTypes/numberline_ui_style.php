@@ -5,9 +5,9 @@ namespace LearnosityQti\Entities\QuestionTypes;
 use LearnosityQti\Entities\BaseQuestionTypeAttribute;
 
 /**
-* This class is auto-generated based on Schemas API and you should not modify its content
-* Metadata: {"responses":"v2.108.0","feedback":"v2.71.0","features":"v2.107.0"}
-*/
+ * This class is auto-generated based on Schemas API and you should not modify its content
+ * Metadata: {"responses":"v2.228.0","feedback":"v2.71.0","features":"v2.208.0"}
+ */
 class numberline_ui_style extends BaseQuestionTypeAttribute {
     protected $fontsize;
     protected $height;
@@ -25,165 +25,165 @@ class numberline_ui_style extends BaseQuestionTypeAttribute {
             }
 
     /**
-    * Get Font size \
-    * Controls the size of base font for this question. Options are among 'small', 'normal', 'large', 'xlarge' and 'xxlarge'. \
-    * @return string $fontsize ie. small, normal, large, xlarge, xxlarge  \
-    */
+     * Get Font size \
+     * Controls the size of base font for this question. Options are among 'small', 'normal', 'large', 'xlarge' and 'xxlarge'. \
+     * @return string $fontsize ie. small, normal, large, xlarge, xxlarge  \
+     */
     public function get_fontsize() {
         return $this->fontsize;
     }
 
     /**
-    * Set Font size \
-    * Controls the size of base font for this question. Options are among 'small', 'normal', 'large', 'xlarge' and 'xxlarge'. \
-    * @param string $fontsize ie. small, normal, large, xlarge, xxlarge  \
-    */
+     * Set Font size \
+     * Controls the size of base font for this question. Options are among 'small', 'normal', 'large', 'xlarge' and 'xxlarge'. \
+     * @param string $fontsize ie. small, normal, large, xlarge, xxlarge  \
+     */
     public function set_fontsize ($fontsize) {
         $this->fontsize = $fontsize;
     }
 
     /**
-    * Get Height (px) \
-    * The height of the drawn area with trailing px unit eg. "250px". If undefined or empty, the board's height will scaled au
-	tomatically based on the contents \
-    * @return string $height \
-    */
+     * Get Height (px) \
+     * The height of the drawn area with trailing px unit eg. "250px". If undefined or empty, the board's height will scaled au
+	 * tomatically based on the contents \
+     * @return stringUnits $height \
+     */
     public function get_height() {
         return $this->height;
     }
 
     /**
-    * Set Height (px) \
-    * The height of the drawn area with trailing px unit eg. "250px". If undefined or empty, the board's height will scaled au
-	tomatically based on the contents \
-    * @param string $height \
-    */
+     * Set Height (px) \
+     * The height of the drawn area with trailing px unit eg. "250px". If undefined or empty, the board's height will scaled au
+	 * tomatically based on the contents \
+     * @param stringUnits $height \
+     */
     public function set_height ($height) {
         $this->height = $height;
     }
 
     /**
-    * Get Width (px) \
-    * The width of the drawn area with trailing px unit eg. "550px". \
-    * @return string $width \
-    */
+     * Get Width (px) \
+     * The width of the drawn area with trailing px unit eg. "550px". \
+     * @return stringUnits $width \
+     */
     public function get_width() {
         return $this->width;
     }
 
     /**
-    * Set Width (px) \
-    * The width of the drawn area with trailing px unit eg. "550px". \
-    * @param string $width \
-    */
+     * Set Width (px) \
+     * The width of the drawn area with trailing px unit eg. "550px". \
+     * @param stringUnits $width \
+     */
     public function set_width ($width) {
         $this->width = $width;
     }
 
     /**
-    * Get Line margin (px) \
-    * The distance from the number line's extremes to the sides with trailing px unit e.g. "5px" \
-    * @return string $number_line_margin \
-    */
+     * Get Line margin (px) \
+     * The distance from the number line's extremes to the sides with trailing px unit e.g. "5px" \
+     * @return stringUnits $number_line_margin \
+     */
     public function get_number_line_margin() {
         return $this->number_line_margin;
     }
 
     /**
-    * Set Line margin (px) \
-    * The distance from the number line's extremes to the sides with trailing px unit e.g. "5px" \
-    * @param string $number_line_margin \
-    */
+     * Set Line margin (px) \
+     * The distance from the number line's extremes to the sides with trailing px unit e.g. "5px" \
+     * @param stringUnits $number_line_margin \
+     */
     public function set_number_line_margin ($number_line_margin) {
         $this->number_line_margin = $number_line_margin;
     }
 
     /**
-    * Get Points distance x \
-    * The distance in X axis between two points with trailing px unit eg. "10px" \
-    * @return string $points_distance_x \
-    */
+     * Get Points distance x \
+     * The distance in X axis between two points with trailing px unit eg. "10px" \
+     * @return stringUnits $points_distance_x \
+     */
     public function get_points_distance_x() {
         return $this->points_distance_x;
     }
 
     /**
-    * Set Points distance x \
-    * The distance in X axis between two points with trailing px unit eg. "10px" \
-    * @param string $points_distance_x \
-    */
+     * Set Points distance x \
+     * The distance in X axis between two points with trailing px unit eg. "10px" \
+     * @param stringUnits $points_distance_x \
+     */
     public function set_points_distance_x ($points_distance_x) {
         $this->points_distance_x = $points_distance_x;
     }
 
     /**
-    * Get Points distance y \
-    * The distance in Y axis between two points with trailing px unit eg. "20px" \
-    * @return string $points_distance_y \
-    */
+     * Get Points distance y \
+     * The distance in Y axis between two points with trailing px unit eg. "20px" \
+     * @return stringUnits $points_distance_y \
+     */
     public function get_points_distance_y() {
         return $this->points_distance_y;
     }
 
     /**
-    * Set Points distance y \
-    * The distance in Y axis between two points with trailing px unit eg. "20px" \
-    * @param string $points_distance_y \
-    */
+     * Set Points distance y \
+     * The distance in Y axis between two points with trailing px unit eg. "20px" \
+     * @param stringUnits $points_distance_y \
+     */
     public function set_points_distance_y ($points_distance_y) {
         $this->points_distance_y = $points_distance_y;
     }
 
     /**
-    * Get Line position (%) \
-    * At which percentage of the height should the Number Line appear \
-    * @return number $line_position \
-    */
+     * Get Line position (%) \
+     * At which percentage of the height should the Number Line appear \
+     * @return number $line_position \
+     */
     public function get_line_position() {
         return $this->line_position;
     }
 
     /**
-    * Set Line position (%) \
-    * At which percentage of the height should the Number Line appear \
-    * @param number $line_position \
-    */
+     * Set Line position (%) \
+     * At which percentage of the height should the Number Line appear \
+     * @param number $line_position \
+     */
     public function set_line_position ($line_position) {
         $this->line_position = $line_position;
     }
 
     /**
-    * Get Title position \
-    * At which percentage of the height should the Line's Title appear \
-    * @return number $title_position \
-    */
+     * Get Title position \
+     * At which percentage of the height should the Line's Title appear \
+     * @return number $title_position \
+     */
     public function get_title_position() {
         return $this->title_position;
     }
 
     /**
-    * Set Title position \
-    * At which percentage of the height should the Line's Title appear \
-    * @param number $title_position \
-    */
+     * Set Title position \
+     * At which percentage of the height should the Line's Title appear \
+     * @param number $title_position \
+     */
     public function set_title_position ($title_position) {
         $this->title_position = $title_position;
     }
 
     /**
-    * Get Points box position \
-    * At which percentage of the height should the Points box container start \
-    * @return number $points_box_position \
-    */
+     * Get Points box position \
+     * At which percentage of the height should the Points box container start \
+     * @return number $points_box_position \
+     */
     public function get_points_box_position() {
         return $this->points_box_position;
     }
 
     /**
-    * Set Points box position \
-    * At which percentage of the height should the Points box container start \
-    * @param number $points_box_position \
-    */
+     * Set Points box position \
+     * At which percentage of the height should the Points box container start \
+     * @param number $points_box_position \
+     */
     public function set_points_box_position ($points_box_position) {
         $this->points_box_position = $points_box_position;
     }
