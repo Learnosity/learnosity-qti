@@ -294,6 +294,10 @@ class Converter
 
     public static function convertLearnosityToQtiItem(array $data)
     {
+        if (!(count($data) > 0 && count(array_filter($data, 'is_array')) === count($data))) {
+            $data = [$data];
+        }
+
         $jsonType = self::LEARNOSITY_DATA_QUESTION;
         if (isset($data['data'])) {
             if (!isset($data['reference'])) {
@@ -322,7 +326,6 @@ class Converter
             $xmlString = $postprocessingService->processXml($xmlString);
         } catch (\Exception $ex) {
             LogService::log('Unknown JSON format: ' . $ex->getMessage());
-            echo('Unknown JSON format: ' . $ex->getMessage() . PHP_EOL);
             $messages = LogService::flush();
             return ['', $messages, null, null];
         }
@@ -352,11 +355,16 @@ class Converter
 
     private static function convertLearnosityQuestion(array $questionJson)
     {
-        $preprocessingService = new LearnosityToQtiPreProcessingService($questionJson['feature']);
-        $questionMapper = new QuestionMapper();
-        $questionWriter = new QuestionWriter();
-        $question = $questionMapper->parse($preprocessingService->processJson($questionJson));
-        return $questionWriter->convert($question);
+        $qti = '';
+        $question = [];
+        foreach ($questionJson as $qj) {
+            $preprocessingService = new LearnosityToQtiPreProcessingService($qj['feature']);
+            $questionMapper = new QuestionMapper();
+            $questionWriter = new QuestionWriter();
+            $question[] = $questionMapper->parse($preprocessingService->processJson($qj));
+        }
+        $qti = $questionWriter->convert($question);
+        return $qti;
     }
 
     private static function convertLearnosityQuestionData(array $questionDataJson)

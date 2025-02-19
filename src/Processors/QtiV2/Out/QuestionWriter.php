@@ -11,37 +11,38 @@ use qtism\data\storage\xml\XmlDocument;
 
 class QuestionWriter
 {
-    public function convert(Question $question)
+    public function convert(array $question)
     {
         // Try to build the identifier using question `reference`
         // Otherwise, generate an alternative identifier and store the original reference as `label`
-        $questionReference = $question->get_reference();
+        $questionReference = $question[0]->get_reference();
         $questionIdentifier = Format::isIdentifier($questionReference, false) ? $questionReference : 'ITEM_' . StringUtil::generateRandomString(12);
         if ($questionReference !== $questionIdentifier) {
             LogService::log(
                 "The question `reference` ($questionReference) is not a valid identifier, thus can not be used for `assessmentItem` identifier. " .
                 "Replaced it with randomly generated `$questionIdentifier`"
+                , 'verbose'
             );
         }
 
-        $itemLabel = (!empty($question->get_item_reference())) ? $question->get_item_reference() : '';
+        $itemLabel = (!empty($question[0]->get_item_reference())) ? $question[0]->get_item_reference() : '';
 
         $builder = new AssessmentItemBuilder();
-        $assessmentItem = $builder->build($questionIdentifier, $itemLabel, [$question]);
+        $assessmentItem = $builder->build($questionIdentifier, $itemLabel, $question);
 
         $xml = new XmlDocument();
         $xml->setDocumentComponent($assessmentItem);
 
         $featureBuilderArray = array();
-        $featureArray = $question->get_features();
+        $featureArray = $question[0]->get_features();
 
         if (is_array($featureArray) && sizeof($featureArray) > 0) {
             foreach ($featureArray as $feature) {
                 if ($feature['data']['type'] == 'sharedpassage') {
                     $featureBuilder = new FeatureItemBuilder();
                     $featureHtml = $featureBuilder->build($feature);
-                    if (empty($featureBuilderArray[$question->get_reference()])) $featureBuilderArray[$question->get_reference()] = [];
-                    $featureBuilderArray[$question->get_reference()][$feature['reference']] = $featureHtml;
+                    if (empty($featureBuilderArray[$question[0]->get_reference()])) $featureBuilderArray[$question[0]->get_reference()] = [];
+                    $featureBuilderArray[$question[0]->get_reference()][$feature['reference']] = $featureHtml;
                 } else {
                     $featureBuilderArray['features'] = $feature['reference'];
                 }
@@ -49,6 +50,8 @@ class QuestionWriter
         }
 
         $messages = array_values(array_unique(LogService::read()));
-        return [$xml->saveToString(true), $messages, $questionReference, $featureBuilderArray];
+        $xmlString = $xml->saveToString(true);
+
+        return [$xmlString, $messages, $questionReference, $featureBuilderArray];
     }
 }

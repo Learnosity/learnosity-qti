@@ -45,6 +45,13 @@ class ConvertToQtiCommand extends Command
                 'Whether you want to zip the output folder. Default is true',
                 null
             )
+            ->addOption(
+                'logVerbose',
+                'lg',
+                InputOption::VALUE_OPTIONAL,
+                'Whether you want verbose logs. Default is false',
+                null
+            )
         ;
     }
 
@@ -55,12 +62,23 @@ class ConvertToQtiCommand extends Command
         $outputPath = $input->getOption('output');
         $format = ($input->getOption('format')) ? strtolower($input->getOption('format')) : null;
         $zip = $input->getOption('zip');
+        $verbose = $input->getOption('logVerbose');
+
         if ($zip === null) {
             $zip = true;
         } else {
             $zip = filter_var($zip, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
             if ($zip === null) {
                 throw new \InvalidArgumentException("Invalid value for --zip. Use 'true' or 'false'.");
+            }
+        }
+
+        if ($verbose === null) {
+            $verbose = false;
+        } else {
+            $verbose = filter_var($verbose, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+            if ($verbose === null) {
+                throw new \InvalidArgumentException("Invalid value for --verbose. Use 'true' or 'false'.");
             }
         }
 
@@ -106,7 +124,7 @@ class ConvertToQtiCommand extends Command
                 "  <info>mo convert:to:qti -i /path/to/qti -o /path/to/save/folder -f qti|canvas</info>"
             ]);
         } else {
-            $Convert = ConvertToQtiService::initClass($inputPath, $outputPath, $output, $format, null, $zip);
+            $Convert = ConvertToQtiService::initClass($inputPath, $outputPath, $output, $format, null, $zip, $verbose);
             $result = $Convert->process();
             if (empty($result)) {
                 $output->writeln('<info>Empty results array, check output directory</info>');

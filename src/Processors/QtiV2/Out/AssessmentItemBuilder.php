@@ -57,7 +57,12 @@ class AssessmentItemBuilder
         $interactions = [];
         $responseDeclarationCollection = new ResponseDeclarationCollection();
         $responseProcessingTemplates = [];
+        $index = 0;
+
         foreach ($questions as $question) {
+            // The index is only relevant for composite items
+            if (count($questions) > 1) $index++;
+
             $questionData = $question->to_array();
 
             if (!empty($questionData['features']) && in_array($questionData['features'][0]['data']['type'], ['audioplayer', 'videoplayer'])) {
@@ -98,7 +103,7 @@ class AssessmentItemBuilder
             /** @var Question $question */
             // Map the `questions` and its validation objects to be placed at <itemBody>
             // The extraContent usually comes from `stimulus` of item that mapped to inline interaction and has no `prompt`
-            list($interaction, $responseDeclaration, $responseProcessing, $extraContent) = $this->map($question);
+            list($interaction, $responseDeclaration, $responseProcessing, $extraContent) = $this->map($question, $index);
             if (!empty($responseDeclaration)) {
                 if ($responseDeclaration instanceof ResponseDeclarationCollection && $responseDeclaration->count() > 0) {
                     for ($i = 1; $i <= sizeof($responseDeclaration); $i++) {
@@ -132,7 +137,6 @@ class AssessmentItemBuilder
         }
 
         // Map <responseProcessing> - combine response processing from questions
-        // TODO: Tidy up this stuff
         if (!empty($responseProcessingTemplates)) {
             if (!empty($responseProcessingTemplates[0])) {
                 $templates = array_unique($responseProcessingTemplates);
@@ -144,10 +148,11 @@ class AssessmentItemBuilder
                 $assessmentItem->setResponseProcessing($responseProcessing);
             }
         }
+
         return $assessmentItem;
     }
 
-    private function map(Question $question)
+    private function map(Question $question, $i = null)
     {
         $type = $question->get_type();
         if (!in_array($type, Constants::$supportedQuestionTypes)) {
@@ -156,7 +161,8 @@ class AssessmentItemBuilder
         $clazz = new \ReflectionClass(self::MAPPER_CLASS_BASE . ucfirst($type . 'Mapper'));
         $questionTypeMapper = $clazz->newInstance();
         $questionReference = $question->get_reference();
-        $interactionIdentifier = 'RESPONSE';
+        // We add a suffix to the identifier for composite items
+        $interactionIdentifier = 'RESPONSE' . ($i ? "-$i" : '');
         $result = $questionTypeMapper->convert($question->get_data(), $interactionIdentifier, $questionReference);
         $result[] = $questionTypeMapper->getExtraContent();
         return $result;

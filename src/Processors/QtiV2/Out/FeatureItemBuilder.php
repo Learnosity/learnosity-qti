@@ -17,6 +17,7 @@ class FeatureItemBuilder
         $this->doc = new DOMDocument('1.0', 'UTF-8');
 
         $html = $this->doc->appendChild($this->doc->createElement('html'));
+        $html->setAttribute('lang', 'en');
         $head = $html->appendChild($this->doc->createElement('head'));
         $meta = [['charset' => 'utf-8']];
 
@@ -26,6 +27,7 @@ class FeatureItemBuilder
                 $node->setAttribute($key, $value);
             }
         }
+
         $this->doc->formatOutput = true;
     }
 
@@ -44,6 +46,7 @@ class FeatureItemBuilder
             return ($match[0] === '&#160;') ? '&#160;' : html_entity_decode($match[0], ENT_QUOTES | ENT_HTML5, 'UTF-8');
         }, $content);
 
+        $map = [0x80, 0x10FFFF, 0, 0xFFFF]; // UTF-8 character range
         $heading = isset($feature['data']['heading']) ? mb_encode_numericentity($feature['data']['heading'], $map, 'UTF-8') : '';
         if (!empty($heading)) {
             $h3 = $this->doc->createElement('h3');
@@ -80,10 +83,11 @@ class FeatureItemBuilder
             }
         }
 
-        $finalOutput = $this->doc->saveXML();
+        $finalOutput = $this->doc->saveXML($this->doc->documentElement);
         $finalOutput = preg_replace_callback('/&#?[a-zA-Z0-9]+;/', function ($match) {
             return ($match[0] === '&#160;') ? '&#160;' : html_entity_decode($match[0], ENT_QUOTES | ENT_HTML5, 'UTF-8');
         }, $finalOutput);
-        return $this->doctype . $finalOutput;
+
+        return $this->doctype . PHP_EOL . $finalOutput;
     }
 }

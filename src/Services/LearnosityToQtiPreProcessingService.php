@@ -81,9 +81,10 @@ class LearnosityToQtiPreProcessingService
         $html = new SimpleHtmlDom();
         $html->load($content);
 
-        // Remove <center> </center>
-        foreach ($html->find('center') as $centerTag) {
-            $centerTag->outertext = $centerTag->innertext; // Replace <center> with its content
+        // Find all <center> elements and remove them from the deepest first
+        $centerTags = $html->find('center');
+        for ($i = count($centerTags) - 1; $i >= 0; $i--) {
+            $centerTags[$i]->outertext = $centerTags[$i]->innertext; // Replace <center> with its content
         }
 
         foreach ($html->find('img') as &$node) {
@@ -237,8 +238,11 @@ class LearnosityToQtiPreProcessingService
         for ($i = $paragraphs->length - 1; $i >= 0; $i--) {
             $pTag = $paragraphs->item($i);
 
-            // Check if <p> is empty or contains only non-breaking spaces
-            if (trim($pTag->textContent, "\u{00A0} \t\n\r\0\x0B") === '') {
+            // Remove empty <p> tags but keep those with inline elements
+            if (
+                trim($pTag->textContent, "\u{00A0} \t\n\r\0\x0B") === '' && // No visible text
+                !$pTag->getElementsByTagName('*')->length // No child elements (like <span>, <img>, <br>)
+            ) {
                 $pTag->parentNode->removeChild($pTag);
             }
         }
@@ -334,29 +338,23 @@ class LearnosityToQtiPreProcessingService
         $htmlWrapped = "<!DOCTYPE html><html><body><div>$content</div></body></html>";
         $doc->loadHTML($htmlWrapped, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
 
-        // Remove API tabs as they are unsupported. We keep any widgets.
-        $tabsParentDiv = null;
-        // Find <div class="tabs"> and keep its parent as the new outer div
-        foreach ($doc->getElementsByTagName('div') as $div) {
-            if ($div->getAttribute('class') === 'tabs') {
-                $tabsParentDiv = $div->parentNode;
-                break; // Stop after finding the first occurrence
-            }
-        }
-        if ($tabsParentDiv) {
-            // Find all <div class="learnosity-feature">
+        // Find the first <div class="tabs">
+        $xpath = new \DOMXPath($doc);
+        $tabsNode = $xpath->query('//div[contains(@class, "tabs")]')->item(0);
+        if ($tabsNode) {
             $widgets = [];
-            foreach ($tabsParentDiv->getElementsByTagName('div') as $featureDiv) {
-                if ($featureDiv->getAttribute('class') === 'learnosity-feature') {
-                    $widgets[] = $featureDiv;
-                }
+            $featureNodes = $xpath->query('.//div[@class="learnosity-feature"] | .//span[@class="learnosity-feature"] | .//object', $tabsNode);
+
+            foreach ($featureNodes as $featureElement) {
+                $widgets[] = $featureElement;
             }
 
-            $tabsParentDiv->removeChild($tabsParentDiv->firstChild);
+            $parent = $tabsNode->parentNode;
+            $parent->removeChild($tabsNode);
 
-            // Append only the <div class="learnosity-feature"> elements inside the outer div
+            // Append passage elements inside the outer div
             foreach ($widgets as $widget) {
-                $tabsParentDiv->appendChild($widget);
+                $parent->appendChild($widget);
             }
         }
 

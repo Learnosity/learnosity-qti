@@ -19,7 +19,8 @@ class ItemWriter
         if ($itemReference !== $itemIdentifier) {
             LogService::log(
                 "The item `reference` ($itemReference) is not a valid identifier, thus can not be used for `assessmentItem` identifier. " .
-                "Replaced it with randomly generated `$itemIdentifier` and stored the original `reference` as `label` attribute"
+                "Replaced it with randomly generated `$itemIdentifier` and stored the original `reference` as `label` attribute",
+                'verbose'
             );
         }
 

@@ -4,7 +4,6 @@ namespace LearnosityQti\Processors\Learnosity\In;
 
 use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Services\LogService;
-use LearnosityQti\Utils\Log\Logger;
 
 class EntityBuilder
 {
@@ -17,8 +16,7 @@ class EntityBuilder
             if (isset($json[$parameterName])) {
                 $parameters[$parameterName] = self::buildField($parameter, $json[$parameterName]);
             } else {
-                LogService::log('Invalid JSON. Required key ' . $parameterName . ' does not exists');
-                throw new MappingException('Invalid JSON. Required key ' . $parameterName . ' does not exists');
+                throw new MappingException('Required key `' . $parameterName . '` does not exist');
             }
         }
         $class = $clazz->newInstanceArgs($parameters);
@@ -44,7 +42,6 @@ class EntityBuilder
                     // Remove `NULL` array elements if they somehow exist
                     // This avoids a fatal error, but it's likely the validation will fail.
                     LogService::log("Invalid JSON, `NULL` array elements found. They have been removed but validation may fail.");
-                    Logger::error("Invalid JSON, `NULL` array elements found. They have been removed but validation may fail.");
                     $data = array_filter($data, function ($value) {
                         return !is_null($value);
                     });
@@ -62,11 +59,11 @@ class EntityBuilder
         // And, set values magically using setter methods
         foreach ($values as $key => $value) {
             if (!method_exists($class, "set_$key")) {
-                LogService::log("Ignoring attribute '$key'. Invalid key");
+                LogService::log("Ignoring attribute '$key'. Invalid key", 'verbose');
                 continue;
             }
             if ($value === null) {
-                LogService::log("Ignoring attribute '$key'. Invalid key");
+                LogService::log("Ignoring attribute '$key'. Invalid key", 'verbose');
                 continue;
             }
             $setter = new \ReflectionMethod($class, "set_$key");
