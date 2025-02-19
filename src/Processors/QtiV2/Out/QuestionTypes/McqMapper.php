@@ -44,11 +44,10 @@ class McqMapper extends AbstractQuestionTypeMapper
         }
 
         foreach ($question->get_options() as $index => $option) {
-
             /** @var mcq_options_item $option */
             $choiceContent = new FlowStaticCollection();
-            foreach (QtiMarshallerUtil::unmarshallElement($option->get_label()) as $component) {
 
+            foreach (QtiMarshallerUtil::unmarshallElement($option->get_label()) as $component) {
                 $choiceContent->attach($component);
                 // attach feedbackInline to simpleChoice
                 if (isset($feedbackOptions[$index]) && $feedbackOptions[$index] !== '' && $component instanceof TextRun) {
@@ -57,7 +56,6 @@ class McqMapper extends AbstractQuestionTypeMapper
                     $feedback->setContent($content);
                     $choiceContent->attach($feedback);
                 }
-
             }
 
             // Use option['value'] as choice `identifier` if it has the correct format,
@@ -75,8 +73,10 @@ class McqMapper extends AbstractQuestionTypeMapper
         // Build final interaction and its corresponding <responseDeclaration>, and its <responseProcessingTemplate>
         $interaction = new ChoiceInteraction($interactionIdentifier, $simpleChoiceCollection);
         $interaction->setLabel($interactionLabel);
-        $interaction->setMinChoices(1);
-        $interaction->setMaxChoices($question->get_multiple_responses() ? $simpleChoiceCollection->count() : 1);
+        $minSelection = ($question->get_min_selection()) ? $question->get_min_selection() : 1;
+        $maxSelection = ($question->get_max_selection()) ? $question->get_max_selection() : ($question->get_multiple_responses() ? $simpleChoiceCollection->count() : 1);
+        $interaction->setMinChoices($minSelection);
+        $interaction->setMaxChoices($maxSelection);
 
         // Build the prompt
         $interaction->setPrompt($this->convertStimulusForPrompt($question->get_stimulus()));
