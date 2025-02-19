@@ -45,6 +45,7 @@ class AnalyzeJsonService
         $jsonFiles = $this->parseInputFolders();
 
         $this->findCompositeItems($jsonFiles);
+        $this->findScoreNonDefault($jsonFiles);
     }
 
     private function findCompositeItems($jsonFiles)
@@ -62,7 +63,28 @@ class AnalyzeJsonService
         }
 
         if (!$numFound) {
-            $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "No composite items found</info>");
+            $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "No composite items found</info>\n");
+        }
+    }
+
+    private function findScoreNonDefault($jsonFiles)
+    {
+        $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Looking for non-default scores: {$this->inputPath} \n</info>");
+
+        $numFound = 0;
+        foreach ($jsonFiles as $file) {
+            $itemContent = file_get_contents($file);
+            $json = json_decode($itemContent, true);
+            foreach ($json['questions'] as $q) {
+                if (isset($q['data']['validation']['valid_response']['score']) && $q['data']['validation']['valid_response']['score'] !== 1) {
+                    $numFound++;
+                    $this->output->writeln("<comment>Non-default score ({$q['data']['validation']['valid_response']['score']}) " . basename($file) . "</comment>");
+                }
+            }
+        }
+
+        if (!$numFound) {
+            $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "No non-default scores found</info>\n");
         }
     }
 

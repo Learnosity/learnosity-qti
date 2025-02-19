@@ -21,14 +21,7 @@ class AnalyzeJsonCommand extends Command
                 'i',
                 InputOption::VALUE_REQUIRED,
                 'The input path to your Learnosity content',
-                './data/input'
-            )
-            ->addOption(
-                'composite',
-                'c',
-                InputOption::VALUE_OPTIONAL,
-                'Log composite files (2+ questions)',
-                null
+                ''
             )
         ;
     }
@@ -37,20 +30,10 @@ class AnalyzeJsonCommand extends Command
     {
         $validationErrors = [];
         $inputPath = $input->getOption('input');
-        $composite = $input->getOption('composite');
-
-        if ($composite === null) {
-            $composite = false;
-        } else {
-            $composite = filter_var($composite, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-            if ($composite === null) {
-                throw new \InvalidArgumentException("Invalid value for --composite. Use 'true' or 'false'.");
-            }
-        }
 
         // Validate the required options
         if (empty($inputPath)) {
-            array_push($validationErrors, "The <info>input</info> and <info>output</info> options are required. Eg:");
+            array_push($validationErrors, "The <info>input</info> option is required. Eg:");
         }
 
         // Make sure we can read the input folder, and write to the output folder
@@ -71,8 +54,10 @@ class AnalyzeJsonCommand extends Command
             }
 
             $output->writeln([
-                "  <info>mo convert:to:qti -i /path/to/qti -o /path/to/save/folder -f qti|canvas</info>"
+                "  <info>mo analyze:json -i /path/to/json</info>"
             ]);
+
+            return Command::SUCCESS;
         } else {
             $Debug = AnalyzeJsonService::initClass($inputPath, $output);
             $Debug->process();
