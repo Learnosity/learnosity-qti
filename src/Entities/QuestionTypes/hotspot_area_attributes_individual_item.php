@@ -5,15 +5,18 @@ namespace LearnosityQti\Entities\QuestionTypes;
 use LearnosityQti\Entities\BaseQuestionTypeAttribute;
 
 /**
-* This class is auto-generated based on Schemas API and you should not modify its content
-* Metadata: {"responses":"v2.108.0","feedback":"v2.71.0","features":"v2.107.0"}
-*/
+ * This class is auto-generated based on Schemas API and you should not modify its content
+ * Metadata: {"responses":"v2.228.0","feedback":"v2.71.0","features":"v2.208.0"}
+ */
 class hotspot_area_attributes_individual_item extends BaseQuestionTypeAttribute {
     protected $area;
     protected $label;
     protected $aria_label;
     protected $fill;
     protected $stroke;
+    protected $selected_fill;
+    protected $selected_stroke;
+    protected $focus_stroke;
     
     public function __construct(
             )
@@ -21,95 +24,149 @@ class hotspot_area_attributes_individual_item extends BaseQuestionTypeAttribute 
             }
 
     /**
-    * Get Area \
-    *  \
-    * @return string $area ie.   \
-    */
+     * Get Area \
+     *  \
+     * @return string $area ie.   \
+     */
     public function get_area() {
         return $this->area;
     }
 
     /**
-    * Set Area \
-    *  \
-    * @param string $area ie.   \
-    */
+     * Set Area \
+     *  \
+     * @param string $area ie.   \
+     */
     public function set_area ($area) {
         $this->area = $area;
     }
 
     /**
-    * Get Label \
-    * A label for the hotspot that is not shown to the student (unless they are checking answers), but is useful when reviewin
-	g student responses. \
-    * @return string $label \
-    */
+     * Get Label \
+     * A label for the hotspot that is not shown to the student (unless they are checking answers), but is useful when reviewin
+	 * g student responses. \
+     * @return string $label \
+     */
     public function get_label() {
         return $this->label;
     }
 
     /**
-    * Set Label \
-    * A label for the hotspot that is not shown to the student (unless they are checking answers), but is useful when reviewin
-	g student responses. \
-    * @param string $label \
-    */
+     * Set Label \
+     * A label for the hotspot that is not shown to the student (unless they are checking answers), but is useful when reviewin
+	 * g student responses. \
+     * @param string $label \
+     */
     public function set_label ($label) {
         $this->label = $label;
     }
 
     /**
-    * Get Aria label \
-    * A description of the hotspot that will be available to screen readers. \
-    * @return string $aria_label \
-    */
+     * Get Aria label \
+     * A description of the hotspot that will be available to screen readers. \
+     * @return string $aria_label \
+     */
     public function get_aria_label() {
         return $this->aria_label;
     }
 
     /**
-    * Set Aria label \
-    * A description of the hotspot that will be available to screen readers. \
-    * @param string $aria_label \
-    */
+     * Set Aria label \
+     * A description of the hotspot that will be available to screen readers. \
+     * @param string $aria_label \
+     */
     public function set_aria_label ($aria_label) {
         $this->aria_label = $aria_label;
     }
 
     /**
-    * Get Fill \
-    * An RGBA string defining the fill for the hotspot \
-    * @return string $fill \
-    */
+     * Get Fill color \
+     * An RGBA string defining the fill for the hotspot \
+     * @return string $fill \
+     */
     public function get_fill() {
         return $this->fill;
     }
 
     /**
-    * Set Fill \
-    * An RGBA string defining the fill for the hotspot \
-    * @param string $fill \
-    */
+     * Set Fill color \
+     * An RGBA string defining the fill for the hotspot \
+     * @param string $fill \
+     */
     public function set_fill ($fill) {
         $this->fill = $fill;
     }
 
     /**
-    * Get Outline color \
-    * An RGBA string defining the stroke for the hotspot \
-    * @return string $stroke \
-    */
+     * Get Outline color \
+     * An RGBA string defining the stroke for the hotspot \
+     * @return string $stroke \
+     */
     public function get_stroke() {
         return $this->stroke;
     }
 
     /**
-    * Set Outline color \
-    * An RGBA string defining the stroke for the hotspot \
-    * @param string $stroke \
-    */
+     * Set Outline color \
+     * An RGBA string defining the stroke for the hotspot \
+     * @param string $stroke \
+     */
     public function set_stroke ($stroke) {
         $this->stroke = $stroke;
+    }
+
+    /**
+     * Get Selected fill color \
+     * An RGBA string defining the fill for the hotspot when selected \
+     * @return string $selected_fill \
+     */
+    public function get_selected_fill() {
+        return $this->selected_fill;
+    }
+
+    /**
+     * Set Selected fill color \
+     * An RGBA string defining the fill for the hotspot when selected \
+     * @param string $selected_fill \
+     */
+    public function set_selected_fill ($selected_fill) {
+        $this->selected_fill = $selected_fill;
+    }
+
+    /**
+     * Get Selected outline color \
+     * An RGBA string defining the stroke for the hotspot when selected \
+     * @return string $selected_stroke \
+     */
+    public function get_selected_stroke() {
+        return $this->selected_stroke;
+    }
+
+    /**
+     * Set Selected outline color \
+     * An RGBA string defining the stroke for the hotspot when selected \
+     * @param string $selected_stroke \
+     */
+    public function set_selected_stroke ($selected_stroke) {
+        $this->selected_stroke = $selected_stroke;
+    }
+
+    /**
+     * Get Focus outline color \
+     * An RGBA string defining the stroke for focused hotspots. \
+     * @return string $focus_stroke \
+     */
+    public function get_focus_stroke() {
+        return $this->focus_stroke;
+    }
+
+    /**
+     * Set Focus outline color \
+     * An RGBA string defining the stroke for focused hotspots. \
+     * @param string $focus_stroke \
+     */
+    public function set_focus_stroke ($focus_stroke) {
+        $this->focus_stroke = $focus_stroke;
     }
 
     

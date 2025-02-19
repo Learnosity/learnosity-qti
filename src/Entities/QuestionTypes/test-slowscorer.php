@@ -5,9 +5,9 @@ namespace LearnosityQti\Entities\QuestionTypes;
 use LearnosityQti\Entities\BaseQuestionType;
 
 /**
-* This class is auto-generated based on Schemas API and you should not modify its content
-* Metadata: {"responses":"v2.108.0","feedback":"v2.71.0","features":"v2.107.0"}
-*/
+ * This class is auto-generated based on Schemas API and you should not modify its content
+ * Metadata: {"responses":"v2.228.0","feedback":"v2.71.0","features":"v2.208.0"}
+ */
 class test-slowscorer extends BaseQuestionType {
     protected $is_math;
     protected $metadata;
@@ -17,6 +17,7 @@ class test-slowscorer extends BaseQuestionType {
     protected $type;
     protected $ui_style;
     protected $validation;
+    protected $math_renderer;
     
     public function __construct(
                     $type
@@ -63,7 +64,7 @@ class test-slowscorer extends BaseQuestionType {
 
     /**
      * Get Stimulus \
-     * The question stimulus. Can include text, tables, images. \
+     * The question stimulus. This can include text, tables, images, resources and LaTeX entered via the Math Editor. \
      * @return string $stimulus \
      */
     public function get_stimulus() {
@@ -72,7 +73,7 @@ class test-slowscorer extends BaseQuestionType {
 
     /**
      * Set Stimulus \
-     * The question stimulus. Can include text, tables, images. \
+     * The question stimulus. This can include text, tables, images, resources and LaTeX entered via the Math Editor. \
      * @param string $stimulus \
      */
     public function set_stimulus ($stimulus) {
@@ -82,8 +83,8 @@ class test-slowscorer extends BaseQuestionType {
     /**
      * Get Stimulus (review only) \
      * <a data-toggle="modal" href="#supportedTags">HTML</a>/Text content displayed <strong>only</strong> in review state rende
-	 * red <strong>above</strong> the response area. Supports embedded <a href="http://docs.learnosity.com/questionsapi/feature
-	 * types.php" target="_blank">Feature &lt;span&gt; tags</a>. Will override stimulus in review state. \
+	 * red <strong>above</strong> the response area. Supports embedded <a href="https://docs.learnosity.com/assessment/question
+	 * s/knowledgebase/customfeatures" target="_blank">Feature &lt;span&gt; tags</a>. Will override stimulus in review state. \
      * @return string $stimulus_review \
      */
     public function get_stimulus_review() {
@@ -93,8 +94,8 @@ class test-slowscorer extends BaseQuestionType {
     /**
      * Set Stimulus (review only) \
      * <a data-toggle="modal" href="#supportedTags">HTML</a>/Text content displayed <strong>only</strong> in review state rende
-	 * red <strong>above</strong> the response area. Supports embedded <a href="http://docs.learnosity.com/questionsapi/feature
-	 * types.php" target="_blank">Feature &lt;span&gt; tags</a>. Will override stimulus in review state. \
+	 * red <strong>above</strong> the response area. Supports embedded <a href="https://docs.learnosity.com/assessment/question
+	 * s/knowledgebase/customfeatures" target="_blank">Feature &lt;span&gt; tags</a>. Will override stimulus in review state. \
      * @param string $stimulus_review \
      */
     public function set_stimulus_review ($stimulus_review) {
@@ -104,8 +105,8 @@ class test-slowscorer extends BaseQuestionType {
     /**
      * Get Instructor stimulus \
      * <a data-toggle="modal" href="#supportedTags">HTML</a>/Text content displayed when <code>showInstructorStimulus</code> is
-	 *  set to <code>true</code> on the activity. Supports embedded <a href="http://docs.learnosity.com/questionsapi/featuretyp
-	 * es.php" target="_blank">Feature &lt;span&gt; tags</a>. \
+	 *  set to <code>true</code> on the activity. Supports embedded <a href="https://docs.learnosity.com/assessment/questions/f
+	 * eaturetypes" target="_blank">Feature &lt;span&gt; tags</a>. \
      * @return string $instructor_stimulus \
      */
     public function get_instructor_stimulus() {
@@ -115,8 +116,8 @@ class test-slowscorer extends BaseQuestionType {
     /**
      * Set Instructor stimulus \
      * <a data-toggle="modal" href="#supportedTags">HTML</a>/Text content displayed when <code>showInstructorStimulus</code> is
-	 *  set to <code>true</code> on the activity. Supports embedded <a href="http://docs.learnosity.com/questionsapi/featuretyp
-	 * es.php" target="_blank">Feature &lt;span&gt; tags</a>. \
+	 *  set to <code>true</code> on the activity. Supports embedded <a href="https://docs.learnosity.com/assessment/questions/f
+	 * eaturetypes" target="_blank">Feature &lt;span&gt; tags</a>. \
      * @param string $instructor_stimulus \
      */
     public function set_instructor_stimulus ($instructor_stimulus) {
@@ -175,6 +176,24 @@ class test-slowscorer extends BaseQuestionType {
      */
     public function set_validation (test-slowscorer_validation $validation) {
         $this->validation = $validation;
+    }
+
+    /**
+     * Get Math renderer \
+     * When a question contains math, this setting allows you to select your preferred math renderer: MathJax or MathQuill. \
+     * @return string $math_renderer \
+     */
+    public function get_math_renderer() {
+        return $this->math_renderer;
+    }
+
+    /**
+     * Set Math renderer \
+     * When a question contains math, this setting allows you to select your preferred math renderer: MathJax or MathQuill. \
+     * @param string $math_renderer \
+     */
+    public function set_math_renderer ($math_renderer) {
+        $this->math_renderer = $math_renderer;
     }
 
     

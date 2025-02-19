@@ -5,9 +5,9 @@ namespace LearnosityQti\Entities\QuestionTypes;
 use LearnosityQti\Entities\BaseQuestionTypeAttribute;
 
 /**
-* This class is auto-generated based on Schemas API and you should not modify its content
-* Metadata: {"responses":"v2.108.0","feedback":"v2.71.0","features":"v2.107.0"}
-*/
+ * This class is auto-generated based on Schemas API and you should not modify its content
+ * Metadata: {"responses":"v2.228.0","feedback":"v2.71.0","features":"v2.208.0"}
+ */
 class imageupload_validation extends BaseQuestionTypeAttribute {
     protected $allow_negative_scores;
     protected $penalty;
@@ -15,6 +15,8 @@ class imageupload_validation extends BaseQuestionTypeAttribute {
     protected $scoring_type;
     protected $unscored;
     protected $valid_response;
+    protected $automarkable;
+    protected $enable_fullwidth_scoring;
     protected $rounding;
     
     public function __construct(
@@ -23,137 +25,179 @@ class imageupload_validation extends BaseQuestionTypeAttribute {
             }
 
     /**
-    * Get Allow negative scores \
-    * Negative scores will be normalised to zero by default. Allowing negative scores, on the other hand, means that the score
-	 can drop below zero when penalties are applied. \
-    * @return boolean $allow_negative_scores \
-    */
+     * Get Allow negative scores \
+     * Negative scores will be normalised to zero by default. Allowing negative scores, on the other hand, means that the score
+	 *  can drop below zero when penalties are applied. \
+     * @return boolean $allow_negative_scores \
+     */
     public function get_allow_negative_scores() {
         return $this->allow_negative_scores;
     }
 
     /**
-    * Set Allow negative scores \
-    * Negative scores will be normalised to zero by default. Allowing negative scores, on the other hand, means that the score
-	 can drop below zero when penalties are applied. \
-    * @param boolean $allow_negative_scores \
-    */
+     * Set Allow negative scores \
+     * Negative scores will be normalised to zero by default. Allowing negative scores, on the other hand, means that the score
+	 *  can drop below zero when penalties are applied. \
+     * @param boolean $allow_negative_scores \
+     */
     public function set_allow_negative_scores ($allow_negative_scores) {
         $this->allow_negative_scores = $allow_negative_scores;
     }
 
     /**
-    * Get Penalty point(s) \
-    * Value indicating the marks deducted for an incorrect response. \
-    * @return number $penalty \
-    */
+     * Get Penalty point(s) \
+     * Value indicating the marks deducted for an incorrect response. \
+     * @return number $penalty \
+     */
     public function get_penalty() {
         return $this->penalty;
     }
 
     /**
-    * Set Penalty point(s) \
-    * Value indicating the marks deducted for an incorrect response. \
-    * @param number $penalty \
-    */
+     * Set Penalty point(s) \
+     * Value indicating the marks deducted for an incorrect response. \
+     * @param number $penalty \
+     */
     public function set_penalty ($penalty) {
         $this->penalty = $penalty;
     }
 
     /**
-    * Get Minimum score if attempted \
-    * Positive value indicating the minimum score if a student attempted the question. \
-    * @return number $min_score_if_attempted \
-    */
+     * Get Minimum score if attempted \
+     * Positive value indicating the minimum score if a student attempted the question. \
+     * @return number $min_score_if_attempted \
+     */
     public function get_min_score_if_attempted() {
         return $this->min_score_if_attempted;
     }
 
     /**
-    * Set Minimum score if attempted \
-    * Positive value indicating the minimum score if a student attempted the question. \
-    * @param number $min_score_if_attempted \
-    */
+     * Set Minimum score if attempted \
+     * Positive value indicating the minimum score if a student attempted the question. \
+     * @param number $min_score_if_attempted \
+     */
     public function set_min_score_if_attempted ($min_score_if_attempted) {
         $this->min_score_if_attempted = $min_score_if_attempted;
     }
 
     /**
-    * Get Scoring type \
-    * The way in which marks are distributed for the question. Possible options:<br><strong>Exact Match</strong> - All parts o
-	f the question must be answered correctly to receive a mark.<br><strong>Partial Match</strong> - Each correct response e
-	lement will be scored individually, and the overall question score will be divided between responses.<br><strong>Partial
-	 Match per Response</strong> - Each correct response element will be awarded an individual score. \
-    * @return string $scoring_type ie. exactMatch, partialMatch, partialMatchV2  \
-    */
+     * Get Scoring type \
+     * The way in which marks are distributed for the question. Possible options:<br><strong>Exact Match</strong> - All parts o
+	 * f the question must be answered correctly to receive a mark.<br><strong>Partial Match</strong> - Each correct response e
+	 * lement will be scored individually, and the overall question score will be divided between responses.<br><strong>Partial
+	 *  Match per Response</strong> - Each correct response element will be awarded an individual score. \
+     * @return string $scoring_type ie. exactMatch, partialMatch, partialMatchV2  \
+     */
     public function get_scoring_type() {
         return $this->scoring_type;
     }
 
     /**
-    * Set Scoring type \
-    * The way in which marks are distributed for the question. Possible options:<br><strong>Exact Match</strong> - All parts o
-	f the question must be answered correctly to receive a mark.<br><strong>Partial Match</strong> - Each correct response e
-	lement will be scored individually, and the overall question score will be divided between responses.<br><strong>Partial
-	 Match per Response</strong> - Each correct response element will be awarded an individual score. \
-    * @param string $scoring_type ie. exactMatch, partialMatch, partialMatchV2  \
-    */
+     * Set Scoring type \
+     * The way in which marks are distributed for the question. Possible options:<br><strong>Exact Match</strong> - All parts o
+	 * f the question must be answered correctly to receive a mark.<br><strong>Partial Match</strong> - Each correct response e
+	 * lement will be scored individually, and the overall question score will be divided between responses.<br><strong>Partial
+	 *  Match per Response</strong> - Each correct response element will be awarded an individual score. \
+     * @param string $scoring_type ie. exactMatch, partialMatch, partialMatchV2  \
+     */
     public function set_scoring_type ($scoring_type) {
         $this->scoring_type = $scoring_type;
     }
 
     /**
-    * Get Unscored/Practice usage \
-    * When enabled, this option will remove all scoring from the question. This is useful for creating practice questions. \
-    * @return boolean $unscored \
-    */
+     * Get Unscored/Practice usage \
+     * When enabled, this option will remove all scoring from the question. This is useful for creating practice questions. \
+     * @return boolean $unscored \
+     */
     public function get_unscored() {
         return $this->unscored;
     }
 
     /**
-    * Set Unscored/Practice usage \
-    * When enabled, this option will remove all scoring from the question. This is useful for creating practice questions. \
-    * @param boolean $unscored \
-    */
+     * Set Unscored/Practice usage \
+     * When enabled, this option will remove all scoring from the question. This is useful for creating practice questions. \
+     * @param boolean $unscored \
+     */
     public function set_unscored ($unscored) {
         $this->unscored = $unscored;
     }
 
     /**
-    * Get Valid response \
-    * An object containing the valid response score and value. \
-    * @return imageupload_validation_valid_response $valid_response \
-    */
+     * Get Valid response \
+     * An object containing the valid response score and value. \
+     * @return imageupload_validation_valid_response $valid_response \
+     */
     public function get_valid_response() {
         return $this->valid_response;
     }
 
     /**
-    * Set Valid response \
-    * An object containing the valid response score and value. \
-    * @param imageupload_validation_valid_response $valid_response \
-    */
+     * Set Valid response \
+     * An object containing the valid response score and value. \
+     * @param imageupload_validation_valid_response $valid_response \
+     */
     public function set_valid_response (imageupload_validation_valid_response $valid_response) {
         $this->valid_response = $valid_response;
     }
 
     /**
-    * Get Rounding \
-    * Method for rounding the score after it has been calculated as a fraction of score. <strong>none</strong>: No rounding ap
-	plied, <strong>floor</strong>: Rounded down to the nearest whole number. \
-    * @return string $rounding \
-    */
+     * Get Automarkable \
+     * Defines whether the question will be marked automatically, or must be marked manually. \
+     * @return boolean $automarkable \
+     */
+    public function get_automarkable() {
+        return $this->automarkable;
+    }
+
+    /**
+     * Set Automarkable \
+     * Defines whether the question will be marked automatically, or must be marked manually. \
+     * @param boolean $automarkable \
+     */
+    public function set_automarkable ($automarkable) {
+        $this->automarkable = $automarkable;
+    }
+
+    /**
+     * Get Enable full or half-width character scoring \
+     * For languages such as Japanese, where full-width and half-width characters are used, validate responses with either type
+	 *  of character width. For example, in this question: What do we call '犬' in English? And you have set 'Ｄｏｇ' (full-width) 
+	 * as the correct answer, if the learner enters 'Ｄｏｇ' (full-width) or 'Dog' (half-width) these will both be marked as corre
+	 * ct responses when this option is enabled. \
+     * @return boolean $enable_fullwidth_scoring \
+     */
+    public function get_enable_fullwidth_scoring() {
+        return $this->enable_fullwidth_scoring;
+    }
+
+    /**
+     * Set Enable full or half-width character scoring \
+     * For languages such as Japanese, where full-width and half-width characters are used, validate responses with either type
+	 *  of character width. For example, in this question: What do we call '犬' in English? And you have set 'Ｄｏｇ' (full-width) 
+	 * as the correct answer, if the learner enters 'Ｄｏｇ' (full-width) or 'Dog' (half-width) these will both be marked as corre
+	 * ct responses when this option is enabled. \
+     * @param boolean $enable_fullwidth_scoring \
+     */
+    public function set_enable_fullwidth_scoring ($enable_fullwidth_scoring) {
+        $this->enable_fullwidth_scoring = $enable_fullwidth_scoring;
+    }
+
+    /**
+     * Get Rounding \
+     * Method for rounding the score after it has been calculated as a fraction of score. <strong>none</strong>: No rounding ap
+	 * plied, <strong>floor</strong>: Rounded down to the nearest whole number. \
+     * @return string $rounding \
+     */
     public function get_rounding() {
         return $this->rounding;
     }
 
     /**
-    * Set Rounding \
-    * Method for rounding the score after it has been calculated as a fraction of score. <strong>none</strong>: No rounding ap
-	plied, <strong>floor</strong>: Rounded down to the nearest whole number. \
-    * @param string $rounding \
-    */
+     * Set Rounding \
+     * Method for rounding the score after it has been calculated as a fraction of score. <strong>none</strong>: No rounding ap
+	 * plied, <strong>floor</strong>: Rounded down to the nearest whole number. \
+     * @param string $rounding \
+     */
     public function set_rounding ($rounding) {
         $this->rounding = $rounding;
     }

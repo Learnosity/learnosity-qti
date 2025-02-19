@@ -5,13 +5,14 @@ namespace LearnosityQti\Entities\QuestionTypes;
 use LearnosityQti\Entities\BaseQuestionTypeAttribute;
 
 /**
-* This class is auto-generated based on Schemas API and you should not modify its content
-* Metadata: {"responses":"v2.108.0","feedback":"v2.71.0","features":"v2.107.0"}
-*/
+ * This class is auto-generated based on Schemas API and you should not modify its content
+ * Metadata: {"responses":"v2.228.0","feedback":"v2.71.0","features":"v2.208.0"}
+ */
 class imageclozechemistry_response_container extends BaseQuestionTypeAttribute {
     protected $template;
     protected $height;
     protected $width;
+    protected $aria_label;
     protected $vertical_top;
     
     public function __construct(
@@ -20,73 +21,95 @@ class imageclozechemistry_response_container extends BaseQuestionTypeAttribute {
             }
 
     /**
-    * Get Formula template \
-    *  \
-    * @return string $template \
-    */
+     * Get Formula template \
+     * The initial value in the formula field. If response containers are used, only they will be editable. \
+     * @return string $template \
+     */
     public function get_template() {
         return $this->template;
     }
 
     /**
-    * Set Formula template \
-    *  \
-    * @param string $template \
-    */
+     * Set Formula template \
+     * The initial value in the formula field. If response containers are used, only they will be editable. \
+     * @param string $template \
+     */
     public function set_template ($template) {
         $this->template = $template;
     }
 
     /**
-    * Get Height (px) \
-    *  \
-    * @return string $height \
-    */
+     * Get Height (px) \
+     * Height of the response container, in pixels. Global setting. \
+     * @return stringUnits $height \
+     */
     public function get_height() {
         return $this->height;
     }
 
     /**
-    * Set Height (px) \
-    *  \
-    * @param string $height \
-    */
+     * Set Height (px) \
+     * Height of the response container, in pixels. Global setting. \
+     * @param stringUnits $height \
+     */
     public function set_height ($height) {
         $this->height = $height;
     }
 
     /**
-    * Get Width (px) \
-    *  \
-    * @return string $width \
-    */
+     * Get Width (px) \
+     * Width of the response container, in pixels. Global setting. \
+     * @return stringUnits $width \
+     */
     public function get_width() {
         return $this->width;
     }
 
     /**
-    * Set Width (px) \
-    *  \
-    * @param string $width \
-    */
+     * Set Width (px) \
+     * Width of the response container, in pixels. Global setting. \
+     * @param stringUnits $width \
+     */
     public function set_width ($width) {
         $this->width = $width;
     }
 
     /**
-    * Get Vertical top \
-    * Response container will always stay at the top left position if this attribute value is set to true \
-    * @return boolean $vertical_top \
-    */
+     * Get ARIA label \
+     * The ARIA label for the response container. The label will be "Response area" by default if no label is provided. \
+     * @return string $aria_label \
+     */
+    public function get_aria_label() {
+        return $this->aria_label;
+    }
+
+    /**
+     * Set ARIA label \
+     * The ARIA label for the response container. The label will be "Response area" by default if no label is provided. \
+     * @param string $aria_label \
+     */
+    public function set_aria_label ($aria_label) {
+        $this->aria_label = $aria_label;
+    }
+
+    /**
+     * Get Vertical top \
+     * This setting ensures that the position of the response boxes stays at the position set by the author, regardless of chan
+	 * ges to the font size or container's size, i.e. it ensures that the position of the responses stays at <em>top: 0, left: 
+	 * 0</em> of the container.  \
+     * @return boolean $vertical_top \
+     */
     public function get_vertical_top() {
         return $this->vertical_top;
     }
 
     /**
-    * Set Vertical top \
-    * Response container will always stay at the top left position if this attribute value is set to true \
-    * @param boolean $vertical_top \
-    */
+     * Set Vertical top \
+     * This setting ensures that the position of the response boxes stays at the position set by the author, regardless of chan
+	 * ges to the font size or container's size, i.e. it ensures that the position of the responses stays at <em>top: 0, left: 
+	 * 0</em> of the container.  \
+     * @param boolean $vertical_top \
+     */
     public function set_vertical_top ($vertical_top) {
         $this->vertical_top = $vertical_top;
     }

@@ -5,13 +5,14 @@ namespace LearnosityQti\Entities\QuestionTypes;
 use LearnosityQti\Entities\BaseQuestionTypeAttribute;
 
 /**
-* This class is auto-generated based on Schemas API and you should not modify its content
-* Metadata: {"responses":"v2.108.0","feedback":"v2.71.0","features":"v2.107.0"}
-*/
+ * This class is auto-generated based on Schemas API and you should not modify its content
+ * Metadata: {"responses":"v2.228.0","feedback":"v2.71.0","features":"v2.208.0"}
+ */
 class simplechart_ui_style extends BaseQuestionTypeAttribute {
     protected $fontsize;
     protected $validation_stem_numeration;
     protected $chart_type;
+    protected $point_style;
     
     public function __construct(
             )
@@ -19,57 +20,75 @@ class simplechart_ui_style extends BaseQuestionTypeAttribute {
             }
 
     /**
-    * Get Font size \
-    * Controls the size of base font for this question. Options are among 'small', 'normal', 'large', 'xlarge' and 'xxlarge'. \
-    * @return string $fontsize ie. small, normal, large, xlarge, xxlarge  \
-    */
+     * Get Font size \
+     * Controls the size of base font for this question. Options are among 'small', 'normal', 'large', 'xlarge' and 'xxlarge'. \
+     * @return string $fontsize ie. small, normal, large, xlarge, xxlarge  \
+     */
     public function get_fontsize() {
         return $this->fontsize;
     }
 
     /**
-    * Set Font size \
-    * Controls the size of base font for this question. Options are among 'small', 'normal', 'large', 'xlarge' and 'xxlarge'. \
-    * @param string $fontsize ie. small, normal, large, xlarge, xxlarge  \
-    */
+     * Set Font size \
+     * Controls the size of base font for this question. Options are among 'small', 'normal', 'large', 'xlarge' and 'xxlarge'. \
+     * @param string $fontsize ie. small, normal, large, xlarge, xxlarge  \
+     */
     public function set_fontsize ($fontsize) {
         $this->fontsize = $fontsize;
     }
 
     /**
-    * Get Stem numeration (review only) \
-    * Numeration character to be displayed to the left of the validation label. \
-    * @return string $validation_stem_numeration ie. number, upper-alpha, lower-alpha  \
-    */
+     * Get Stem numeration (review only) \
+     * Numeration character to be displayed to the left of the validation label. \
+     * @return string $validation_stem_numeration ie. number, upper-alpha, lower-alpha  \
+     */
     public function get_validation_stem_numeration() {
         return $this->validation_stem_numeration;
     }
 
     /**
-    * Set Stem numeration (review only) \
-    * Numeration character to be displayed to the left of the validation label. \
-    * @param string $validation_stem_numeration ie. number, upper-alpha, lower-alpha  \
-    */
+     * Set Stem numeration (review only) \
+     * Numeration character to be displayed to the left of the validation label. \
+     * @param string $validation_stem_numeration ie. number, upper-alpha, lower-alpha  \
+     */
     public function set_validation_stem_numeration ($validation_stem_numeration) {
         $this->validation_stem_numeration = $validation_stem_numeration;
     }
 
     /**
-    * Get Chart type \
-    *  \
-    * @return string $chart_type \
-    */
+     * Get Chart type \
+     *  \
+     * @return string $chart_type \
+     */
     public function get_chart_type() {
         return $this->chart_type;
     }
 
     /**
-    * Set Chart type \
-    *  \
-    * @param string $chart_type \
-    */
+     * Set Chart type \
+     *  \
+     * @param string $chart_type \
+     */
     public function set_chart_type ($chart_type) {
         $this->chart_type = $chart_type;
+    }
+
+    /**
+     * Get Point style \
+     *  \
+     * @return string $point_style \
+     */
+    public function get_point_style() {
+        return $this->point_style;
+    }
+
+    /**
+     * Set Point style \
+     *  \
+     * @param string $point_style \
+     */
+    public function set_point_style ($point_style) {
+        $this->point_style = $point_style;
     }
 
     
