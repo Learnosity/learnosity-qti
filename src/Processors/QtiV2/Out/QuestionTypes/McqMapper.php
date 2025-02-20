@@ -74,8 +74,10 @@ class McqMapper extends AbstractQuestionTypeMapper
         $interaction = new ChoiceInteraction($interactionIdentifier, $simpleChoiceCollection);
         $interaction->setLabel($interactionLabel);
         $minSelection = ($question->get_min_selection()) ? $question->get_min_selection() : 1;
+        if ($minSelection !== 1) {
+            $interaction->setMinChoices($minSelection);
+        }
         $maxSelection = ($question->get_max_selection()) ? $question->get_max_selection() : ($question->get_multiple_responses() ? $simpleChoiceCollection->count() : 1);
-        $interaction->setMinChoices($minSelection);
         $interaction->setMaxChoices($maxSelection);
 
         // Build the prompt
@@ -98,7 +100,7 @@ class McqMapper extends AbstractQuestionTypeMapper
             return [$interaction, null, null];
         }
 
-        $builder = new McqValidationBuilder($question->get_multiple_responses(), $valueIdentifierMap);
+        $builder = new McqValidationBuilder($question->get_multiple_responses(), $valueIdentifierMap, $question);
         list($responseDeclaration, $responseProcessing) = $builder->buildValidation($interactionIdentifier, $question->get_validation(), true, $feedbackOptions);
 
         return [$interaction, $responseDeclaration, $responseProcessing];

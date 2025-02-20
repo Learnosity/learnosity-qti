@@ -37,10 +37,11 @@ class Constants
      *  - clozedropdown
      */
     public static $questionTypesWithMappingSupport = [
-        'shorttext',
         'clozetext',
         'clozeassociation',
         'imageclozeassociationV2',
+        'mcq',
+        'shorttext',
     ];
 
     public static function setInputPath($value)

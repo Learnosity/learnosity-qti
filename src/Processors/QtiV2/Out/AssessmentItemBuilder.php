@@ -16,6 +16,17 @@ use qtism\data\content\ModalFeedback;
 use qtism\data\content\ModalFeedbackCollection;
 use qtism\data\content\TextRun;
 use qtism\data\content\xhtml\ObjectElement;
+use qtism\data\expressions\BaseValue;
+use qtism\data\expressions\Correct;
+use qtism\data\expressions\ExpressionCollection;
+use qtism\data\expressions\operators\AndOperator;
+use qtism\data\expressions\operators\Equal;
+use qtism\data\rules\ResponseCondition;
+use qtism\data\rules\ResponseElse;
+use qtism\data\rules\ResponseIf;
+use qtism\data\rules\ResponseRuleCollection;
+use qtism\data\rules\SetOutcomeValue;
+use qtism\data\expressions\Variable;
 use qtism\data\processing\ResponseProcessing;
 use qtism\data\state\DefaultValue;
 use qtism\data\state\OutcomeDeclaration;
@@ -23,6 +34,7 @@ use qtism\data\state\OutcomeDeclarationCollection;
 use qtism\data\state\ResponseDeclarationCollection;
 use qtism\data\state\Value;
 use qtism\data\state\ValueCollection;
+
 
 class AssessmentItemBuilder
 {
@@ -55,6 +67,8 @@ class AssessmentItemBuilder
 
         // Store interactions on this array to later be placed on <itemBody>
         $interactions = [];
+        $identifiers = [];
+        $totalScore = 0;
         $responseDeclarationCollection = new ResponseDeclarationCollection();
         $responseProcessingTemplates = [];
         $index = 0;
@@ -77,10 +91,16 @@ class AssessmentItemBuilder
             $assessmentItem->setOutcomeDeclarations($this->buildScoreOutcomeDeclarations(0, 'SCORE'));
 
             // add outcome declaration for MAXSCORE
+            $max_score = null;
             if (isset($questionData['data']['validation']['max_score'])) {
                 $max_score = $questionData['data']['validation']['max_score'];
+            } else if (isset($questionData['data']['validation']['valid_response']['score'])) {
+                $max_score = $questionData['data']['validation']['valid_response']['score'];
+            }
+            if ($max_score > 1) {
                 $assessmentItem->setOutcomeDeclarations($this->buildScoreOutcomeDeclarations($max_score, 'MAXSCORE'));
             }
+            $totalScore += $max_score;
 
             // add outcome declaration for MINSCORE
             if (isset($questionData['data']['validation']['min_score_if_attempted'])) {
@@ -94,6 +114,7 @@ class AssessmentItemBuilder
                 $assessmentItem->setOutcomeDeclarations($this->buildFeedbackOutcomeDeclarations('FEEDBACK', Cardinality::MULTIPLE, $baseType));
             }
 
+            // add outcome declaration for <modalFeedback>
             if (isset($questionData['data']['metadata']['distractor_rationale'])) {
                 $distractorRational = $questionData['data']['metadata']['distractor_rationale'];
                 $assessmentItem->setOutcomeDeclarations($this->buildFeedbackOutcomeDeclarations('FEEDBACK_GENERAL'));
@@ -123,6 +144,9 @@ class AssessmentItemBuilder
                 $responseProcessingTemplates[] = $responseProcessing->getTemplate();
             }
             $interactions[$question->get_reference()]['interaction'] = $interaction;
+            if (method_exists($interaction, 'getResponseIdentifier')) {
+                $identifiers[] = $interaction->getResponseIdentifier();
+            }
             if (!empty($extraContent)) {
                 $interactions[$question->get_reference()]['extraContent'] = $extraContent;
             }
@@ -137,15 +161,48 @@ class AssessmentItemBuilder
         }
 
         // Map <responseProcessing> - combine response processing from questions
-        if (!empty($responseProcessingTemplates)) {
-            if (!empty($responseProcessingTemplates[0])) {
-                $templates = array_unique($responseProcessingTemplates);
-                $isOnlyMatchCorrect = count($templates) === 1 && $templates[0] === Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT;
+        if (count($questions) === 1) {
+            // Single interaction items
+            if (!empty($responseProcessingTemplates)) {
+                if (!empty($responseProcessingTemplates[0])) {
+                    $templates = array_unique($responseProcessingTemplates);
+                    $isOnlyMatchCorrect = count($templates) === 1 && $templates[0] === Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT;
+                    $responseProcessing = new ResponseProcessing();
+                    $responseProcessing->setTemplate($isOnlyMatchCorrect ? Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT : Constants::RESPONSE_PROCESSING_TEMPLATE_MAP_RESPONSE);
+                    $assessmentItem->setResponseProcessing($responseProcessing);
+                } else {
+                    $assessmentItem->setResponseProcessing($responseProcessing);
+                }
+            }
+        } else {
+            // Composite items
+            try {
+                $responseIdentifiers = $identifiers;
+                $fullScore = floatval($totalScore); // Total score if all responses are correct
+
                 $responseProcessing = new ResponseProcessing();
-                $responseProcessing->setTemplate($isOnlyMatchCorrect ? Constants::RESPONSE_PROCESSING_TEMPLATE_MATCH_CORRECT : Constants::RESPONSE_PROCESSING_TEMPLATE_MAP_RESPONSE);
+                $equalExpressions = new ExpressionCollection();
+                foreach ($responseIdentifiers as $identifier) {
+                    $conditionExpressions = new ExpressionCollection();
+                    $conditionExpressions->attach(new Variable($identifier));
+                    $conditionExpressions->attach(new Correct($identifier));
+                    $equal = new Equal($conditionExpressions);
+                    $equalExpressions->attach($equal);
+                }
+
+                $andCondition = new AndOperator($equalExpressions);
+                $setScore = new SetOutcomeValue("SCORE", new BaseValue(BaseType::FLOAT, $fullScore));
+                $responseIfActions = new ResponseRuleCollection();
+                $responseIfActions->attach($setScore);
+                $responseIf = new ResponseIf($andCondition, $responseIfActions);
+                $responseElseActions = new ResponseRuleCollection();
+                $responseElseActions->attach(new SetOutcomeValue("SCORE", new BaseValue(BaseType::FLOAT, 0)));
+                $responseElse = new ResponseElse($responseElseActions);
+                $responseCondition = new ResponseCondition($responseIf, null, $responseElse);
+                $responseProcessing->setResponseRules(new ResponseRuleCollection([$responseCondition]));
                 $assessmentItem->setResponseProcessing($responseProcessing);
-            } else {
-                $assessmentItem->setResponseProcessing($responseProcessing);
+            } catch (\Exception $th) {
+                var_dump($th->getMessage());
             }
         }
 
@@ -162,7 +219,7 @@ class AssessmentItemBuilder
         $questionTypeMapper = $clazz->newInstance();
         $questionReference = $question->get_reference();
         // We add a suffix to the identifier for composite items
-        $interactionIdentifier = 'RESPONSE' . ($i ? "-$i" : '');
+        $interactionIdentifier = 'RESPONSE' . ($i ? "_$i" : '');
         $result = $questionTypeMapper->convert($question->get_data(), $interactionIdentifier, $questionReference);
         $result[] = $questionTypeMapper->getExtraContent();
         return $result;
