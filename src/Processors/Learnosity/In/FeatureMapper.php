@@ -10,7 +10,6 @@ class FeatureMapper
 {
     public function parse(array $featureJson)
     {
-        
         // TODO: Some validation to check all the required keys exists
         // TODO: Type and data should definitely exists
         // Map the `data` attribute

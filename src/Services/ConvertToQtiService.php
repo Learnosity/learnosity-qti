@@ -448,7 +448,9 @@ class ConvertToQtiService
             }
         }
 
-        $issues = array_merge(...array_map(fn($item) => $item[1] ?? [], $finalXml['questions']));
+        $widgetType = (array_key_exists('questions', $finalXml)) ? 'questions' : 'features';
+
+        $issues = array_merge(...array_map(fn($item) => $item[1] ?? [], $finalXml[$widgetType]));
 
         return [
             'qti'       => $finalXml,
@@ -605,13 +607,19 @@ class ConvertToQtiService
                 $resource->setAttribute("identifier", $resourceContent->getIdentifier());
                 $resource->setAttribute("type", $resourceContent->getType());
                 $resource->setAttribute("href", $resourceContent->getHref());
+
+                $widgetType = (array_key_exists('questions', $results[$index]['json']) && isset($results[$index]['json']['questions'][$indexResource])) ? 'questions' : 'features';
+
                 if (
                     isset($results[$index]) &&
-                    !empty($results[$index]) &&
-                    (array_key_exists('tags', $results[$index]) && !empty($results[$index]['tags'][$results[$index]['json']['questions'][$indexResource]['reference']]))
+                    count($results[$index]) &&
+                    (
+                        array_key_exists('tags', $results[$index]) &&
+                        !empty($results[$index]['tags'][$results[$index]['json'][$widgetType][$indexResource]['reference']])
+                    )
                 ) {
                     $metadata = $imsManifestXml->createElement("metadata");
-                    $tagsArray = $results[$index]['tags'][$results[$index]['json']['questions'][$indexResource]['reference']];
+                    $tagsArray = $results[$index]['tags'][$results[$index]['json'][$widgetType][$indexResource]['reference']];
                     if (is_array($tagsArray) && sizeof($tagsArray) > 0) {
                         $resourceMatadata = $this->addResourceMetaDataInfo($imsManifestXml, $tagsArray);
                         $metadata->appendChild($resourceMatadata);
@@ -732,7 +740,7 @@ class ConvertToQtiService
                 if (!empty($question['3']) && array_key_exists($questionReference, $question['3'])) {
                     $files = $this->addFeatureHtmlFilesInfo($question['3'][$questionReference], $files);
                 }
-                if (!empty($question['3']) && array_key_exists('features', $question['3'])) {
+                if (!empty($question['3']) && array_key_exists('features', $question['3']) && array_key_exists($question['3']['features'], $additionalFileReferenceInfo)) {
                     $files = $this->addAdditionalFileInfo($additionalFileReferenceInfo[$question['3']['features']], $files);
                 }
                 $file = new File();

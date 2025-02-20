@@ -298,21 +298,23 @@ class Converter
             $data = [$data];
         }
 
-        $jsonType = self::LEARNOSITY_DATA_QUESTION;
-        if (isset($data['data'])) {
-            if (!isset($data['reference'])) {
-                LogService::log('Invalid `item` JSON. Key `reference` shall not be empty');
-                throw new MappingException('Invalid `item` JSON. Key `reference` shall not be empty');
+        foreach ($data as $widget) {
+            $jsonType = self::LEARNOSITY_DATA_QUESTION;
+            if (isset($widget['data'])) {
+                if (!isset($widget['reference'])) {
+                    LogService::log('Invalid `item` JSON. Key `reference` can not be empty');
+                    throw new MappingException('Invalid `item` JSON. Key `reference` can not be empty');
+                }
             }
-        }
 
-        // Guess this JSON is a 'feature'
-        if (isset($data['data']['type']) && in_array($data['data']['type'], ['audioplayer','videoplayer'])) {
-            if (!isset($data['reference'])) {
-                LogService::log('Invalid `item` JSON. Key `reference` shall not be empty');
-                throw new MappingException('Invalid `item` JSON. Key `reference` shall not be empty');
+            // Guess this JSON is a 'feature'
+            if (isset($widget['data']['type']) && in_array($widget['data']['type'], ['audioplayer','videoplayer'])) {
+                if (!isset($widget['reference'])) {
+                    LogService::log('Invalid `item` JSON. Key `reference` can not be empty');
+                    throw new MappingException('Invalid `item` JSON. Key `reference` can not be empty');
+                }
+                $jsonType =  self::LEARNOSITY_DATA_FEATURE;
             }
-            $jsonType =  self::LEARNOSITY_DATA_FEATURE;
         }
 
         try {
@@ -346,11 +348,16 @@ class Converter
 
     private static function convertLearnosityFeature(array $featureJson)
     {
-        $preprocessingService = new LearnosityToQtiPreProcessingService($featureJson);
-        $featureMapper = new FeatureMapper();
-        $featureWriter = new FeatureWriter();
-        $feature = $featureMapper->parse($preprocessingService->processJson($featureJson));
-        return $featureWriter->convert($feature);
+        $qti = '';
+        $feature = [];
+        foreach ($featureJson as $fj) {
+            $preprocessingService = new LearnosityToQtiPreProcessingService($fj);
+            $featureMapper = new FeatureMapper();
+            $featureWriter = new FeatureWriter();
+            $feature[] = $featureMapper->parse($preprocessingService->processJson($fj));
+        }
+        $qti = $featureWriter->convert($feature);
+        return $qti;
     }
 
     private static function convertLearnosityQuestion(array $questionJson)

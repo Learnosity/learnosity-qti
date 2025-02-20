@@ -20,10 +20,10 @@ class videoplayer extends BaseQuestionType {
     protected $poster;
     protected $width;
     protected $height;
-    protected $no-controls;
+    protected $no_controls;
     protected $text_alternative;
     protected $allow_retries;
-    
+
     public function __construct(
                     $type,
                                 $player_type,
@@ -227,7 +227,7 @@ class videoplayer extends BaseQuestionType {
 
     /**
      * Get Height (px) \
-     * The height of the video player in pixels or percentage. <span class="label label-important">IMPORTANT</span> Responsive 
+     * The height of the video player in pixels or percentage. <span class="label label-important">IMPORTANT</span> Responsive
 	 * design with percentage height and width is not supported for Vimeo videos. \
      * @return string $height \
      */
@@ -237,7 +237,7 @@ class videoplayer extends BaseQuestionType {
 
     /**
      * Set Height (px) \
-     * The height of the video player in pixels or percentage. <span class="label label-important">IMPORTANT</span> Responsive 
+     * The height of the video player in pixels or percentage. <span class="label label-important">IMPORTANT</span> Responsive
 	 * design with percentage height and width is not supported for Vimeo videos. \
      * @param string $height \
      */
@@ -248,19 +248,19 @@ class videoplayer extends BaseQuestionType {
     /**
      * Get Hide controls \
      * Set to <strong>true</strong> to remove the video controls from the player. \
-     * @return boolean $no-controls \
+     * @return boolean $no_controls \
      */
-    public function get_no-controls() {
-        return $this->no-controls;
+    public function get_no_controls() {
+        return $this->no_controls;
     }
 
     /**
      * Set Hide controls \
      * Set to <strong>true</strong> to remove the video controls from the player. \
-     * @param boolean $no-controls \
+     * @param boolean $no_controls \
      */
-    public function set_no-controls ($no-controls) {
-        $this->no-controls = $no-controls;
+    public function set_no_controls ($no_controls) {
+        $this->no_controls = $no_controls;
     }
 
     /**
@@ -299,9 +299,8 @@ class videoplayer extends BaseQuestionType {
         $this->allow_retries = $allow_retries;
     }
 
-    
+
     public function get_widget_type() {
     return 'feature';
     }
 }
-

@@ -6,7 +6,7 @@ use LearnosityQti\Entities\BaseQuestionType;
 use LearnosityQti\Entities\QuestionTypes\imageclozeassociation;
 use LearnosityQti\Entities\QuestionTypes\imageclozeassociation_image;
 use LearnosityQti\Exceptions\MappingException;
-use LearnosityQti\Processors\QtiV2\Out\Validation\ImageclozeassociationV2ValidationBuilder;
+use LearnosityQti\Processors\QtiV2\Out\Validation\ImageclozeassociationValidationBuilder;
 use LearnosityQti\Services\ConvertToQtiService;
 use LearnosityQti\Utils\CurlUtil;
 use LearnosityQti\Utils\MimeUtil;
@@ -55,9 +55,10 @@ class ImageclozeassociationMapper extends AbstractQuestionTypeMapper
         // Build dah` interaction
         $interaction = new GraphicGapMatchInteraction($interactionIdentifier, $imageObject, $gapImageCollection, $associableHotspotCollection);
         $interaction->setLabel($interactionLabel);
-        $interaction->setPrompt($this->convertStimulusForPrompt($question->get_stimulus()));
+        $stimulus = !empty($question->get_stimulus()) ? $question->get_stimulus() : '';
+        $interaction->setPrompt($this->convertStimulusForPrompt($stimulus));
 
-        $validationBuilder = new ImageclozeassociationV2ValidationBuilder($possibleResponses);
+        $validationBuilder = new ImageclozeassociationValidationBuilder($possibleResponses);
         list($responseDeclaration, $responseProcessing) = $validationBuilder->buildValidation($interaction->getResponseIdentifier(), $question->get_validation(), 1, $feedbackOptions);
 
         return [$interaction, $responseDeclaration, $responseProcessing];

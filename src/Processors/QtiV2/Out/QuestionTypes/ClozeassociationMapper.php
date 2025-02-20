@@ -64,7 +64,8 @@ class ClozeassociationMapper extends AbstractQuestionTypeMapper
 
         $interaction = new GapMatchInteraction($interactionIdentifier, $gapChoices, $content);
         $interaction->setLabel($interactionLabel);
-        $interaction->setPrompt($this->convertStimulusForPrompt($question->get_stimulus()));
+        $stimulus = !empty($question->get_stimulus()) ? $question->get_stimulus() : '';
+        $interaction->setPrompt($this->convertStimulusForPrompt($stimulus));
         $interaction->setShuffle($question->get_shuffle_options() ? true : false);
 
         $validationBuilder = new ClozeassociationValidationBuilder($possibleResponses);

@@ -10,14 +10,11 @@ use qtism\data\storage\xml\XmlDocument;
 class FeatureWriter
 {
 
-    public function convert(Feature $feature)
+    public function convert(array $feature)
     {
-        // Make sure we clean up the log
-        LogService::flush();
-
         // Try to build the identifier using question `reference`
         // Otherwise, generate an alternative identifier and store the original reference as `label`
-        $featureReference = $feature->get_reference();
+        $featureReference = $feature[0]->get_reference();
         $featureIdentifier = Format::isIdentifier($featureReference, false) ? $featureReference : 'ITEM_' . StringUtil::generateRandomString(12);
         if ($featureReference !== $featureIdentifier) {
             LogService::log(
@@ -26,9 +23,9 @@ class FeatureWriter
                 'verbose'
             );
         }
-        $content = $feature->get_content();
+        $content = $feature[0]->get_content();
         $builder = new AssessmentItemBuilder();
-        $assessmentItem = $builder->buildFeature($featureIdentifier, '', [$feature], $content);
+        $assessmentItem = $builder->buildFeature($featureIdentifier, '', $feature, $content);
         $xml = new XmlDocument();
         $xml->setDocumentComponent($assessmentItem);
 

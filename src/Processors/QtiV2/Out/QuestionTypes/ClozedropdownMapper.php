@@ -30,7 +30,8 @@ class ClozedropdownMapper extends AbstractQuestionTypeMapper
         $question = $questionType;
 
         // Extra text that can't be mapped since we are in textEntryInteraction which does not have prompt
-        $this->extraContent = $question->get_stimulus();
+        $stimulus = !empty($question->get_stimulus()) ? $question->get_stimulus() : '';
+        $this->extraContent = $stimulus;
 
         // Check if distractor_rationale exists
         $metadata = $question->get_metadata();
