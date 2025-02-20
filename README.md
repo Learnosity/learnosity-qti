@@ -4,6 +4,11 @@ This library is open source and currently is not actively maintained by Learnosi
 
 Users should fork this repository to fix any issues found or feature requests required.
 
+The `develop` branch is the mainline you should checkout.
+
+Note: due to containing vendors, this package is licensed under GPL.
+
+
 --
 
 # Learnosity QTI
@@ -52,7 +57,7 @@ For bleeding edge:
 
 Make sure to add $HOME/.composer/vendor/bin directory to your $PATH so the `mo` executable can be located by your system. If not, simply replace all `mo` commands below with `./bin/mo` (from the root of the project).
 
-This package has been tested on PHP 7.4+
+This package has been tested on PHP 8.1+
 
 ## Usage
 
@@ -397,11 +402,13 @@ mo convert:to:qti --input /my/path/to/learnosity-json --output /my/path/to/outpu
 
 All supported input options are as follows:
 
-| Option                 | Default         | Description                                                                                                                                                                                                                                                                                                   |
-| ---------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| --input                | `./data/input`  | File system path to the source content being converted                                                                                                                                                                                                                                                        |
-| &#x2011;&#x2011;output | `./data/output` | File system path to where the converted content will be written                                                                                                                                                                                                                                               |
-| &#x2011;&#x2011;format | `qti`           | A flag to choose how to format the QTI output content package, from a list of supported formats. This option supports the following possible values: (canvas, qti). Pass the canvas option to export. QTI content that is compatible with Canvas LMS. The default is qti, which outputs non LMS-specific QTI. |
+| Option                 	| Default         | Description                                                                                                                                                                                                                                                                                                  
+| ------------------------	| --------------- | ------------- |
+| --input                	| `./data/input`  | File system path to the source content being converted                                                                                                                                                                                                                                                        
+| &#x2011;&#x2011;output 	| `./data/output` | File system path to where the converted content will be written                                                                                                                                                                                                                                               
+| &#x2011;&#x2011;format 	| `qti`           | A flag to choose how to format the QTI output content package, from a list of supported formats. This option supports the following possible values: (canvas, qti). Pass the canvas option to export. QTI content that is compatible with Canvas LMS. The default is qti, which outputs non LMS-specific QTI. 
+| --zip					  	| `true`		   | A flag determining whether to generate a zip file of the converted package. If you don't require an archive, disable for better performance 
+| &#x2011;&#x2011;logVerbose	| `false`  | A flag that can add extra logging not considered essential to the conversion manifest |		
 
 ### Learnosity JSON format
 
@@ -410,17 +417,17 @@ This conversion tool expects to be given JSON in the format that is returned by 
 The directory returned from the itembank/offlinepackage endpoint contains the following files:
 
 ```
-Learnosity/
- 	itembank/
-		activities/
-			hashedfilename.json
-		assets/
-			image1.jpg
-			image2.jpg
-		items/
-			hashedfilename.json
-			hashedfilename.json
-			hashedfilename.json
+vendor/learnosity/itembank
+	activities/
+		hashedfilename.json (optional)
+	assets/
+		image1.jpg
+		image2.jpg
+	items/
+		hashedfilename.json
+		hashedfilename.json
+		hashedfilename.json
+	manifest.json
 ```
 
 Each JSON file within the items folder is named from a (lower case) MD5 hash of the item reference. The contents of each item file will be something like:
@@ -439,6 +446,28 @@ Each JSON file within the items folder is named from a (lower case) MD5 hash of 
     "features": []
 }
 ```
+
+### Generated QTI folder structure
+
+After conversion, expect the `output` location to contain:
+
+```
+output/
+	final/
+	log/
+		convert-to-qti.log.json
+	raw/
+		audio/
+		images/
+		items/
+		passages/
+		video/
+		imsmanifest.xml	
+```
+
+Currently, we don't use `final`.
+
+The `log` directory stores a manifest with detail about the conversion.
 
 ### Supported Question Types - Learnosity to QTI
 
@@ -462,17 +491,88 @@ The following Learnosity question types are supported:
 | Short Text                 | shorttext               | TextEntryInteraction       |
 | Token Highlight            | tokenhighlight          | HottextInteraction         |
 
+#### Scoring
+
+The converter attempts to use one of the following `<responseProcessing>` templates:
+
+- `<responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"/>`
+- `<responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/map_response"/>`
+
+In cases where there are multiple interactions on a single item (composite items), or the `score` is greater than `1`, we use custom mappings inside `<responseDeclaration>` coupled with the `map_response` template. Eg:
+
+```
+<responseDeclaration identifier="RESPONSE" cardinality="multiple" baseType="identifier">
+    <correctResponse>
+        <value>a</value>
+        <value>b</value>
+    </correctResponse>
+    <mapping defaultValue="0">
+        <mapEntry mapKey="a" mappedValue="1" caseSensitive="true" />
+        <mapEntry mapKey="b" mappedValue="1" caseSensitive="true" />
+    </mapping>
+</responseDeclaration>
+```
+
+
 #### Known limitations
 
-##### General
+##### Item layouts
 
-You cannot use `<u>` elements in QTI 2.1. We suggest using a `<span>` with a CSS classname instead.
+2-column items are rendered in the markup like:
 
-All `template` fields must be wrapped in a block element.
+```
+<itemBody>
+    <div class="row">
+        <div class="col-xs-6">
+            <object data="../passages/path-to-passage.html" type="text/html" label="passage-label" />
+        </div>
+        <div class="col-xs-6">
+            <choiceInteraction label="5689-q-en" responseIdentifier="RESPONSE" maxChoices="1">
+                <prompt>Sample question stem</prompt>
+                <simpleChoice identifier="a">response 1</simpleChoice>
+                <simpleChoice identifier="b">response 2</simpleChoice>
+                <simpleChoice identifier="c">response 3</simpleChoice>
+                <simpleChoice identifier="d">response 4</simpleChoice>
+            </choiceInteraction>
+        </div>
+    </div>
+</itemBody>
+```
+
+Recipients of any QTI package should have necessary CSS to render as columns.
+
+##### Tabs
+
+Any API column tabs are removed. All contained widgets are vertically stacked in the QTI.
+
+##### Passages
+
+Passages are rendered as `<objects>`. Eg,
+
+```
+<object data="../passages/af4aeb91-07bb-498e-9b2b-8989fbed80be.html" type="text/html" label="af4aeb91-07bb-498e-9b2b-8989fbed80be"></object>
+```
+
 
 ##### Cloze Association
 
-Cannot use the group possible responses option.
+Cannot use the group possible responses option. We flatten all groups into a single `possible_responses` array.
+
+##### Distractor rationale
+
+Any `distractor_rationale` is rendered inside `<modalFeedback>` elements.
+
+##### Media
+
+Video and audio are rendered as `<object>` elements. Eg:
+
+```
+<object data="../audio/ba9c5dfca8c228f08e13687361c486e3_d9efa6e6-dec4-4638-9b7a-2e241b206042.mp3" type="audio/mpeg"/>
+```
+
+##### General
+
+Considering the strict nature of QTI (XHTML), we do a _lot_ of string processing during the conversion process. This is because invalid content might have been imported into Learnosity via the Data API, or entered by authors.
 
 ### Help
 
