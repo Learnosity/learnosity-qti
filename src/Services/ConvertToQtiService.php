@@ -685,13 +685,13 @@ class ConvertToQtiService
                 if (!empty($result['json']['questions'])) {
                     $reference = $result['json']['reference'];
                     foreach ($result['qti']['questions'] as $key => $value) {
-                        file_put_contents($outputFilePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS . '/' . $reference . '.xml', $value[0]);
+                        file_put_contents($outputFilePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS . '/i' . $reference . '.xml', $value[0]);
                     }
                 }
 
                 if (!empty($result['json']['features']) && empty($result['json']['questions'])) {
                     foreach ($result['qti']['features'] as $key => $value) {
-                        file_put_contents($outputFilePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS . '/' . $reference . '.xml', $value[0]);
+                        file_put_contents($outputFilePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS . '/i' . $reference . '.xml', $value[0]);
                     }
                 }
             }
@@ -726,25 +726,25 @@ class ConvertToQtiService
     {
         $resources = array();
         $itemReference = $result['json']['reference'];
+        $itemPrefix = 'i';
         if (!empty($result['qti']['questions'])) {
             foreach ($result['qti']['questions'] as $question) {
-                $questionReference = (isset($question['2'])) ? $question['2'] : $itemReference;
                 $files = array();
                 $resource = new Resource();
-                $resource->setIdentifier('i'.$questionReference);
+                $resource->setIdentifier($itemPrefix . $itemReference);
                 $resource->setType(Resource::TYPE_PREFIX_ITEM."xmlv2p1");
-                $resource->setHref(LearnosityExportConstant::DIRNAME_ITEMS . '/' . $itemReference.".xml");
-                if (array_key_exists($questionReference, $additionalFileReferenceInfo)) {
-                    $files = $this->addAdditionalFileInfo($additionalFileReferenceInfo[$questionReference], $files);
+                $resource->setHref(LearnosityExportConstant::DIRNAME_ITEMS . '/' . $itemPrefix . $itemReference.".xml");
+                if (array_key_exists($itemReference, $additionalFileReferenceInfo)) {
+                    $files = $this->addAdditionalFileInfo($additionalFileReferenceInfo[$itemReference], $files);
                 }
-                if (!empty($question['3']) && array_key_exists($questionReference, $question['3'])) {
-                    $files = $this->addFeatureHtmlFilesInfo($question['3'][$questionReference], $files);
+                if (!empty($question['3']) && array_key_exists($itemReference, $question['3'])) {
+                    $files = $this->addFeatureHtmlFilesInfo($question['3'][$itemReference], $files);
                 }
                 if (!empty($question['3']) && array_key_exists('features', $question['3']) && array_key_exists($question['3']['features'], $additionalFileReferenceInfo)) {
                     $files = $this->addAdditionalFileInfo($additionalFileReferenceInfo[$question['3']['features']], $files);
                 }
                 $file = new File();
-                $file->setHref(LearnosityExportConstant::DIRNAME_ITEMS . '/' . $itemReference.".xml");
+                $file->setHref(LearnosityExportConstant::DIRNAME_ITEMS . '/' . $itemPrefix . $itemReference.".xml");
                 $files[] = $file;
                 $resource->setFiles($files);
                 $resources[] = $resource;
@@ -756,6 +756,8 @@ class ConvertToQtiService
     private function addFeatureReference($features, $result, $additionalFileReferenceInfo)
     {
         $resources = array();
+        $itemReference = $result['json']['reference'];
+        var_dump($itemReference);die;
         foreach ($features as $feature) {
             if (!empty($result['qti'])) {
                 $files = array();
