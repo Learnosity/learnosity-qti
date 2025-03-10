@@ -686,11 +686,17 @@ class ConvertToQtiService
                     $reference = $result['json']['reference'];
                     foreach ($result['qti']['questions'] as $key => $value) {
                         file_put_contents($outputFilePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS . '/i' . $reference . '.xml', $value[0]);
+                        // Look for passages
+                        if ($value[3] && array_key_exists($value[2], $value[3])) {
+                            foreach ($value[3][$value[2]] as $key => $passage) {
+                                file_put_contents($outputFilePath . LearnosityExportConstant::DIRNAME_ITEMS . '/' . LearnosityExportConstant::SHARED_PASSAGE_FOLDER_NAME . '/' . $key . '.html', $passage);
+                            }
+                        }
                     }
                 }
 
                 if (!empty($result['json']['features']) && empty($result['json']['questions'])) {
-                    foreach ($result['qti']['features'] as $key => $value) {
+                    foreach ($result['json']['features'] as $key => $value) {
                         file_put_contents($outputFilePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS . '/i' . $reference . '.xml', $value[0]);
                     }
                 }
@@ -757,7 +763,7 @@ class ConvertToQtiService
     {
         $resources = array();
         $itemReference = $result['json']['reference'];
-        var_dump($itemReference);die;
+
         foreach ($features as $feature) {
             if (!empty($result['qti'])) {
                 $files = array();
