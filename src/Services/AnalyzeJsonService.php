@@ -45,12 +45,13 @@ class AnalyzeJsonService
         $jsonFiles = $this->parseInputFolders();
 
         $this->findCompositeItems($jsonFiles);
+        $this->findPassages($jsonFiles);
         $this->findScoreNonDefault($jsonFiles);
     }
 
     private function findCompositeItems($jsonFiles)
     {
-        $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Looking for composite items: {$this->inputPath} \n</info>");
+        $this->output->writeln("\n<info>" . static::INFO_OUTPUT_PREFIX . "Looking for composite items: {$this->inputPath}</info>");
 
         $numFound = 0;
         foreach ($jsonFiles as $file) {
@@ -67,9 +68,31 @@ class AnalyzeJsonService
         }
     }
 
+    private function findPassages($jsonFiles)
+    {
+        $this->output->writeln("\n<info>" . static::INFO_OUTPUT_PREFIX . "Looking for passages: {$this->inputPath}</info>");
+
+        $numFound = 0;
+        foreach ($jsonFiles as $file) {
+            $itemContent = file_get_contents($file);
+            $json = json_decode($itemContent, true);
+            if (count($json['features'])) {
+                $numPassages = count(array_filter($json['features'], function ($obj) {
+                    return isset($obj['data']['type']) && $obj['data']['type'] === 'sharedpassage';
+                }));
+                $numFound += $numPassages;
+                $this->output->writeln("<comment>Passage ({$numPassages}) " . basename($file) . "</comment>");
+            }
+        }
+
+        if (!$numFound) {
+            $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "No passage items found</info>\n");
+        }
+    }
+
     private function findScoreNonDefault($jsonFiles)
     {
-        $this->output->writeln("<info>" . static::INFO_OUTPUT_PREFIX . "Looking for non-default scores: {$this->inputPath} \n</info>");
+        $this->output->writeln("\n<info>" . static::INFO_OUTPUT_PREFIX . "Looking for non-default scores: {$this->inputPath}</info>");
 
         $numFound = 0;
         foreach ($jsonFiles as $file) {
