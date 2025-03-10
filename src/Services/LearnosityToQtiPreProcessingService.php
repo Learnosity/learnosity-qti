@@ -345,7 +345,7 @@ class LearnosityToQtiPreProcessingService
         $tabsNode = $xpath->query('//div[contains(@class, "tabs")]')->item(0);
         if ($tabsNode) {
             $widgets = [];
-            $featureNodes = $xpath->query('.//div[@class="learnosity-feature"] | .//span[@class="learnosity-feature"] | .//object', $tabsNode);
+            $featureNodes = $xpath->query('.//div[@class="learnosity-feature"] | .//span[@class="learnosity-feature"]', $tabsNode);
 
             foreach ($featureNodes as $featureElement) {
                 $widgets[] = $featureElement;
