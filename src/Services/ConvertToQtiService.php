@@ -7,6 +7,7 @@ use DOMElement;
 use Exception;
 use LearnosityQti\Converter;
 use LearnosityQti\Domain\JobDataTrait;
+use LearnosityQti\Processors\IMSCP\Entities\Dependency;
 use LearnosityQti\Processors\IMSCP\Entities\File;
 use LearnosityQti\Processors\IMSCP\Entities\ImsManifestMetadata;
 use LearnosityQti\Processors\IMSCP\Entities\Manifest;
@@ -601,6 +602,8 @@ class ConvertToQtiService
         $resources = $imsManifestXml->createElement("resources");
         $resourcesContents = $manifestContent->getResources();
         $i = 0;
+        $sharedResources = [];
+
         foreach ($resourcesContents as $index => $resourcesContent) {
             foreach ($resourcesContent as $indexResource => $resourceContent) {
                 $resource = $imsManifestXml->createElement("resource");
@@ -633,9 +636,30 @@ class ConvertToQtiService
                     $file->setAttribute("href", str_replace('../', '', $fileContent->getHref()));
                     $resource->appendChild($file);
                 }
+
+                $dependenciesData = $resourceContent->getDependencies();
+                foreach ($dependenciesData as $dependencyContent) {
+                    $dependency = $imsManifestXml->createElement("dependency");
+                    $dependencyPath = str_replace('../', '', LearnosityExportConstant::SHARED_PASSAGE_FOLDER_NAME . '/' . $dependencyContent->getIdentifierRef() . '.html');
+                    $dependency->setAttribute("identifierref", $dependencyPath);
+                    $resource->appendChild($dependency);
+                    $sharedResources[] = $dependencyPath;
+                }
                 $resources->appendChild($resource);
             }
         }
+
+        foreach ($sharedResources as $resourcePath) {
+            $resource = $imsManifestXml->createElement("resource");
+            $resource->setAttribute("identifier", $resourcePath);
+            $resource->setAttribute("type", "associatedcontent");
+            $resource->setAttribute("href", $resourcePath);
+            $file = $imsManifestXml->createElement("file");
+            $file->setAttribute("href", str_replace('../', '', $resourcePath));
+            $resource->appendChild($file);
+            $resources->insertBefore($resource, $resources->firstChild);
+        }
+
         return $resources;
     }
 
@@ -733,6 +757,7 @@ class ConvertToQtiService
         $resources = array();
         $itemReference = $result['json']['reference'];
         $itemPrefix = 'i';
+
         if (!empty($result['qti']['questions'])) {
             foreach ($result['qti']['questions'] as $question) {
                 $files = array();
@@ -755,7 +780,18 @@ class ConvertToQtiService
                 $resource->setFiles($files);
                 $resources[] = $resource;
             }
+            // Check for features and add them as dependencies to the resource
+            if (!empty($result['json']['features'])) {
+                $dependenies = [];
+                foreach ($result['json']['features'] as $feature) {
+                    $dependency = new Dependency();
+                    $dependency->setIdentifierRef($feature['reference']);
+                    $dependenies[] = $dependency;
+                    $resource->setDependencies($dependenies);
+                }
+            }
         }
+
         return $resources;
     }
 
