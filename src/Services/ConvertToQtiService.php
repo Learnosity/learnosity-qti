@@ -251,6 +251,7 @@ class ConvertToQtiService
                 $conversion = [];
                 if (file_exists($file)) {
                     $conversion = $this->convertLearnosityInDirectory($file);
+                    // var_dump($conversion);die;
                     if (!empty($conversion['qti'])) {
                         $totalSuccessful++;
                         $this->log['converted_items'][] = basename($file);
@@ -273,7 +274,7 @@ class ConvertToQtiService
                 if (!empty($conversion['issues'])) {
                     $this->log['issues'][basename($file)] = [
                         'detail' => $conversion['issues'],
-                        'qti' => (!empty($conversion['qti'])) ? $conversion['json']['reference'] . '.xml' : null
+                        'qti' => (!empty($conversion['qti'])) ? LearnosityExportConstant::ITEM_ID_PREFIX . $conversion['json']['reference'] . '.xml' : null
                     ];
                 }
             }
@@ -366,7 +367,8 @@ class ConvertToQtiService
         $content = $json['content'];
         $features = (!empty($json['features'])) ? $json['features'] : [];
         $tags = $json['tags'];
-        $itemReference = $json['reference'];
+        // QTI enforces that the identifier must start with a letter
+        $itemReference = LearnosityExportConstant::ITEM_ID_PREFIX . $json['reference'];
         $referenceArray = $this->getReferenceArray($json);
 
         if (!empty($json['questions'])) {
@@ -378,7 +380,7 @@ class ConvertToQtiService
 
                 if (in_array($question['data']['type'], LearnosityExportConstant::$supportedQuestionTypes)) {
                     $qs[] = $question;
-                    $tagsArray[$question['reference']] = $tags;
+                    $tagsArray[$itemReference] = $tags;
                 } else {
                     $result = [
                         '',
@@ -531,7 +533,7 @@ class ConvertToQtiService
     }
 
     /**
-     * This function is used to add the imsmanifest matadata.
+     * This function is used to add the root level imsmanifest metadata.
      *
      * @param Manifest $manifestContent content of the manifest
      * @param DOMDocument $imsManifestXml manifest xml document object
@@ -567,12 +569,12 @@ class ConvertToQtiService
             $imsMetaMetaDataSchema->appendChild($imsManifestXml->createElement('imsmd:metadataschema', $metaDataSchema));
         }
         $imsMetaMetaDataSchema->appendChild($imsManifestXml->createElement('imsmd:language', LearnosityExportConstant::IMSQTI_LANG));
+        $qtiLOMData->appendChild($imsMetaMetaDataSchema);
 
         $schemaVersion = $imsManifestXml->createElement("schemaversion", $manifestMetadataContent->getSchemaVersion());
         $manifestMetadata->appendChild($schemaVersion);
         $manifestMetadata->appendChild($qtiMetaData);
         $manifestMetadata->appendChild($qtiLOMData);
-        $manifestMetadata->appendChild($imsMetaMetaDataSchema);
         return $manifestMetadata;
     }
 
@@ -611,53 +613,44 @@ class ConvertToQtiService
                 $resource->setAttribute("type", $resourceContent->getType());
                 $resource->setAttribute("href", $resourceContent->getHref());
 
-                $widgetType = (array_key_exists('questions', $results[$index]['json']) && isset($results[$index]['json']['questions'][$indexResource])) ? 'questions' : 'features';
+                // $widgetType = (array_key_exists('questions', $results[$index]['json']) && isset($results[$index]['json']['questions'][$indexResource])) ? 'questions' : 'features';
+                $widgetType = 'questions';;
 
-                if (
-                    isset($results[$index]) &&
-                    count($results[$index]) &&
-                    (
-                        array_key_exists('tags', $results[$index]) &&
-                        !empty($results[$index]['tags'][$results[$index]['json'][$widgetType][$indexResource]['reference']])
-                    )
-                ) {
-                    $metadata = $imsManifestXml->createElement("metadata");
-                    $tagsArray = $results[$index]['tags'][$results[$index]['json'][$widgetType][$indexResource]['reference']];
-                    if (is_array($tagsArray) && sizeof($tagsArray) > 0) {
-                        $resourceMatadata = $this->addResourceMetaDataInfo($imsManifestXml, $tagsArray);
-                        $metadata->appendChild($resourceMatadata);
+                if ($resourceContent->getType() <> 'webcontent') {
+                    foreach ($results as $result) {
+                        if (substr($resourceContent->getIdentifier(), 1) === $result['json']['reference'] &&
+                            array_key_exists('tags', $result) &&
+                            !empty($result['tags'])
+                        ) {
+                            $metadata = $imsManifestXml->createElement("metadata");
+                            $tagsArray = $result['tags'][$result['qti']['questions'][0][2]];
+                            if (is_array($tagsArray) && sizeof($tagsArray) > 0) {
+                                $resourceMatadata = $this->addResourceMetaDataInfo($imsManifestXml, $tagsArray);
+                                $metadata->appendChild($resourceMatadata);
+                            }
+                            $resource->appendChild($metadata);
+                        }
                     }
-                    $resource->appendChild($metadata);
                 }
+
                 $i++;
                 $filesData = $resourceContent->getFiles();
                 foreach ($filesData as $fileContent) {
                     $file = $imsManifestXml->createElement("file");
-                    $file->setAttribute("href", str_replace('../', '', $fileContent->getHref()));
+                    $file->setAttribute("href", str_replace('../', './', $fileContent->getHref()));
                     $resource->appendChild($file);
                 }
 
                 $dependenciesData = $resourceContent->getDependencies();
-                foreach ($dependenciesData as $dependencyContent) {
-                    $dependency = $imsManifestXml->createElement("dependency");
-                    $dependencyPath = str_replace('../', '', LearnosityExportConstant::SHARED_PASSAGE_FOLDER_NAME . '/' . $dependencyContent->getIdentifierRef() . '.html');
-                    $dependency->setAttribute("identifierref", $dependencyPath);
-                    $resource->appendChild($dependency);
-                    $sharedResources[] = $dependencyPath;
+                if ($dependenciesData) {
+                    foreach ($dependenciesData as $dependencyContent) {
+                        $dependency = $imsManifestXml->createElement("dependency");
+                        $dependency->setAttribute("identifierref", $dependencyContent->getIdentifierRef());
+                        $resource->appendChild($dependency);
+                    }
                 }
                 $resources->appendChild($resource);
             }
-        }
-
-        foreach ($sharedResources as $resourcePath) {
-            $resource = $imsManifestXml->createElement("resource");
-            $resource->setAttribute("identifier", $resourcePath);
-            $resource->setAttribute("type", "associatedcontent");
-            $resource->setAttribute("href", $resourcePath);
-            $file = $imsManifestXml->createElement("file");
-            $file->setAttribute("href", str_replace('../', '', $resourcePath));
-            $resource->appendChild($file);
-            $resources->insertBefore($resource, $resources->firstChild);
         }
 
         return $resources;
@@ -710,12 +703,6 @@ class ConvertToQtiService
                     $reference = $result['json']['reference'];
                     foreach ($result['qti']['questions'] as $key => $value) {
                         file_put_contents($outputFilePath . '/' . LearnosityExportConstant::DIRNAME_ITEMS . '/i' . $reference . '.xml', $value[0]);
-                        // Look for passages
-                        if ($value[3] && array_key_exists($value[2], $value[3])) {
-                            foreach ($value[3][$value[2]] as $key => $passage) {
-                                file_put_contents($outputFilePath . LearnosityExportConstant::DIRNAME_ITEMS . '/' . LearnosityExportConstant::SHARED_PASSAGE_FOLDER_NAME . '/' . $key . '.html', $passage);
-                            }
-                        }
                     }
                 }
 
@@ -745,50 +732,47 @@ class ConvertToQtiService
             if (!empty($result['json']['questions'])) {
                 $resourcesArray[] = $this->addQuestionReference($result['json']['questions'], $result, $additionalFileReferenceInfo);
             }
-            if (!empty($result['json']['features']) && empty($result['json']['questions'])) {
+            // if (!empty($result['json']['features']) && empty($result['json']['questions'])) {
+            if (!empty($result['json']['features'])) {
                 $resourcesArray[] = $this->addFeatureReference($result['json']['features'], $result, $additionalFileReferenceInfo);
             }
         }
-        return $resourcesArray;
+
+        $sortedResources = $this->sortAndGroupResources($resourcesArray);
+
+        return $sortedResources;
     }
 
     private function addQuestionReference($questions, $result, $additionalFileReferenceInfo)
     {
-        $resources = array();
-        $itemReference = $result['json']['reference'];
-        $itemPrefix = 'i';
+        $resources = [];
+        $itemReference = LearnosityExportConstant::ITEM_ID_PREFIX . $result['json']['reference'];
 
         if (!empty($result['qti']['questions'])) {
             foreach ($result['qti']['questions'] as $question) {
-                $files = array();
+                $files = [];
+                $dependencies = [];
                 $resource = new Resource();
-                $resource->setIdentifier($itemPrefix . $itemReference);
+                $resource->setIdentifier($itemReference);
                 $resource->setType(Resource::TYPE_PREFIX_ITEM."xmlv2p1");
-                $resource->setHref(LearnosityExportConstant::DIRNAME_ITEMS . '/' . $itemPrefix . $itemReference.".xml");
-                if (array_key_exists($itemReference, $additionalFileReferenceInfo)) {
-                    $files = $this->addAdditionalFileInfo($additionalFileReferenceInfo[$itemReference], $files);
+                $resource->setHref('./' . LearnosityExportConstant::DIRNAME_ITEMS . '/' . $itemReference.".xml");
+                // Assets
+                if (array_key_exists($result['json']['reference'], $additionalFileReferenceInfo)) {
+                    $files = $this->addAdditionalFileInfo($additionalFileReferenceInfo[$result['json']['reference']], $files);
                 }
+                // Passages
                 if (!empty($question['3']) && array_key_exists($itemReference, $question['3'])) {
-                    $files = $this->addFeatureHtmlFilesInfo($question['3'][$itemReference], $files);
+                    $dependencies = $this->addFeatureHtmlFilesInfo($question['3'][$itemReference], $dependencies);
                 }
                 if (!empty($question['3']) && array_key_exists('features', $question['3']) && array_key_exists($question['3']['features'], $additionalFileReferenceInfo)) {
                     $files = $this->addAdditionalFileInfo($additionalFileReferenceInfo[$question['3']['features']], $files);
                 }
                 $file = new File();
-                $file->setHref(LearnosityExportConstant::DIRNAME_ITEMS . '/' . $itemPrefix . $itemReference.".xml");
+                $file->setHref('./' . LearnosityExportConstant::DIRNAME_ITEMS . '/' . $itemReference.".xml");
                 $files[] = $file;
                 $resource->setFiles($files);
+                $resource->setDependencies($dependencies);
                 $resources[] = $resource;
-            }
-            // Check for features and add them as dependencies to the resource
-            if (!empty($result['json']['features'])) {
-                $dependenies = [];
-                foreach ($result['json']['features'] as $feature) {
-                    $dependency = new Dependency();
-                    $dependency->setIdentifierRef($feature['reference']);
-                    $dependenies[] = $dependency;
-                    $resource->setDependencies($dependenies);
-                }
             }
         }
 
@@ -797,26 +781,23 @@ class ConvertToQtiService
 
     private function addFeatureReference($features, $result, $additionalFileReferenceInfo)
     {
-        $resources = array();
-        $itemReference = $result['json']['reference'];
-
+        $resources = [];
         foreach ($features as $feature) {
-            if (!empty($result['qti'])) {
-                $files = array();
-                $resource = new Resource();
-                $resource->setIdentifier('i'.$feature['reference']);
-                $resource->setType(Resource::TYPE_PREFIX_ITEM."xmlv2p1");
-                $resource->setHref(LearnosityExportConstant::DIRNAME_ITEMS . '/' . $feature['reference'].".xml");
-                if (array_key_exists($feature['reference'], $additionalFileReferenceInfo)) {
-                    $files = $this->addAdditionalFileInfo($additionalFileReferenceInfo[$feature['reference']], $files);
-                }
-
-                $file = new File();
-                $file->setHref(LearnosityExportConstant::DIRNAME_ITEMS . '/' . $feature['reference'].".xml");
-                $files[] = $file;
-                $resource->setFiles($files);
-                $resources[] = $resource;
+            $files = [];
+            $resource = new Resource();
+            $passageReference = $this->fixPassageIdentifier($feature['reference']);
+            $resource->setIdentifier($passageReference);
+            $resource->setType("webcontent");
+            $resource->setHref(str_replace('../', './', LearnosityExportConstant::SHARED_PASSAGE_FOLDER_NAME . '/' . $passageReference.".html"));
+            if (array_key_exists($feature['reference'], $additionalFileReferenceInfo)) {
+                $files = $this->addAdditionalFileInfo($additionalFileReferenceInfo[$feature['reference']], $files);
             }
+
+            $file = new File();
+            $file->setHref(LearnosityExportConstant::SHARED_PASSAGE_FOLDER_NAME . '/' . $passageReference.".html");
+            $files[] = $file;
+            $resource->setFiles($files);
+            $resources[] = $resource;
         }
         return $resources;
     }
@@ -824,9 +805,10 @@ class ConvertToQtiService
     private function addFeatureFilesInfo($featureArray, array $files)
     {
         foreach ($featureHtmlArray as $featureId => $featureHtml) {
-            if (file_put_contents($this->outputPath . '/' . $this->rawPath . '/' . self::SHARED_PASSAGE_FOLDER_NAME . '/' . $featureId . '.html', $featureHtml)) {
+            $passageReference = LearnosityExportConstant::PASSAGE_ID_PREFIX . $featureId;
+            if (file_put_contents($this->outputPath . '/' . $this->rawPath . '/' . self::SHARED_PASSAGE_FOLDER_NAME . '/' . $passageReference . '.html', $featureHtml)) {
                 $file = new File();
-                $file->setHref(self::SHARED_PASSAGE_FOLDER_NAME . '/' . $featureId . '.html');
+                $file->setHref(self::SHARED_PASSAGE_FOLDER_NAME . '/' . $passageReference . '.html');
                 $files[] = $file;
             }
         }
@@ -840,16 +822,17 @@ class ConvertToQtiService
      * @param array $files files to be added
      * @return File array of files
      */
-    private function addFeatureHtmlFilesInfo($featureHtmlArray, array $files)
+    private function addFeatureHtmlFilesInfo($featureHtmlArray, array $dependenies)
     {
         foreach ($featureHtmlArray as $featureId => $featureHtml) {
-            if (file_put_contents($this->outputPath . '/' . $this->rawPath . '/' . LearnosityExportConstant::DIRNAME_ITEMS . '/' . LearnosityExportConstant::SHARED_PASSAGE_FOLDER_NAME . '/' . $featureId . '.html', $featureHtml)) {
-                $file = new File();
-                $file->setHref(LearnosityExportConstant::SHARED_PASSAGE_FOLDER_NAME . '/' . $featureId . '.html');
-                $files[] = $file;
+            $passageReference = $this->fixPassageIdentifier($featureId);
+            if (file_put_contents($this->outputPath . '/' . $this->rawPath . '/' . LearnosityExportConstant::DIRNAME_ITEMS . '/' . LearnosityExportConstant::SHARED_PASSAGE_FOLDER_NAME . '/' . $passageReference . '.html', $featureHtml)) {
+                $dependency = new Dependency();
+                $dependency->setIdentifierRef($passageReference);
+                $dependenies[] = $dependency;
             }
         }
-        return $files;
+        return $dependenies;
     }
 
     /**
@@ -947,7 +930,7 @@ class ConvertToQtiService
                             // Sometimes there's an error, and `replacement` doesn't exist.
                             $valueArray[] = !empty($value->replacement) ? $value->replacement : $value->url;
                         }
-                        $additionalFileInfoArray[$questionKey] = $valueArray;
+                        $additionalFileInfoArray[$itemReference] = $valueArray;
                     }
                 }
                 if (isset($questionArray->features) && is_object($questionArray->features)) {
@@ -1035,5 +1018,55 @@ class ConvertToQtiService
     function isAbsoluteHttpUri($uri)
     {
         return preg_match('/^(https?):\/\//i', $uri);
+    }
+
+    private function sortAndGroupResources(array $resourceGroups) {
+        $flatResources = [];
+        $seenIdentifiers = [];
+
+        // Step 1: Flatten the nested resource array while avoiding duplicates
+        foreach ($resourceGroups as $group) {
+            foreach ($group as $resource) {
+                if (method_exists($resource, 'getType') && method_exists($resource, 'getIdentifier')) {
+                    $type = $resource->getType();
+                    $identifier = $resource->getIdentifier();
+
+                    // Skip if the identifier has already been added
+                    if (!isset($seenIdentifiers[$identifier])) {
+                        $seenIdentifiers[$identifier] = true;
+                        $flatResources[] = ['resource' => $resource, 'type' => $type, 'identifier' => $identifier];
+                    }
+                }
+            }
+        }
+
+        // Step 2: Sort by 'webcontent' type first, then by identifier
+        usort($flatResources, function ($a, $b) {
+            // Prioritize "webcontent" before other types
+            $typeOrder = ($a['type'] === "webcontent" ? -1 : 1) - ($b['type'] === "webcontent" ? -1 : 1);
+
+            // If both types are the same, sort by "identifier"
+            return $typeOrder === 0 ? strcmp($a['identifier'], $b['identifier']) : $typeOrder;
+        });
+
+        // Step 3: Convert back to an array of arrays (maintain structure)
+        $groupedResources = [];
+        foreach ($flatResources as $item) {
+            $groupedResources[] = [$item['resource']];
+        }
+
+        return $groupedResources;
+    }
+
+    private function fixPassageIdentifier($identifier) {
+        // Replace hyphens with underscores
+        $fixed = str_replace('-', '_', $identifier);
+
+        // Prepend "p" if it starts with a number
+        if (ctype_digit(substr($fixed, 0, 1))) {
+            $fixed = LearnosityExportConstant::PASSAGE_ID_PREFIX . $fixed;
+        }
+
+        return $fixed;
     }
 }

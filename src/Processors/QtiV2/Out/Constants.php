@@ -73,7 +73,7 @@ class Constants
     const IMSQTI_LANG = 'en';
     const IMSQTI_METADATA_SCHEMA = array('LOMv1.0', 'QTIv2.1');
     const SCHEMA_NAME = 'QTIv2.1 Item Bank Package';
-    const SCHEMA_VERSION = '2.1';
+    const SCHEMA_VERSION = '1.0.0';
     const DIRNAME_ITEMS = 'items';
     const DIRNAME_AUDIO = '../audio';
     const DIRNAME_IMAGES = '../images';
@@ -81,4 +81,6 @@ class Constants
     const DIRNAME_VIDEO = '../video';
     const SHARED_PASSAGE_DIV_CLASS = 'col-xs-6';
     const DIRPATH_ASSETS = '/vendor/learnosity/itembank/assets/';
+    const ITEM_ID_PREFIX = 'i';
+    const PASSAGE_ID_PREFIX = 'p';
 }
