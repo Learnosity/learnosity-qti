@@ -218,7 +218,6 @@ class Converter
         $itemWriter = AppContainer::getApplicationContainer()->get('learnosity_item_writer');
         $questionWriter = AppContainer::getApplicationContainer()->get('learnosity_question_writer');
 
-        // Parse `em
         try {
             $sourceDirectoryPath = null;
             if (isset($filePath)) {
@@ -319,9 +318,9 @@ class Converter
 
         try {
             if ($jsonType == self::LEARNOSITY_DATA_FEATURE) {
-                list($xmlString, $messages, $questionReference, $featureHtml) = self::convertLearnosityFeature($data);
+                list($xmlString, $messages, $itemReference, $featureHtml) = self::convertLearnosityFeature($data);
             } else {
-                list($xmlString, $messages, $questionReference, $featureHtml) = self::convertLearnosityQuestion($data);
+                list($xmlString, $messages, $itemReference, $featureHtml) = self::convertLearnosityQuestion($data);
             }
 
             $postprocessingService = new LearnosityToQtiPostProcessingService($xmlString);
@@ -343,7 +342,7 @@ class Converter
 
         $messages = LogService::flush();
 
-        return [$xmlString, $messages, $questionReference, $featureHtml];
+        return [$xmlString, $messages, $itemReference, $featureHtml];
     }
 
     private static function convertLearnosityFeature(array $featureJson)
@@ -363,14 +362,14 @@ class Converter
     private static function convertLearnosityQuestion(array $questionJson)
     {
         $qti = '';
-        $question = [];
+        $questions = [];
         foreach ($questionJson as $qj) {
             $preprocessingService = new LearnosityToQtiPreProcessingService($qj['feature']);
             $questionMapper = new QuestionMapper();
             $questionWriter = new QuestionWriter();
-            $question[] = $questionMapper->parse($preprocessingService->processJson($qj));
+            $questions[] = $questionMapper->parse($preprocessingService->processJson($qj));
         }
-        $qti = $questionWriter->convert($question);
+        $qti = $questionWriter->convert($questions);
         return $qti;
     }
 
