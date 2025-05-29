@@ -151,28 +151,31 @@ class ImageclozeassociationV2Mapper extends AbstractQuestionTypeMapper
 
     private function convertTextToObjectWithBase64ImageString($text)
     {
-        // Not idea, but if we have an empty string this will fail. Instead,
-        // we generate an empty image.
-        $string = $text || ' ';
+        $string = $text ?: ' ';
         $font = 3;
-        $width  = ImageFontWidth($font) * strlen($string);
-        $height = ImageFontHeight($font);
+        $width  = imagefontwidth($font) * strlen($string);
+        $height = imagefontheight($font);
+
+        $im = @imagecreate($width, $height);
+        if (!$im) {
+            throw new \RuntimeException("Could not create image.");
+        }
+
+        $background_color = imagecolorallocate($im, 255, 255, 255);
+        $text_color = imagecolorallocate($im, 0, 0, 0);
+        imagestring($im, $font, 0, 0, $string, $text_color);
 
         ob_start();
-        $im = @imagecreate ($width, $height);
-        $background_color = imagecolorallocate($im, 255, 255, 255); // White background
-        $text_color = imagecolorallocate ($im, 0, 0, 0); // Black text
-        imagestring($im, $font, 0, 0,  $string, $text_color);
         imagepng($im);
-        $imagedata = ob_get_contents();
-        ob_end_clean();
+        $rawImage = ob_get_clean(); // shorthand for ob_get_contents() + ob_end_clean()
+        imagedestroy($im);
 
-        $imagedata = 'data:image/png;base64,' . base64_encode($imagedata);
+        $imagedata = 'data:image/png;base64,' . base64_encode($rawImage);
 
         $gapImageObject = new ObjectElement($imagedata, 'image/png');
         $gapImageObject->setWidth($width);
         $gapImageObject->setHeight($height);
-        return $gapImageObject;
 
+        return $gapImageObject;
     }
 }
