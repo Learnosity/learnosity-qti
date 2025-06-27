@@ -43,4 +43,15 @@ class StringUtil
         $matched = preg_match_all('/^' . $pattern . '$/i', $str, $matches);
         return [(bool) $matched, $matches];
     }
+
+    public static function ensureWrappedInParagraph(string $input): string
+    {
+        $trimmed = trim($input);
+
+        if (preg_match('#^<p\b[^>]*>.*</p>$#si', $trimmed)) {
+            return $trimmed;
+        }
+
+        return '<p>' . $trimmed . '</p>';
+    }
 }
