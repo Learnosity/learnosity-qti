@@ -49,6 +49,7 @@ class ConvertToQtiService
     protected $organisationId;
     protected $zip;
     protected $verbose;
+    protected $itemDebug;
     protected $itemReferences;
     protected $log = [
         'directory_processed' => null,
@@ -76,7 +77,7 @@ class ConvertToQtiService
     protected $useResourceIdentifier   = false;
     private static $instance = null;
 
-    private function __construct($inputPath, $outputPath, OutputInterface $output, $format, $organisationId = null, $zip = true, $verbose = false)
+    private function __construct($inputPath, $outputPath, OutputInterface $output, $format, $organisationId = null, $zip = true, $verbose = false, $itemDebug = null)
     {
         $this->inputPath      = $inputPath;
         $this->outputPath     = $outputPath;
@@ -85,6 +86,7 @@ class ConvertToQtiService
         $this->organisationId = $organisationId;
         $this->zip            = $zip;
         $this->verbose        = $verbose;
+        $this->itemDebug      = $itemDebug;
         $this->finalPath      = 'final';
         $this->logPath        = 'log';
         $this->rawPath        = 'raw';
@@ -98,10 +100,10 @@ class ConvertToQtiService
 
     // The object is created from within the class itself
     // only if the class has no instance.
-    public static function initClass($inputPath, $outputPath, OutputInterface $output, $format = null, $organisationId = null, $zip = true, $verbose = false)
+    public static function initClass($inputPath, $outputPath, OutputInterface $output, $format = null, $organisationId = null, $zip = true, $verbose = false, $itemDebug = null)
     {
         if (!self::$instance) {
-            self::$instance = new ConvertToQtiService($inputPath, $outputPath, $output, $format, $organisationId, $zip, $verbose);
+            self::$instance = new ConvertToQtiService($inputPath, $outputPath, $output, $format, $organisationId, $zip, $verbose, $itemDebug);
         }
         return self::$instance;
     }
@@ -251,7 +253,6 @@ class ConvertToQtiService
                 $conversion = [];
                 if (file_exists($file)) {
                     $conversion = $this->convertLearnosityInDirectory($file);
-                    // var_dump($conversion);die;
                     if (!empty($conversion['qti'])) {
                         $totalSuccessful++;
                         $this->log['converted_items'][] = basename($file);
@@ -346,7 +347,14 @@ class ConvertToQtiService
         } else {
             $finder->files()->in($this->inputPath . '/items');
             foreach ($finder as $json) {
-                $folders[] = $this->inputPath . '/items/' . $json->getRelativePathname();
+                if (!is_null($this->itemDebug)) {
+                    if ($this->itemDebug == $json->getRelativePathname()) {
+                        $folders[] = $this->inputPath . '/items/' . $json->getRelativePathname();
+                        break;
+                    }
+                } else {
+                    $folders[] = $this->inputPath . '/items/' . $json->getRelativePathname();
+                }
             }
         }
         return $folders;

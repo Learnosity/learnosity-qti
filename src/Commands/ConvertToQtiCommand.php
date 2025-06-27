@@ -39,6 +39,12 @@ class ConvertToQtiCommand extends Command
                 QTI content that is compatible with Canvas LMS. The default is qti, which outputs non LMS-specific QTI.'
             )
             ->addOption(
+                'itemDebug',
+                'itemDebug',
+                InputOption::VALUE_OPTIONAL,
+                'A single item filename (including the extension) in the input directory to process. Useful when debugging.'
+            )
+            ->addOption(
                 'zip',
                 'z',
                 InputOption::VALUE_OPTIONAL,
@@ -61,6 +67,7 @@ class ConvertToQtiCommand extends Command
         $inputPath = $input->getOption('input');
         $outputPath = $input->getOption('output');
         $format = ($input->getOption('format')) ? strtolower($input->getOption('format')) : null;
+        $itemDebug = $input->getOption('itemDebug');
         $zip = $input->getOption('zip');
         $verbose = $input->getOption('logVerbose');
 
@@ -124,7 +131,7 @@ class ConvertToQtiCommand extends Command
                 "  <info>mo convert:to:qti -i /path/to/qti -o /path/to/save/folder -f qti|canvas</info>"
             ]);
         } else {
-            $Convert = ConvertToQtiService::initClass($inputPath, $outputPath, $output, $format, null, $zip, $verbose);
+            $Convert = ConvertToQtiService::initClass($inputPath, $outputPath, $output, $format, null, $zip, $verbose, $itemDebug);
             $result = $Convert->process();
             if (empty($result)) {
                 $output->writeln('<info>Empty results array, check output directory</info>');
