@@ -8,6 +8,7 @@ use LearnosityQti\Exceptions\MappingException;
 use LearnosityQti\Processors\QtiV2\Out\ContentCollectionBuilder;
 use LearnosityQti\Processors\QtiV2\Out\Validation\ClozedropdownValidationBuilder;
 use LearnosityQti\Utils\QtiMarshallerUtil;
+use LearnosityQti\Utils\StringUtil;
 use qtism\data\content\interactions\InlineChoice;
 use qtism\data\content\interactions\InlineChoiceCollection;
 use qtism\data\content\interactions\InlineChoiceInteraction;
@@ -29,9 +30,10 @@ class ClozedropdownMapper extends AbstractQuestionTypeMapper
         /** @var clozedropdown $question */
         $question = $questionType;
 
-        // Extra text that can't be mapped since we are in textEntryInteraction which does not have prompt
+        // Extra text that can't be mapped since we are in interactions like textEntryInteraction
+        // that do not have a prompt because of their inline nature
         $stimulus = !empty($question->get_stimulus()) ? $question->get_stimulus() : '';
-        $this->extraContent = $stimulus;
+        $this->extraContent = StringUtil::ensureWrappedInParagraph($stimulus);
 
         // Check if distractor_rationale exists
         $metadata = $question->get_metadata();
@@ -95,6 +97,7 @@ class ClozedropdownMapper extends AbstractQuestionTypeMapper
 
     public function getExtraContent()
     {
-        return $this->extraContent;
+        // return $this->extraContent;
+        return null;
     }
 }
