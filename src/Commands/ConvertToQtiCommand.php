@@ -58,6 +58,13 @@ class ConvertToQtiCommand extends Command
                 'Whether you want verbose logs. Default is false',
                 null
             )
+            ->addOption(
+                'silencePHPWarnings',
+                'spw',
+                InputOption::VALUE_OPTIONAL,
+                'Whether you want to silence PHP warnings. Default is false',
+                null
+            )
         ;
     }
 
@@ -70,6 +77,13 @@ class ConvertToQtiCommand extends Command
         $itemDebug = $input->getOption('itemDebug');
         $zip = $input->getOption('zip');
         $verbose = $input->getOption('logVerbose');
+        $silencePHPWarnings = $input->getOption('silencePHPWarnings');
+
+        if ($silencePHPWarnings) {
+            $previous = error_reporting();
+            // Exclude E_DEPRECATED and E_USER_DEPRECATED
+            error_reporting($previous & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+        }
 
         if ($zip === null) {
             $zip = true;
