@@ -408,7 +408,8 @@ All supported input options are as follows:
 | &#x2011;&#x2011;output 	| `./data/output` | File system path to where the converted content will be written                                                                                                                                                                                                                                               
 | &#x2011;&#x2011;format 	| `qti`           | A flag to choose how to format the QTI output content package, from a list of supported formats. This option supports the following possible values: (canvas, qti). Pass the canvas option to export. QTI content that is compatible with Canvas LMS. The default is qti, which outputs non LMS-specific QTI. 
 | --zip					  	| `true`		   | A flag determining whether to generate a zip file of the converted package. If you don't require an archive, disable for better performance 
-| &#x2011;&#x2011;logVerbose	| `false`  | A flag that can add extra logging not considered essential to the conversion manifest |		
+| &#x2011;&#x2011;logVerbose	| `false`  | A flag that can add extra logging not considered essential to the conversion manifest  
+| &#x2011;&#x2011;silencePHPWarnings	| `false`  | A flag that can suppress PHP deprecation warnings |		
 
 ### Learnosity JSON format
 
