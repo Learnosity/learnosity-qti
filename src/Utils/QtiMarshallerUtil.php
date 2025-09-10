@@ -45,7 +45,7 @@ class QtiMarshallerUtil
             $components = new QtiComponentCollection();
             foreach ($dom->documentElement->childNodes as $element) {
                 if ($element instanceof \DOMText) {
-                    if (!empty(trim($element->data))) {
+                    if (isset($element->data) && trim($element->data) !== '') {
                         $component = new TextRun($element->nodeValue);
                     }
                 } else {
