@@ -1067,14 +1067,11 @@ class ConvertToQtiService
     }
 
     private function fixPassageIdentifier($identifier) {
-        // Replace hyphens with underscores
-        $fixed = str_replace('-', '_', $identifier);
-
         // Prepend "p" if it starts with a number
-        if (ctype_digit(substr($fixed, 0, 1))) {
-            $fixed = LearnosityExportConstant::PASSAGE_ID_PREFIX . $fixed;
+        if (ctype_digit(substr($identifier, 0, 1))) {
+            $identifier = LearnosityExportConstant::PASSAGE_ID_PREFIX . $identifier;
         }
 
-        return $fixed;
+        return $identifier;
     }
 }
