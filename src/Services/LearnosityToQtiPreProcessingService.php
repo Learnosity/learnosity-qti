@@ -431,10 +431,6 @@ class LearnosityToQtiPreProcessingService
             } elseif ($type === 'sharedpassage') {
                 $flowCollection = new FlowCollection();
                 $object = new ObjectElement(LearnosityExportConstant::SHARED_PASSAGE_FOLDER_NAME . '/' . LearnosityExportConstant::PASSAGE_ID_PREFIX . $featureReference . '.html', 'text/html');
-                $object->setLabel($featureReference);
-                // $div = $this->createDivForSharedPassage();
-                // $flowCollection->attach($object);
-                // $div->setContent($flowCollection);
                 return QtiMarshallerUtil::marshallValidQti($object);
             } else {
                 LogService::log($type . 'feature not supported');
