@@ -8,7 +8,6 @@ The `develop` branch is the mainline you should checkout.
 
 Note: due to containing vendors, this package is licensed under GPL.
 
-
 --
 
 # Learnosity QTI
@@ -402,14 +401,14 @@ mo convert:to:qti --input /my/path/to/learnosity-json --output /my/path/to/outpu
 
 All supported input options are as follows:
 
-| Option                 	| Default         | Description                                                                                                                                                                                                                                                                                                  
-| ------------------------	| --------------- | ------------- |
-| --input                	| `./data/input`  | File system path to the source content being converted                                                                                                                                                                                                                                                        
-| &#x2011;&#x2011;output 	| `./data/output` | File system path to where the converted content will be written                                                                                                                                                                                                                                               
-| &#x2011;&#x2011;format 	| `qti`           | A flag to choose how to format the QTI output content package, from a list of supported formats. This option supports the following possible values: (canvas, qti). Pass the canvas option to export. QTI content that is compatible with Canvas LMS. The default is qti, which outputs non LMS-specific QTI. 
-| --zip					  	| `true`		   | A flag determining whether to generate a zip file of the converted package. If you don't require an archive, disable for better performance 
-| &#x2011;&#x2011;logVerbose	| `false`  | A flag that can add extra logging not considered essential to the conversion manifest  
-| &#x2011;&#x2011;silencePHPWarnings	| `false`  | A flag that can suppress PHP deprecation warnings |		
+| Option                             | Default         | Description                                                                                                                                                                                                                                                                                                   |
+| ---------------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| --input                            | `./data/input`  | File system path to the source content being converted                                                                                                                                                                                                                                                        |
+| &#x2011;&#x2011;output             | `./data/output` | File system path to where the converted content will be written                                                                                                                                                                                                                                               |
+| &#x2011;&#x2011;format             | `qti`           | A flag to choose how to format the QTI output content package, from a list of supported formats. This option supports the following possible values: (canvas, qti). Pass the canvas option to export. QTI content that is compatible with Canvas LMS. The default is qti, which outputs non LMS-specific QTI. |
+| --zip                              | `true`          | A flag determining whether to generate a zip file of the converted package. If you don't require an archive, disable for better performance                                                                                                                                                                   |
+| &#x2011;&#x2011;logVerbose         | `false`         | A flag that can add extra logging not considered essential to the conversion manifest                                                                                                                                                                                                                         |
+| &#x2011;&#x2011;silencePHPWarnings | `false`         | A flag that can suppress PHP deprecation warnings                                                                                                                                                                                                                                                             |
 
 ### Learnosity JSON format
 
@@ -463,7 +462,7 @@ output/
 		items/
 		passages/
 		video/
-		imsmanifest.xml	
+		imsmanifest.xml
 ```
 
 Currently, we don't use `final`.
@@ -474,30 +473,32 @@ The `log` directory stores a manifest with detail about the conversion.
 
 The following Learnosity question types are supported:
 
-| Learnosity Question Type   | Learnosity Widget Value | QTI Interaction            |
-| -------------------------- | ----------------------- | -------------------------- |
-| Choice Matrix              | choicematrix            | MatchInteraction           |
-| Cloze Association          | clozeassociation        | GapMatchInteraction        |
-| Cloze Dropdown             | clozedropdown           | InlineChoiceInteraction    |
-| Cloze Text                 | clozetext               | TextEntryInteraction       |
-| Essay                      | longtext                | ExtendedTextInteraction    |
-| Essay with rich text       | longtextV2              | ExtendedTextInteraction    |
-| Hotspot                    | hotspot                 | HotspotInteraction         |
-| Image Cloze Association    | imageclozeassociation   | GraphicGapMatchInteraction |
-| Image Cloze Association V2 | imageclozeassociationV2 | GraphicGapMatchInteraction |
-| Multiple Choice Question   | mcq                     | ChoiceInteraction          |
-| Order List                 | orderlist               | OrderInteraction           |
-| Passage                    | sharedpassage           | N/A                        |
-| Plain Text                 | plaintext               | ExtendedTextInteraction    |
-| Short Text                 | shorttext               | TextEntryInteraction       |
-| Token Highlight            | tokenhighlight          | HottextInteraction         |
+| Learnosity Question Type       | Learnosity Widget Value | QTI Interaction            |
+| ------------------------------ | ----------------------- | -------------------------- |
+| Chemistry essay with rich text | chemistryessayV2        | ExtendedTextInteraction    |
+| Choice Matrix                  | choicematrix            | MatchInteraction           |
+| Cloze Association              | clozeassociation        | GapMatchInteraction        |
+| Cloze Dropdown                 | clozedropdown           | InlineChoiceInteraction    |
+| Cloze Text                     | clozetext               | TextEntryInteraction       |
+| Essay                          | longtext                | ExtendedTextInteraction    |
+| Essay with rich text           | longtextV2              | ExtendedTextInteraction    |
+| Hotspot                        | hotspot                 | HotspotInteraction         |
+| Image Cloze Association        | imageclozeassociation   | GraphicGapMatchInteraction |
+| Image Cloze Association V2     | imageclozeassociationV2 | GraphicGapMatchInteraction |
+| Math essay with rich text      | formulaessayV2          | ExtendedTextInteraction    |
+| Multiple Choice Question       | mcq                     | ChoiceInteraction          |
+| Order List                     | orderlist               | OrderInteraction           |
+| Passage                        | sharedpassage           | N/A                        |
+| Plain Text                     | plaintext               | ExtendedTextInteraction    |
+| Short Text                     | shorttext               | TextEntryInteraction       |
+| Token Highlight                | tokenhighlight          | HottextInteraction         |
 
 #### Scoring
 
 The converter attempts to use one of the following `<responseProcessing>` templates:
 
-- `<responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"/>`
-- `<responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/map_response"/>`
+-   `<responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/match_correct"/>`
+-   `<responseProcessing template="http://www.imsglobal.org/question/qti_v2p1/rptemplates/map_response"/>`
 
 In cases where there are multiple interactions on a single item (composite items), or the `score` is greater than `1`, we use custom mappings inside `<responseDeclaration>` coupled with the `map_response` template. Eg:
 
@@ -513,7 +514,6 @@ In cases where there are multiple interactions on a single item (composite items
     </mapping>
 </responseDeclaration>
 ```
-
 
 #### Known limitations
 
@@ -553,7 +553,6 @@ Passages are rendered as `<objects>`. Eg,
 ```
 <object data="../passages/af4aeb91-07bb-498e-9b2b-8989fbed80be.html" type="text/html" label="af4aeb91-07bb-498e-9b2b-8989fbed80be"></object>
 ```
-
 
 ##### Cloze Association
 

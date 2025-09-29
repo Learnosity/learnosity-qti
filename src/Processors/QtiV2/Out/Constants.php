@@ -8,20 +8,22 @@ class Constants
     private static $outputPath;
 
     public static $supportedQuestionTypes = [
-        'mcq',
-        'shorttext',
-        'orderlist',
-        'longtext',
-        'longtextV2',
-        'plaintext',
+        'chemistryessayV2',
         'choicematrix',
-        'tokenhighlight',
         'clozeassociation',
-        'clozetext',
         'clozedropdown',
+        'clozetext',
+        'formulaessayV2',
+        'hotspot',
         'imageclozeassociation',
         'imageclozeassociationV2',
-        'hotspot'
+        'longtext',
+        'longtextV2',
+        'mcq',
+        'orderlist',
+        'shorttext',
+        'plaintext',
+        'tokenhighlight'
     ];
 
     public static $supportedFeatureTypes = [
