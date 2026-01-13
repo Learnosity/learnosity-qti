@@ -6,7 +6,7 @@ Users should fork this repository to fix any issues found or feature requests re
 
 The `develop` branch is the mainline you should checkout.
 
-Note: due to containing vendors, this package is licensed under GPL.
+Note: due to containing vendors, this package is licensed under GPL (GPL-2.0).
 
 --
 
