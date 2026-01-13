@@ -113,6 +113,8 @@ class LearnosityToQtiPostProcessingService
                 continue;
             }
             $decodedText = str_replace(['&lt;', '&gt;'], ['<', '>'], $encoded);
+            // Sometimes we have escaped content that has already been escaped. Check for this and replace.
+            $decodedText = str_replace(['&amp;lt;', '&amp;gt;'], ['<', '>'], $encoded);
 
             $this->replaceInnerWithFragmentSafely($doc, $feedback, $decodedText);
         }
