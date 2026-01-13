@@ -115,13 +115,14 @@ class ItemBodyBuilder
 
                 // Build the actual interaction
                 $interaction = $interactions[$questionReference]['interaction'];
-                if (isset($interactions[$questionReference]['extraContent'])) {
-                    // In case of shorttext and clozetext its throwing error and closing div tag above the interaction
-                    $questionTypeArr = ['shorttext', 'clozetext', 'clozedropdown'];
-                    if (!in_array($questionType, $questionTypeArr)) {
-                        $content->attach($interactions[$questionReference]['extraContent']);
-                    }
-                }
+                // MPS 20260113: This code was throwing an error for shorttext, and I can't see why it was originally needed.
+                // if (isset($interactions[$questionReference]['extraContent'])) {
+                //     // In case of shorttext and clozetext its throwing error and closing div tag above the interaction
+                //     $questionTypeArr = ['shorttext', 'clozetext', 'clozedropdown'];
+                //     if (!in_array($questionType, $questionTypeArr)) {
+                //         $content->attach($interactions[$questionReference]['extraContent']);
+                //     }
+                // }
 
                 $content->attach($interaction);
 				$replacement = ContentCollectionBuilder::buildContent($currentContainer, $content)->current();
