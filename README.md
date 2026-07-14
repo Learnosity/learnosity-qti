@@ -1,10 +1,12 @@
 # Notice
 
-This library is open source and currently is not actively maintained by Learnosity.
+This library is open source and is currently not actively maintained by Learnosity.
 
-Users should fork this repository to fix any issues found or feature requests required.
+Learnosity has developed a [new QTI conversion library](https://www.npmjs.com/package/@learnosity/lib-qti-converter) that is actively supported.
 
-The `develop` branch is the mainline you should checkout.
+Users wishing to use this project should fork this repository to fix any issues found or implement any required feature requests.
+
+The `develop` branch is the mainline you should check out.
 
 Note: due to containing vendors, this package is licensed under GPL (GPL-2.0).
 
